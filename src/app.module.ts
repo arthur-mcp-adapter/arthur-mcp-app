@@ -1,23 +1,13 @@
-import {
-  MiddlewareConsumer,
-  Module,
-  NestModule,
-  RequestMethod,
-} from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { McpModule, McpTransportType } from '@rekog/mcp-nest';
 
 import { config } from './config/configuration';
 import { validateEnv } from './config/env.validation';
 import { AuthModule } from './auth/auth.module';
 import { SwaggerModule } from './swagger/swagger.module';
 import { DynamicMcpModule } from './dynamic-mcp/dynamic-mcp.module';
-import { ApiKeyMiddleware } from './auth/api-key.middleware';
-import { ApiAdapterModule } from './api-adapter/api-adapter.module';
-import { ToolsModule } from './tools/tools.module';
-import { ResourcesModule } from './resources/resources.module';
 import { LoggingModule } from './logging/logging.module';
 import { HealthModule } from './health/health.module';
 import { McpLoggingInterceptor } from './logging/mcp-logging.interceptor';
@@ -35,21 +25,9 @@ import { EmailFeaturesModule } from './email/email-features.module';
     MongooseModule.forRootAsync({
       useFactory: () => ({ uri: config.mongoUri }),
     }),
-    McpModule.forRoot({
-      name: 'rest-api-mcp-wrapper',
-      version: '1.0.0',
-      transport: McpTransportType.STREAMABLE_HTTP,
-      streamableHttp: {
-        statelessMode: true,
-        enableJsonResponse: true,
-      },
-    }),
     AuthModule,
     SwaggerModule,
     DynamicMcpModule,
-    ApiAdapterModule,
-    ToolsModule,
-    ResourcesModule,
     LoggingModule,
     HealthModule,
     ExecutionLogsModule,
@@ -70,10 +48,4 @@ import { EmailFeaturesModule } from './email/email-features.module';
     },
   ],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer): void {
-    consumer
-      .apply(ApiKeyMiddleware)
-      .forRoutes({ path: 'mcp', method: RequestMethod.ALL });
-  }
-}
+export class AppModule {}

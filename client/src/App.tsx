@@ -6,7 +6,6 @@ import ResetPassword from './pages/ResetPassword'
 import Projects from './pages/Projects'
 import NewProject from './pages/NewProject'
 import ProjectDetail from './pages/ProjectDetail'
-import McpServer from './pages/McpServer'
 import McpDocs from './pages/McpDocs'
 import Profile from './pages/Profile'
 import Dashboard from './pages/Dashboard'
@@ -51,8 +50,7 @@ export default function App() {
                   <Route path="/projects/new" element={<NewProject />} />
                   <Route path="/projects/:id" element={<ProjectDetail />} />
                   <Route path="/projects/:id/docs" element={<McpDocs />} />
-                  <Route path="/mcp-server" element={<McpServer />} />
-                  <Route path="/profile" element={<Profile />} />
+<Route path="/profile" element={<Profile />} />
                   <Route path="/dashboard" element={<Dashboard />} />
                   <Route path="/settings" element={<Settings />} />
                   <Route path="/audit-logs" element={<AuditLogs />} />

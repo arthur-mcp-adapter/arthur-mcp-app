@@ -7,6 +7,7 @@ import axios from 'axios';
 import * as jwt from 'jsonwebtoken';
 import { parseSpec } from '../dynamic-mcp/openapi-parser';
 import { generateTools } from '../dynamic-mcp/tool-generator';
+import { DynamicMcpService } from '../dynamic-mcp/dynamic-mcp.service';
 import type { AuthConfig, ToolComment } from '../dynamic-mcp/types';
 import {
   McpApiKeyEntry,
@@ -31,6 +32,7 @@ export class SwaggerService {
   constructor(
     @InjectModel(SwaggerProject.name)
     private readonly projectModel: Model<SwaggerProjectDocument>,
+    private readonly dynamicMcp: DynamicMcpService,
   ) {}
 
   /** Parse YAML ou JSON para objeto */
@@ -206,6 +208,7 @@ export class SwaggerService {
   async remove(id: string): Promise<void> {
     const project = await this.projectModel.findByIdAndDelete(id).exec();
     if (!project) throw new NotFoundException('Projeto não encontrado.');
+    this.dynamicMcp.invalidate(id);
   }
 
   /** Legacy — mantido para backward-compat */
@@ -306,6 +309,7 @@ export class SwaggerService {
     project.baseUrl = baseUrl;
     project.markModified('tools');
     await project.save();
+    this.dynamicMcp.invalidate(id);
 
     this.logger.log(`Re-import "${project.name}": +${added} adicionadas, ${updated} atualizadas`);
     return { added, updated, baseUrl };
@@ -333,6 +337,7 @@ export class SwaggerService {
       .findByIdAndUpdate(id, { auth }, { new: true })
       .exec();
     if (!project) throw new NotFoundException('Projeto não encontrado.');
+    this.dynamicMcp.invalidate(id);
     return project;
   }
 
@@ -369,7 +374,9 @@ export class SwaggerService {
     if (typeof dto.enabled === 'boolean') (tool as any).enabled = dto.enabled;
 
     project.markModified('tools');
-    return project.save();
+    const saved = await project.save();
+    this.dynamicMcp.invalidate(id);
+    return saved;
   }
 
   /** Remove permanentemente uma tool do projeto */
@@ -382,7 +389,9 @@ export class SwaggerService {
 
     (project.tools as any).splice(idx, 1);
     project.markModified('tools');
-    return project.save();
+    const saved = await project.save();
+    this.dynamicMcp.invalidate(id);
+    return saved;
   }
 
   /** Substitui todos os campos de uma tool (exceto a busca pelo nome atual) */
@@ -420,7 +429,9 @@ export class SwaggerService {
     };
 
     project.markModified('tools');
-    return project.save();
+    const saved = await project.save();
+    this.dynamicMcp.invalidate(id);
+    return saved;
   }
 
   /** Adiciona uma nova tool ao projeto */
@@ -459,7 +470,9 @@ export class SwaggerService {
     });
 
     project.markModified('tools');
-    return project.save();
+    const saved = await project.save();
+    this.dynamicMcp.invalidate(id);
+    return saved;
   }
 
   /**
@@ -478,7 +491,9 @@ export class SwaggerService {
     })) as typeof project.tools;
     project.markModified('tools');
 
-    return project.save();
+    const saved = await project.save();
+    this.dynamicMcp.invalidate(id);
+    return saved;
   }
 
   // ── Pause ────────────────────────────────────────────────────────────────────
@@ -501,7 +516,7 @@ export class SwaggerService {
 
   // ── Availability window ───────────────────────────────────────────────────────
 
-  async setAvailabilityWindow(id: string, dto: { enabled: boolean; startHour: number; endHour: number; timezone: string }): Promise<SwaggerProjectDocument> {
+  async setAvailabilityWindow(id: string, dto: { enabled: boolean; timezone: string; schedule: Array<{ day: number; startHour: number; endHour: number }> }): Promise<SwaggerProjectDocument> {
     const project = await this.projectModel.findByIdAndUpdate(
       id, { availabilityWindow: dto }, { new: true },
     ).exec();

@@ -6,7 +6,6 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { Response, Request } from 'express';
-import { ApiAdapterError } from '../../api-adapter/api-adapter.service';
 
 const RPC_CODES = {
   validation: -32602,
@@ -16,12 +15,6 @@ const RPC_CODES = {
 };
 
 function mapErrorCode(err: unknown): { code: number; reason: string } {
-  if (err instanceof ApiAdapterError) {
-    if (err.statusCode === 404) return { code: RPC_CODES.not_found, reason: 'not_found' };
-    if (err.statusCode === 408) return { code: RPC_CODES.timeout, reason: 'timeout' };
-    return { code: RPC_CODES.generic, reason: 'upstream_error' };
-  }
-
   if (err instanceof HttpException) {
     const status = err.getStatus();
     if (status === HttpStatus.BAD_REQUEST) return { code: RPC_CODES.validation, reason: 'validation' };
@@ -71,9 +64,6 @@ export class McpExceptionFilter implements ExceptionFilter {
         ? err.message
         : 'An unexpected error occurred';
 
-    const upstream =
-      err instanceof ApiAdapterError ? err.upstream : undefined;
-
     res.status(200).json({
       jsonrpc: '2.0',
       id,
@@ -83,7 +73,6 @@ export class McpExceptionFilter implements ExceptionFilter {
         data: {
           ...(toolName && { tool: toolName }),
           reason,
-          ...(upstream && { upstreamError: upstream }),
         },
       },
     });

@@ -14,6 +14,7 @@ import {
   DialogContent,
   DialogTitle,
   Divider,
+  Drawer,
   FormControl,
   FormControlLabel,
   Grid,
@@ -128,7 +129,7 @@ interface Project {
   status: string
   isPaused?: boolean
   maintenanceMode?: { enabled: boolean; message: string }
-  availabilityWindow?: { enabled: boolean; startHour: number; endHour: number; timezone: string }
+  availabilityWindow?: { enabled: boolean; timezone: string; schedule?: Array<{ day: number; startHour: number; endHour: number }> }
   alertConfig?: { enabled: boolean; errorThresholdPct: number; notifyEmail: string }
   tools: GeneratedTool[]
   mcpApiKey?: string
@@ -835,6 +836,7 @@ interface ToolDialogProps {
   open: boolean
   onClose: () => void
   onSaved: (tool: GeneratedTool, oldName?: string) => void
+  onDeleted?: (toolName: string) => void
   projectId: string
   projectBaseUrl: string
   editTool?: GeneratedTool
@@ -1270,11 +1272,13 @@ const TIMEZONES = [
   'Asia/Dubai', 'Asia/Kolkata', 'Asia/Singapore', 'Asia/Tokyo', 'Australia/Sydney',
 ]
 
+interface ScheduleEntry { id: string; day: number; startHour: number; endHour: number }
+
 function ProjectControlsPanel({ projectId, initialPaused, initialMaintenance, initialAvailability, onPausedChange }: {
   projectId: string
   initialPaused?: boolean
   initialMaintenance?: { enabled: boolean; message: string }
-  initialAvailability?: { enabled: boolean; startHour: number; endHour: number; timezone: string }
+  initialAvailability?: { enabled: boolean; timezone: string; schedule?: Array<{ day: number; startHour: number; endHour: number }> }
   onPausedChange: (v: boolean) => void
 }) {
   const [paused, setPaused] = useState(initialPaused ?? false)
@@ -1285,9 +1289,10 @@ function ProjectControlsPanel({ projectId, initialPaused, initialMaintenance, in
   const [maintSave, setMaintSave] = useState<SaveStatus>('idle')
 
   const [avEnabled, setAvEnabled] = useState(initialAvailability?.enabled ?? false)
-  const [avStart, setAvStart] = useState(initialAvailability?.startHour ?? 8)
-  const [avEnd, setAvEnd] = useState(initialAvailability?.endHour ?? 18)
   const [avTz, setAvTz] = useState(initialAvailability?.timezone ?? 'UTC')
+  const [avSchedule, setAvSchedule] = useState<ScheduleEntry[]>(
+    (initialAvailability?.schedule ?? []).map(e => ({ ...e, id: crypto.randomUUID() }))
+  )
   const [avSave, setAvSave] = useState<SaveStatus>('idle')
 
   const maintTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -1313,19 +1318,39 @@ function ProjectControlsPanel({ projectId, initialPaused, initialMaintenance, in
     }, 700)
   }
 
-  const scheduleAv = (enabled: boolean, startHour: number, endHour: number, timezone: string) => {
+  const saveAv = (enabled: boolean, timezone: string, schedule: ScheduleEntry[]) => {
     if (avTimer.current) clearTimeout(avTimer.current)
     avTimer.current = setTimeout(async () => {
       setAvSave('saving')
       try {
-        await api.patch(`/swagger/projects/${projectId}/availability`, { enabled, startHour, endHour, timezone })
+        const payload = { enabled, timezone, schedule: schedule.map(({ day, startHour, endHour }) => ({ day, startHour, endHour })) }
+        await api.patch(`/swagger/projects/${projectId}/availability`, payload)
         setAvSave('saved'); setTimeout(() => setAvSave('idle'), 2000)
       } catch { setAvSave('error') }
     }, 700)
   }
 
+  const addEntry = () => {
+    const next = [...avSchedule, { id: crypto.randomUUID(), day: 1, startHour: 9, endHour: 18 }]
+    setAvSchedule(next)
+    saveAv(avEnabled, avTz, next)
+  }
+
+  const removeEntry = (id: string) => {
+    const next = avSchedule.filter(e => e.id !== id)
+    setAvSchedule(next)
+    saveAv(avEnabled, avTz, next)
+  }
+
+  const updateEntry = (id: string, field: keyof Omit<ScheduleEntry, 'id'>, value: number) => {
+    const next = avSchedule.map(e => e.id === id ? { ...e, [field]: value } : e)
+    setAvSchedule(next)
+    saveAv(avEnabled, avTz, next)
+  }
+
   const hours = Array.from({ length: 25 }, (_, i) => i)
   const fmtHour = (h: number) => h === 0 ? '12:00 AM' : h < 12 ? `${h}:00 AM` : h === 12 ? '12:00 PM' : `${h - 12}:00 PM`
+  const DAY_LABELS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 
   return (
     <Paper variant="outlined" sx={{ p: 2.5, mb: 2 }}>
@@ -1380,51 +1405,69 @@ function ProjectControlsPanel({ projectId, initialPaused, initialMaintenance, in
 
       <Divider sx={{ mb: 2 }} />
 
-      {/* Availability window */}
+      {/* Availability days */}
       <Box>
         <Box display="flex" alignItems="center" gap={1} mb={1}>
           <AccessTimeIcon fontSize="small" color={avEnabled ? 'primary' : 'disabled'} />
-          <Typography variant="subtitle2" fontWeight={700} flexGrow={1}>Availability hours</Typography>
+          <Typography variant="subtitle2" fontWeight={700} flexGrow={1}>Availability days</Typography>
           <SaveIndicator status={avSave} />
           <FormControlLabel
             control={<Switch size="small" checked={avEnabled} color="primary"
-              onChange={(e) => { setAvEnabled(e.target.checked); scheduleAv(e.target.checked, avStart, avEnd, avTz) }} />}
+              onChange={(e) => { setAvEnabled(e.target.checked); saveAv(e.target.checked, avTz, avSchedule) }} />}
             label={<Typography variant="caption">{avEnabled ? 'On' : 'Off'}</Typography>}
             sx={{ mr: 0 }} />
         </Box>
         {avEnabled && (
-          <Grid container spacing={1.5}>
-            <Grid item xs={12} sm={4}>
-              <FormControl size="small" fullWidth>
-                <InputLabel>From</InputLabel>
-                <Select value={avStart} label="From"
-                  onChange={(e) => { const v = Number(e.target.value); setAvStart(v); scheduleAv(avEnabled, v, avEnd, avTz) }}>
-                  {hours.filter(h => h < avEnd).map(h => <MenuItem key={h} value={h}>{fmtHour(h)}</MenuItem>)}
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <FormControl size="small" fullWidth>
-                <InputLabel>To</InputLabel>
-                <Select value={avEnd} label="To"
-                  onChange={(e) => { const v = Number(e.target.value); setAvEnd(v); scheduleAv(avEnabled, avStart, v, avTz) }}>
-                  {hours.filter(h => h > avStart).map(h => <MenuItem key={h} value={h}>{fmtHour(h)}</MenuItem>)}
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <FormControl size="small" fullWidth>
-                <InputLabel>Timezone</InputLabel>
-                <Select value={avTz} label="Timezone"
-                  onChange={(e) => { setAvTz(e.target.value); scheduleAv(avEnabled, avStart, avEnd, e.target.value) }}>
-                  {TIMEZONES.map(tz => <MenuItem key={tz} value={tz}>{tz}</MenuItem>)}
-                </Select>
-              </FormControl>
-            </Grid>
-          </Grid>
+          <Box>
+            {/* Timezone */}
+            <FormControl size="small" sx={{ minWidth: 200, mb: 1.5 }}>
+              <InputLabel>Timezone</InputLabel>
+              <Select value={avTz} label="Timezone"
+                onChange={(e) => { setAvTz(e.target.value); saveAv(avEnabled, e.target.value, avSchedule) }}>
+                {TIMEZONES.map(tz => <MenuItem key={tz} value={tz}>{tz}</MenuItem>)}
+              </Select>
+            </FormControl>
+
+            {/* Schedule entries */}
+            <Box display="flex" flexDirection="column" gap={1} mb={1}>
+              {avSchedule.map(entry => (
+                <Box key={entry.id} display="flex" alignItems="center" gap={1} flexWrap="wrap">
+                  <FormControl size="small" sx={{ minWidth: 130 }}>
+                    <InputLabel>Day</InputLabel>
+                    <Select value={entry.day} label="Day"
+                      onChange={(e) => updateEntry(entry.id, 'day', Number(e.target.value))}>
+                      {DAY_LABELS.map((label, i) => <MenuItem key={i} value={i}>{label}</MenuItem>)}
+                    </Select>
+                  </FormControl>
+                  <FormControl size="small" sx={{ minWidth: 110 }}>
+                    <InputLabel>From</InputLabel>
+                    <Select value={entry.startHour} label="From"
+                      onChange={(e) => updateEntry(entry.id, 'startHour', Number(e.target.value))}>
+                      {hours.filter(h => h < entry.endHour).map(h => <MenuItem key={h} value={h}>{fmtHour(h)}</MenuItem>)}
+                    </Select>
+                  </FormControl>
+                  <Typography variant="body2" color="text.secondary">–</Typography>
+                  <FormControl size="small" sx={{ minWidth: 110 }}>
+                    <InputLabel>To</InputLabel>
+                    <Select value={entry.endHour} label="To"
+                      onChange={(e) => updateEntry(entry.id, 'endHour', Number(e.target.value))}>
+                      {hours.filter(h => h > entry.startHour).map(h => <MenuItem key={h} value={h}>{fmtHour(h)}</MenuItem>)}
+                    </Select>
+                  </FormControl>
+                  <IconButton size="small" color="error" onClick={() => removeEntry(entry.id)}>
+                    <CloseIcon fontSize="small" />
+                  </IconButton>
+                </Box>
+              ))}
+            </Box>
+
+            <Button size="small" startIcon={<AddIcon />} onClick={addEntry}>
+              Add entry
+            </Button>
+          </Box>
         )}
         <Typography variant="caption" color="text.secondary">
-          Restrict AI access to specific hours. Requests outside the window return a 503 error.
+          Restrict AI access to specific days and hours. Requests outside the schedule return a 503 error.
         </Typography>
       </Box>
     </Paper>
@@ -1499,15 +1542,38 @@ function AlertConfigPanel({ projectId, initialConfig }: {
   )
 }
 
-function ToolDialog({ open, onClose, onSaved, projectId, projectBaseUrl, editTool }: ToolDialogProps) {
+function ToolDialog({ open, onClose, onSaved, onDeleted, projectId, projectBaseUrl, editTool }: ToolDialogProps) {
   const isEdit = !!editTool
   const [form, setForm] = useState(() => toolToFormState(editTool))
   const [saving, setSaving] = useState(false)
+  const [deleting, setDeleting] = useState(false)
   const [error, setError] = useState('')
 
   useEffect(() => {
-    if (open) { setForm(toolToFormState(editTool)); setError('') }
+    if (open) { setForm(toolToFormState(editTool)); setError(''); setDeleting(false) }
   }, [open, editTool])
+
+  const handleDelete = async () => {
+    if (!editTool) return
+    const result = await Swal.fire({
+      title: 'Delete tool?',
+      text: `"${editTool.name}" will be permanently removed from this project.`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Delete',
+      cancelButtonText: 'Cancel',
+      confirmButtonColor: '#d33',
+    })
+    if (!result.isConfirmed) return
+    setDeleting(true)
+    try {
+      await api.delete(`/swagger/projects/${projectId}/tools/${encodeURIComponent(editTool.name)}`)
+      onDeleted?.(editTool.name)
+      onClose()
+    } finally {
+      setDeleting(false)
+    }
+  }
 
   const setField = (field: string, value: any) => setForm((prev) => ({ ...prev, [field]: value }))
   const setParam = (id: string, field: keyof ParamEntry, value: any) =>
@@ -1562,13 +1628,20 @@ function ToolDialog({ open, onClose, onSaved, projectId, projectBaseUrl, editToo
   }
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth scroll="paper">
-      <DialogTitle sx={{ pb: 1 }}>
-        <Typography variant="h6" fontWeight={700}>
+    <Drawer anchor="right" open={open} onClose={onClose}
+      PaperProps={{ sx: { width: { xs: '100vw', sm: 560 }, display: 'flex', flexDirection: 'column' } }}>
+      {/* Header */}
+      <Box sx={{ px: 3, py: 2, borderBottom: 1, borderColor: 'divider', display: 'flex', alignItems: 'center', gap: 1, flexShrink: 0 }}>
+        <Typography variant="h6" fontWeight={700} flexGrow={1}>
           {isEdit ? `Edit endpoint — ${editTool?.name}` : 'New MCP tool'}
         </Typography>
-      </DialogTitle>
-      <DialogContent dividers>
+        <IconButton size="small" onClick={onClose} disabled={saving || deleting}>
+          <CloseIcon fontSize="small" />
+        </IconButton>
+      </Box>
+
+      {/* Scrollable content */}
+      <Box sx={{ flex: 1, overflowY: 'auto', px: 3, py: 2.5 }}>
         {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
         <Grid container spacing={2}>
           {/* Name + method */}
@@ -1680,15 +1753,24 @@ function ToolDialog({ open, onClose, onSaved, projectId, projectBaseUrl, editToo
             )}
           </Grid>
         </Grid>
-      </DialogContent>
-      <DialogActions sx={{ px: 3, py: 2, gap: 1 }}>
-        <Button onClick={onClose} disabled={saving}>Cancel</Button>
-        <Button variant="contained" onClick={handleSave} disabled={saving}
+      </Box>
+
+      {/* Footer */}
+      <Box sx={{ px: 3, py: 2, borderTop: 1, borderColor: 'divider', display: 'flex', gap: 1, flexShrink: 0 }}>
+        {isEdit && (
+          <Button color="error" onClick={handleDelete} disabled={saving || deleting}
+            startIcon={deleting ? <CircularProgress size={14} color="inherit" /> : <DeleteIcon fontSize="small" />}
+            sx={{ mr: 'auto' }}>
+            {deleting ? 'Deleting…' : 'Delete tool'}
+          </Button>
+        )}
+        <Button onClick={onClose} disabled={saving || deleting}>Cancel</Button>
+        <Button variant="contained" onClick={handleSave} disabled={saving || deleting}
           startIcon={saving ? <CircularProgress size={14} color="inherit" /> : undefined}>
           {saving ? 'Saving…' : isEdit ? 'Save changes' : 'Create tool'}
         </Button>
-      </DialogActions>
-    </Dialog>
+      </Box>
+    </Drawer>
   )
 }
 
@@ -1848,13 +1930,12 @@ function ToolCommentsSection({ projectId, toolName, initialComments }: {
 
 // ─── Tool accordion ───────────────────────────────────────────────────────────
 
-function ToolAccordion({ tool: initialTool, projectId, anyApiKey, onToolChanged, onEditEndpoint, onToolDeleted }: {
+function ToolAccordion({ tool: initialTool, projectId, anyApiKey, onToolChanged, onEditEndpoint }: {
   tool: GeneratedTool
   projectId: string
   anyApiKey?: string
   onToolChanged: (oldName: string, newTool: GeneratedTool) => void
   onEditEndpoint: (tool: GeneratedTool) => void
-  onToolDeleted: (toolName: string) => void
 }) {
   const [tool, setTool] = useState(initialTool)
   const [curlCopied, setCurlCopied] = useState(false)
@@ -1894,22 +1975,6 @@ function ToolAccordion({ tool: initialTool, projectId, anyApiKey, onToolChanged,
     const updated = { ...tool, enabled: newEnabled }
     setTool(updated)
     onToolChanged(oldName, updated)
-  }
-
-  const handleDelete = async (e: React.MouseEvent) => {
-    e.stopPropagation()
-    const result = await Swal.fire({
-      title: 'Delete tool?',
-      text: `"${tool.name}" will be permanently removed from this project.`,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Delete',
-      cancelButtonText: 'Cancel',
-      confirmButtonColor: '#d33',
-    })
-    if (!result.isConfirmed) return
-    await api.delete(`/swagger/projects/${projectId}/tools/${encodeURIComponent(tool.name)}`)
-    onToolDeleted(tool.name)
   }
 
   const handleExecute = async () => {
@@ -1995,16 +2060,10 @@ function ToolAccordion({ tool: initialTool, projectId, anyApiKey, onToolChanged,
           <Tooltip title="Edit endpoint">
             <IconButton size="small" onClick={(e) => { e.stopPropagation(); onEditEndpoint(tool) }}
               sx={{ flexShrink: 0, color: 'text.secondary', '&:hover': { color: 'primary.main' } }}>
-              <TuneIcon sx={{ fontSize: 18 }} />
+              <EditIcon sx={{ fontSize: 18 }} />
             </IconButton>
           </Tooltip>
 
-          {/* Delete tool */}
-          <Tooltip title="Delete tool permanently">
-            <IconButton size="small" color="error" onClick={handleDelete} sx={{ flexShrink: 0 }}>
-              <DeleteIcon sx={{ fontSize: 18 }} />
-            </IconButton>
-          </Tooltip>
         </Box>
       </AccordionSummary>
 
@@ -2490,7 +2549,6 @@ export default function ProjectDetail() {
                     anyApiKey={project.mcpApiKeys?.[0]?.key}
                     onToolChanged={handleToolChanged}
                     onEditEndpoint={handleOpenEdit}
-                    onToolDeleted={handleDeleteTool}
                   />
                 ))}
         </>
@@ -2563,6 +2621,7 @@ export default function ProjectDetail() {
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}
         onSaved={handleToolSaved}
+        onDeleted={handleDeleteTool}
         projectId={id!}
         projectBaseUrl={baseUrl}
         editTool={editingTool}

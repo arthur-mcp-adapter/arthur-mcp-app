@@ -65,8 +65,8 @@ export class SwaggerProject {
   maintenanceMode: { enabled: boolean; message: string };
 
   /** Time-window access control */
-  @Prop({ type: Object, default: { enabled: false, startHour: 0, endHour: 24, timezone: 'UTC' } })
-  availabilityWindow: { enabled: boolean; startHour: number; endHour: number; timezone: string };
+  @Prop({ type: Object, default: { enabled: false, timezone: 'UTC', schedule: [] } })
+  availabilityWindow: { enabled: boolean; timezone: string; schedule: Array<{ day: number; startHour: number; endHour: number }> };
 
   /** Alert config */
   @Prop({ type: Object, default: { enabled: false, errorThresholdPct: 20, notifyEmail: '' } })

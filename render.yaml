@@ -1,40 +1,52 @@
 services:
-  # ── NestJS app ─────────────────────────────────────────────────────────────
+  # ── NestJS backend ─────────────────────────────────────────────────────────
   - type: web
-    name: arthur-mcp-adapter
-    runtime: docker
-    dockerfilePath: ./Dockerfile
+    name: mcp-server
+    runtime: node
+    region: oregon
+    plan: free
+    rootDir: .
+    buildCommand: npm ci && npm run build:backend
+    startCommand: node dist/main.js
     healthCheckPath: /health
+    initialDelaySeconds: 15
     envVars:
-      - key: PORT
-        value: 3000
       - key: NODE_ENV
         value: production
+      - key: PORT
+        value: 3000
+      # MongoDB Atlas — forneça a connection string no painel do Render
       - key: MONGODB_URI
-        value: mongodb://mcp:mcp_password@arthur-mongo:27017/mcp_db?authSource=admin
-      - key: JWT_SECRET
+        sync: false
+      # Chave de API MCP — gerada automaticamente pelo Render
+      - key: MCP_API_KEY
         generateValue: true
+      # URL da API externa consumida pelo servidor
+      - key: EXTERNAL_API_BASE_URL
+        value: https://jsonplaceholder.typicode.com
+      # Credenciais do dashboard administrativo
       - key: DASHBOARD_USER
         value: admin
       - key: DASHBOARD_PASSWORD
-        value: admin123
-      - key: MCP_API_KEY
+        sync: false
+      # Segredo JWT — gerado automaticamente pelo Render
+      - key: JWT_SECRET
         generateValue: true
 
-  # ── MongoDB (private — not publicly accessible) ─────────────────────────────
-  - type: pserv
-    name: arthur-mongo
-    runtime: docker
-    image:
-      url: docker.io/mongo:7
-    envVars:
-      - key: MONGO_INITDB_ROOT_USERNAME
-        value: mcp
-      - key: MONGO_INITDB_ROOT_PASSWORD
-        value: mcp_password
-      - key: MONGO_INITDB_DATABASE
-        value: mcp_db
-    disk:
-      name: mongo-data
-      mountPath: /data/db
-      sizeGB: 1
+  # ── React/Vite frontend (Static Site) ──────────────────────────────────────
+  - type: web
+    name: mcp-frontend
+    runtime: static
+    region: oregon
+    plan: free
+    rootDir: client
+    buildCommand: npm ci && npm run build
+    staticPublishPath: dist
+    headers:
+      - path: /*
+        name: Cache-Control
+        value: no-cache
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html

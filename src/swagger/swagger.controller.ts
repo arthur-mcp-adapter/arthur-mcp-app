@@ -249,7 +249,7 @@ export class SwaggerController {
   // ── Availability window ───────────────────────────────────────────────────────
 
   @Patch('projects/:id/availability')
-  setAvailabilityWindow(@Param('id') id: string, @Body() dto: { enabled: boolean; startHour: number; endHour: number; timezone: string }) {
+  setAvailabilityWindow(@Param('id') id: string, @Body() dto: { enabled: boolean; timezone: string; schedule: Array<{ day: number; startHour: number; endHour: number }> }) {
     return this.swaggerService.setAvailabilityWindow(id, dto);
   }
 

@@ -28,7 +28,6 @@ import {
   IconFolder,
   IconMenu2,
   IconUpload,
-  IconServer,
   IconBook,
   IconLogout,
   IconUser,
@@ -51,12 +50,6 @@ const NAV_SECTIONS = [
     subheader: 'MAIN',
     items: [
       { title: 'Projects', icon: IconFolder, path: '/' },
-    ],
-  },
-  {
-    subheader: 'SERVER',
-    items: [
-      { title: 'MCP Server', icon: IconServer, path: '/mcp-server' },
     ],
   },
   {

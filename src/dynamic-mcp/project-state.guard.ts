@@ -4,13 +4,21 @@ import { Model } from 'mongoose';
 import type { Request, Response } from 'express';
 import { SwaggerProject, SwaggerProjectDocument } from '../swagger/swagger-project.schema';
 
-function currentHourInTz(timezone: string): number {
+const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+function nowInTz(timezone: string): { hour: number; day: number } {
   try {
-    const parts = new Intl.DateTimeFormat('en-US', { hour: 'numeric', hour12: false, timeZone: timezone }).formatToParts(new Date());
-    const h = parts.find(p => p.type === 'hour');
-    return h ? parseInt(h.value, 10) : new Date().getUTCHours();
+    const parts = new Intl.DateTimeFormat('en-US', {
+      hour: 'numeric', hour12: false,
+      weekday: 'short',
+      timeZone: timezone,
+    }).formatToParts(new Date());
+    const hour = parseInt(parts.find(p => p.type === 'hour')?.value ?? '0', 10);
+    const dayMap: Record<string, number> = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };
+    const day = dayMap[parts.find(p => p.type === 'weekday')?.value ?? ''] ?? new Date().getUTCDay();
+    return { hour, day };
   } catch {
-    return new Date().getUTCHours();
+    return { hour: new Date().getUTCHours(), day: new Date().getUTCDay() };
   }
 }
 
@@ -49,16 +57,24 @@ export class ProjectStateGuard implements CanActivate {
     }
 
     if (project.availabilityWindow?.enabled) {
-      const { startHour, endHour, timezone } = project.availabilityWindow;
-      const currentHour = currentHourInTz(timezone ?? 'UTC');
-      const inWindow = startHour <= endHour
-        ? currentHour >= startHour && currentHour < endHour
-        : currentHour >= startHour || currentHour < endHour; // overnight window
+      const { timezone, schedule } = project.availabilityWindow;
+      const tz = timezone ?? 'UTC';
+      const { hour, day } = nowInTz(tz);
+      const entries = Array.isArray(schedule) ? schedule : [];
 
-      if (!inWindow) {
+      const allowed = entries.some(e =>
+        e.day === day && hour >= e.startHour && hour < e.endHour
+      );
+
+      if (!allowed) {
+        const summary = entries.length === 0
+          ? 'No availability windows configured.'
+          : entries
+              .map(e => `${DAY_NAMES[e.day]} ${e.startHour}:00–${e.endHour}:00`)
+              .join(', ');
         res.status(503).json({
           error: 'Outside availability window',
-          message: `This project only accepts requests between ${startHour}:00 and ${endHour}:00 (${timezone ?? 'UTC'}). Current hour: ${currentHour}:xx.`,
+          message: `This project is not available right now (${DAY_NAMES[day]} ${hour}:xx ${tz}). Allowed: ${summary}.`,
         });
         return false;
       }
