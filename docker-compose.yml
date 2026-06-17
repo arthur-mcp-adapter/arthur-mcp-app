@@ -1,8 +1,4 @@
-networks:
-  backend:
-    driver: bridge
-  frontend:
-    driver: bridge
+
 
 volumes:
   mongo_data:
@@ -88,10 +84,10 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=${MONGO_USER}
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
       - MONGO_INITDB_DATABASE=${MONGO_DB}
+    ports:
+      - "27017:27017"
     volumes:
       - mongo_data:/data/db
-    networks:
-      - backend
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]

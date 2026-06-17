@@ -11,7 +11,10 @@ async function bootstrap() {
 
   const app = await NestFactory.create(AppModule, { logger });
 
-  app.enableCors({ origin: true, credentials: true });
+  const allowedOrigins = process.env.CORS_ORIGIN
+    ? process.env.CORS_ORIGIN.split(',').map((o) => o.trim())
+    : true; // permite qualquer origem se CORS_ORIGIN não estiver definido
+  app.enableCors({ origin: allowedOrigins, credentials: true });
 
   // Prefixo global /api — exclui endpoints MCP e health (acessados diretamente)
   app.setGlobalPrefix('api', {
@@ -26,7 +29,7 @@ async function bootstrap() {
   app.enableShutdownHooks();
 
   // Serve arquivos estáticos do build do Vite (usado quando não há nginx na frente)
-  const publicPath = join(__dirname, '..', 'public');
+  const publicPath = join(__dirname, 'public');
   app.use(express.static(publicPath));
 
   // SPA fallback: rotas do React Router (ex: /dashboard) retornam index.html

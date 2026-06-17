@@ -1,19 +1,23 @@
 import { useEffect, useState } from 'react'
 import {
   Alert,
+  Badge,
   Box,
   Button,
   Chip,
-  CircularProgress,
+  IconButton,
+  Pagination,
   Paper,
+  Skeleton,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableRow,
+  Tooltip,
   Typography,
 } from '@mui/material'
-import RefreshIcon from '@mui/icons-material/Refresh'
+import { IconRefresh, IconEye, IconEyeOff } from '@tabler/icons-react'
 import api from '../api'
 import HelpButton from '../components/HelpButton'
 
@@ -56,13 +60,18 @@ const ENTITY_LABELS: Record<string, string> = {
   'api-key': 'API Key',
 }
 
+const LIMIT = 50
+
 export default function AuditLogs() {
   const [logs, setLogs] = useState<AuditEntry[]>([])
   const [total, setTotal] = useState(0)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [skip, setSkip] = useState(0)
-  const LIMIT = 50
+  const [showIp, setShowIp] = useState(false)
+
+  const currentPage = Math.floor(skip / LIMIT) + 1
+  const pageCount = Math.max(1, Math.ceil(total / LIMIT))
 
   const load = (s = 0) => {
     setLoading(true)
@@ -78,11 +87,15 @@ export default function AuditLogs() {
 
   useEffect(() => { load() }, [])
 
+  const handlePageChange = (_: React.ChangeEvent<unknown>, page: number) => {
+    load((page - 1) * LIMIT)
+  }
+
   return (
-    <Box p={3}>
-      <Box display="flex" alignItems="center" justifyContent="space-between" mb={1}>
+    <Box py={3} px={0}>
+      <Box display="flex" alignItems="center" justifyContent="space-between" mb={0.5}>
         <Box display="flex" alignItems="center" gap={1}>
-          <Typography variant="h5" fontWeight={700}>Audit Logs</Typography>
+          <Typography variant="h5" fontWeight={700} letterSpacing="-0.2px">Audit Logs</Typography>
           <HelpButton title="Audit Logs">
             <Typography variant="body2" gutterBottom>
               The Audit Log is a complete, tamper-proof record of every administrative change made on this Arthur MCP Adapter server. It is intended for security monitoring, compliance auditing, and debugging unexpected behaviour.
@@ -102,22 +115,41 @@ export default function AuditLogs() {
             </Typography>
           </HelpButton>
         </Box>
-        <Button size="small" startIcon={<RefreshIcon />} onClick={() => load(skip)}>Refresh</Button>
+        <Tooltip title="Refresh">
+          <Button size="small" variant="outlined" startIcon={<IconRefresh size={18} />} onClick={() => load(skip)}>
+            Refresh
+          </Button>
+        </Tooltip>
       </Box>
-      <Typography variant="body2" color="text.secondary" mb={3}>
-        Record of all administrative actions. Total: {total}
+      <Typography variant="body2" color="text.secondary" mb={2.5}>
+        Record of all administrative actions.{total > 0 && ` ${total} entries total.`}
       </Typography>
 
       {error && <Alert severity="error">{error}</Alert>}
 
       {loading ? (
-        <Box display="flex" justifyContent="center" py={6}><CircularProgress /></Box>
+        <Paper variant="outlined" sx={{ overflow: 'hidden', mb: 2 }}>
+          <Table size="small">
+            <TableBody>
+              {Array.from({ length: 10 }).map((_, i) => (
+                <TableRow key={i}>
+                  <TableCell><Skeleton width={120} /></TableCell>
+                  <TableCell><Skeleton width={80} /></TableCell>
+                  <TableCell><Skeleton width={70} /></TableCell>
+                  <TableCell><Skeleton width={60} /></TableCell>
+                  <TableCell><Skeleton width={100} /></TableCell>
+                  <TableCell><Skeleton width={90} /></TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </Paper>
       ) : (
         <>
           <Paper variant="outlined" sx={{ overflow: 'hidden', mb: 2 }}>
             <Table size="small">
               <TableHead>
-                <TableRow sx={{ bgcolor: '#f8f9fa' }}>
+                <TableRow>
                   {([
                     ['Date/Time', <>
                       <Typography variant="body2" gutterBottom>The exact date and time (in your browser's local timezone) when the action was recorded by the server. Entries are listed newest-first.</Typography>
@@ -137,7 +169,7 @@ export default function AuditLogs() {
                           ['Generated key (grey)', 'An MCP API key was created for a project.'],
                           ['Revoked key (red)', 'An MCP API key was deleted, revoking all client access.'],
                           ['Login (grey)', 'A user successfully signed in.'],
-                        ].map(([a,d]) => <Box component="li" key={a}><Typography variant="body2"><strong>{a}</strong> — {d}</Typography></Box>)}
+                        ].map(([a, d]) => <Box component="li" key={a}><Typography variant="body2"><strong>{a}</strong> — {d}</Typography></Box>)}
                       </Box>
                     </>],
                     ['Entity', <>
@@ -148,23 +180,37 @@ export default function AuditLogs() {
                       <Typography variant="body2" gutterBottom>The name or unique identifier of the <em>specific</em> object that was changed. For example, if a project named "Stripe API" was deleted, the Entity column shows "Project" and this column shows "Stripe API".</Typography>
                       <Typography variant="body2">When a name is not available (e.g. for low-level API key operations), the internal database ID is shown instead. Use this column to quickly locate which exact record was affected without needing to search the rest of the system.</Typography>
                     </>],
-                    ['IP', <>
-                      <Typography variant="body2" gutterBottom>The IP address of the client that sent the request that triggered this log entry. This is the address seen by the server — if the user is behind a proxy or VPN, it may show the proxy's IP.</Typography>
-                      <Typography variant="body2">Use the IP column to: verify that an action was performed from an expected location (office network, known server), or identify requests from unusual or unexpected sources that could indicate unauthorised access.</Typography>
-                    </>],
                   ] as [string, React.ReactNode][]).map(([h, content]) => (
-                    <TableCell key={h} sx={{ fontWeight: 700, fontSize: '0.72rem', color: 'text.secondary', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                    <TableCell key={h}>
                       <Box display="flex" alignItems="center" gap={0.5}>
                         {h}
                         <HelpButton title={h}>{content}</HelpButton>
                       </Box>
                     </TableCell>
                   ))}
+
+                  {/* IP column header with toggle */}
+                  <TableCell>
+                    <Box display="flex" alignItems="center" gap={0.5}>
+                      {showIp && 'IP'}
+                      <Tooltip title={showIp ? 'Hide IP column' : 'Show IP column'}>
+                        <IconButton size="small" onClick={() => setShowIp((v) => !v)} sx={{ p: 0.25 }}>
+                          <Badge
+                            variant="dot"
+                            color="primary"
+                            invisible={showIp}
+                          >
+                            {showIp ? <IconEye size={14} /> : <IconEyeOff size={14} />}
+                          </Badge>
+                        </IconButton>
+                      </Tooltip>
+                    </Box>
+                  </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {logs.length === 0 && (
-                  <TableRow><TableCell colSpan={6}><Typography color="text.secondary" fontSize="0.85rem" py={2} textAlign="center">No logs found.</Typography></TableCell></TableRow>
+                  <TableRow><TableCell colSpan={showIp ? 6 : 6}><Typography color="text.secondary" fontSize="0.85rem" py={2} textAlign="center">No logs found.</Typography></TableCell></TableRow>
                 )}
                 {logs.map((log) => (
                   <TableRow key={log._id} hover sx={{ '&:last-child td': { border: 0 } }}>
@@ -193,7 +239,9 @@ export default function AuditLogs() {
                       </Typography>
                     </TableCell>
                     <TableCell>
-                      <Typography fontSize="0.72rem" color="text.disabled">{log.ip || '—'}</Typography>
+                      {showIp
+                        ? <Typography fontSize="0.72rem" color="text.disabled">{log.ip || '—'}</Typography>
+                        : null}
                     </TableCell>
                   </TableRow>
                 ))}
@@ -201,16 +249,19 @@ export default function AuditLogs() {
             </Table>
           </Paper>
 
-          <Box display="flex" justifyContent="space-between" alignItems="center">
-            <Button size="small" disabled={skip === 0} onClick={() => load(Math.max(0, skip - LIMIT))}>
-              ← Previous
-            </Button>
+          <Box display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap" gap={1}>
             <Typography variant="caption" color="text.secondary">
-              {skip + 1}–{Math.min(skip + LIMIT, total)} de {total}
+              {total === 0 ? 'No entries' : `${skip + 1}–${Math.min(skip + LIMIT, total)} of ${total}`}
             </Typography>
-            <Button size="small" disabled={skip + LIMIT >= total} onClick={() => load(skip + LIMIT)}>
-              Next →
-            </Button>
+            {pageCount > 1 && (
+              <Pagination
+                count={pageCount}
+                page={currentPage}
+                onChange={handlePageChange}
+                size="small"
+                color="primary"
+              />
+            )}
           </Box>
         </>
       )}

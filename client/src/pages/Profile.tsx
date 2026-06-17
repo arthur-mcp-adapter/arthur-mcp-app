@@ -28,13 +28,16 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material'
-import AddIcon from '@mui/icons-material/Add'
-import DeleteIcon from '@mui/icons-material/Delete'
-import EditIcon from '@mui/icons-material/Edit'
-import PersonIcon from '@mui/icons-material/Person'
-import GroupIcon from '@mui/icons-material/Group'
-import Swal from 'sweetalert2'
+import {
+  IconPlus,
+  IconTrash,
+  IconEdit,
+  IconUser,
+  IconUsers,
+} from '@tabler/icons-react'
 import api from '../api'
+import ConfirmDialog from '../components/ConfirmDialog'
+import AppSnackbar from '../components/AppSnackbar'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -92,9 +95,9 @@ function UserDialog({ open, onClose, onSaved, editUser }: UserDialogProps) {
 
     setSaving(true); setError('')
     try {
-      let res: any
+      let res: { data: UserProfile }
       if (isEdit) {
-        const dto: any = { username, email, role }
+        const dto: Record<string, unknown> = { username, email, role }
         if (password.trim()) dto.password = password
         res = await api.patch(`/users/${editUser!._id}`, dto)
       } else {
@@ -102,15 +105,18 @@ function UserDialog({ open, onClose, onSaved, editUser }: UserDialogProps) {
       }
       onSaved(res.data)
       onClose()
-    } catch (err: any) {
-      setError(err?.response?.data?.message ?? 'Error saving.')
+    } catch (err: unknown) {
+      const msg = err && typeof err === 'object' && 'response' in err
+        ? (err as { response?: { data?: { message?: string } } }).response?.data?.message ?? 'Error saving.'
+        : 'Error saving.'
+      setError(msg)
     } finally {
       setSaving(false)
     }
   }
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth scroll="paper">
       <DialogTitle>
         <Typography variant="h6" fontWeight={700}>
           {isEdit ? 'Edit user' : 'New user'}
@@ -154,29 +160,38 @@ function MyProfileTab({ me, onUpdated }: { me: UserProfile; onUpdated: (u: UserP
   const [newPassword, setNewPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [saving, setSaving] = useState(false)
-  const [success, setSuccess] = useState('')
-  const [error, setError] = useState('')
+
+  // Snackbar
+  const [snackOpen, setSnackOpen] = useState(false)
+  const [snackMsg, setSnackMsg] = useState('')
+  const [snackSeverity, setSnackSeverity] = useState<'success' | 'error'>('success')
+
+  const showSnack = (msg: string, sev: 'success' | 'error') => {
+    setSnackMsg(msg); setSnackSeverity(sev); setSnackOpen(true)
+  }
 
   const handleSave = async () => {
-    setError(''); setSuccess('')
-    if (newPassword && newPassword !== confirmPassword) { setError('Passwords do not match.'); return }
-    if (newPassword && !currentPassword) { setError('Enter your current password to set a new one.'); return }
+    if (newPassword && newPassword !== confirmPassword) { showSnack('Passwords do not match.', 'error'); return }
+    if (newPassword && !currentPassword) { showSnack('Enter your current password to set a new one.', 'error'); return }
 
     setSaving(true)
     try {
-      const dto: any = {}
+      const dto: Record<string, unknown> = {}
       if (username !== me.username) dto.username = username
       if (email !== me.email) dto.email = email
       if (newPassword) { dto.currentPassword = currentPassword; dto.newPassword = newPassword }
 
-      if (Object.keys(dto).length === 0) { setError('No changes detected.'); return }
+      if (Object.keys(dto).length === 0) { showSnack('No changes detected.', 'error'); return }
 
-      const res = await api.patch('/users/me', dto)
+      const res = await api.patch<UserProfile>('/users/me', dto)
       onUpdated(res.data)
       setCurrentPassword(''); setNewPassword(''); setConfirmPassword('')
-      setSuccess('Profile updated successfully.')
-    } catch (err: any) {
-      setError(err?.response?.data?.message ?? 'Error updating.')
+      showSnack('Profile updated successfully.', 'success')
+    } catch (err: unknown) {
+      const msg = err && typeof err === 'object' && 'response' in err
+        ? (err as { response?: { data?: { message?: string } } }).response?.data?.message ?? 'Error updating.'
+        : 'Error updating.'
+      showSnack(msg, 'error')
     } finally {
       setSaving(false)
     }
@@ -196,13 +211,10 @@ function MyProfileTab({ me, onUpdated }: { me: UserProfile; onUpdated: (u: UserP
         </Box>
       </Paper>
 
-      {success && <Alert severity="success" sx={{ mb: 2 }} onClose={() => setSuccess('')}>{success}</Alert>}
-      {error && <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError('')}>{error}</Alert>}
-
       <Grid container spacing={3}>
-        {/* Dados básicos */}
+        {/* Basic info */}
         <Grid item xs={12}>
-          <Typography variant="subtitle1" fontWeight={700} mb={2}>Dados da conta</Typography>
+          <Typography variant="subtitle1" fontWeight={700} mb={2}>Account information</Typography>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField size="small" fullWidth label="Username" value={username}
@@ -243,6 +255,8 @@ function MyProfileTab({ me, onUpdated }: { me: UserProfile; onUpdated: (u: UserP
           </Button>
         </Grid>
       </Grid>
+
+      <AppSnackbar open={snackOpen} message={snackMsg} severity={snackSeverity} onClose={() => setSnackOpen(false)} />
     </Box>
   )
 }
@@ -255,6 +269,16 @@ function UsersTab({ currentUserId }: { currentUserId: string }) {
   const [error, setError] = useState('')
   const [dialogOpen, setDialogOpen] = useState(false)
   const [editingUser, setEditingUser] = useState<UserProfile | undefined>()
+
+  // Confirm dialog state
+  const [confirmOpen, setConfirmOpen] = useState(false)
+  const [confirmTarget, setConfirmTarget] = useState<UserProfile | null>(null)
+  const [confirmLoading, setConfirmLoading] = useState(false)
+
+  // Snackbar
+  const [snackOpen, setSnackOpen] = useState(false)
+  const [snackMsg, setSnackMsg] = useState('')
+  const [snackSeverity, setSnackSeverity] = useState<'success' | 'error'>('success')
 
   const load = () => {
     setLoading(true)
@@ -274,22 +298,28 @@ function UsersTab({ currentUserId }: { currentUserId: string }) {
     })
   }
 
-  const handleDelete = async (user: UserProfile) => {
-    const result = await Swal.fire({
-      title: `Remover "${user.username}"?`,
-      text: 'This action cannot be undone.',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Remove',
-      cancelButtonText: 'Cancel',
-      confirmButtonColor: '#d33',
-    })
-    if (!result.isConfirmed) return
+  const handleDeleteRequest = (user: UserProfile) => {
+    setConfirmTarget(user)
+    setConfirmOpen(true)
+  }
+
+  const handleDeleteConfirm = async () => {
+    if (!confirmTarget) return
+    setConfirmLoading(true)
     try {
-      await api.delete(`/users/${user._id}`)
-      setUsers((prev) => prev.filter((u) => u._id !== user._id))
-    } catch (err: any) {
-      Swal.fire('Error', err?.response?.data?.message ?? 'Could not remove user.', 'error')
+      await api.delete(`/users/${confirmTarget._id}`)
+      setUsers((prev) => prev.filter((u) => u._id !== confirmTarget._id))
+    } catch (err: unknown) {
+      const msg = err && typeof err === 'object' && 'response' in err
+        ? (err as { response?: { data?: { message?: string } } }).response?.data?.message ?? 'Could not remove user.'
+        : 'Could not remove user.'
+      setSnackMsg(msg)
+      setSnackSeverity('error')
+      setSnackOpen(true)
+    } finally {
+      setConfirmLoading(false)
+      setConfirmOpen(false)
+      setConfirmTarget(null)
     }
   }
 
@@ -303,7 +333,7 @@ function UsersTab({ currentUserId }: { currentUserId: string }) {
     <Box>
       <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
         <Typography variant="subtitle1" fontWeight={700}>{users.length} user{users.length !== 1 ? 's' : ''}</Typography>
-        <Button variant="contained" startIcon={<AddIcon />} size="small" onClick={handleOpenCreate}>
+        <Button variant="contained" startIcon={<IconPlus size={18} />} size="small" onClick={handleOpenCreate}>
           New user
         </Button>
       </Box>
@@ -311,11 +341,11 @@ function UsersTab({ currentUserId }: { currentUserId: string }) {
       <Paper variant="outlined" sx={{ overflow: 'hidden' }}>
         <Table size="small">
           <TableHead>
-            <TableRow sx={{ bgcolor: '#f8f9fa' }}>
-              <TableCell sx={{ fontWeight: 700, fontSize: '0.72rem', color: 'text.secondary', textTransform: 'uppercase', letterSpacing: '0.04em' }}>User</TableCell>
-              <TableCell sx={{ fontWeight: 700, fontSize: '0.72rem', color: 'text.secondary', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Email</TableCell>
-              <TableCell sx={{ fontWeight: 700, fontSize: '0.72rem', color: 'text.secondary', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Role</TableCell>
-              <TableCell sx={{ fontWeight: 700, fontSize: '0.72rem', color: 'text.secondary', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Created</TableCell>
+            <TableRow>
+              <TableCell>User</TableCell>
+              <TableCell>Email</TableCell>
+              <TableCell>Role</TableCell>
+              <TableCell>Created</TableCell>
               <TableCell align="right" />
             </TableRow>
           </TableHead>
@@ -343,12 +373,12 @@ function UsersTab({ currentUserId }: { currentUserId: string }) {
                 </TableCell>
                 <TableCell align="right">
                   <Tooltip title="Edit">
-                    <IconButton size="small" onClick={() => handleOpenEdit(u)}><EditIcon fontSize="small" /></IconButton>
+                    <IconButton size="small" onClick={() => handleOpenEdit(u)}><IconEdit size={16} /></IconButton>
                   </Tooltip>
                   <Tooltip title={u._id === currentUserId ? 'Cannot remove your own account' : 'Remove'}>
                     <span>
-                      <IconButton size="small" color="error" onClick={() => handleDelete(u)} disabled={u._id === currentUserId}>
-                        <DeleteIcon fontSize="small" />
+                      <IconButton size="small" color="error" onClick={() => handleDeleteRequest(u)} disabled={u._id === currentUserId}>
+                        <IconTrash size={16} />
                       </IconButton>
                     </span>
                   </Tooltip>
@@ -360,6 +390,19 @@ function UsersTab({ currentUserId }: { currentUserId: string }) {
       </Paper>
 
       <UserDialog open={dialogOpen} onClose={() => setDialogOpen(false)} onSaved={handleSaved} editUser={editingUser} />
+
+      <ConfirmDialog
+        open={confirmOpen}
+        title={`Remove "${confirmTarget?.username}"?`}
+        message="This action cannot be undone."
+        confirmLabel="Remove"
+        confirmColor="error"
+        loading={confirmLoading}
+        onConfirm={handleDeleteConfirm}
+        onClose={() => { setConfirmOpen(false); setConfirmTarget(null) }}
+      />
+
+      <AppSnackbar open={snackOpen} message={snackMsg} severity={snackSeverity} onClose={() => setSnackOpen(false)} />
     </Box>
   )
 }
@@ -381,13 +424,13 @@ export default function Profile() {
   if (!me) return <Alert severity="error">Unable to load profile.</Alert>
 
   return (
-    <Box p={3}>
-      <Typography variant="h5" fontWeight={700} mb={3}>Profile</Typography>
+    <Box py={3} px={0}>
+      <Typography variant="h5" fontWeight={700} mb={2.5} letterSpacing="-0.2px">Profile</Typography>
 
       <Tabs value={tab} onChange={(_, v) => setTab(v)} sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
-        <Tab icon={<PersonIcon fontSize="small" />} iconPosition="start" label="My Profile" />
+        <Tab icon={<IconUser size={16} />} iconPosition="start" label="My Profile" />
         {me.role === 'admin' && (
-          <Tab icon={<GroupIcon fontSize="small" />} iconPosition="start" label="Users" />
+          <Tab icon={<IconUsers size={16} />} iconPosition="start" label="Users" />
         )}
       </Tabs>
 
@@ -396,3 +439,6 @@ export default function Profile() {
     </Box>
   )
 }
+
+// Re-export helpers for use in Layout
+export { avatarLetter, avatarColor }

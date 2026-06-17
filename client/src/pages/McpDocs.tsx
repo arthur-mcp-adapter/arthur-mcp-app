@@ -153,7 +153,8 @@ function FieldInput({ name, schema, value, required, onChange }: {
   return (
     <TextField size="small" fullWidth label={label} value={value} onChange={(e) => onChange(e.target.value)}
       helperText={schema.description} type={schema.type === 'number' || schema.type === 'integer' ? 'number' : 'text'}
-      multiline={isJson} minRows={isJson ? 3 : 1}
+      multiline={isJson} minRows={isJson ? 6 : 1} maxRows={isJson ? 16 : 4}
+      InputProps={isJson ? { sx: { fontFamily: 'monospace', fontSize: '0.82rem' } } : undefined}
       placeholder={schema.type === 'object' ? '{"key": "value"}' : schema.type === 'array' ? '["item1"]' : undefined} />
   )
 }

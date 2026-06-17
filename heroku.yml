@@ -1,0 +1,18 @@
+# heroku.yml — Heroku Container Registry deployment
+# https://devcenter.heroku.com/articles/build-docker-images-heroku-yml
+#
+# Setup:
+#   heroku create mcp-convert
+#   heroku addons:create mongoatlas:m0 --app mcp-convert
+#   heroku stack:set container --app mcp-convert
+#   heroku config:set NODE_ENV=production JWT_SECRET=... MCP_API_KEY=... --app mcp-convert
+#   git push heroku main
+#
+# MongoDB: Heroku Atlas add-on injects MONGODB_URI automatically.
+
+build:
+  docker:
+    web: Dockerfile
+
+run:
+  web: node dist/main

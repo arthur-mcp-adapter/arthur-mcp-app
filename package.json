@@ -15,7 +15,7 @@
     "build:backend": "rm -f tsconfig.tsbuildinfo && nest build",
     "build:frontend": "npm run build --prefix client",
     "start": "node dist/main",
-    "start:dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "start:dev": "concurrently --kill-others-on-fail \"npm run dev:backend\" \"wait-on http://localhost:3000/health && npm run dev:frontend\"",
     "start:frontend": "npm run start --prefix client",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
@@ -23,7 +23,7 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:e2e": "jest --config ./test/jest-e2e.json --forceExit",
-    "kill:dev": "kill -9 $(lsof -t -i:3000"
+    "kill:dev": "kill -9 $(lsof -t -i:3000) 2>/dev/null; kill -9 $(lsof -t -i:5173) 2>/dev/null; true"
   },
   "dependencies": {
     "@apidevtools/swagger-parser": "^12.1.0",
@@ -72,7 +72,8 @@
     "ts-jest": "^29.4.11",
     "ts-node": "^10.9.0",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.0.0"
+    "typescript": "^5.0.0",
+    "wait-on": "^9.0.10"
   },
   "jest": {
     "moduleFileExtensions": [

@@ -198,7 +198,7 @@ function UseTemplateDialog({
   }
 
   return (
-    <Dialog open onClose={!creating ? onClose : undefined} maxWidth="xs" fullWidth>
+    <Dialog open onClose={!creating ? onClose : undefined} maxWidth="sm" fullWidth scroll="paper">
       <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 1.5, pb: 1 }}>
         <Box sx={{ fontSize: '1.6rem', lineHeight: 1 }}>{template.emoji}</Box>
         <Box>
@@ -314,8 +314,8 @@ export default function Templates() {
   })
 
   return (
-    <Box p={3}>
-      <Box mb={2.5}>
+    <Box py={3} px={0}>
+      <Box mb={2}>
         <Button startIcon={<ArrowBackIcon />} size="small" onClick={() => navigate('/')}>
           Back to projects
         </Button>
@@ -324,7 +324,7 @@ export default function Templates() {
       {/* Header */}
       <Box display="flex" alignItems="flex-start" justifyContent="space-between" mb={3} flexWrap="wrap" gap={2}>
         <Box>
-          <Typography variant="h5" fontWeight={700} gutterBottom>
+          <Typography variant="h5" fontWeight={700} gutterBottom letterSpacing="-0.2px">
             API Templates
           </Typography>
           <Typography color="text.secondary" maxWidth={560}>

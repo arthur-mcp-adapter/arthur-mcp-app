@@ -82,8 +82,17 @@ export default function Login() {
           }}
         >
           <Card
-            elevation={9}
-            sx={{ p: 4, width: '100%', maxWidth: '500px', borderRadius: '12px' }}
+            variant="outlined"
+            sx={{
+              p: 4,
+              width: '100%',
+              maxWidth: '420px',
+              borderRadius: '14px',
+              bgcolor: 'background.paper',
+              boxShadow: 'rgb(145 158 171 / 16%) 0px 4px 32px',
+              border: '1px solid',
+              borderColor: 'divider',
+            }}
           >
             {/* Logo */}
             <Box display="flex" alignItems="center" justifyContent="center" mb={2}>

@@ -1,0 +1,23 @@
+# coolify.yml — Coolify self-hosted PaaS
+# https://coolify.io
+#
+# Coolify é open source e pode ser instalado em qualquer VPS.
+# Suporta Docker Compose nativamente — aponte para este repo no dashboard.
+#
+# Setup:
+#   1. Instale Coolify no seu VPS: curl -fsSL https://cdn.coollabs.io/coolify/install.sh | bash
+#   2. Dashboard → New Resource → Docker Compose
+#   3. Aponte para este repositório
+#   4. Configure as variáveis de ambiente abaixo
+#   5. Deploy
+
+# Este arquivo é apenas documentação — o Coolify lê o docker-compose.yml do repo.
+# Configure as seguintes variáveis no painel Coolify:
+#
+#   MONGO_USER        = mcp
+#   MONGO_PASSWORD    = <senha forte>
+#   MONGO_DB          = mcp_db
+#   JWT_SECRET        = <openssl rand -hex 64>
+#   MCP_API_KEY       = <openssl rand -hex 32>
+#   DASHBOARD_USER    = admin
+#   DASHBOARD_PASSWORD = <senha forte>

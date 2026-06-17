@@ -19,6 +19,7 @@ import {
   MenuItem,
   styled,
   Toolbar,
+  Tooltip,
   Typography,
   useMediaQuery,
   useTheme,
@@ -36,8 +37,9 @@ import {
   IconClipboardList,
 } from '@tabler/icons-react'
 import api from '../api'
+import { avatarLetter, avatarColor } from '../pages/Profile'
 
-const SIDEBAR_WIDTH = 270
+const SIDEBAR_WIDTH = 248
 
 const NAV_SECTIONS = [
   {
@@ -61,19 +63,25 @@ const NAV_SECTIONS = [
   },
 ]
 
+// Suppress unused-import warnings for icons only used in NAV_SECTIONS
+void IconUpload
+void IconBook
+
 const AppBarStyled = styled(AppBar)(({ theme }) => ({
   boxShadow: 'none',
-  background: theme.palette.background.paper,
+  background: `${theme.palette.background.paper}f2`,
   borderBottom: `1px solid ${theme.palette.divider}`,
   justifyContent: 'center',
-  backdropFilter: 'blur(4px)',
-  minHeight: '70px',
+  backdropFilter: 'blur(8px)',
+  minHeight: '56px',
 }))
 
 const ToolbarStyled = styled(Toolbar)(({ theme }) => ({
   width: '100%',
   color: theme.palette.text.secondary,
-  minHeight: '70px !important',
+  minHeight: '56px !important',
+  paddingLeft: '16px',
+  paddingRight: '12px',
 }))
 
 type Status = 'checking' | 'online' | 'offline'
@@ -82,6 +90,7 @@ function SidebarContent() {
   const location = useLocation()
   const navigate = useNavigate()
   const theme = useTheme()
+  const [logoError, setLogoError] = useState(false)
 
   const scrollbarStyles = {
     '&::-webkit-scrollbar': { width: '7px' },
@@ -106,68 +115,70 @@ function SidebarContent() {
         sx={{
           display: 'flex',
           alignItems: 'center',
-          px: 3,
-          height: '70px',
+          px: 2.5,
+          height: '56px',
           borderBottom: `1px solid ${theme.palette.divider}`,
           flexShrink: 0,
         }}
       >
-        <Box
-          component="img"
-          src="/images/logos/arthur-mcp-adapter-logo.svg"
-          alt="Arthur MCP Adapter"
-          sx={{ height: 32, maxWidth: '100%' }}
-          onError={(e) => {
-            const img = e.currentTarget as HTMLImageElement
-            img.style.display = 'none'
-            img.nextElementSibling?.removeAttribute('style')
-          }}
-        />
-        <Typography
-          variant="h6"
-          fontWeight={700}
-          color="primary.main"
-          sx={{ display: 'none', letterSpacing: '-0.3px' }}
-        >
-          Arthur MCP Adapter
-        </Typography>
+        {logoError ? (
+          <Typography
+            variant="h6"
+            fontWeight={700}
+            color="primary.main"
+            sx={{ letterSpacing: '-0.4px', fontSize: '0.9375rem' }}
+          >
+            Arthur MCP
+          </Typography>
+        ) : (
+          <Box
+            component="img"
+            src="/images/logos/arthur-mcp-adapter-logo.svg"
+            alt="Arthur MCP Adapter"
+            sx={{ height: 28, maxWidth: '100%' }}
+            onError={() => setLogoError(true)}
+          />
+        )}
       </Box>
 
       {/* Menu */}
-      <Box sx={{ flexGrow: 1, pt: 1 }}>
+      <Box sx={{ flexGrow: 1, py: 1 }}>
         {NAV_SECTIONS.map((section) => (
           <List
             key={section.subheader}
             subheader={
               <ListSubheader
                 sx={{
-                  fontSize: '0.7rem',
+                  fontSize: '0.6875rem',
                   fontWeight: 700,
-                  color: 'text.secondary',
-                  letterSpacing: '0.06em',
-                  lineHeight: '2.5',
+                  color: 'text.disabled',
+                  letterSpacing: '0.08em',
+                  lineHeight: 1,
                   bgcolor: 'transparent',
-                  px: 3,
-                  mt: 1,
+                  px: 2.5,
+                  pt: 2,
+                  pb: 0.75,
+                  textTransform: 'uppercase',
                 }}
               >
                 {section.subheader}
               </ListSubheader>
             }
             dense
+            disablePadding
           >
             {section.items.map((item) => {
               const Icon = item.icon
               const selected = location.pathname === item.path
               return (
-                <ListItem key={item.path} disablePadding sx={{ px: 2, py: '2px' }}>
+                <ListItem key={item.path} disablePadding sx={{ px: 1.5, py: '1px' }}>
                   <ListItemButton
                     selected={selected}
                     onClick={() => navigate(item.path)}
                     sx={{
                       borderRadius: '8px',
-                      minHeight: 44,
-                      px: 2,
+                      minHeight: 38,
+                      px: 1.5,
                       '&.Mui-selected': {
                         bgcolor: 'primary.light',
                         color: 'primary.main',
@@ -177,14 +188,15 @@ function SidebarContent() {
                       '&:hover': { bgcolor: 'action.hover' },
                     }}
                   >
-                    <ListItemIcon sx={{ minWidth: 36, color: selected ? 'primary.main' : 'text.secondary' }}>
-                      <Icon stroke={1.5} size="1.2rem" />
+                    <ListItemIcon sx={{ minWidth: 32, color: selected ? 'primary.main' : 'text.secondary' }}>
+                      <Icon stroke={selected ? 2 : 1.5} size="1.1rem" />
                     </ListItemIcon>
                     <ListItemText
                       primary={item.title}
                       primaryTypographyProps={{
-                        fontSize: '0.875rem',
+                        fontSize: '0.8375rem',
                         fontWeight: selected ? 600 : 400,
+                        color: selected ? 'primary.main' : 'text.primary',
                       }}
                     />
                   </ListItemButton>
@@ -196,32 +208,22 @@ function SidebarContent() {
       </Box>
 
       {/* Bottom promo box */}
-      <Box sx={{ p: 2, pb: 3 }}>
+      <Box sx={{ p: 1.5, pb: 2 }}>
         <Box
           sx={{
-            p: 2,
+            p: 1.5,
             bgcolor: 'primary.light',
-            borderRadius: '8px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 2,
+            borderRadius: '10px',
+            border: '1px solid',
+            borderColor: 'rgba(93,135,255,0.15)',
           }}
         >
-          <Box>
-            <Typography variant="h6" fontSize="0.875rem" mb={0.5}>
-              Arthur MCP Adapter
-            </Typography>
-            <Typography variant="body2" color="text.secondary" fontSize="0.75rem">
-              Connect your AI to your APIs
-            </Typography>
-          </Box>
-          <Box
-            component="img"
-            src="/images/backgrounds/rocket.png"
-            alt=""
-            sx={{ height: 48, width: 48, objectFit: 'contain', flexShrink: 0 }}
-            onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none' }}
-          />
+          <Typography fontWeight={700} fontSize="0.8rem" color="primary.dark" mb={0.25}>
+            Arthur MCP Adapter
+          </Typography>
+          <Typography fontSize="0.72rem" color="text.secondary" lineHeight={1.4}>
+            Connect your AI to your APIs
+          </Typography>
         </Box>
       </Box>
     </Box>
@@ -230,16 +232,23 @@ function SidebarContent() {
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const theme = useTheme()
-  const lgUp = useMediaQuery(theme.breakpoints.up('lg'))
+  const mdUp = useMediaQuery(theme.breakpoints.up('md'))
   const [mobileOpen, setMobileOpen] = useState(false)
   const [status, setStatus] = useState<Status>('checking')
   const [profileAnchor, setProfileAnchor] = useState<null | HTMLElement>(null)
+  const [username, setUsername] = useState('')
   const navigate = useNavigate()
 
   useEffect(() => {
     api.get('/health')
       .then(() => setStatus('online'))
       .catch(() => setStatus('offline'))
+  }, [])
+
+  useEffect(() => {
+    api.get<{ username: string }>('/users/me')
+      .then((r) => setUsername(r.data.username))
+      .catch(() => { /* silently ignore */ })
   }, [])
 
   const statusColor: Record<Status, 'default' | 'success' | 'error'> = {
@@ -256,14 +265,21 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
       {/* Sidebar desktop */}
-      {lgUp && (
+      {mdUp && (
         <Box sx={{ width: SIDEBAR_WIDTH, flexShrink: 0 }}>
           <Drawer
             variant="permanent"
             anchor="left"
             open
             PaperProps={{
-              sx: { width: SIDEBAR_WIDTH, boxSizing: 'border-box', border: 'none', boxShadow: 'none' },
+              sx: {
+                width: SIDEBAR_WIDTH,
+                boxSizing: 'border-box',
+                border: 'none',
+                borderRight: `1px solid ${theme.palette.divider}`,
+                boxShadow: 'none',
+                bgcolor: 'background.paper',
+              },
             }}
           >
             <SidebarContent />
@@ -272,7 +288,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       )}
 
       {/* Sidebar mobile */}
-      {!lgUp && (
+      {!mdUp && (
         <Drawer
           variant="temporary"
           anchor="left"
@@ -282,7 +298,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           PaperProps={{
             sx: {
               width: SIDEBAR_WIDTH,
-              boxShadow: theme.shadows[8],
+              boxShadow: theme.shadows[6],
+              border: 'none',
             },
           }}
         >
@@ -303,7 +320,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         {/* Header */}
         <AppBarStyled position="sticky" color="default">
           <ToolbarStyled>
-            {!lgUp && (
+            {!mdUp && (
               <IconButton
                 color="inherit"
                 aria-label="open menu"
@@ -316,33 +333,27 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
             <Box flexGrow={1} />
 
-            {/* Server status */}
-            <Chip
-              label={status}
-              color={statusColor[status]}
-              size="small"
-              sx={{ mr: 1, fontWeight: 600, fontSize: '0.7rem' }}
-            />
-
-            {/* Bell */}
-            <IconButton size="large" color="inherit">
-              <Badge variant="dot" color="primary">
-                <IconBellRinging size={21} stroke={1.5} />
-              </Badge>
-            </IconButton>
-
             {/* Profile */}
-            <IconButton
-              size="large"
-              color="inherit"
-              onClick={(e) => setProfileAnchor(e.currentTarget)}
-            >
-              <Avatar
-                src="/images/profile/user-1.jpg"
-                alt="user"
-                sx={{ width: 35, height: 35 }}
-              />
-            </IconButton>
+            <Tooltip title="Account menu">
+              <IconButton
+                size="small"
+                color="inherit"
+                onClick={(e) => setProfileAnchor(e.currentTarget)}
+                sx={{ p: 0.5, ml: 0.5 }}
+              >
+                <Avatar
+                  sx={{
+                    width: 30,
+                    height: 30,
+                    fontSize: '0.85rem',
+                    fontWeight: 700,
+                    bgcolor: username ? avatarColor(username) : 'primary.main',
+                  }}
+                >
+                  {username ? avatarLetter(username) : <IconUser size={16} />}
+                </Avatar>
+              </IconButton>
+            </Tooltip>
 
             <Menu
               anchorEl={profileAnchor}
@@ -370,9 +381,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         {/* Page content */}
         <Container
           maxWidth={false}
-          sx={{ maxWidth: '1200px', pt: '20px', pb: '60px', flexGrow: 1 }}
+          sx={{ maxWidth: '1280px', pt: 2, pb: 6, flexGrow: 1, px: { xs: 2, md: 3 } }}
         >
-          <Box sx={{ minHeight: 'calc(100vh - 170px)' }}>
+          <Box sx={{ minHeight: 'calc(100vh - 136px)' }}>
             {children}
           </Box>
         </Container>

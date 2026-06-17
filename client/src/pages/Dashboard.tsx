@@ -8,24 +8,27 @@ import {
   Card,
   CardContent,
   Chip,
-  CircularProgress,
   Divider,
   Grid,
   LinearProgress,
   Paper,
+  Skeleton,
   TextField,
   Tooltip,
   Typography,
 } from '@mui/material'
-import FolderIcon from '@mui/icons-material/Folder'
-import BuildIcon from '@mui/icons-material/Build'
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'
-import LockIcon from '@mui/icons-material/Lock'
-import WarningAmberIcon from '@mui/icons-material/WarningAmber'
-import RefreshIcon from '@mui/icons-material/Refresh'
-import TrendingUpIcon from '@mui/icons-material/TrendingUp'
+import {
+  IconFolder,
+  IconTool,
+  IconCircleCheck,
+  IconLock,
+  IconAlertTriangle,
+  IconRefresh,
+  IconTrendingUp,
+} from '@tabler/icons-react'
 import api from '../api'
 import HelpButton from '../components/HelpButton'
+import { STATUS_COLORS } from '../theme/index'
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 
@@ -108,7 +111,7 @@ function SummaryBanner({ stats, preset }: { stats: DashStats; preset: Preset }) 
     message = "You have no projects yet. Create your first project to start connecting your AI assistant to an API."
   }
 
-  return <Alert severity={severity} icon={severity === 'success' ? <CheckCircleOutlineIcon /> : undefined} sx={{ mb: 3, fontSize: '0.95rem' }}>{message}</Alert>
+  return <Alert severity={severity} icon={severity === 'success' ? <IconCircleCheck size={20} /> : undefined} sx={{ mb: 3, fontSize: '0.95rem' }}>{message}</Alert>
 }
 
 // ─── Stat card ─────────────────────────────────────────────────────────────────
@@ -178,9 +181,9 @@ function CallsChart({ data, preset }: { data: DashStats['callsByBucket']; preset
 // ─── Project health row ────────────────────────────────────────────────────────
 
 function HealthDot({ errorRatePct, isPaused, totalCalls }: { errorRatePct: number; isPaused: boolean; totalCalls: number }) {
-  if (isPaused) return <Box sx={{ width: 10, height: 10, borderRadius: '50%', bgcolor: '#9e9e9e', flexShrink: 0 }} />
+  if (isPaused) return <Box sx={{ width: 10, height: 10, borderRadius: '50%', bgcolor: STATUS_COLORS.inactive, flexShrink: 0 }} />
   if (totalCalls === 0) return <Box sx={{ width: 10, height: 10, borderRadius: '50%', bgcolor: '#e0e0e0', flexShrink: 0 }} />
-  const color = errorRatePct === 0 ? '#22c55e' : errorRatePct < 20 ? '#f59e0b' : '#ef4444'
+  const color = errorRatePct === 0 ? STATUS_COLORS.healthy : errorRatePct < 20 ? STATUS_COLORS.warning : STATUS_COLORS.critical
   return <Box sx={{ width: 10, height: 10, borderRadius: '50%', bgcolor: color, flexShrink: 0 }} />
 }
 
@@ -244,12 +247,12 @@ export default function Dashboard() {
     : '—'
 
   return (
-    <Box p={3}>
+    <Box py={3} px={0}>
       {/* Header */}
       <Box display="flex" alignItems="flex-start" justifyContent="space-between" mb={3} flexWrap="wrap" gap={2}>
         <Box>
           <Box display="flex" alignItems="center" gap={1} mb={0.5}>
-            <Typography variant="h5" fontWeight={700}>Activity Overview</Typography>
+            <Typography variant="h5" fontWeight={700} letterSpacing="-0.2px">Activity Overview</Typography>
             <HelpButton title="Activity Overview">
               <Typography variant="body2" gutterBottom>
                 This page shows you what your AI assistant has been doing — how many tasks it ran, whether they succeeded, and which integrations are healthy right now.
@@ -283,7 +286,7 @@ export default function Dashboard() {
           <Tooltip title="Refresh">
             <span>
               <Button size="small" variant="outlined" onClick={() => load(preset, customFrom, customTo)} disabled={loading}>
-                <RefreshIcon fontSize="small" />
+                <IconRefresh size={18} />
               </Button>
             </span>
           </Tooltip>
@@ -302,9 +305,30 @@ export default function Dashboard() {
       {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
 
       {loading ? (
-        <Box display="flex" justifyContent="center" alignItems="center" height="40vh">
-          <CircularProgress />
-        </Box>
+        <>
+          <Skeleton variant="rectangular" height={52} sx={{ borderRadius: 2, mb: 3 }} />
+          <Grid container spacing={2} mb={3}>
+            {[0, 1, 2, 3].map((i) => (
+              <Grid item xs={12} sm={6} lg={3} key={i}>
+                <Skeleton variant="rectangular" height={96} sx={{ borderRadius: 2 }} />
+              </Grid>
+            ))}
+          </Grid>
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={7}>
+              <Skeleton variant="rectangular" height={160} sx={{ borderRadius: 2 }} />
+            </Grid>
+            <Grid item xs={12} md={5}>
+              <Skeleton variant="rectangular" height={160} sx={{ borderRadius: 2 }} />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Skeleton variant="rectangular" height={120} sx={{ borderRadius: 2 }} />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Skeleton variant="rectangular" height={120} sx={{ borderRadius: 2 }} />
+            </Grid>
+          </Grid>
+        </>
       ) : !stats ? null : (
         <>
           {/* Summary banner */}
@@ -314,7 +338,7 @@ export default function Dashboard() {
           <Grid container spacing={2} mb={3}>
             <Grid item xs={12} sm={6} lg={3}>
               <StatCard
-                icon={<TrendingUpIcon />} color="#5D87FF"
+                icon={<IconTrendingUp size={20} />} color="#5D87FF"
                 headline={taskSentence}
                 subline={successSentence}
                 helpTitle="How many tasks your AI ran"
@@ -327,7 +351,7 @@ export default function Dashboard() {
             </Grid>
             <Grid item xs={12} sm={6} lg={3}>
               <StatCard
-                icon={<FolderIcon />} color="#13DEB9"
+                icon={<IconFolder size={20} />} color="#13DEB9"
                 headline={`${stats.projects.total} integration${stats.projects.total !== 1 ? 's' : ''}`}
                 subline={stats.projects.total === 0 ? 'None set up yet' : `${stats.projects.active} running normally`}
                 helpTitle="Your integrations"
@@ -340,7 +364,7 @@ export default function Dashboard() {
             </Grid>
             <Grid item xs={12} sm={6} lg={3}>
               <StatCard
-                icon={<BuildIcon />} color="#FFAE1F"
+                icon={<IconTool size={20} />} color="#FFAE1F"
                 headline={`${stats.tools.total} action${stats.tools.total !== 1 ? 's' : ''}`}
                 subline="things your AI can do"
                 helpTitle="Actions available to your AI"
@@ -353,7 +377,7 @@ export default function Dashboard() {
             </Grid>
             <Grid item xs={12} sm={6} lg={3}>
               <StatCard
-                icon={<LockIcon />} color="#FA896B"
+                icon={<IconLock size={20} />} color="#FA896B"
                 headline={`${stats.projects.withApiKey} of ${stats.projects.total} secured`}
                 subline="with access control"
                 helpTitle="Security"
@@ -408,7 +432,7 @@ export default function Dashboard() {
                   <>
                     <Divider sx={{ my: 2 }} />
                     <Box display="flex" alignItems="flex-start" gap={1}>
-                      <WarningAmberIcon fontSize="small" color="warning" sx={{ mt: 0.2 }} />
+                      <Box sx={{ color: 'warning.main', mt: '1px', flexShrink: 0 }}><IconAlertTriangle size={18} /></Box>
                       <Typography fontSize="0.82rem" color="text.secondary">
                         {stats.calls.errors === 1
                           ? '1 task had an issue. Open the relevant project and check its logs to see what went wrong.'

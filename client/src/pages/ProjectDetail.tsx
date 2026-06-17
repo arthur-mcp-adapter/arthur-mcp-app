@@ -36,40 +36,42 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material'
-import AddIcon from '@mui/icons-material/Add'
-import ArrowBackIcon from '@mui/icons-material/ArrowBack'
-import AutorenewIcon from '@mui/icons-material/Autorenew'
-import CheckIcon from '@mui/icons-material/Check'
-import CloseIcon from '@mui/icons-material/Close'
-import CloudUploadIcon from '@mui/icons-material/CloudUpload'
-import ContentCopyIcon from '@mui/icons-material/ContentCopy'
-import DeleteIcon from '@mui/icons-material/Delete'
-import EditIcon from '@mui/icons-material/Edit'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile'
-import LockIcon from '@mui/icons-material/Lock'
-import LockOpenIcon from '@mui/icons-material/LockOpen'
-import BuildIcon from '@mui/icons-material/Build'
-import HttpIcon from '@mui/icons-material/Http'
-import MenuBookIcon from '@mui/icons-material/MenuBook'
-import AssessmentIcon from '@mui/icons-material/Assessment'
-import SpeedIcon from '@mui/icons-material/Speed'
-import VpnKeyIcon from '@mui/icons-material/VpnKey'
-import PlayArrowIcon from '@mui/icons-material/PlayArrow'
-import PauseIcon from '@mui/icons-material/Pause'
-import ShareIcon from '@mui/icons-material/Share'
-import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive'
-import AccessTimeIcon from '@mui/icons-material/AccessTime'
-import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline'
-import QrCode2Icon from '@mui/icons-material/QrCode2'
-import TuneIcon from '@mui/icons-material/Tune'
-import SearchIcon from '@mui/icons-material/Search'
-import VisibilityIcon from '@mui/icons-material/Visibility'
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
-import Swal from 'sweetalert2'
+import {
+  IconPlus,
+  IconArrowLeft,
+  IconRefresh,
+  IconCheck,
+  IconX,
+  IconCloudUpload,
+  IconCopy,
+  IconTrash,
+  IconEdit,
+  IconChevronDown,
+  IconFile,
+  IconLock,
+  IconLockOpen,
+  IconTool,
+  IconWorld,
+  IconBook,
+  IconChartBar,
+  IconGauge,
+  IconKey,
+  IconPlayerPlay,
+  IconPlayerPause,
+  IconShare,
+  IconBell,
+  IconClock,
+  IconMessage,
+  IconQrcode,
+  IconAdjustments,
+  IconSearch,
+  IconEye,
+  IconEyeOff,
+} from '@tabler/icons-react'
 import { QRCodeSVG } from 'qrcode.react'
 import api from '../api'
 import HelpButton from '../components/HelpButton'
+import ConfirmDialog from '../components/ConfirmDialog'
 import { McpDocsContent } from './McpDocs'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -245,13 +247,35 @@ function InlineEdit({
 
   if (!editing) {
     return (
-      <Box display="inline-flex" alignItems="flex-start" gap={0.5} sx={{ cursor: 'text', maxWidth }} onClick={() => setEditing(true)}>
+      <Box
+        display="inline-flex"
+        alignItems="flex-start"
+        gap={0.5}
+        onClick={() => setEditing(true)}
+        sx={{
+          cursor: 'text',
+          maxWidth,
+          borderBottom: '1px dashed transparent',
+          transition: 'border-color 0.15s',
+          '&:hover': {
+            borderColor: 'divider',
+            cursor: 'text',
+            '& .edit-pencil': { opacity: 1 },
+          },
+        }}
+      >
         {value ? (
           <Typography sx={{ fontSize, fontWeight, color: color ?? 'text.primary', fontFamily, lineHeight: 1.5 }}>{value}</Typography>
         ) : (
           <Typography sx={{ fontSize: fontSize ?? '0.875rem', color: 'text.disabled', fontStyle: 'italic' }}>{emptyLabel}</Typography>
         )}
-        <EditIcon sx={{ fontSize: 14, color: 'text.disabled', mt: '3px', flexShrink: 0, opacity: 0.6 }} />
+        <Box
+          className="edit-pencil"
+          component="span"
+          sx={{ display: 'inline-flex', alignItems: 'center', opacity: 0.4, transition: 'opacity 0.15s', mt: '3px', flexShrink: 0, p: 0.25 }}
+        >
+          <IconEdit size={16} />
+        </Box>
       </Box>
     )
   }
@@ -263,7 +287,8 @@ function InlineEdit({
         size="small"
         fullWidth
         multiline={multiline}
-        minRows={multiline ? 2 : undefined}
+        minRows={multiline ? 3 : undefined}
+        maxRows={multiline ? 10 : undefined}
         value={draft}
         onChange={(e) => setDraft(e.target.value)}
         onKeyDown={handleKey}
@@ -274,12 +299,12 @@ function InlineEdit({
         <Tooltip title={multiline ? 'Save (Ctrl+Enter)' : 'Save (Enter)'}>
           <span>
             <IconButton size="small" color="primary" onClick={commit} disabled={saving}>
-              {saving ? <CircularProgress size={13} /> : <CheckIcon fontSize="small" />}
+              {saving ? <CircularProgress size={13} /> : <IconCheck size={18} />}
             </IconButton>
           </span>
         </Tooltip>
         <Tooltip title="Cancel (Esc)">
-          <IconButton size="small" onClick={cancel} disabled={saving}><CloseIcon fontSize="small" /></IconButton>
+          <IconButton size="small" onClick={cancel} disabled={saving}><IconX size={18} /></IconButton>
         </Tooltip>
       </Box>
     </Box>
@@ -314,7 +339,7 @@ function BaseUrlPanel({ projectId, initialValue, onChange }: {
   return (
     <Paper variant="outlined" sx={{ p: 2, mb: 2, display: 'flex', alignItems: 'flex-start', gap: 2 }}>
       <Box sx={{ color: 'primary.main', display: 'flex', alignItems: 'center', pt: 0.5 }}>
-        <HttpIcon />
+        <IconWorld size={20} />
       </Box>
 
       <Box flex={1} minWidth={0}>
@@ -354,11 +379,11 @@ function BaseUrlPanel({ projectId, initialValue, onChange }: {
                 <InputAdornment position="end">
                   <Tooltip title="Save"><span>
                     <IconButton size="small" color="primary" onClick={handleSave} disabled={saving}>
-                      {saving ? <CircularProgress size={14} /> : <CheckIcon fontSize="small" />}
+                      {saving ? <CircularProgress size={14} /> : <IconCheck size={18} />}
                     </IconButton>
                   </span></Tooltip>
                   <Tooltip title="Cancel">
-                    <IconButton size="small" onClick={handleCancel} disabled={saving}><CloseIcon fontSize="small" /></IconButton>
+                    <IconButton size="small" onClick={handleCancel} disabled={saving}><IconX size={18} /></IconButton>
                   </Tooltip>
                 </InputAdornment>
               ),
@@ -373,7 +398,7 @@ function BaseUrlPanel({ projectId, initialValue, onChange }: {
               {initialValue || <span style={{ fontStyle: 'italic', opacity: 0.5 }}>No base URL set</span>}
             </Typography>
             <Tooltip title="Edit Base URL">
-              <IconButton size="small" onClick={() => setEditing(true)}><EditIcon sx={{ fontSize: 15 }} /></IconButton>
+              <IconButton size="small" onClick={() => setEditing(true)}><IconEdit size={15} /></IconButton>
             </Tooltip>
           </Box>
         )}
@@ -407,10 +432,10 @@ function McpEndpointBar({ projectId, hasKeys }: { projectId: string; hasKeys: bo
   return (
     <Paper variant="outlined" sx={{ p: 2.5, mb: 2 }}>
       <Box display="flex" alignItems="center" gap={1} mb={1.5}>
-        <HttpIcon color="primary" fontSize="small" />
+        <IconWorld size={18} style={{ color: '#5D87FF' }} />
         <Typography variant="subtitle1" fontWeight={700} flexGrow={1}>Connection URL</Typography>
         <Tooltip title="Share setup instructions with a client">
-          <Button size="small" variant="outlined" startIcon={<ShareIcon fontSize="small" />} onClick={handleShareOpen}>
+          <Button size="small" variant="outlined" startIcon={<IconShare size={18} />} onClick={handleShareOpen}>
             Share with client
           </Button>
         </Tooltip>
@@ -438,7 +463,7 @@ function McpEndpointBar({ projectId, hasKeys }: { projectId: string; hasKeys: bo
         <Tooltip title={copied ? 'Copied!' : 'Copy URL'}>
           <IconButton size="small" color={copied ? 'primary' : 'default'}
             onClick={() => { navigator.clipboard.writeText(url); setCopied(true); setTimeout(() => setCopied(false), 2000) }}>
-            <ContentCopyIcon fontSize="small" />
+            <IconCopy size={18} />
           </IconButton>
         </Tooltip>
       </Box>
@@ -450,9 +475,9 @@ function McpEndpointBar({ projectId, hasKeys }: { projectId: string; hasKeys: bo
       </Typography>
 
       {/* Share dialog */}
-      <Dialog open={shareOpen} onClose={() => setShareOpen(false)} maxWidth="sm" fullWidth>
+      <Dialog open={shareOpen} onClose={() => setShareOpen(false)} maxWidth="sm" fullWidth scroll="paper">
         <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <ShareIcon fontSize="small" color="primary" />
+          <IconShare size={18} style={{ color: '#5D87FF' }} />
           Share with client
         </DialogTitle>
         <DialogContent dividers>
@@ -470,7 +495,7 @@ function McpEndpointBar({ projectId, hasKeys }: { projectId: string; hasKeys: bo
                 <Tooltip title={shareLinkCopied ? 'Copied!' : 'Copy link'}>
                   <IconButton size="small" color={shareLinkCopied ? 'primary' : 'default'}
                     onClick={() => { navigator.clipboard.writeText(fullShareLink); setShareLinkCopied(true); setTimeout(() => setShareLinkCopied(false), 2500) }}>
-                    <ContentCopyIcon fontSize="small" />
+                    <IconCopy size={18} />
                   </IconButton>
                 </Tooltip>
               </Box>
@@ -478,7 +503,7 @@ function McpEndpointBar({ projectId, hasKeys }: { projectId: string; hasKeys: bo
                 <QRCodeSVG value={fullShareLink} size={140} />
                 <Typography variant="caption" color="text.disabled">Scan to open on a mobile device</Typography>
               </Box>
-              <Alert severity="info" icon={<QrCode2Icon fontSize="small" />}>
+              <Alert severity="info" icon={<IconQrcode size={18} />}>
                 This link is valid for 30 days. It gives read-only setup information — no access to data or credentials.
               </Alert>
             </>
@@ -489,7 +514,7 @@ function McpEndpointBar({ projectId, hasKeys }: { projectId: string; hasKeys: bo
         <DialogActions sx={{ px: 3, py: 2 }}>
           <Button onClick={() => setShareOpen(false)}>Close</Button>
           {fullShareLink && (
-            <Button variant="contained" startIcon={<ContentCopyIcon fontSize="small" />}
+            <Button variant="contained" startIcon={<IconCopy size={18} />}
               onClick={() => { navigator.clipboard.writeText(fullShareLink); setShareLinkCopied(true); setTimeout(() => setShareLinkCopied(false), 2500) }}>
               {shareLinkCopied ? 'Copied!' : 'Copy link'}
             </Button>
@@ -518,6 +543,9 @@ function ApiKeysPanel({ projectId, initialKeys, onChange }: {
   const [newlyCreatedId, setNewlyCreatedId] = useState<string | null>(null)
   const [copiedId, setCopiedId] = useState<string | null>(null)
   const [visibleIds, setVisibleIds] = useState<Set<string>>(new Set())
+  // Revoke confirm dialog
+  const [revokeTarget, setRevokeTarget] = useState<McpApiKeyEntry | null>(null)
+  const [revoking, setRevoking] = useState(false)
 
   const syncKeys = (updated: McpApiKeyEntry[]) => { setKeys(updated); onChange(updated) }
 
@@ -533,26 +561,26 @@ function ApiKeysPanel({ projectId, initialKeys, onChange }: {
       setVisibleIds((s) => new Set([...s, data.id]))
       setAddOpen(false)
       setNewKeyName('')
-    } catch (err: any) {
-      setAddError(err?.response?.data?.message ?? 'Error creating key.')
+    } catch (err: unknown) {
+      const msg = err && typeof err === 'object' && 'response' in err
+        ? (err as { response?: { data?: { message?: string } } }).response?.data?.message ?? 'Error creating key.'
+        : 'Error creating key.'
+      setAddError(msg)
     } finally { setAdding(false) }
   }
 
-  const handleRevoke = async (entry: McpApiKeyEntry) => {
-    const result = await Swal.fire({
-      title: `Revoke "${entry.name}"?`,
-      text: 'Any client using this key will immediately lose access.',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Revoke',
-      cancelButtonText: 'Cancel',
-      confirmButtonColor: '#d33',
-    })
-    if (!result.isConfirmed) return
-    await api.delete(`/swagger/projects/${projectId}/api-keys/${entry.id}`)
-    const updated = keys.filter((k) => k.id !== entry.id)
-    syncKeys(updated)
-    if (newlyCreatedId === entry.id) setNewlyCreatedId(null)
+  const handleRevokeConfirm = async () => {
+    if (!revokeTarget) return
+    setRevoking(true)
+    try {
+      await api.delete(`/swagger/projects/${projectId}/api-keys/${revokeTarget.id}`)
+      const updated = keys.filter((k) => k.id !== revokeTarget.id)
+      syncKeys(updated)
+      if (newlyCreatedId === revokeTarget.id) setNewlyCreatedId(null)
+    } finally {
+      setRevoking(false)
+      setRevokeTarget(null)
+    }
   }
 
   const handleCopy = (entry: McpApiKeyEntry) => {
@@ -575,8 +603,8 @@ function ApiKeysPanel({ projectId, initialKeys, onChange }: {
     <Paper variant="outlined" sx={{ p: 2.5, mb: 3 }}>
       <Box display="flex" alignItems="center" gap={1} mb={keys.length > 0 ? 2 : 0}>
         {keys.length > 0
-          ? <LockIcon color="success" fontSize="small" />
-          : <LockOpenIcon color="disabled" fontSize="small" />}
+          ? <IconLock size={18} style={{ color: '#13DEB9' }} />
+          : <IconLockOpen size={18} style={{ opacity: 0.38 }} />}
         <Box display="flex" alignItems="center" gap={0.5} flexGrow={1}>
           <Typography variant="subtitle1" fontWeight={700}>Access Keys</Typography>
           <HelpButton title="Access Keys">
@@ -592,7 +620,7 @@ function ApiKeysPanel({ projectId, initialKeys, onChange }: {
             </Typography>
           </HelpButton>
         </Box>
-        <Button size="small" variant="contained" startIcon={<AddIcon fontSize="small" />}
+        <Button size="small" variant="contained" startIcon={<IconPlus size={18} />}
           onClick={() => { setAddOpen(true); setNewKeyName(''); setAddError('') }}>
           Add key
         </Button>
@@ -632,17 +660,17 @@ function ApiKeysPanel({ projectId, initialKeys, onChange }: {
                 </Box>
                 <Tooltip title={isVisible ? 'Hide key' : 'Show key'}>
                   <IconButton size="small" onClick={() => toggleVisible(entry.id)}>
-                    {isVisible ? <VisibilityOffIcon fontSize="small" /> : <VisibilityIcon fontSize="small" />}
+                    {isVisible ? <IconEyeOff size={18} /> : <IconEye size={18} />}
                   </IconButton>
                 </Tooltip>
                 <Tooltip title={copiedId === entry.id ? 'Copied!' : 'Copy key'}>
                   <IconButton size="small" color={copiedId === entry.id ? 'primary' : 'default'} onClick={() => handleCopy(entry)}>
-                    <ContentCopyIcon fontSize="small" />
+                    <IconCopy size={18} />
                   </IconButton>
                 </Tooltip>
                 <Tooltip title="Revoke key">
-                  <IconButton size="small" color="error" onClick={() => handleRevoke(entry)}>
-                    <DeleteIcon fontSize="small" />
+                  <IconButton size="small" color="error" onClick={() => setRevokeTarget(entry)}>
+                    <IconTrash size={18} />
                   </IconButton>
                 </Tooltip>
               </Box>
@@ -655,7 +683,7 @@ function ApiKeysPanel({ projectId, initialKeys, onChange }: {
       )}
 
       {/* Add key dialog */}
-      <Dialog open={addOpen} onClose={() => setAddOpen(false)} maxWidth="xs" fullWidth>
+      <Dialog open={addOpen} onClose={() => setAddOpen(false)} maxWidth="sm" fullWidth scroll="paper">
         <DialogTitle sx={{ pb: 1 }}>Add API key</DialogTitle>
         <DialogContent dividers>
           {addError && <Alert severity="error" sx={{ mb: 2 }}>{addError}</Alert>}
@@ -670,11 +698,23 @@ function ApiKeysPanel({ projectId, initialKeys, onChange }: {
         <DialogActions sx={{ px: 3, py: 2 }}>
           <Button onClick={() => setAddOpen(false)}>Cancel</Button>
           <Button variant="contained" onClick={handleAdd} disabled={adding}
-            startIcon={adding ? <CircularProgress size={14} color="inherit" /> : <LockIcon fontSize="small" />}>
+            startIcon={adding ? <CircularProgress size={14} color="inherit" /> : <IconLock size={18} />}>
             {adding ? 'Creating…' : 'Create key'}
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* Revoke confirm */}
+      <ConfirmDialog
+        open={revokeTarget !== null}
+        title={`Revoke "${revokeTarget?.name}"?`}
+        message="Any client using this key will immediately lose access."
+        confirmLabel="Revoke"
+        confirmColor="error"
+        loading={revoking}
+        onConfirm={handleRevokeConfirm}
+        onClose={() => setRevokeTarget(null)}
+      />
     </Paper>
   )
 }
@@ -729,10 +769,10 @@ function ReimportSpecDialog({ projectId, open, onClose, onSuccess }: {
   }
 
   return (
-    <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
+    <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth scroll="paper">
       <DialogTitle sx={{ pb: 1 }}>
         <Box display="flex" alignItems="center" gap={1}>
-          <AutorenewIcon fontSize="small" color="primary" />
+          <IconRefresh size={18} />
           <Typography variant="h6" fontWeight={700}>Re-import API spec</Typography>
         </Box>
       </DialogTitle>
@@ -762,16 +802,16 @@ function ReimportSpecDialog({ projectId, open, onClose, onSuccess }: {
             onChange={(e) => { const f = e.target.files?.[0]; if (f) acceptFile(f); e.target.value = '' }} />
           {file ? (
             <Box display="flex" flexDirection="column" alignItems="center" gap={0.5}>
-              <InsertDriveFileIcon sx={{ fontSize: 36, color: 'success.main' }} />
+              <IconFile size={36} style={{ color: '#13DEB9' }} />
               <Typography fontWeight={700} color="success.main">{file.name}</Typography>
-              <Button size="small" startIcon={<CloseIcon fontSize="small" />}
+              <Button size="small" startIcon={<IconX size={18} />}
                 onClick={(e) => { e.stopPropagation(); setFile(null) }}>
                 Remove
               </Button>
             </Box>
           ) : (
             <Box display="flex" flexDirection="column" alignItems="center" gap={0.5}>
-              <CloudUploadIcon sx={{ fontSize: 36, color: 'text.secondary' }} />
+              <IconCloudUpload size={36} style={{ opacity: 0.5 }} />
               <Typography variant="body2" fontWeight={500}>Drag spec here or click to browse</Typography>
               <Typography variant="caption" color="text.disabled">.yaml · .yml · .json</Typography>
             </Box>
@@ -785,7 +825,7 @@ function ReimportSpecDialog({ projectId, open, onClose, onSuccess }: {
       <DialogActions sx={{ px: 3, py: 2, gap: 1 }}>
         <Button onClick={handleClose}>Cancel</Button>
         <Button variant="contained" onClick={handleImport} disabled={!file || loading}
-          startIcon={loading ? <CircularProgress size={14} color="inherit" /> : <AutorenewIcon fontSize="small" />}>
+          startIcon={loading ? <CircularProgress size={14} color="inherit" /> : <IconRefresh size={18} />}>
           {loading ? 'Importing…' : 'Import'}
         </Button>
       </DialogActions>
@@ -856,7 +896,7 @@ function SaveIndicator({ status, error }: { status: SaveStatus; error?: string }
   )
   if (status === 'saved') return (
     <Box display="flex" alignItems="center" gap={0.5}>
-      <CheckIcon sx={{ fontSize: 14, color: 'success.main' }} />
+      <IconCheck size={14} />
       <Typography variant="caption" color="success.main">Saved</Typography>
     </Box>
   )
@@ -916,7 +956,7 @@ function RateLimitPanel({ projectId, initialRateLimit, onChange }: RateLimitPane
   return (
     <Paper variant="outlined" sx={{ p: 2, mb: 2, display: 'flex', alignItems: 'flex-start', gap: 2, flexWrap: 'wrap' }}>
       <Box sx={{ color: enabled ? 'warning.main' : 'text.disabled', display: 'flex', alignItems: 'center', pt: 0.5 }}>
-        <SpeedIcon />
+        <IconGauge size={20} />
       </Box>
 
       <Box flex={1} minWidth={0}>
@@ -1061,7 +1101,7 @@ function AuthConfigPanel({ projectId, initialAuth, onChange }: {
         endAdornment: (
           <InputAdornment position="end">
             <IconButton size="small" onClick={() => setShowSecrets(s => !s)} edge="end">
-              {showSecrets ? <VisibilityOffIcon fontSize="small" /> : <VisibilityIcon fontSize="small" />}
+              {showSecrets ? <IconEyeOff size={18} /> : <IconEye size={18} />}
             </IconButton>
           </InputAdornment>
         )
@@ -1085,7 +1125,7 @@ function AuthConfigPanel({ projectId, initialAuth, onChange }: {
     <Paper variant="outlined" sx={{ p: 2.5, mb: 2 }}>
       <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
         <Box display="flex" alignItems="center" gap={1}>
-          <VpnKeyIcon fontSize="small" sx={{ color: authType !== 'none' ? 'primary.main' : 'text.disabled' }} />
+          <IconKey size={18} />
           <Typography variant="subtitle2" fontWeight={700}>API Credentials</Typography>
           {authType !== 'none' && (
             <Chip label={AUTH_TYPE_LABELS[authType]} size="small" color="primary" sx={{ fontSize: '0.7rem', height: 20 }} />
@@ -1238,18 +1278,18 @@ function AuthConfigPanel({ projectId, initialAuth, onChange }: {
                   endAdornment: i === 0 ? (
                     <InputAdornment position="end">
                       <IconButton size="small" onClick={() => setShowSecrets(s => !s)} edge="end">
-                        {showSecrets ? <VisibilityOffIcon fontSize="small" /> : <VisibilityIcon fontSize="small" />}
+                        {showSecrets ? <IconEyeOff size={18} /> : <IconEye size={18} />}
                       </IconButton>
                     </InputAdornment>
                   ) : undefined
                 }}
               />
               <IconButton size="small" color="error" onClick={() => removeCustomHeader(i)} disabled={customHeaders.length === 1}>
-                <DeleteIcon fontSize="small" />
+                <IconTrash size={18} />
               </IconButton>
             </Box>
           ))}
-          <Button size="small" startIcon={<AddIcon />} onClick={addCustomHeader} sx={{ alignSelf: 'flex-start', mt: 0.5 }}>
+          <Button size="small" startIcon={<IconPlus size={18} />} onClick={addCustomHeader} sx={{ alignSelf: 'flex-start', mt: 0.5 }}>
             Add header
           </Button>
         </Box>
@@ -1356,7 +1396,7 @@ function ProjectControlsPanel({ projectId, initialPaused, initialMaintenance, in
     <Paper variant="outlined" sx={{ p: 2.5, mb: 2 }}>
       {/* Pause */}
       <Box display="flex" alignItems="center" gap={1.5} mb={2}>
-        {paused ? <PauseIcon color="warning" /> : <PlayArrowIcon color="success" />}
+        {paused ? <IconPlayerPause size={20} style={{ color: '#FFAE1F' }} /> : <IconPlayerPlay size={20} style={{ color: '#13DEB9' }} />}
         <Box flexGrow={1}>
           <Typography variant="subtitle2" fontWeight={700}>
             {paused ? 'Project is paused — AI cannot use it right now' : 'Project is running normally'}
@@ -1369,7 +1409,7 @@ function ProjectControlsPanel({ projectId, initialPaused, initialMaintenance, in
           <span>
             <Button size="small" variant={paused ? 'contained' : 'outlined'}
               color={paused ? 'success' : 'warning'}
-              startIcon={pauseSaving ? <CircularProgress size={13} color="inherit" /> : paused ? <PlayArrowIcon fontSize="small" /> : <PauseIcon fontSize="small" />}
+              startIcon={pauseSaving ? <CircularProgress size={13} color="inherit" /> : paused ? <IconPlayerPlay size={18} /> : <IconPlayerPause size={18} />}
               onClick={() => handlePause(!paused)} disabled={pauseSaving}>
               {paused ? 'Resume' : 'Pause'}
             </Button>
@@ -1391,7 +1431,7 @@ function ProjectControlsPanel({ projectId, initialPaused, initialMaintenance, in
             sx={{ mr: 0 }} />
         </Box>
         {maintEnabled && (
-          <TextField size="small" fullWidth multiline minRows={2}
+          <TextField size="small" fullWidth multiline minRows={3} maxRows={6}
             label="Message shown to clients when maintenance is active"
             placeholder="We are performing scheduled maintenance. Back online at 14:00 UTC."
             value={maintMsg}
@@ -1408,7 +1448,7 @@ function ProjectControlsPanel({ projectId, initialPaused, initialMaintenance, in
       {/* Availability days */}
       <Box>
         <Box display="flex" alignItems="center" gap={1} mb={1}>
-          <AccessTimeIcon fontSize="small" color={avEnabled ? 'primary' : 'disabled'} />
+          <IconClock size={18} />
           <Typography variant="subtitle2" fontWeight={700} flexGrow={1}>Availability days</Typography>
           <SaveIndicator status={avSave} />
           <FormControlLabel
@@ -1455,13 +1495,13 @@ function ProjectControlsPanel({ projectId, initialPaused, initialMaintenance, in
                     </Select>
                   </FormControl>
                   <IconButton size="small" color="error" onClick={() => removeEntry(entry.id)}>
-                    <CloseIcon fontSize="small" />
+                    <IconX size={18} />
                   </IconButton>
                 </Box>
               ))}
             </Box>
 
-            <Button size="small" startIcon={<AddIcon />} onClick={addEntry}>
+            <Button size="small" startIcon={<IconPlus size={18} />} onClick={addEntry}>
               Add entry
             </Button>
           </Box>
@@ -1500,7 +1540,7 @@ function AlertConfigPanel({ projectId, initialConfig }: {
   return (
     <Paper variant="outlined" sx={{ p: 2.5, mb: 2 }}>
       <Box display="flex" alignItems="center" gap={1} mb={enabled ? 2 : 0}>
-        <NotificationsActiveIcon fontSize="small" color={enabled ? 'warning' : 'disabled'} />
+        <IconBell size={18} />
         <Box flexGrow={1}>
           <Typography variant="subtitle2" fontWeight={700}>Error alerts</Typography>
           <Typography variant="caption" color="text.secondary">
@@ -1548,27 +1588,19 @@ function ToolDialog({ open, onClose, onSaved, onDeleted, projectId, projectBaseU
   const [saving, setSaving] = useState(false)
   const [deleting, setDeleting] = useState(false)
   const [error, setError] = useState('')
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false)
 
   useEffect(() => {
     if (open) { setForm(toolToFormState(editTool)); setError(''); setDeleting(false) }
   }, [open, editTool])
 
-  const handleDelete = async () => {
+  const handleDeleteConfirm = async () => {
     if (!editTool) return
-    const result = await Swal.fire({
-      title: 'Delete tool?',
-      text: `"${editTool.name}" will be permanently removed from this project.`,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Delete',
-      cancelButtonText: 'Cancel',
-      confirmButtonColor: '#d33',
-    })
-    if (!result.isConfirmed) return
     setDeleting(true)
     try {
       await api.delete(`/swagger/projects/${projectId}/tools/${encodeURIComponent(editTool.name)}`)
       onDeleted?.(editTool.name)
+      setDeleteConfirmOpen(false)
       onClose()
     } finally {
       setDeleting(false)
@@ -1636,7 +1668,7 @@ function ToolDialog({ open, onClose, onSaved, onDeleted, projectId, projectBaseU
           {isEdit ? `Edit endpoint — ${editTool?.name}` : 'New MCP tool'}
         </Typography>
         <IconButton size="small" onClick={onClose} disabled={saving || deleting}>
-          <CloseIcon fontSize="small" />
+          <IconX size={18} />
         </IconButton>
       </Box>
 
@@ -1650,8 +1682,8 @@ function ToolDialog({ open, onClose, onSaved, onDeleted, projectId, projectBaseU
           </Grid>
           <Grid item xs={12} sm={4}>
             <FormControl size="small" fullWidth required>
-              <InputLabel>Método HTTP</InputLabel>
-              <Select value={form.method} label="Método HTTP" onChange={(e) => setField('method', e.target.value)}>
+              <InputLabel>HTTP Method</InputLabel>
+              <Select value={form.method} label="HTTP Method" onChange={(e) => setField('method', e.target.value)}>
                 {METHODS.map((m) => (
                   <MenuItem key={m} value={m}>
                     <Box display="flex" alignItems="center" gap={1}>
@@ -1666,7 +1698,7 @@ function ToolDialog({ open, onClose, onSaved, onDeleted, projectId, projectBaseU
 
           {/* Description */}
           <Grid item xs={12}>
-            <TextField size="small" fullWidth multiline minRows={2} label="Description" value={form.description} onChange={(e) => setField('description', e.target.value)} />
+            <TextField size="small" fullWidth multiline minRows={3} maxRows={8} label="Description" value={form.description} onChange={(e) => setField('description', e.target.value)} />
           </Grid>
 
           {/* Path */}
@@ -1683,7 +1715,7 @@ function ToolDialog({ open, onClose, onSaved, onDeleted, projectId, projectBaseU
           <Grid item xs={12}>
             <Box display="flex" alignItems="center" justifyContent="space-between" mb={1.5}>
               <Typography variant="subtitle2" fontWeight={700}>Parameters</Typography>
-              <Button size="small" startIcon={<AddIcon fontSize="small" />} onClick={addParam}>Add</Button>
+              <Button size="small" startIcon={<IconPlus size={18} />} onClick={addParam}>Add</Button>
             </Box>
 
             {form.params.length === 0 ? (
@@ -1740,11 +1772,11 @@ function ToolDialog({ open, onClose, onSaved, onDeleted, projectId, projectBaseU
                       </Grid>
                       <Grid item xs={6} sm={1} display="flex" justifyContent="flex-end" alignItems="center" pt="6px !important">
                         <Tooltip title="Remove">
-                          <IconButton size="small" color="error" onClick={() => removeParam(p.id)}><DeleteIcon fontSize="small" /></IconButton>
+                          <IconButton size="small" color="error" onClick={() => removeParam(p.id)}><IconTrash size={18} /></IconButton>
                         </Tooltip>
                       </Grid>
                       <Grid item xs={12}>
-                        <TextField size="small" fullWidth label="Parameter description" value={p.description} onChange={(e) => setParam(p.id, 'description', e.target.value)} />
+                        <TextField size="small" fullWidth multiline minRows={2} maxRows={4} label="Parameter description" value={p.description} onChange={(e) => setParam(p.id, 'description', e.target.value)} />
                       </Grid>
                     </Grid>
                   </Paper>
@@ -1758,10 +1790,10 @@ function ToolDialog({ open, onClose, onSaved, onDeleted, projectId, projectBaseU
       {/* Footer */}
       <Box sx={{ px: 3, py: 2, borderTop: 1, borderColor: 'divider', display: 'flex', gap: 1, flexShrink: 0 }}>
         {isEdit && (
-          <Button color="error" onClick={handleDelete} disabled={saving || deleting}
-            startIcon={deleting ? <CircularProgress size={14} color="inherit" /> : <DeleteIcon fontSize="small" />}
+          <Button color="error" onClick={() => setDeleteConfirmOpen(true)} disabled={saving || deleting}
+            startIcon={<IconTrash size={18} />}
             sx={{ mr: 'auto' }}>
-            {deleting ? 'Deleting…' : 'Delete tool'}
+            Delete tool
           </Button>
         )}
         <Button onClick={onClose} disabled={saving || deleting}>Cancel</Button>
@@ -1770,6 +1802,17 @@ function ToolDialog({ open, onClose, onSaved, onDeleted, projectId, projectBaseU
           {saving ? 'Saving…' : isEdit ? 'Save changes' : 'Create tool'}
         </Button>
       </Box>
+
+      <ConfirmDialog
+        open={deleteConfirmOpen}
+        title="Delete tool?"
+        message={`"${editTool?.name}" will be permanently removed from this project.`}
+        confirmLabel="Delete"
+        confirmColor="error"
+        loading={deleting}
+        onConfirm={handleDeleteConfirm}
+        onClose={() => setDeleteConfirmOpen(false)}
+      />
     </Drawer>
   )
 }
@@ -1848,7 +1891,8 @@ function FieldInput({ name, schema, value, required, onChange }: {
   return (
     <TextField size="small" fullWidth label={label} value={value} onChange={(e) => onChange(e.target.value)}
       helperText={schema.description} type={schema.type === 'number' || schema.type === 'integer' ? 'number' : 'text'}
-      multiline={isJson} minRows={isJson ? 3 : 1}
+      multiline={isJson} minRows={isJson ? 6 : 1} maxRows={isJson ? 16 : 4}
+      InputProps={isJson ? { sx: { fontFamily: 'monospace', fontSize: '0.82rem' } } : undefined}
       placeholder={schema.type === 'object' ? '{"key":"value"}' : schema.type === 'array' ? '["item1"]' : undefined} />
   )
 }
@@ -1886,11 +1930,11 @@ function ToolCommentsSection({ projectId, toolName, initialComments }: {
   return (
     <Box>
       <Box display="flex" alignItems="center" gap={0.5} sx={{ cursor: 'pointer' }} onClick={() => setOpen((v) => !v)}>
-        <ChatBubbleOutlineIcon sx={{ fontSize: 15, color: 'text.disabled' }} />
+        <IconMessage size={15} />
         <Typography variant="caption" color="text.secondary" fontWeight={600}>
           Notes ({comments.length})
         </Typography>
-        <ExpandMoreIcon sx={{ fontSize: 14, color: 'text.disabled', transform: open ? 'rotate(180deg)' : 'none', transition: '0.2s' }} />
+        <IconChevronDown size={14} style={{ color: 'var(--mui-palette-text-disabled, #bdbdbd)', transform: open ? 'rotate(180deg)' : 'none', transition: '0.2s' }} />
       </Box>
 
       {open && (
@@ -1908,7 +1952,7 @@ function ToolCommentsSection({ projectId, toolName, initialComments }: {
               </Box>
               <Tooltip title="Delete note">
                 <IconButton size="small" color="error" onClick={() => handleDelete(c.id)}>
-                  <DeleteIcon sx={{ fontSize: 14 }} />
+                  <IconTrash size={14} />
                 </IconButton>
               </Tooltip>
             </Box>
@@ -2014,7 +2058,7 @@ function ToolAccordion({ tool: initialTool, projectId, anyApiKey, onToolChanged,
       opacity: isDisabled ? 0.6 : 1,
       transition: 'opacity 0.2s',
     }}>
-      <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{
+      <AccordionSummary expandIcon={<IconChevronDown />} sx={{
         bgcolor: isDisabled ? '#f5f5f5' : METHOD_BG[method] ?? '#fafafa',
         borderRadius: '7px 7px 0 0',
         minHeight: '52px !important', px: 2,
@@ -2060,7 +2104,7 @@ function ToolAccordion({ tool: initialTool, projectId, anyApiKey, onToolChanged,
           <Tooltip title="Edit endpoint">
             <IconButton size="small" onClick={(e) => { e.stopPropagation(); onEditEndpoint(tool) }}
               sx={{ flexShrink: 0, color: 'text.secondary', '&:hover': { color: 'primary.main' } }}>
-              <EditIcon sx={{ fontSize: 18 }} />
+              <IconEdit size={18} />
             </IconButton>
           </Tooltip>
 
@@ -2080,11 +2124,7 @@ function ToolAccordion({ tool: initialTool, projectId, anyApiKey, onToolChanged,
           <>
             <Typography variant="subtitle2" fontWeight={700} mb={1}>Parameters</Typography>
             <Box sx={{ overflowX: 'auto', mb: 2 }}>
-              <Table size="small" sx={{
-                minWidth: 480,
-                '& th': { bgcolor: '#f8f9fa', fontWeight: 700, fontSize: '0.72rem', color: 'text.secondary', textTransform: 'uppercase', letterSpacing: '0.04em' },
-                '& td': { fontSize: '0.8rem' },
-              }}>
+              <Table size="small" sx={{ minWidth: 480, '& td': { fontSize: '0.8rem' } }}>
                 <TableHead>
                   <TableRow>
                     <TableCell>Name</TableCell>
@@ -2146,7 +2186,7 @@ function ToolAccordion({ tool: initialTool, projectId, anyApiKey, onToolChanged,
               : <Typography variant="body2" color="text.secondary" mt={1} mb={2}>No parameters.</Typography>}
 
             <Button variant="contained" size="small"
-              startIcon={executing ? <CircularProgress size={13} color="inherit" /> : <PlayArrowIcon fontSize="small" />}
+              startIcon={executing ? <CircularProgress size={13} color="inherit" /> : <IconPlayerPlay size={18} />}
               onClick={handleExecute} disabled={executing}
               sx={{ mb: response !== null ? 2 : 0, fontWeight: 600 }}>
               {executing ? 'Executing…' : 'Execute'}
@@ -2176,7 +2216,7 @@ function ToolAccordion({ tool: initialTool, projectId, anyApiKey, onToolChanged,
           <Box mt={2} display="flex" flexDirection="column" gap={2}>
             {/* Direct curl */}
             <Box>
-              <Typography variant="subtitle2" fontWeight={700} mb={1}>Exemplo curl (API direta)</Typography>
+              <Typography variant="subtitle2" fontWeight={700} mb={1}>Direct API curl</Typography>
               <Box component="pre" sx={{
                 bgcolor: '#1e1e1e', color: '#d4d4d4', p: 2, borderRadius: 1,
                 fontSize: '0.78rem', overflowX: 'auto', position: 'relative', m: 0,
@@ -2185,7 +2225,7 @@ function ToolAccordion({ tool: initialTool, projectId, anyApiKey, onToolChanged,
                   <IconButton size="small"
                     onClick={() => { navigator.clipboard.writeText(curl); setCurlCopied(true); setTimeout(() => setCurlCopied(false), 2000) }}
                     sx={{ position: 'absolute', top: 8, right: 8, color: curlCopied ? 'primary.light' : '#abb2bf', '&:hover': { color: '#fff' } }}>
-                    <ContentCopyIcon sx={{ fontSize: 15 }} />
+                    <IconCopy size={15} />
                   </IconButton>
                 </Tooltip>
                 {curl}
@@ -2194,7 +2234,7 @@ function ToolAccordion({ tool: initialTool, projectId, anyApiKey, onToolChanged,
 
             {/* MCP via POST */}
             <Box>
-              <Typography variant="subtitle2" fontWeight={700} mb={1}>Exemplo MCP (POST /mcp/project)</Typography>
+              <Typography variant="subtitle2" fontWeight={700} mb={1}>MCP call (POST /mcp/project)</Typography>
               <Box component="pre" sx={{
                 bgcolor: '#282c34', color: '#abb2bf', p: 2, borderRadius: 1,
                 fontSize: '0.78rem', overflowX: 'auto', position: 'relative', m: 0,
@@ -2203,7 +2243,7 @@ function ToolAccordion({ tool: initialTool, projectId, anyApiKey, onToolChanged,
                   <IconButton size="small"
                     onClick={() => { navigator.clipboard.writeText(mcpCurl); setMcpCurlCopied(true); setTimeout(() => setMcpCurlCopied(false), 2000) }}
                     sx={{ position: 'absolute', top: 8, right: 8, color: mcpCurlCopied ? 'primary.light' : '#abb2bf', '&:hover': { color: '#fff' } }}>
-                    <ContentCopyIcon sx={{ fontSize: 15 }} />
+                    <IconCopy size={15} />
                   </IconButton>
                 </Tooltip>
                 {mcpCurl}
@@ -2268,9 +2308,9 @@ function ProjectLogs({ projectId }: { projectId: string }) {
       <Paper variant="outlined" sx={{ overflow: 'hidden', mb: 2 }}>
         <Table size="small">
           <TableHead>
-            <TableRow sx={{ bgcolor: '#f8f9fa' }}>
+            <TableRow>
               {['Date/Time', 'Tool', 'Source', 'Status', 'Time (ms)', 'Error'].map((h) => (
-                <TableCell key={h} sx={{ fontWeight: 700, fontSize: '0.72rem', color: 'text.secondary', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{h}</TableCell>
+                <TableCell key={h}>{h}</TableCell>
               ))}
             </TableRow>
           </TableHead>
@@ -2412,19 +2452,19 @@ export default function ProjectDetail() {
   })
 
   return (
-    <Box p={3}>
+    <Box py={3} px={0}>
       {/* Nav */}
       <Box mb={2}>
-        <Button startIcon={<ArrowBackIcon />} onClick={() => navigate('/')}>Projects</Button>
+        <Button startIcon={<IconArrowLeft size={18} />} size="small" onClick={() => navigate('/')}>Projects</Button>
       </Box>
 
       {/* Header — always visible */}
-      <Paper variant="outlined" sx={{ p: 3, mb: 3 }}>
+      <Paper variant="outlined" sx={{ p: 2.5, mb: 2.5, borderRadius: '10px' }}>
         <Box display="flex" justifyContent="space-between" alignItems="flex-start" flexWrap="wrap" gap={2}>
           <Box minWidth={0} flexGrow={1}>
             <InlineEdit value={project.name} onSave={(v) => saveProjectInfo('name', v)}
-              placeholder="Project name" fontSize="1.5rem" fontWeight={700} />
-            <Box mt={0.75}>
+              placeholder="Project name" fontSize="1.375rem" fontWeight={700} />
+            <Box mt={0.5}>
               <InlineEdit value={project.description ?? ''} onSave={(v) => saveProjectInfo('description', v)}
                 multiline placeholder="Add a short description…" emptyLabel="Add a short description…"
                 fontSize="0.875rem" color="text.secondary" />
@@ -2432,13 +2472,20 @@ export default function ProjectDetail() {
           </Box>
           <Box display="flex" gap={1} flexWrap="wrap" alignItems="flex-start">
             {isPaused
-              ? <Chip label="Paused" icon={<PauseIcon fontSize="small" />} sx={{ bgcolor: '#ff9800', color: '#fff' }} />
-              : <Chip label={project.status === 'active' ? 'Active' : 'Error'} color={project.status === 'active' ? 'success' : 'error'} />}
-            {project.version && <Chip label={`v${project.version}`} variant="outlined" />}
+              ? <Chip label="Paused" icon={<IconPlayerPause size={18} />} sx={{ bgcolor: '#FEF5E5', color: '#ae8e59', fontWeight: 600 }} />
+              : <Chip
+                  label={project.status === 'active' ? 'Active' : 'Error'}
+                  sx={project.status === 'active'
+                    ? { bgcolor: '#E6FFFA', color: '#02b3a9', fontWeight: 600 }
+                    : { bgcolor: '#FDEDE8', color: '#f3704d', fontWeight: 600 }
+                  }
+                />
+            }
+            {project.version && <Chip label={`v${project.version}`} variant="outlined" sx={{ fontWeight: 500 }} />}
             <Tooltip title="Upload a new version of the spec to add or update tools">
-              <Button size="small" variant="outlined" startIcon={<AutorenewIcon fontSize="small" />}
+              <Button size="small" variant="outlined" startIcon={<IconRefresh size={18} />}
                 onClick={() => { setReimportOpen(true); setReimportSuccess(null) }}>
-                Update tools from spec
+                Update from spec
               </Button>
             </Tooltip>
           </Box>
@@ -2454,12 +2501,12 @@ export default function ProjectDetail() {
 
       {/* Tabs */}
       <Tabs value={tab} onChange={(_, v) => setTab(v)} sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
-        <Tab icon={<HttpIcon fontSize="small" />} iconPosition="start" label="Connect" />
-        <Tab icon={<BuildIcon fontSize="small" />} iconPosition="start"
+        <Tab icon={<IconWorld size={16} />} iconPosition="start" label="Connect" />
+        <Tab icon={<IconTool size={16} />} iconPosition="start"
           label={`Tools${project.tools.length > 0 ? ` (${project.tools.length})` : ''}`} />
-        <Tab icon={<TuneIcon fontSize="small" />} iconPosition="start" label="Settings" />
-        <Tab icon={<AssessmentIcon fontSize="small" />} iconPosition="start" label="Activity" />
-        <Tab icon={<MenuBookIcon fontSize="small" />} iconPosition="start" label="AI View" />
+        <Tab icon={<IconAdjustments size={16} />} iconPosition="start" label="Settings" />
+        <Tab icon={<IconChartBar size={16} />} iconPosition="start" label="Activity" />
+        <Tab icon={<IconBook size={16} />} iconPosition="start" label="AI View" />
       </Tabs>
 
       {/* ── Tab 0: Connect ─────────────────────────────────────────────────────── */}
@@ -2503,7 +2550,7 @@ export default function ProjectDetail() {
                 </Typography>
               </HelpButton>
             </Box>
-            <Button variant="contained" startIcon={<AddIcon />} onClick={handleOpenCreate} size="small">
+            <Button variant="contained" startIcon={<IconPlus size={18} />} onClick={handleOpenCreate} size="small">
               Add tool
             </Button>
           </Box>
@@ -2512,7 +2559,7 @@ export default function ProjectDetail() {
             <TextField
               size="small" placeholder="Search by name or description…" value={toolSearch}
               onChange={(e) => setToolSearch(e.target.value)} sx={{ width: 260 }}
-              InputProps={{ startAdornment: <InputAdornment position="start"><SearchIcon fontSize="small" color="action" /></InputAdornment> }}
+              InputProps={{ startAdornment: <InputAdornment position="start"><IconSearch size={16} /></InputAdornment> }}
             />
             {availableMethods.length > 1 && (
               <Box display="flex" gap={0.5} flexWrap="wrap" alignItems="center">

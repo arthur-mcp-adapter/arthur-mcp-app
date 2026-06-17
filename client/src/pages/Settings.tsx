@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import {
-  Alert,
   Box,
   Button,
   CircularProgress,
@@ -8,15 +7,17 @@ import {
   Grid,
   InputAdornment,
   Paper,
-  TextField,
   Typography,
 } from '@mui/material'
-import SettingsIcon from '@mui/icons-material/Settings'
-import EmailIcon from '@mui/icons-material/Email'
-import PublicIcon from '@mui/icons-material/Public'
-import TimerIcon from '@mui/icons-material/Timer'
+import {
+  IconSettings,
+  IconMail,
+  IconWorld,
+  IconClock,
+} from '@tabler/icons-react'
 import api from '../api'
 import HelpButton from '../components/HelpButton'
+import AppSnackbar from '../components/AppSnackbar'
 
 interface SettingsData {
   serverBaseUrl: string
@@ -28,12 +29,27 @@ interface SettingsData {
   smtpPassSet: boolean
 }
 
+// ─── Inline-validated TextField wrapper ───────────────────────────────────────
+
+import { TextField } from '@mui/material'
+
+function emailValid(v: string) {
+  return !v || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)
+}
+
+function portValid(v: number) {
+  return v >= 1 && v <= 65535
+}
+
 export default function Settings() {
   const [data, setData] = useState<SettingsData | null>(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
-  const [success, setSuccess] = useState('')
-  const [error, setError] = useState('')
+
+  // Snackbar
+  const [snackOpen, setSnackOpen] = useState(false)
+  const [snackMsg, setSnackMsg] = useState('')
+  const [snackSeverity, setSnackSeverity] = useState<'success' | 'error'>('success')
 
   // Form state
   const [serverBaseUrl, setServerBaseUrl] = useState('')
@@ -43,6 +59,9 @@ export default function Settings() {
   const [smtpUser, setSmtpUser] = useState('')
   const [smtpPass, setSmtpPass] = useState('')
   const [smtpFrom, setSmtpFrom] = useState('')
+
+  // Dirty tracking — original values
+  const [orig, setOrig] = useState<Omit<SettingsData, 'smtpPassSet'> & { smtpPass: string } | null>(null)
 
   useEffect(() => {
     api.get<SettingsData>('/settings')
@@ -54,16 +73,47 @@ export default function Settings() {
         setSmtpPort(r.data.smtpPort || 587)
         setSmtpUser(r.data.smtpUser || '')
         setSmtpFrom(r.data.smtpFrom || '')
+        setOrig({
+          serverBaseUrl: r.data.serverBaseUrl || '',
+          defaultTimeoutMs: r.data.defaultTimeoutMs || 30000,
+          smtpHost: r.data.smtpHost || '',
+          smtpPort: r.data.smtpPort || 587,
+          smtpUser: r.data.smtpUser || '',
+          smtpFrom: r.data.smtpFrom || '',
+          smtpPass: '',
+        })
       })
-      .catch(() => setError('Failed to load settings.'))
+      .catch(() => {
+        setSnackMsg('Failed to load settings.')
+        setSnackSeverity('error')
+        setSnackOpen(true)
+      })
       .finally(() => setLoading(false))
   }, [])
 
+  const isDirty = orig !== null && (
+    serverBaseUrl !== orig.serverBaseUrl ||
+    defaultTimeoutMs !== orig.defaultTimeoutMs ||
+    smtpHost !== orig.smtpHost ||
+    smtpPort !== orig.smtpPort ||
+    smtpUser !== orig.smtpUser ||
+    smtpFrom !== orig.smtpFrom ||
+    smtpPass !== ''
+  )
+
+  const smtpFromError = !emailValid(smtpFrom)
+  const smtpPortError = !portValid(smtpPort)
+
   const handleSave = async () => {
-    setError(''); setSuccess('')
+    if (smtpFromError || smtpPortError) {
+      setSnackMsg('Please fix validation errors before saving.')
+      setSnackSeverity('error')
+      setSnackOpen(true)
+      return
+    }
     setSaving(true)
     try {
-      const dto: any = {
+      const dto: Record<string, unknown> = {
         serverBaseUrl: serverBaseUrl.trim(),
         defaultTimeoutMs: Number(defaultTimeoutMs),
         smtpHost: smtpHost.trim(),
@@ -73,10 +123,26 @@ export default function Settings() {
       }
       if (smtpPass) dto.smtpPass = smtpPass
       await api.patch('/settings', dto)
-      setSuccess('Settings saved successfully.')
+      setSnackMsg('Settings saved successfully.')
+      setSnackSeverity('success')
+      setSnackOpen(true)
       setSmtpPass('')
-    } catch (err: any) {
-      setError(err?.response?.data?.message ?? 'Error saving.')
+      setOrig({
+        serverBaseUrl: serverBaseUrl.trim(),
+        defaultTimeoutMs: Number(defaultTimeoutMs),
+        smtpHost: smtpHost.trim(),
+        smtpPort: Number(smtpPort),
+        smtpUser: smtpUser.trim(),
+        smtpFrom: smtpFrom.trim(),
+        smtpPass: '',
+      })
+    } catch (err: unknown) {
+      const msg = err && typeof err === 'object' && 'response' in err
+        ? (err as { response?: { data?: { message?: string } } }).response?.data?.message ?? 'Error saving.'
+        : 'Error saving.'
+      setSnackMsg(msg)
+      setSnackSeverity('error')
+      setSnackOpen(true)
     } finally {
       setSaving(false)
     }
@@ -85,9 +151,9 @@ export default function Settings() {
   if (loading) return <Box display="flex" justifyContent="center" alignItems="center" height="40vh"><CircularProgress /></Box>
 
   return (
-    <Box p={3}>
-      <Box display="flex" alignItems="center" gap={1} mb={1}>
-        <Typography variant="h5" fontWeight={700}>Settings</Typography>
+    <Box py={3} px={0}>
+      <Box display="flex" alignItems="center" gap={1} mb={0.5}>
+        <Typography variant="h5" fontWeight={700} letterSpacing="-0.2px">Settings</Typography>
         <HelpButton title="Settings">
           <Typography variant="body2" gutterBottom>
             Global configuration for the entire Arthur MCP Adapter server. Changes saved here apply to <strong>all projects and all users</strong> — only administrators can access this page.
@@ -104,14 +170,11 @@ export default function Settings() {
           </Typography>
         </HelpButton>
       </Box>
-      <Typography variant="body2" color="text.secondary" mb={3}>Global system settings.</Typography>
-
-      {success && <Alert severity="success" sx={{ mb: 2 }} onClose={() => setSuccess('')}>{success}</Alert>}
-      {error && <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError('')}>{error}</Alert>}
+      <Typography variant="body2" color="text.secondary" mb={2.5}>Global system settings — changes apply to all projects and users.</Typography>
 
       <Paper variant="outlined" sx={{ p: 3, mb: 3 }}>
         <Box display="flex" alignItems="center" gap={1} mb={2}>
-          <PublicIcon color="primary" fontSize="small" />
+          <Box sx={{ color: 'primary.main', display: 'flex' }}><IconWorld size={18} /></Box>
           <Typography variant="subtitle1" fontWeight={700}>Server</Typography>
           <HelpButton title="Server settings">
             <Typography variant="body2" gutterBottom>
@@ -138,7 +201,7 @@ export default function Settings() {
               helperText="Used to generate curl examples and password reset links."
               value={serverBaseUrl}
               onChange={(e) => setServerBaseUrl(e.target.value)}
-              InputProps={{ startAdornment: <InputAdornment position="start"><PublicIcon fontSize="small" /></InputAdornment> }}
+              InputProps={{ startAdornment: <InputAdornment position="start"><IconWorld size={16} /></InputAdornment> }}
             />
           </Grid>
           <Grid item xs={12} md={4}>
@@ -148,7 +211,7 @@ export default function Settings() {
               helperText="Max time per HTTP call."
               value={defaultTimeoutMs}
               onChange={(e) => setDefaultTimeoutMs(Number(e.target.value))}
-              InputProps={{ startAdornment: <InputAdornment position="start"><TimerIcon fontSize="small" /></InputAdornment> }}
+              InputProps={{ startAdornment: <InputAdornment position="start"><IconClock size={16} /></InputAdornment> }}
             />
           </Grid>
         </Grid>
@@ -157,7 +220,7 @@ export default function Settings() {
       {/* SMTP */}
       <Paper variant="outlined" sx={{ p: 3, mb: 3 }}>
         <Box display="flex" alignItems="center" gap={1} mb={2}>
-          <EmailIcon color="primary" fontSize="small" />
+          <Box sx={{ color: 'primary.main', display: 'flex' }}><IconMail size={18} /></Box>
           <Typography variant="subtitle1" fontWeight={700}>E-mail (SMTP)</Typography>
           <HelpButton title="E-mail (SMTP)">
             <Typography variant="body2" gutterBottom>
@@ -187,7 +250,13 @@ export default function Settings() {
             <TextField size="small" fullWidth label="SMTP Host" placeholder="smtp.gmail.com" value={smtpHost} onChange={(e) => setSmtpHost(e.target.value)} />
           </Grid>
           <Grid item xs={12} sm={4}>
-            <TextField size="small" fullWidth type="number" label="Port" value={smtpPort} onChange={(e) => setSmtpPort(Number(e.target.value))} />
+            <TextField
+              size="small" fullWidth type="number" label="Port"
+              value={smtpPort}
+              onChange={(e) => setSmtpPort(Number(e.target.value))}
+              error={smtpPortError}
+              helperText={smtpPortError ? 'Port must be between 1 and 65535' : ''}
+            />
           </Grid>
           <Grid item xs={12} sm={6}>
             <TextField size="small" fullWidth label="SMTP User" value={smtpUser} onChange={(e) => setSmtpUser(e.target.value)} />
@@ -201,19 +270,53 @@ export default function Settings() {
             />
           </Grid>
           <Grid item xs={12}>
-            <TextField size="small" fullWidth label='Sender email ("From:")' placeholder="noreply@company.com" value={smtpFrom} onChange={(e) => setSmtpFrom(e.target.value)} />
+            <TextField
+              size="small" fullWidth
+              label='Sender email ("From:")'
+              placeholder="noreply@company.com"
+              value={smtpFrom}
+              onChange={(e) => setSmtpFrom(e.target.value)}
+              error={smtpFromError}
+              helperText={smtpFromError ? 'Invalid email format' : ''}
+            />
           </Grid>
         </Grid>
       </Paper>
 
-      <Divider sx={{ mb: 2 }} />
+      <Divider sx={{ mb: 0 }} />
 
-      <Box display="flex" justifyContent="flex-end">
-        <Button variant="contained" onClick={handleSave} disabled={saving}
-          startIcon={saving ? <CircularProgress size={14} color="inherit" /> : <SettingsIcon />}>
+      {/* Sticky save bar */}
+      <Box
+        sx={{
+          position: 'sticky',
+          bottom: 0,
+          bgcolor: 'background.paper',
+          borderTop: '1px solid',
+          borderColor: 'divider',
+          py: 2,
+          zIndex: 1,
+          display: 'flex',
+          justifyContent: 'flex-end',
+          boxShadow: isDirty ? '0 -4px 16px rgba(0,0,0,0.07)' : 'none',
+          transition: 'box-shadow 0.2s',
+        }}
+      >
+        <Button
+          variant="contained"
+          onClick={handleSave}
+          disabled={saving || !isDirty}
+          startIcon={saving ? <CircularProgress size={14} color="inherit" /> : <IconSettings size={18} />}
+        >
           {saving ? 'Saving…' : 'Save settings'}
         </Button>
       </Box>
+
+      <AppSnackbar
+        open={snackOpen}
+        message={snackMsg}
+        severity={snackSeverity}
+        onClose={() => setSnackOpen(false)}
+      />
     </Box>
   )
 }

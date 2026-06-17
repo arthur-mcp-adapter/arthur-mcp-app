@@ -1,0 +1,48 @@
+# .do/deploy.template.yaml — DigitalOcean App Platform
+# https://docs.digitalocean.com/products/app-platform/reference/app-spec/
+#
+# Deploy via CLI:
+#   doctl apps create --spec .do/deploy.template.yaml
+#
+# Or via dashboard: https://cloud.digitalocean.com/apps
+# "Create App" → GitHub repo → App Platform detects the Dockerfile.
+#
+# MongoDB: Use DigitalOcean Managed MongoDB or MongoDB Atlas.
+# Set MONGODB_URI in the dashboard after creating the app.
+
+name: mcp-convert
+region: nyc
+
+services:
+  - name: app
+    source_dir: /
+    github:
+      repo: your-username/mcp-convert   # change to your repo
+      branch: main
+      deploy_on_push: true
+    dockerfile_path: Dockerfile
+    http_port: 3000
+    health_check:
+      http_path: /health
+      initial_delay_seconds: 20
+    instance_count: 1
+    instance_size_slug: basic-xxs       # cheapest tier (~$5/mo)
+    envs:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "3000"
+      - key: MONGODB_URI
+        value: ""                        # set in dashboard
+        type: SECRET
+      - key: JWT_SECRET
+        value: ""                        # set in dashboard
+        type: SECRET
+      - key: MCP_API_KEY
+        value: ""                        # set in dashboard
+        type: SECRET
+      - key: DASHBOARD_USER
+        value: admin
+      - key: DASHBOARD_PASSWORD
+        value: ""                        # set in dashboard
+        type: SECRET

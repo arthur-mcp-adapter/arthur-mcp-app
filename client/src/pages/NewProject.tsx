@@ -407,7 +407,7 @@ export default function NewProject() {
               onKeyDown={(e) => e.key === 'Enter' && step0Valid && handleNext()}
               helperText="A short name that identifies this API integration"
             />
-            <TextField label="Description" fullWidth multiline minRows={3}
+            <TextField label="Description" fullWidth multiline minRows={4} maxRows={10}
               placeholder="What does this project do? What API does it connect to?"
               value={description} onChange={(e) => setDescription(e.target.value)}
               helperText="Optional — helps team members understand the purpose of this project"
@@ -836,7 +836,7 @@ export default function NewProject() {
       </Box>
 
       {/* ── Add tool dialog ─────────────────────────────────────────────── */}
-      <Dialog open={addOpen} onClose={() => { setAddOpen(false); setAddError('') }} maxWidth="sm" fullWidth>
+      <Dialog open={addOpen} onClose={() => { setAddOpen(false); setAddError('') }} maxWidth="sm" fullWidth scroll="paper">
         <DialogTitle sx={{ pb: 1 }}>
           <Typography variant="h6" fontWeight={700}>Add MCP tool</Typography>
         </DialogTitle>
@@ -881,7 +881,7 @@ export default function NewProject() {
               InputProps={{ sx: { fontFamily: 'monospace' } }}
             />
 
-            <TextField size="small" fullWidth multiline minRows={2} label="Description"
+            <TextField size="small" fullWidth multiline minRows={3} maxRows={8} label="Description"
               placeholder="Describe what this tool does so the AI knows when to use it…"
               value={newDesc} onChange={(e) => setNewDesc(e.target.value)}
               helperText="Optional but recommended — a clear description improves AI tool selection accuracy"

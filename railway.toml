@@ -1,0 +1,68 @@
+# railway.toml — Railway deployment configuration
+#
+# Railway supports Docker Compose natively and provides managed MongoDB.
+# Deploy with one click: https://railway.com/new/template
+#
+# Variables Railway injects automatically:
+#   RAILWAY_PUBLIC_DOMAIN  — your app's public hostname
+#   PORT                   — the port Railway exposes (use this, not 3000)
+#
+# To get a one-click deploy button:
+#   1. Push this repo to GitHub
+#   2. Go to https://railway.com/new → "Deploy from GitHub repo"
+#   3. Railway detects the Dockerfile and this config automatically
+#   4. Add a MongoDB plugin: Dashboard → "+ New" → "Database" → "MongoDB"
+#   5. Railway auto-injects MONGO_URL — map it to MONGODB_URI in Variables
+
+[build]
+  builder = "dockerfile"
+  dockerfilePath = "Dockerfile"
+
+[deploy]
+  healthcheckPath = "/health"
+  healthcheckTimeout = 60
+  restartPolicyType = "on_failure"
+  restartPolicyMaxRetries = 3
+
+[[services]]
+  name = "app"
+
+  [services.build]
+    builder = "dockerfile"
+    dockerfilePath = "Dockerfile"
+
+  [services.deploy]
+    healthcheckPath = "/health"
+    startCommand = "node dist/main"
+
+  [[services.variables]]
+    name = "NODE_ENV"
+    defaultValue = "production"
+
+  [[services.variables]]
+    name = "MCP_API_KEY"
+    # generate a random value: openssl rand -hex 32
+    defaultValue = ""
+
+  [[services.variables]]
+    name = "JWT_SECRET"
+    # generate a random value: openssl rand -hex 64
+    defaultValue = ""
+
+  [[services.variables]]
+    name = "DASHBOARD_USER"
+    defaultValue = "admin"
+
+  [[services.variables]]
+    name = "DASHBOARD_PASSWORD"
+    defaultValue = ""
+
+  [[services.variables]]
+    name = "EXTERNAL_API_BASE_URL"
+    defaultValue = "https://jsonplaceholder.typicode.com"
+
+  # MONGODB_URI is injected by the Railway MongoDB plugin as MONGO_URL.
+  # In the Railway dashboard: Variables → add MONGODB_URI = ${{MongoDB.MONGO_URL}}
+  [[services.variables]]
+    name = "MONGODB_URI"
+    defaultValue = ""
