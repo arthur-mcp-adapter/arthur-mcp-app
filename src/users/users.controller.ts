@@ -23,7 +23,7 @@ export class UsersController {
     private readonly auditLogs: AuditLogsService,
   ) {}
 
-  /** Perfil do usuário autenticado */
+  /** Authenticated user profile */
   @Get('me')
   async getMe(@Request() req: any) {
     const user = await this.usersService.findById(req.user.userId);
@@ -31,7 +31,7 @@ export class UsersController {
     return safe;
   }
 
-  /** Atualiza dados do próprio perfil */
+  /** Update own profile */
   @Patch('me')
   updateMe(
     @Request() req: any,
@@ -40,14 +40,14 @@ export class UsersController {
     return this.usersService.updateSelf(req.user.userId, dto);
   }
 
-  /** Lista todos os usuários — apenas admin */
+  /** List all users — admin only */
   @Get()
   findAll(@Request() req: any) {
     if (req.user.role !== 'admin') throw new ForbiddenException('Acesso restrito a administradores.');
     return this.usersService.findAll();
   }
 
-  /** Cria novo usuário — apenas admin */
+  /** Create new user — admin only */
   @Post()
   @HttpCode(201)
   async create(
@@ -60,7 +60,7 @@ export class UsersController {
     return user;
   }
 
-  /** Edita qualquer usuário — apenas admin */
+  /** Edit any user — admin only */
   @Patch(':id')
   async updateUser(
     @Request() req: any,
@@ -73,12 +73,12 @@ export class UsersController {
     return user;
   }
 
-  /** Remove usuário — apenas admin (não pode remover a si mesmo) */
+  /** Delete user — admin only (cannot delete own account) */
   @Delete(':id')
   @HttpCode(204)
   async remove(@Request() req: any, @Param('id') id: string) {
     if (req.user.role !== 'admin') throw new ForbiddenException('Acesso restrito a administradores.');
-    if (req.user.userId === id) throw new ForbiddenException('Não é possível remover o próprio usuário.');
+    if (req.user.userId === id) throw new ForbiddenException('Cannot delete your own account.');
     await this.usersService.remove(id);
     this.auditLogs.log({ userId: req.user.userId, username: req.user.username, action: 'delete', entity: 'user', entityId: id, ip: req.ip });
   }

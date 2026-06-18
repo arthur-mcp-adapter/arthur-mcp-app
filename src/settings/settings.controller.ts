@@ -33,7 +33,7 @@ export class SettingsController {
       username: req.user.username,
       action: 'update',
       entity: 'settings',
-      entityName: 'Configurações do sistema',
+      entityName: 'System settings',
       ip: req.ip,
     });
     return updated;

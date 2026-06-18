@@ -90,7 +90,7 @@ export interface EndpointRef {
   parameterMap: ParameterMapping[];
 }
 
-/** Configuração de autenticação por projeto */
+/** Per-project authentication configuration */
 export type AuthConfig =
   | { type: 'none' }
   | { type: 'bearer'; token: string }

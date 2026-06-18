@@ -63,7 +63,7 @@ export class SqliteUserRepository implements IUserRepository {
 
   async update(id: string, data: Partial<Omit<UserRecord, '_id'>>): Promise<UserRecord> {
     const e = await this.repo.findOne({ where: { id } });
-    if (!e) throw new NotFoundException('Usuário não encontrado.');
+    if (!e) throw new NotFoundException('User not found.');
     Object.assign(e, data);
     const saved = await this.repo.save(e);
     return this.toRecord(saved);
@@ -71,6 +71,6 @@ export class SqliteUserRepository implements IUserRepository {
 
   async delete(id: string): Promise<void> {
     const result = await this.repo.delete(id);
-    if (!result.affected) throw new NotFoundException('Usuário não encontrado.');
+    if (!result.affected) throw new NotFoundException('User not found.');
   }
 }

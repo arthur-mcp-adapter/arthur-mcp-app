@@ -34,7 +34,7 @@ export default function Upload() {
   const accept = (f: File) => {
     const name = f.name.toLowerCase()
     if (!name.endsWith('.yaml') && !name.endsWith('.yml') && !name.endsWith('.json')) {
-      setErrorMsg('Formato inválido. Use .yaml, .yml ou .json')
+      setErrorMsg('Invalid format. Use .yaml, .yml or .json')
       setPhase('error')
       return
     }

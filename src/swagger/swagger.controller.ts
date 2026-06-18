@@ -36,7 +36,7 @@ export class SwaggerController {
     if (!file) throw new BadRequestException('Nenhum arquivo enviado.');
     const lower = file.originalname.toLowerCase();
     if (!lower.endsWith('.yaml') && !lower.endsWith('.yml') && !lower.endsWith('.json')) {
-      throw new BadRequestException('Formato inválido. Envie um arquivo .yaml, .yml ou .json.');
+      throw new BadRequestException('Invalid format. Please upload a .yaml, .yml, or .json file.');
     }
     return this.swaggerService.previewSpec(
       file.buffer.toString('utf-8'),
@@ -57,7 +57,7 @@ export class SwaggerController {
 
     const lower = file.originalname.toLowerCase();
     if (!lower.endsWith('.yaml') && !lower.endsWith('.yml') && !lower.endsWith('.json')) {
-      throw new BadRequestException('Formato inválido. Envie um arquivo .yaml, .yml ou .json.');
+      throw new BadRequestException('Invalid format. Please upload a .yaml, .yml, or .json file.');
     }
 
     const project = await this.swaggerService.create(
@@ -81,8 +81,8 @@ export class SwaggerController {
 
   @Post('projects')
   createEmpty(@Body() dto: { name?: string; description?: string; baseUrl?: string }) {
-    if (!dto.name?.trim()) throw new BadRequestException('Nome é obrigatório.');
-    if (!dto.baseUrl?.trim()) throw new BadRequestException('Base URL é obrigatória.');
+    if (!dto.name?.trim()) throw new BadRequestException('Name is required.');
+    if (!dto.baseUrl?.trim()) throw new BadRequestException('Base URL is required.');
     return this.swaggerService.createEmpty(dto as any);
   }
 
@@ -156,7 +156,7 @@ export class SwaggerController {
     @Param('id') id: string,
     @Body('name') name: string,
   ) {
-    if (!name?.trim()) throw new BadRequestException('name é obrigatório.');
+    if (!name?.trim()) throw new BadRequestException('name is required.');
     return this.swaggerService.addApiKey(id, name);
   }
 
@@ -183,7 +183,7 @@ export class SwaggerController {
     if (!file) throw new BadRequestException('Nenhum arquivo enviado.');
     const lower = file.originalname.toLowerCase();
     if (!lower.endsWith('.yaml') && !lower.endsWith('.yml') && !lower.endsWith('.json')) {
-      throw new BadRequestException('Formato inválido. Envie um arquivo .yaml, .yml ou .json.');
+      throw new BadRequestException('Invalid format. Please upload a .yaml, .yml, or .json file.');
     }
     return this.swaggerService.reimportSpec(
       id,
@@ -203,7 +203,7 @@ export class SwaggerController {
     @Param('id') id: string,
     @Body('baseUrl') baseUrl: string,
   ) {
-    if (!baseUrl?.trim()) throw new BadRequestException('baseUrl não pode ser vazia.');
+    if (!baseUrl?.trim()) throw new BadRequestException('baseUrl cannot be empty.');
     return this.swaggerService.updateBaseUrl(id, baseUrl.trim());
   }
 

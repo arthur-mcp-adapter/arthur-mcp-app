@@ -1,10 +1,25 @@
 {
-  "_comment": "This config is only needed if you want to deploy the React frontend as a standalone static site on Vercel. For a full-stack deploy (frontend + backend + database together), use docker compose up, Railway, or Render instead.",
-  "framework": "vite",
-  "buildCommand": "cd client && npm install && npm run build -- --outDir dist",
+  "_comment": "Static React frontend on Vercel. The backend (NestJS) must be running on Render (or another host). Replace YOUR_RENDER_URL below with your Render service URL, e.g. https://mcp-server.onrender.com",
+  "buildCommand": "cd client && npm ci && npm run build",
   "outputDirectory": "client/dist",
-  "installCommand": "npm install --prefix client",
+  "installCommand": "npm ci --prefix client",
   "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://YOUR_RENDER_URL/api/:path*"
+    },
+    {
+      "source": "/mcp/:path*",
+      "destination": "https://YOUR_RENDER_URL/mcp/:path*"
+    },
+    {
+      "source": "/health",
+      "destination": "https://YOUR_RENDER_URL/health"
+    },
+    {
+      "source": "/mcp-docs/:path*",
+      "destination": "https://YOUR_RENDER_URL/mcp-docs/:path*"
+    },
     {
       "source": "/((?!assets/).*)",
       "destination": "/index.html"
@@ -18,10 +33,7 @@
         { "key": "X-Frame-Options", "value": "DENY" },
         { "key": "X-XSS-Protection", "value": "1; mode=block" },
         { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
-        {
-          "key": "Permissions-Policy",
-          "value": "camera=(), microphone=(), geolocation=()"
-        }
+        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" }
       ]
     },
     {

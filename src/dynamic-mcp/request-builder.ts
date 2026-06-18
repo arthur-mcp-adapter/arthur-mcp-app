@@ -55,7 +55,7 @@ export function buildRequest(
 }
 
 function buildUrl(base: string, path: string, query: Record<string, string>): string {
-  // Paths no OpenAPI sempre começam com "/" (são absolutos).
+  // OpenAPI paths always start with "/" (they are absolute).
   // new URL("/path", base) descartaria o pathname da base — ex:
   //   new URL("/pet", "https://api.example.com/v2/") → "https://api.example.com/pet"  (ERRADO)
   // Concatenamos diretamente para preservar o pathname da base:

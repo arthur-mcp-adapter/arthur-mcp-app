@@ -49,7 +49,7 @@ export class UsersService implements OnApplicationBootstrap {
 
   async findById(id: string): Promise<UserRecord> {
     const user = await this.userRepo.findById(id);
-    if (!user) throw new NotFoundException('Usuário não encontrado.');
+    if (!user) throw new NotFoundException('User not found.');
     return user;
   }
 
@@ -69,13 +69,13 @@ export class UsersService implements OnApplicationBootstrap {
 
     if (dto.username && dto.username !== user.username) {
       const exists = await this.userRepo.findByUsername(dto.username);
-      if (exists) throw new ConflictException('Nome de usuário já em uso.');
+      if (exists) throw new ConflictException('Username already taken.');
       updates.username = dto.username.toLowerCase().trim();
     }
 
     if (dto.email && dto.email !== user.email) {
       const exists = await this.userRepo.findByEmail(dto.email);
-      if (exists) throw new ConflictException('E-mail já em uso.');
+      if (exists) throw new ConflictException('Email already in use.');
       updates.email = dto.email.toLowerCase().trim();
     }
 
@@ -93,13 +93,13 @@ export class UsersService implements OnApplicationBootstrap {
 
     if (dto.username && dto.username !== user.username) {
       const exists = await this.userRepo.findByUsername(dto.username);
-      if (exists) throw new ConflictException('Nome de usuário já em uso.');
+      if (exists) throw new ConflictException('Username already taken.');
       updates.username = dto.username.toLowerCase().trim();
     }
 
     if (dto.email && dto.email !== user.email) {
       const exists = await this.userRepo.findByEmail(dto.email);
-      if (exists) throw new ConflictException('E-mail já em uso.');
+      if (exists) throw new ConflictException('Email already in use.');
       updates.email = dto.email.toLowerCase().trim();
     }
 

@@ -8,7 +8,7 @@ volumes:
 
 services:
 
-  # ── NestJS backend (API apenas) ──────────────────────────────────────────────
+  # ── NestJS backend (API only) ────────────────────────────────────────────────
   app:
     build:
       context: .
@@ -31,7 +31,7 @@ services:
       retries: 3
       start_period: 15s
 
-  # ── React frontend (nginx serve static + proxy para o backend) ───────────────
+  # ── React frontend (nginx serves static files + proxies to backend) ──────────
   frontend:
     build:
       context: ./client
@@ -51,27 +51,3 @@ services:
       timeout: 5s
       retries: 3
       start_period: 10s
-
-  # ── MongoDB (opcional — descomentar e definir DATABASE=mongodb no .env) ──────
-  # mongo:
-  #   image: mongo:7
-  #   container_name: mcp-mongo
-  #   environment:
-  #     MONGO_INITDB_ROOT_USERNAME: mcp
-  #     MONGO_INITDB_ROOT_PASSWORD: mcp_password
-  #     MONGO_INITDB_DATABASE: mcp_db
-  #   volumes:
-  #     - mongo_data:/data/db
-  #   networks:
-  #     - backend
-  #   restart: unless-stopped
-  #   healthcheck:
-  #     test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
-  #     interval: 30s
-  #     timeout: 5s
-  #     retries: 3
-  #     start_period: 10s
-  #
-  # volumes:
-  #   mongo_data:
-  #     driver: local

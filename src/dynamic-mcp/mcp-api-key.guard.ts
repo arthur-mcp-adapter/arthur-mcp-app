@@ -31,16 +31,16 @@ export class McpApiKeyGuard implements CanActivate {
       typeof req.headers['auth'] === 'string' ? req.headers['auth'].trim() : null;
 
     if (!provided) {
-      throw new UnauthorizedException('API key ausente. Forneça o header: auth: <key>');
+      throw new UnauthorizedException('Missing API key. Provide the header: auth: <key>');
     }
 
     if (hasNewKeys) {
       const match = project.mcpApiKeys.some((k) => k.key === provided);
-      if (!match) throw new UnauthorizedException('API key inválida.');
+      if (!match) throw new UnauthorizedException('Invalid API key.');
       return true;
     }
 
-    if (provided !== project.mcpApiKey) throw new UnauthorizedException('API key inválida.');
+    if (provided !== project.mcpApiKey) throw new UnauthorizedException('Invalid API key.');
     return true;
   }
 }

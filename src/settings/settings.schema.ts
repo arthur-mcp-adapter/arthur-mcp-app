@@ -3,16 +3,16 @@ import { Document } from 'mongoose';
 
 export type SettingsDocument = Settings & Document;
 
-/** Documento singleton — sempre buscado/atualizado pelo mesmo _id lógico */
+/** Singleton document — always fetched/updated by the same logical _id */
 @Schema({ timestamps: true })
 export class Settings {
   /** Slug fixo para garantir singleton */
   @Prop({ default: 'global', unique: true }) key: string;
 
-  /** URL pública do servidor (usada nos exemplos curl do frontend) */
+  /** Public server URL (used in curl examples on the frontend) */
   @Prop({ default: '' }) serverBaseUrl: string;
 
-  /** Timeout padrão para chamadas HTTP das tools (ms) */
+  /** Default timeout for tool HTTP calls (ms) */
   @Prop({ default: 30000 }) defaultTimeoutMs: number;
 
   /** SMTP para reset de senha */

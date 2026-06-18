@@ -79,7 +79,7 @@ export class MongoSwaggerProjectRepository implements ISwaggerProjectRepository 
   async save(record: SwaggerProjectRecord): Promise<SwaggerProjectRecord> {
     const { _id, ...data } = record;
     const doc = await this.model.findByIdAndUpdate(_id, { $set: data }, { new: true }).exec();
-    if (!doc) throw new NotFoundException('Projeto não encontrado.');
+    if (!doc) throw new NotFoundException('Project not found.');
     return this.toRecord(doc, true);
   }
 

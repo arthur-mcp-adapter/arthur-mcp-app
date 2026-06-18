@@ -55,7 +55,7 @@ export class AuthService {
       this.users.findByUsername(username),
       this.users.findByEmail(email),
     ]);
-    if (byUsername || byEmail) throw new ConflictException('Usuário ou e-mail já cadastrado');
+    if (byUsername || byEmail) throw new ConflictException('Username or email already registered');
     const user = await this.users.create(username, password, email);
     return this.login({ _id: user._id, username: user.username, role: user.role });
   }
@@ -84,25 +84,25 @@ export class AuthService {
         await transporter.sendMail({
           from: settings.smtpFrom || settings.smtpUser,
           to: email,
-          subject: 'Redefinição de senha — Arthur MCP Adapter',
-          text: `Clique no link para redefinir sua senha (válido por 1 hora):\n\n${resetLink}`,
-          html: `<p>Clique no link para redefinir sua senha (válido por 1 hora):</p><p><a href="${resetLink}">${resetLink}</a></p>`,
+          subject: 'Password reset — Arthur MCP Adapter',
+          text: `Click the link to reset your password (valid for 1 hour):\n\n${resetLink}`,
+          html: `<p>Click the link to reset your password (valid for 1 hour):</p><p><a href="${resetLink}">${resetLink}</a></p>`,
         });
       } catch (err: any) {
         this.logger.error(`Falha ao enviar e-mail de reset: ${err?.message}`);
       }
     } else {
-      this.logger.warn(`SMTP não configurado. Link de reset para ${email}: ${resetLink}`);
+      this.logger.warn(`SMTP not configured. Reset link for ${email}: ${resetLink}`);
     }
   }
 
   async resetPassword(token: string, newPassword: string): Promise<void> {
     const record = await this.resetRepo.findByToken(token);
-    if (!record) throw new BadRequestException('Token inválido ou já utilizado.');
+    if (!record) throw new BadRequestException('Invalid or already used token.');
     if (record.expiresAt < new Date()) throw new BadRequestException('Token expirado.');
 
     const user = await this.users.findById(record.userId);
-    if (!user) throw new NotFoundException('Usuário não encontrado.');
+    if (!user) throw new NotFoundException('User not found.');
 
     await this.users.updateByAdmin(record.userId, { password: newPassword });
     await this.resetRepo.markUsed(record._id);

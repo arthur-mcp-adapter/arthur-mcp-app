@@ -45,7 +45,7 @@ export class RateLimitGuard implements CanActivate {
       throw new HttpException(
         {
           statusCode: HttpStatus.TOO_MANY_REQUESTS,
-          message: `Rate limit excedido: máximo de ${requestsPerMinute} req/min. Tente novamente em ${retryAfterSec}s.`,
+          message: `Rate limit exceeded: maximum ${requestsPerMinute} req/min. Retry after ${retryAfterSec}s.`,
         },
         HttpStatus.TOO_MANY_REQUESTS,
       );

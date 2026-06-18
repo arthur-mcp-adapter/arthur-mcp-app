@@ -73,7 +73,7 @@ export class DynamicMcpService {
     if (cached && cached.expiresAt > Date.now()) return cached;
 
     const project = await this.projectRepo.findById(projectId);
-    if (!project) throw new NotFoundException(`Projeto ${projectId} não encontrado.`);
+    if (!project) throw new NotFoundException(`Project ${projectId} not found.`);
 
     const entry: CachedProject = {
       tools: project.tools ?? [],
@@ -120,15 +120,15 @@ export class DynamicMcpService {
       this.logger.log(`CallTool → "${toolName}" | args: ${JSON.stringify(args)}`);
 
       if (!tool) {
-        this.logger.warn(`Tool não encontrada: "${toolName}" | disponíveis: [${[...toolMap.keys()].join(', ')}]`);
-        this.executionLogs.log({ projectId, projectName: name, toolName, source: 'mcp', isError: true, statusCode: 404, errorMessage: 'Tool não encontrada', responseTimeMs: Date.now() - t0 });
+        this.logger.warn(`Tool not found: "${toolName}" | available: [${[...toolMap.keys()].join(', ')}]`);
+        this.executionLogs.log({ projectId, projectName: name, toolName, source: 'mcp', isError: true, statusCode: 404, errorMessage: 'Tool not found', responseTimeMs: Date.now() - t0 });
         return { content: [{ type: 'text' as const, text: `Tool desconhecida: ${toolName}` }], isError: true };
       }
 
       if (!tool.endpointRef) {
-        this.logger.error(`Tool "${toolName}" não possui endpointRef — dados podem estar desatualizados. Re-faça o upload.`);
+        this.logger.error(`Tool "${toolName}" has no endpointRef — data may be stale. Re-upload the spec.`);
         this.executionLogs.log({ projectId, projectName: name, toolName, source: 'mcp', isError: true, statusCode: 500, errorMessage: 'endpointRef ausente', responseTimeMs: Date.now() - t0 });
-        return { content: [{ type: 'text' as const, text: `Configuração interna inválida para "${toolName}". Re-faça o upload do spec.` }], isError: true };
+        return { content: [{ type: 'text' as const, text: `Invalid internal configuration for "${toolName}". Re-upload the spec.` }], isError: true };
       }
 
       const validationErrors = validateToolArgs(args, tool.inputSchema);
@@ -166,7 +166,7 @@ export class DynamicMcpService {
     const { tools: allTools, auth, name } = await this.getProjectData(projectId);
 
     const tool = allTools.find((t) => t.name === toolName);
-    if (!tool) throw new NotFoundException(`Ferramenta "${toolName}" não encontrada.`);
+    if (!tool) throw new NotFoundException(`Tool "${toolName}" not found.`);
 
     const t0 = Date.now();
 

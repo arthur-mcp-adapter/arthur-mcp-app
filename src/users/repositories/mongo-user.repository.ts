@@ -62,7 +62,7 @@ export class MongoUserRepository implements IUserRepository {
 
   async update(id: string, data: Partial<Omit<UserRecord, '_id'>>): Promise<UserRecord> {
     const doc = await this.model.findById(id).exec();
-    if (!doc) throw new NotFoundException('Usuário não encontrado.');
+    if (!doc) throw new NotFoundException('User not found.');
     Object.assign(doc, data);
     await doc.save();
     return this.toRecord(doc);
@@ -70,6 +70,6 @@ export class MongoUserRepository implements IUserRepository {
 
   async delete(id: string): Promise<void> {
     const result = await this.model.findByIdAndDelete(id).exec();
-    if (!result) throw new NotFoundException('Usuário não encontrado.');
+    if (!result) throw new NotFoundException('User not found.');
   }
 }

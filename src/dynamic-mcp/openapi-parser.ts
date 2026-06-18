@@ -13,7 +13,7 @@ import type {
 const HTTP_METHODS = ['get', 'post', 'put', 'patch', 'delete', 'head', 'options'] as const;
 
 /**
- * Aceita um objeto já parseado (JSON/YAML) ou uma string de URL/caminho.
+ * Accepts a pre-parsed object (JSON/YAML) or a URL/path string.
  * Usa swagger-parser para resolver todos os $ref antes de normalizar.
  */
 export async function parseSpec(specInput: Record<string, unknown> | string): Promise<NormalizedSpec> {

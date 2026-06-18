@@ -109,7 +109,7 @@ export class SqliteSwaggerProjectRepository implements ISwaggerProjectRepository
 
   async save(record: SwaggerProjectRecord): Promise<SwaggerProjectRecord> {
     const e = await this.repo.findOne({ where: { id: record._id } });
-    if (!e) throw new NotFoundException('Projeto não encontrado.');
+    if (!e) throw new NotFoundException('Project not found.');
     Object.assign(e, this.toEntityFields(record));
     const saved = await this.repo.save(e);
     return this.toRecord(saved, true);

@@ -40,7 +40,7 @@ export class McpExceptionFilter implements ExceptionFilter {
     // @rekog/mcp-nest handles its own responses; skip if already sent
     if (res.headersSent) return;
 
-    // Rotas não-MCP retornam HTTP padrão
+    // Non-MCP routes return standard HTTP
     if (!req.path.startsWith('/mcp')) {
       const status = err instanceof HttpException ? err.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
       const message =

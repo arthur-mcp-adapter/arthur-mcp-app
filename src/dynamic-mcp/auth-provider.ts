@@ -1,7 +1,7 @@
 import type { AuthConfig } from './types';
 import type { PreparedRequest } from './request-builder';
 
-// ─── OAuth2 token cache (in-memory, por instância) ───────────────────────────
+// ─── OAuth2 token cache (in-memory, per instance) ────────────────────────────
 
 interface TokenEntry { token: string; expiresAt: number }
 const tokenCache = new Map<string, TokenEntry>();

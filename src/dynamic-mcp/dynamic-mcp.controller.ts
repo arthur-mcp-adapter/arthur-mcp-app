@@ -24,7 +24,7 @@ import { ProjectStateGuard } from './project-state.guard';
  * Suporte a clientes MCP (Claude Desktop, Cursor, etc.) que usam:
  *   POST   /mcp/project/:projectId   → ListTools / CallTool
  *   GET    /mcp/project/:projectId   → SSE (ping de conectividade)
- *   DELETE /mcp/project/:projectId   → Encerra sessão (no-op em stateless)
+ *   DELETE /mcp/project/:projectId   → End session (no-op in stateless mode)
  */
 @Controller('mcp/project')
 export class DynamicMcpController {

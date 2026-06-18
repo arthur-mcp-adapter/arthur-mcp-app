@@ -30,9 +30,9 @@ export class AuthController {
   @Post('forgot-password')
   @HttpCode(200)
   async forgotPassword(@Body('email') email: string): Promise<{ message: string }> {
-    if (!email) throw new Error('E-mail é obrigatório.');
+    if (!email) throw new Error('Email is required.');
     await this.authService.forgotPassword(email);
-    return { message: 'Se o e-mail estiver cadastrado, você receberá as instruções em breve.' };
+    return { message: 'If the email is registered, you will receive instructions shortly.' };
   }
 
   @Post('reset-password')
@@ -41,8 +41,8 @@ export class AuthController {
     @Body('token') token: string,
     @Body('newPassword') newPassword: string,
   ): Promise<{ message: string }> {
-    if (!token || !newPassword) throw new Error('Token e nova senha são obrigatórios.');
-    if (newPassword.length < 6) throw new Error('A senha deve ter no mínimo 6 caracteres.');
+    if (!token || !newPassword) throw new Error('Token and new password are required.');
+    if (newPassword.length < 6) throw new Error('Password must be at least 6 characters.');
     await this.authService.resetPassword(token, newPassword);
     return { message: 'Senha redefinida com sucesso.' };
   }

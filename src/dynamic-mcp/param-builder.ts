@@ -6,7 +6,7 @@ export interface BuiltParams {
 }
 
 /**
- * Achata path + query + header + body params em um único inputSchema MCP.
+ * Flattens path + query + header + body params into a single MCP inputSchema.
  * Cria o parameterMap para reconstruir a request HTTP a partir dos args.
  */
 export function buildParams(endpoint: NormalizedEndpoint): BuiltParams {
@@ -15,7 +15,7 @@ export function buildParams(endpoint: NormalizedEndpoint): BuiltParams {
   const parameterMap: ParameterMapping[] = [];
   const usedNames = new Set<string>();
 
-  // 1. Path params (sempre obrigatórios)
+  // 1. Path params (always required)
   for (const param of endpoint.parameters.filter((p) => p.in === 'path')) {
     const name = uniqueName(param.name, usedNames);
     properties[name] = { ...param.schema, description: param.description ?? param.schema.description };
@@ -31,7 +31,7 @@ export function buildParams(endpoint: NormalizedEndpoint): BuiltParams {
     parameterMap.push({ toolParamName: name, source: 'query', originalName: param.name, required: param.required });
   }
 
-  // 3. Header params (pula os padrão)
+  // 3. Header params (skip standard ones)
   const skipHeaders = new Set(['content-type', 'accept', 'authorization']);
   for (const param of endpoint.parameters.filter(
     (p) => p.in === 'header' && !skipHeaders.has(p.name.toLowerCase()),
@@ -47,7 +47,7 @@ export function buildParams(endpoint: NormalizedEndpoint): BuiltParams {
     const bodySchema = endpoint.requestBody.schema;
 
     if (bodySchema.properties && Object.keys(bodySchema.properties).length <= 15) {
-      // Achata as props do body no nível superior
+      // Flatten body props to top level
       for (const [propName, propSchema] of Object.entries(bodySchema.properties)) {
         const name = uniqueName(propName, usedNames, 'body');
         properties[name] = propSchema;

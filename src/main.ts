@@ -13,7 +13,7 @@ async function bootstrap() {
 
   const allowedOrigins = process.env.CORS_ORIGIN
     ? process.env.CORS_ORIGIN.split(',').map((o) => o.trim())
-    : true; // permite qualquer origem se CORS_ORIGIN não estiver definido
+    : true; // allow all origins if CORS_ORIGIN is not set
   app.enableCors({ origin: allowedOrigins, credentials: true });
 
   // Prefixo global /api — exclui endpoints MCP e health (acessados diretamente)
@@ -28,11 +28,11 @@ async function bootstrap() {
 
   app.enableShutdownHooks();
 
-  // Serve arquivos estáticos do build do Vite (usado quando não há nginx na frente)
+  // Serve Vite build static files (used when nginx is not in front)
   const publicPath = join(__dirname, 'public');
   app.use(express.static(publicPath));
 
-  // SPA fallback: rotas do React Router (ex: /dashboard) retornam index.html
+  // SPA fallback: React Router routes (e.g. /dashboard) return index.html
   app.useGlobalFilters(new SpaFilter());
 
   const port = parseInt(process.env.PORT, 10) || 3000;
