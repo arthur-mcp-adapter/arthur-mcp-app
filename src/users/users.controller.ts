@@ -27,7 +27,7 @@ export class UsersController {
   @Get('me')
   async getMe(@Request() req: any) {
     const user = await this.usersService.findById(req.user.userId);
-    const { password: _, ...safe } = (user as any).toObject();
+    const { password: _, ...safe } = user;
     return safe;
   }
 

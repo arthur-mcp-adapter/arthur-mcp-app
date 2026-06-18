@@ -1,21 +1,17 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js';
-import {
-  SwaggerProject,
-  SwaggerProjectDocument,
-} from '../swagger/swagger-project.schema';
 import type { AuthConfig, GeneratedTool, JsonSchema } from './types';
 import { buildRequest } from './request-builder';
 import { executeRequest } from './http-client';
 import { mapResponse, McpToolResult } from './response-mapper';
 import { applyAuth } from './auth-provider';
 import { ExecutionLogsService } from '../execution-logs/execution-logs.service';
+import { PROJECT_REPO } from '../database/database.tokens';
+import { ISwaggerProjectRepository } from '../swagger/swagger-project.repository';
 
 interface CachedProject {
   tools: GeneratedTool[];
@@ -64,8 +60,7 @@ export class DynamicMcpService {
   private readonly CACHE_TTL_MS = 60_000;
 
   constructor(
-    @InjectModel(SwaggerProject.name)
-    private readonly projectModel: Model<SwaggerProjectDocument>,
+    @Inject(PROJECT_REPO) private readonly projectRepo: ISwaggerProjectRepository,
     private readonly executionLogs: ExecutionLogsService,
   ) {}
 
@@ -77,7 +72,7 @@ export class DynamicMcpService {
     const cached = this.projectCache.get(projectId);
     if (cached && cached.expiresAt > Date.now()) return cached;
 
-    const project = await this.projectModel.findById(projectId).exec();
+    const project = await this.projectRepo.findById(projectId);
     if (!project) throw new NotFoundException(`Projeto ${projectId} não encontrado.`);
 
     const entry: CachedProject = {
@@ -104,7 +99,6 @@ export class DynamicMcpService {
       { capabilities: { tools: {} } },
     );
 
-    // ListTools
     server.setRequestHandler(ListToolsRequestSchema, async () => ({
       tools: tools.map((t) => ({
         name: t.name,
@@ -117,7 +111,6 @@ export class DynamicMcpService {
       })),
     }));
 
-    // CallTool
     server.setRequestHandler(CallToolRequestSchema, async (req): Promise<any> => {
       const args = (req.params.arguments ?? {}) as Record<string, unknown>;
       const toolName = req.params.name;
@@ -129,19 +122,13 @@ export class DynamicMcpService {
       if (!tool) {
         this.logger.warn(`Tool não encontrada: "${toolName}" | disponíveis: [${[...toolMap.keys()].join(', ')}]`);
         this.executionLogs.log({ projectId, projectName: name, toolName, source: 'mcp', isError: true, statusCode: 404, errorMessage: 'Tool não encontrada', responseTimeMs: Date.now() - t0 });
-        return {
-          content: [{ type: 'text' as const, text: `Tool desconhecida: ${toolName}` }],
-          isError: true,
-        };
+        return { content: [{ type: 'text' as const, text: `Tool desconhecida: ${toolName}` }], isError: true };
       }
 
       if (!tool.endpointRef) {
         this.logger.error(`Tool "${toolName}" não possui endpointRef — dados podem estar desatualizados. Re-faça o upload.`);
         this.executionLogs.log({ projectId, projectName: name, toolName, source: 'mcp', isError: true, statusCode: 500, errorMessage: 'endpointRef ausente', responseTimeMs: Date.now() - t0 });
-        return {
-          content: [{ type: 'text' as const, text: `Configuração interna inválida para "${toolName}". Re-faça o upload do spec.` }],
-          isError: true,
-        };
+        return { content: [{ type: 'text' as const, text: `Configuração interna inválida para "${toolName}". Re-faça o upload do spec.` }], isError: true };
       }
 
       const validationErrors = validateToolArgs(args, tool.inputSchema);
@@ -155,33 +142,22 @@ export class DynamicMcpService {
       try {
         let httpReq = buildRequest(args, tool.endpointRef);
         httpReq = await applyAuth(httpReq, auth);
-
         this.logger.log(`→ HTTP ${httpReq.method} ${httpReq.url}`);
-
         const httpRes = await executeRequest(httpReq);
-
         this.logger.log(`← HTTP ${httpRes.status} ${httpRes.statusText}`);
-
         const result = mapResponse(httpRes);
         this.executionLogs.log({ projectId, projectName: name, toolName, source: 'mcp', statusCode: httpRes.status, responseTimeMs: Date.now() - t0, isError: result.isError ?? false });
         return result;
       } catch (err: any) {
         this.logger.error(`Erro ao executar "${toolName}": ${err?.message}`);
         this.executionLogs.log({ projectId, projectName: name, toolName, source: 'mcp', isError: true, statusCode: 500, errorMessage: err?.message, responseTimeMs: Date.now() - t0 });
-        return {
-          content: [{ type: 'text' as const, text: `Erro: ${err?.message ?? 'Erro desconhecido'}` }],
-          isError: true,
-        };
+        return { content: [{ type: 'text' as const, text: `Erro: ${err?.message ?? 'Erro desconhecido'}` }], isError: true };
       }
     });
 
     return server;
   }
 
-  /**
-   * Executa uma tool diretamente — sem protocolo MCP.
-   * Usado pelo endpoint REST de teste no frontend.
-   */
   async executeTool(
     projectId: string,
     toolName: string,
@@ -211,10 +187,7 @@ export class DynamicMcpService {
     } catch (err: any) {
       this.logger.error(`Erro ao executar ${toolName}: ${err?.message}`);
       this.executionLogs.log({ projectId, projectName: name, toolName, source: 'direct', isError: true, statusCode: 500, errorMessage: err?.message, responseTimeMs: Date.now() - t0 });
-      return {
-        content: [{ type: 'text', text: `Erro: ${err?.message ?? 'Erro desconhecido'}` }],
-        isError: true,
-      };
+      return { content: [{ type: 'text', text: `Erro: ${err?.message ?? 'Erro desconhecido'}` }], isError: true };
     }
   }
 }

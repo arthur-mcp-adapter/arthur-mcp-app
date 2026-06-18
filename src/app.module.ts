@@ -1,10 +1,9 @@
 import { Module } from '@nestjs/common';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
-import { MongooseModule } from '@nestjs/mongoose';
 
-import { config } from './config/configuration';
 import { validateEnv } from './config/env.validation';
+import { DatabaseModule } from './database/database.module';
 import { AuthModule } from './auth/auth.module';
 import { SwaggerModule } from './swagger/swagger.module';
 import { DynamicMcpModule } from './dynamic-mcp/dynamic-mcp.module';
@@ -22,9 +21,7 @@ import { EmailFeaturesModule } from './email/email-features.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, validate: validateEnv }),
-    MongooseModule.forRootAsync({
-      useFactory: () => ({ uri: config.mongoUri }),
-    }),
+    DatabaseModule.forRoot(),
     AuthModule,
     SwaggerModule,
     DynamicMcpModule,

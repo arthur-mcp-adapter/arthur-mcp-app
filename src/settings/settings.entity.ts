@@ -1,0 +1,31 @@
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+
+@Entity('settings')
+export class SettingsEntity {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
+  @Column({ unique: true, default: 'global' })
+  key: string;
+
+  @Column({ default: '' })
+  serverBaseUrl: string;
+
+  @Column({ default: 30000 })
+  defaultTimeoutMs: number;
+
+  @Column({ default: '' })
+  smtpHost: string;
+
+  @Column({ default: 587 })
+  smtpPort: number;
+
+  @Column({ default: '' })
+  smtpUser: string;
+
+  @Column({ default: '' })
+  smtpPass: string;
+
+  @Column({ default: '' })
+  smtpFrom: string;
+}

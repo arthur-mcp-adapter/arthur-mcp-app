@@ -1,21 +1,21 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { CanActivate, ExecutionContext, Inject, Injectable } from '@nestjs/common';
 import type { Request, Response } from 'express';
-import { SwaggerProject, SwaggerProjectDocument } from '../swagger/swagger-project.schema';
+import { PROJECT_REPO } from '../database/database.tokens';
+import { ISwaggerProjectRepository } from '../swagger/swagger-project.repository';
 
 const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
 function nowInTz(timezone: string): { hour: number; day: number } {
   try {
     const parts = new Intl.DateTimeFormat('en-US', {
-      hour: 'numeric', hour12: false,
+      hour: 'numeric',
+      hour12: false,
       weekday: 'short',
       timeZone: timezone,
     }).formatToParts(new Date());
-    const hour = parseInt(parts.find(p => p.type === 'hour')?.value ?? '0', 10);
+    const hour = parseInt(parts.find((p) => p.type === 'hour')?.value ?? '0', 10);
     const dayMap: Record<string, number> = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };
-    const day = dayMap[parts.find(p => p.type === 'weekday')?.value ?? ''] ?? new Date().getUTCDay();
+    const day = dayMap[parts.find((p) => p.type === 'weekday')?.value ?? ''] ?? new Date().getUTCDay();
     return { hour, day };
   } catch {
     return { hour: new Date().getUTCHours(), day: new Date().getUTCDay() };
@@ -25,8 +25,7 @@ function nowInTz(timezone: string): { hour: number; day: number } {
 @Injectable()
 export class ProjectStateGuard implements CanActivate {
   constructor(
-    @InjectModel(SwaggerProject.name)
-    private readonly projectModel: Model<SwaggerProjectDocument>,
+    @Inject(PROJECT_REPO) private readonly projectRepo: ISwaggerProjectRepository,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -34,11 +33,7 @@ export class ProjectStateGuard implements CanActivate {
     const res = context.switchToHttp().getResponse<Response>();
     const projectId = req.params['projectId'];
 
-    const project = await this.projectModel
-      .findById(projectId)
-      .select('isPaused maintenanceMode availabilityWindow name')
-      .exec();
-
+    const project = await this.projectRepo.findById(projectId);
     if (!project) return true;
 
     if (project.isPaused) {
@@ -50,8 +45,9 @@ export class ProjectStateGuard implements CanActivate {
     }
 
     if (project.maintenanceMode?.enabled) {
-      const msg = project.maintenanceMode.message?.trim()
-        || `The project "${project.name}" is under maintenance. Please try again later.`;
+      const msg =
+        project.maintenanceMode.message?.trim() ||
+        `The project "${project.name}" is under maintenance. Please try again later.`;
       res.status(503).json({ error: 'Maintenance mode', message: msg });
       return false;
     }
@@ -62,16 +58,13 @@ export class ProjectStateGuard implements CanActivate {
       const { hour, day } = nowInTz(tz);
       const entries = Array.isArray(schedule) ? schedule : [];
 
-      const allowed = entries.some(e =>
-        e.day === day && hour >= e.startHour && hour < e.endHour
-      );
+      const allowed = entries.some((e) => e.day === day && hour >= e.startHour && hour < e.endHour);
 
       if (!allowed) {
-        const summary = entries.length === 0
-          ? 'No availability windows configured.'
-          : entries
-              .map(e => `${DAY_NAMES[e.day]} ${e.startHour}:00–${e.endHour}:00`)
-              .join(', ');
+        const summary =
+          entries.length === 0
+            ? 'No availability windows configured.'
+            : entries.map((e) => `${DAY_NAMES[e.day]} ${e.startHour}:00–${e.endHour}:00`).join(', ');
         res.status(503).json({
           error: 'Outside availability window',
           message: `This project is not available right now (${DAY_NAMES[day]} ${hour}:xx ${tz}). Allowed: ${summary}.`,

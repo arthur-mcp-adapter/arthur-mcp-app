@@ -1,14 +1,12 @@
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { SwaggerProject, SwaggerProjectDocument } from '../swagger/swagger-project.schema';
+import { Inject, Injectable } from '@nestjs/common';
+import { PROJECT_REPO } from '../database/database.tokens';
+import { ISwaggerProjectRepository } from '../swagger/swagger-project.repository';
 import { ExecutionLogsService } from '../execution-logs/execution-logs.service';
 
 @Injectable()
 export class DashboardService {
   constructor(
-    @InjectModel(SwaggerProject.name)
-    private readonly projectModel: Model<SwaggerProjectDocument>,
+    @Inject(PROJECT_REPO) private readonly projectRepo: ISwaggerProjectRepository,
     private readonly executionLogs: ExecutionLogsService,
   ) {}
 
@@ -19,7 +17,6 @@ export class DashboardService {
     const callsInPeriod = logs.length;
     const errorsInPeriod = logs.filter((e) => e.isError).length;
 
-    // top 5 tools
     const toolMap = new Map<string, { count: number; projectName: string }>();
     for (const e of logs) {
       const t = toolMap.get(e.toolName) ?? { count: 0, projectName: e.projectName };
@@ -31,7 +28,6 @@ export class DashboardService {
       .sort((a, b) => b.count - a.count)
       .slice(0, 5);
 
-    // calls grouped by bucket
     const bucketMap = new Map<string, { calls: number; errors: number }>();
     for (const e of logs) {
       const key = this.formatBucket(e.createdAt, bucketType);
@@ -44,12 +40,11 @@ export class DashboardService {
       .map(([_id, v]) => ({ _id, ...v }))
       .sort((a, b) => a._id.localeCompare(b._id));
 
-    const [totalProjects, projectsWithKey, allProjects] = await Promise.all([
-      this.projectModel.countDocuments(),
-      this.projectModel.countDocuments({ mcpApiKey: { $exists: true, $ne: null } }),
-      this.projectModel.find().select('name tools tags status').exec(),
-    ]);
-
+    const allProjects = await this.projectRepo.findAll();
+    const totalProjects = allProjects.length;
+    const projectsWithKey = allProjects.filter(
+      (p) => p.mcpApiKey || (p.mcpApiKeys?.length ?? 0) > 0,
+    ).length;
     const totalTools = allProjects.reduce((s, p) => s + (p.tools?.length ?? 0), 0);
 
     return {
@@ -102,17 +97,19 @@ export class DashboardService {
     return `${d.getUTCFullYear()}-W${String(week).padStart(2, '0')}`;
   }
 
-  async getHealthSummary(): Promise<{ projectId: string; projectName: string; isPaused: boolean; errorRatePct: number; totalCalls: number; lastCallAt?: Date }[]> {
-    const projects = await this.projectModel.find().select('_id name isPaused').lean().exec();
-    const ids = projects.map((p) => String(p._id));
+  async getHealthSummary(): Promise<
+    { projectId: string; projectName: string; isPaused: boolean; errorRatePct: number; totalCalls: number; lastCallAt?: Date }[]
+  > {
+    const projects = await this.projectRepo.findAll();
+    const ids = projects.map((p) => p._id);
     const healthMap = this.executionLogs.getHealthSummary(ids);
 
     return projects.map((p) => {
-      const h = healthMap.get(String(p._id));
+      const h = healthMap.get(p._id);
       return {
-        projectId: String(p._id),
+        projectId: p._id,
         projectName: p.name,
-        isPaused: (p as any).isPaused ?? false,
+        isPaused: p.isPaused ?? false,
         errorRatePct: h?.errorRatePct ?? -1,
         totalCalls: h?.totalCalls ?? 0,
         lastCallAt: h?.lastCallAt,

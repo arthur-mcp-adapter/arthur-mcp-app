@@ -1,38 +1,22 @@
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { Settings, SettingsDocument } from './settings.schema';
+import { Inject, Injectable } from '@nestjs/common';
+import { SETTINGS_REPO } from '../database/database.tokens';
+import { ISettingsRepository, SettingsRecord } from './settings.repository';
 
 @Injectable()
 export class SettingsService {
-  constructor(
-    @InjectModel(Settings.name)
-    private readonly model: Model<SettingsDocument>,
-  ) {}
+  constructor(@Inject(SETTINGS_REPO) private readonly settingsRepo: ISettingsRepository) {}
 
-  async get(): Promise<SettingsDocument> {
-    let doc = await this.model.findOne({ key: 'global' }).exec();
-    if (!doc) {
-      doc = await this.model.create({ key: 'global' });
-    }
-    return doc;
+  async get(): Promise<SettingsRecord> {
+    return this.settingsRepo.getGlobal();
   }
 
-  async update(dto: Partial<Omit<Settings, 'key'>>): Promise<SettingsDocument> {
-    const doc = await this.model.findOneAndUpdate(
-      { key: 'global' },
-      { $set: dto },
-      { new: true, upsert: true },
-    ).exec();
-    return doc!;
+  async update(dto: Partial<Omit<SettingsRecord, '_id' | 'key'>>): Promise<SettingsRecord> {
+    return this.settingsRepo.updateGlobal(dto);
   }
 
-  /** Retorna apenas o smtpPass mascarado — não expõe a senha real na API */
-  async getSafe(): Promise<Omit<SettingsDocument, 'smtpPass'> & { smtpPassSet: boolean }> {
+  async getSafe(): Promise<Omit<SettingsRecord, 'smtpPass'> & { smtpPassSet: boolean }> {
     const doc = await this.get();
-    const obj = doc.toObject() as any;
-    const smtpPassSet = !!obj.smtpPass;
-    delete obj.smtpPass;
-    return { ...obj, smtpPassSet };
+    const { smtpPass, ...rest } = doc;
+    return { ...rest, smtpPassSet: !!smtpPass };
   }
 }

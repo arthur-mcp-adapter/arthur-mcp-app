@@ -1235,6 +1235,174 @@ export const API_TEMPLATES: ApiTemplate[] = [
       { name: 'get_models', description: 'List all TTS models available on ElevenLabs with their languages and features.', method: 'GET', path: '/models', params: [] },
     ],
   },
+
+  // ── Supabase ──────────────────────────────────────────────────────────────────
+  {
+    id: 'supabase',
+    name: 'Supabase',
+    tagline: 'PostgreSQL database via PostgREST',
+    description: 'Read-only access to any Supabase table using the auto-generated PostgREST REST API. Supports pagination, column selection, and row ordering. After creating this project, go to Settings and replace YOUR_PROJECT_ID in the base URL with your actual Supabase project reference (found in Dashboard → Settings → API).',
+    category: 'Database',
+    color: '#3ECF8E',
+    emoji: '🐘',
+    baseUrl: 'https://YOUR_PROJECT_ID.supabase.co/rest/v1',
+    auth: { type: 'api-key', hint: 'Use your project\'s anon public key from Supabase Dashboard → Settings → API → Project API Keys. This key is safe to use for read-only, public-access tables.', keyName: 'apikey', keyIn: 'header' },
+    signupUrl: 'https://supabase.com/dashboard',
+    docsUrl: 'https://supabase.com/docs/guides/api/rest/getting-started',
+    tools: [
+      {
+        name: 'list_rows',
+        description: 'List rows from a Supabase table with optional pagination, column selection, and ordering. The table parameter sets which table to query.',
+        method: 'GET',
+        path: '/{table}',
+        params: [
+          p.path('table', 'string', 'Table name, e.g. users or products'),
+          p.query('select', 'string', 'Columns to return, e.g. id,name,email — use * for all columns (default)'),
+          p.query('limit', 'integer', 'Maximum rows to return (default 100, max 1000)'),
+          p.query('offset', 'integer', 'Rows to skip for pagination, e.g. 100 for the second page'),
+          p.query('order', 'string', 'Sort column and direction, e.g. created_at.desc or name.asc'),
+        ],
+      },
+      {
+        name: 'get_row_by_id',
+        description: 'Get a single row by its primary key (id column). Pass the id as a PostgREST filter: prefix the value with "eq.", e.g. pass "eq.42" to match id = 42, or "eq.550e8400-e29b-41d4-a716-446655440000" for a UUID.',
+        method: 'GET',
+        path: '/{table}',
+        params: [
+          p.path('table', 'string', 'Table name, e.g. users or orders'),
+          p.query('id', 'string', 'PostgREST equality filter for the id column, e.g. eq.42 or eq.some-uuid', true, 'id'),
+          p.query('select', 'string', 'Columns to return, e.g. id,name,email or * for all'),
+        ],
+      },
+    ],
+  },
+
+  // ── PocketBase ────────────────────────────────────────────────────────────────
+  {
+    id: 'pocketbase',
+    name: 'PocketBase',
+    tagline: 'Open-source backend — collections via REST',
+    description: 'Read-only access to any PocketBase collection using its built-in REST API. Supports filtering with PocketBase filter syntax, sorting, pagination, and field expansion. After creating this project, update the base URL in Settings to your PocketBase instance (e.g. https://your-app.pockethost.io).',
+    category: 'Database',
+    color: '#B8DBE4',
+    emoji: '🗃️',
+    baseUrl: 'https://YOUR_DOMAIN.pocketbase.io',
+    auth: { type: 'bearer', hint: 'Use an admin or user token. To get an admin token: POST /api/admins/auth-with-password with {"identity":"email","password":"pass"}. For user auth: POST /api/collections/users/auth-with-password.' },
+    signupUrl: 'https://pocketbase.io',
+    docsUrl: 'https://pocketbase.io/docs/api-records/',
+    tools: [
+      {
+        name: 'list_records',
+        description: 'List records from a PocketBase collection with pagination, filtering, and sorting. Filter syntax examples: status=\'active\' && amount>100 | name~\'john\' (contains) | created>\'2024-01-01\'.',
+        method: 'GET',
+        path: '/api/collections/{collection}/records',
+        params: [
+          p.path('collection', 'string', 'Collection name, e.g. users or posts'),
+          p.query('page', 'integer', 'Page number (default 1)'),
+          p.query('perPage', 'integer', 'Records per page (default 30, max 500)'),
+          p.query('filter', 'string', 'Filter expression, e.g. status=\'active\' or created>\'2024-01-01\''),
+          p.query('sort', 'string', 'Sort fields, e.g. -created,name (prefix with - for descending)'),
+          p.query('fields', 'string', 'Comma-separated fields to return, e.g. id,name,email'),
+          p.query('expand', 'string', 'Relation fields to expand, e.g. user,category'),
+        ],
+      },
+      {
+        name: 'get_record',
+        description: 'Get a single PocketBase record by its ID from a collection.',
+        method: 'GET',
+        path: '/api/collections/{collection}/records/{id}',
+        params: [
+          p.path('collection', 'string', 'Collection name, e.g. posts or products'),
+          p.path('id', 'string', 'Record ID (15-character string)'),
+          p.query('fields', 'string', 'Comma-separated fields to return, e.g. id,title,content'),
+          p.query('expand', 'string', 'Relation fields to expand, e.g. author,tags'),
+        ],
+      },
+    ],
+  },
+
+  // ── Appwrite ──────────────────────────────────────────────────────────────────
+  {
+    id: 'appwrite',
+    name: 'Appwrite',
+    tagline: 'Open-source backend — databases via REST',
+    description: 'Read-only access to Appwrite database documents using the server-side REST API. Each tool requires your Appwrite Project ID as a header parameter. After creating this project, set the API key under Authentication. For self-hosted Appwrite, update the base URL in Settings.',
+    category: 'Database',
+    color: '#F02E65',
+    emoji: '🔺',
+    baseUrl: 'https://cloud.appwrite.io/v1',
+    auth: { type: 'api-key', hint: 'Create a Server API Key in the Appwrite Console → Project Settings → API Keys. Grant at least the "databases.read" scope.', keyName: 'x-appwrite-key', keyIn: 'header' },
+    signupUrl: 'https://cloud.appwrite.io',
+    docsUrl: 'https://appwrite.io/docs/references/cloud/server-rest/databases',
+    tools: [
+      {
+        name: 'list_documents',
+        description: 'List documents from an Appwrite collection. Requires the Appwrite Project ID as a header. Supports pagination via limit and offset.',
+        method: 'GET',
+        path: '/databases/{databaseId}/collections/{collectionId}/documents',
+        params: [
+          { name: 'x-appwrite-project', in: 'header', required: true, type: 'string', description: 'Your Appwrite Project ID, found in Project Settings → Project ID' },
+          p.path('databaseId', 'string', 'Database ID, found in Databases → select database → Settings'),
+          p.path('collectionId', 'string', 'Collection ID, found in Databases → collection → Settings'),
+          p.query('limit', 'integer', 'Maximum documents to return (default 25, max 5000)'),
+          p.query('offset', 'integer', 'Number of documents to skip for pagination'),
+        ],
+      },
+      {
+        name: 'get_document',
+        description: 'Get a single document from an Appwrite collection by its document ID.',
+        method: 'GET',
+        path: '/databases/{databaseId}/collections/{collectionId}/documents/{documentId}',
+        params: [
+          { name: 'x-appwrite-project', in: 'header', required: true, type: 'string', description: 'Your Appwrite Project ID, found in Project Settings → Project ID' },
+          p.path('databaseId', 'string', 'Database ID'),
+          p.path('collectionId', 'string', 'Collection ID'),
+          p.path('documentId', 'string', 'Document ID to retrieve'),
+        ],
+      },
+    ],
+  },
+
+  // ── Firebase / Firestore ──────────────────────────────────────────────────────
+  // {
+  //   id: 'firebase',
+  //   name: 'Firebase / Firestore',
+  //   tagline: 'NoSQL cloud database — read documents',
+  //   description: 'Read-only access to Google Firestore documents via the REST API. Each tool requires your Firebase project ID as a path parameter. Firestore returns documents as structured objects with typed fields (stringValue, integerValue, booleanValue, etc.). For authentication, use a Firebase ID token (client) or a Google service account access token (server).',
+  //   category: 'Database',
+  //   color: '#FFCA28',
+  //   emoji: '🔥',
+  //   baseUrl: 'https://firestore.googleapis.com/v1',
+  //   auth: { type: 'bearer', hint: 'For testing: sign in via Firebase Auth REST API (POST https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=YOUR_API_KEY) and use the returned idToken. For production: use a Google service account and generate an access token with the Cloud Firestore scope.' },
+  //   signupUrl: 'https://console.firebase.google.com',
+  //   docsUrl: 'https://firebase.google.com/docs/firestore/reference/rest',
+  //   tools: [
+  //     {
+  //       name: 'list_documents',
+  //       description: 'List all documents in a Firestore collection. Returns documents with their full field values as typed objects. Use pageSize and pageToken for pagination across large collections.',
+  //       method: 'GET',
+  //       path: '/projects/{project}/databases/(default)/documents/{collection}',
+  //       params: [
+  //         p.path('project', 'string', 'Firebase project ID, found in Project Settings → General → Project ID'),
+  //         p.path('collection', 'string', 'Firestore collection path, e.g. users or orders/2024/items for nested subcollections'),
+  //         p.query('pageSize', 'integer', 'Maximum documents per page (default 300)'),
+  //         p.query('pageToken', 'string', 'Pagination token from a previous response\'s nextPageToken field'),
+  //         p.query('orderBy', 'string', 'Field to order by, e.g. createTime desc'),
+  //       ],
+  //     },
+  //     {
+  //       name: 'get_document',
+  //       description: 'Get a specific Firestore document by its ID. Returns all fields as typed values (stringValue, integerValue, booleanValue, arrayValue, mapValue, etc.).',
+  //       method: 'GET',
+  //       path: '/projects/{project}/databases/(default)/documents/{collection}/{document}',
+  //       params: [
+  //         p.path('project', 'string', 'Firebase project ID'),
+  //         p.path('collection', 'string', 'Collection name, e.g. users or products'),
+  //         p.path('document', 'string', 'Document ID'),
+  //       ],
+  //     },
+  //   ],
+  // },
 ]
 
 export const TEMPLATE_CATEGORIES = ['All', ...Array.from(new Set(API_TEMPLATES.map((t) => t.category))).sort()]

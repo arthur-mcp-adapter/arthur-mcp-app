@@ -2,16 +2,16 @@ import * as crypto from 'crypto';
 import {
   BadRequestException,
   ConflictException,
+  Inject,
   Injectable,
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
 import { JwtService } from '@nestjs/jwt';
 import * as nodemailer from 'nodemailer';
 import { UsersService } from '../users/users.service';
-import { PasswordReset, PasswordResetDocument } from './password-reset.schema';
+import { PASSWORD_RESET_REPO } from '../database/database.tokens';
+import { IPasswordResetRepository } from './password-reset.repository';
 import { SettingsService } from '../settings/settings.service';
 
 export interface JwtPayload {
@@ -34,8 +34,7 @@ export class AuthService {
     private readonly users: UsersService,
     private readonly jwt: JwtService,
     private readonly settingsService: SettingsService,
-    @InjectModel(PasswordReset.name)
-    private readonly resetModel: Model<PasswordResetDocument>,
+    @Inject(PASSWORD_RESET_REPO) private readonly resetRepo: IPasswordResetRepository,
   ) {}
 
   async validateUser(username: string, password: string): Promise<AuthUser | null> {
@@ -43,7 +42,7 @@ export class AuthService {
     if (!user) return null;
     const valid = await this.users.validatePassword(password, user.password);
     if (!valid) return null;
-    return { _id: String(user._id), username: user.username, role: user.role };
+    return { _id: user._id, username: user.username, role: user.role };
   }
 
   login(user: AuthUser): { access_token: string } {
@@ -58,19 +57,18 @@ export class AuthService {
     ]);
     if (byUsername || byEmail) throw new ConflictException('Usuário ou e-mail já cadastrado');
     const user = await this.users.create(username, password, email);
-    return this.login({ _id: String(user._id), username: user.username, role: user.role });
+    return this.login({ _id: user._id, username: user.username, role: user.role });
   }
 
   async forgotPassword(email: string): Promise<void> {
     const user = await this.users.findByEmail(email);
-    if (!user) return; // não revela se o e-mail existe
+    if (!user) return;
 
-    // Invalida tokens anteriores
-    await this.resetModel.deleteMany({ userId: String(user._id) }).exec();
+    await this.resetRepo.deleteByUserId(user._id);
 
     const token = crypto.randomBytes(32).toString('hex');
-    const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1h
-    await this.resetModel.create({ userId: String(user._id), token, expiresAt });
+    const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
+    await this.resetRepo.create({ userId: user._id, token, expiresAt });
 
     const settings = await this.settingsService.get();
     const baseUrl = settings.serverBaseUrl || 'http://localhost:3000';
@@ -99,7 +97,7 @@ export class AuthService {
   }
 
   async resetPassword(token: string, newPassword: string): Promise<void> {
-    const record = await this.resetModel.findOne({ token, used: false }).exec();
+    const record = await this.resetRepo.findByToken(token);
     if (!record) throw new BadRequestException('Token inválido ou já utilizado.');
     if (record.expiresAt < new Date()) throw new BadRequestException('Token expirado.');
 
@@ -107,7 +105,6 @@ export class AuthService {
     if (!user) throw new NotFoundException('Usuário não encontrado.');
 
     await this.users.updateByAdmin(record.userId, { password: newPassword });
-    record.used = true;
-    await record.save();
+    await this.resetRepo.markUsed(record._id);
   }
 }
