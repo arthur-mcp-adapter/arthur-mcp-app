@@ -24,6 +24,8 @@ export class SqliteSwaggerProjectRepository implements ISwaggerProjectRepository
       errorMessage: e.errorMessage,
       mcpApiKey: e.mcpApiKey,
       mcpApiKeys: e.mcpApiKeys ? JSON.parse(e.mcpApiKeys) : [],
+      oauthClientId: e.oauthClientId,
+      oauthClientSecret: e.oauthClientSecret,
       tags: e.tags ? JSON.parse(e.tags) : [],
       rateLimit: e.rateLimit ? JSON.parse(e.rateLimit) : { enabled: false, requestsPerMinute: 60 },
       isPaused: e.isPaused ?? false,
@@ -52,6 +54,8 @@ export class SqliteSwaggerProjectRepository implements ISwaggerProjectRepository
     if (data.errorMessage !== undefined) e.errorMessage = data.errorMessage;
     if ('mcpApiKey' in data) e.mcpApiKey = data.mcpApiKey as string | undefined;
     if (data.mcpApiKeys !== undefined) e.mcpApiKeys = JSON.stringify(data.mcpApiKeys);
+    if ('oauthClientId' in data) e.oauthClientId = data.oauthClientId as string | undefined;
+    if ('oauthClientSecret' in data) e.oauthClientSecret = data.oauthClientSecret as string | undefined;
     if (data.tags !== undefined) e.tags = JSON.stringify(data.tags);
     if (data.rateLimit !== undefined) e.rateLimit = JSON.stringify(data.rateLimit);
     if (data.isPaused !== undefined) e.isPaused = data.isPaused;

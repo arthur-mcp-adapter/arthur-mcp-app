@@ -17,6 +17,7 @@ import { SettingsModule } from './settings/settings.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { ShareModule } from './share/share.module';
 import { EmailFeaturesModule } from './email/email-features.module';
+import { OAuthModule } from './oauth/oauth.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { EmailFeaturesModule } from './email/email-features.module';
     DashboardModule,
     ShareModule,
     EmailFeaturesModule,
+    OAuthModule,
   ],
   providers: [
     {

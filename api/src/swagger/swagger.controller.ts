@@ -207,6 +207,14 @@ export class SwaggerController {
     return this.swaggerService.updateBaseUrl(id, baseUrl.trim());
   }
 
+  @Patch('projects/:id/oauth-client')
+  updateOAuthClient(
+    @Param('id') id: string,
+    @Body() dto: { oauthClientId: string | null; oauthClientSecret: string | null },
+  ) {
+    return this.swaggerService.updateOAuthClient(id, dto);
+  }
+
   @Patch('projects/:id/rate-limit')
   updateRateLimit(
     @Param('id') id: string,

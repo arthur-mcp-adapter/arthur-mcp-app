@@ -20,6 +20,8 @@ export interface SwaggerProjectRecord {
   errorMessage?: string;
   mcpApiKey?: string | null;
   mcpApiKeys: McpApiKeyEntry[];
+  oauthClientId?: string | null;
+  oauthClientSecret?: string | null;
   tags: string[];
   rateLimit: { enabled: boolean; requestsPerMinute: number };
   isPaused: boolean;

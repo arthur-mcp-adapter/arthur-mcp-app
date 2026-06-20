@@ -1,3 +1,4 @@
+import * as jwt from 'jsonwebtoken';
 import {
   CanActivate,
   ExecutionContext,
@@ -8,6 +9,7 @@ import {
 import type { Request } from 'express';
 import { PROJECT_REPO } from '../database/database.tokens';
 import { ISwaggerProjectRepository } from '../swagger/swagger-project.repository';
+import { config } from '../config/configuration';
 
 @Injectable()
 export class McpApiKeyGuard implements CanActivate {
@@ -17,6 +19,23 @@ export class McpApiKeyGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const req = context.switchToHttp().getRequest<Request>();
+
+    // Accept OAuth Bearer tokens as a valid auth method
+    const authHeader = req.headers['authorization'];
+    if (typeof authHeader === 'string' && authHeader.startsWith('Bearer ')) {
+      const token = authHeader.slice(7);
+      try {
+        const payload = jwt.verify(token, config.jwtSecret) as { projectId?: string };
+        const projectId = req.params['projectId'];
+        if (payload.projectId && projectId && payload.projectId !== projectId) {
+          throw new UnauthorizedException('Token not valid for this project');
+        }
+        return true;
+      } catch (err: any) {
+        throw new UnauthorizedException(err?.message ?? 'Invalid or expired OAuth token');
+      }
+    }
+
     const projectId = req.params['projectId'];
 
     const project = await this.projectRepo.findById(projectId);

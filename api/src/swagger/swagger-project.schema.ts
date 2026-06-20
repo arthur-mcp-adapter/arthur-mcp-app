@@ -50,6 +50,12 @@ export class SwaggerProject {
   @Prop({ type: [Object], default: [] })
   mcpApiKeys: McpApiKeyEntry[];
 
+  @Prop()
+  oauthClientId?: string;
+
+  @Prop()
+  oauthClientSecret?: string;
+
   @Prop({ type: [String], default: [] })
   tags: string[];
 

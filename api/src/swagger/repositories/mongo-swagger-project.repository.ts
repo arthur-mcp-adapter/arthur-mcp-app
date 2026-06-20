@@ -25,6 +25,8 @@ export class MongoSwaggerProjectRepository implements ISwaggerProjectRepository 
       errorMessage: obj.errorMessage,
       mcpApiKey: obj.mcpApiKey,
       mcpApiKeys: obj.mcpApiKeys ?? [],
+      oauthClientId: obj.oauthClientId,
+      oauthClientSecret: obj.oauthClientSecret,
       tags: obj.tags ?? [],
       rateLimit: obj.rateLimit ?? { enabled: false, requestsPerMinute: 60 },
       isPaused: obj.isPaused ?? false,

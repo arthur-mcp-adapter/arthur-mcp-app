@@ -283,6 +283,18 @@ export class SwaggerService {
     });
   }
 
+  async updateOAuthClient(
+    id: string,
+    dto: { oauthClientId: string | null; oauthClientSecret: string | null },
+  ): Promise<SwaggerProjectRecord> {
+    const project = await this.projectRepo.update(id, {
+      oauthClientId: dto.oauthClientId ?? undefined,
+      oauthClientSecret: dto.oauthClientSecret ?? undefined,
+    });
+    if (!project) throw new NotFoundException('Project not found.');
+    return project;
+  }
+
   async updateAuth(id: string, auth: AuthConfig): Promise<SwaggerProjectRecord> {
     const project = await this.projectRepo.update(id, { auth });
     if (!project) throw new NotFoundException('Project not found.');
