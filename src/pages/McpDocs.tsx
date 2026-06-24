@@ -76,6 +76,7 @@ export interface DocsResource {
   uri: string
   description?: string
   mimeType?: string
+  enabled?: boolean
 }
 
 export interface DocsProject {
@@ -88,7 +89,7 @@ export interface DocsProject {
   tools: GeneratedTool[]
   mcpApiKey?: string
   resources?: DocsResource[]
-  prompts?: Array<{ promptId: string }>
+  prompts?: Array<{ promptId: string; enabled?: boolean }>
 }
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -658,7 +659,8 @@ export function McpDocsContent({ project: server, projectId }: { project: DocsPr
   const [resolvedPrompts, setResolvedPrompts] = useState<GlobalPrompt[]>([])
 
   useEffect(() => {
-    const ids = (server.prompts ?? []).map((p) => p.promptId)
+    const enabledRefs = (server.prompts ?? []).filter((p) => p.enabled !== false)
+    const ids = enabledRefs.map((p) => p.promptId)
     if (ids.length === 0) { setResolvedPrompts([]); return }
     api.get<GlobalPrompt[]>('/prompts')
       .then((r) => setResolvedPrompts(r.data.filter((p) => ids.includes(p.id))))
@@ -735,18 +737,21 @@ export function McpDocsContent({ project: server, projectId }: { project: DocsPr
         : filteredTools.map((tool) => <ToolCard key={tool.name} tool={tool} projectId={projectId} mcpApiKey={server.mcpApiKey} />)}
 
       {/* Resources */}
-      {(server.resources ?? []).length > 0 && (
-        <Box mt={4}>
-          <Divider sx={{ mb: 3 }} />
-          <Box display="flex" alignItems="center" gap={1} mb={2}>
-            <Typography variant="h6" fontWeight={700}>Resources</Typography>
-            <Chip label={`${server.resources!.length} resources`} size="small" color="primary" variant="outlined" />
+      {(() => {
+        const enabledResources = (server.resources ?? []).filter((r) => r.enabled !== false)
+        return enabledResources.length > 0 ? (
+          <Box mt={4}>
+            <Divider sx={{ mb: 3 }} />
+            <Box display="flex" alignItems="center" gap={1} mb={2}>
+              <Typography variant="h6" fontWeight={700}>Resources</Typography>
+              <Chip label={`${enabledResources.length} resources`} size="small" color="primary" variant="outlined" />
+            </Box>
+            {enabledResources.map((r) => (
+              <ResourceCard key={r.id} resource={r} projectId={projectId} mcpApiKey={server.mcpApiKey} />
+            ))}
           </Box>
-          {server.resources!.map((r) => (
-            <ResourceCard key={r.id} resource={r} projectId={projectId} mcpApiKey={server.mcpApiKey} />
-          ))}
-        </Box>
-      )}
+        ) : null
+      })()}
 
       {/* Prompts */}
       {resolvedPrompts.length > 0 && (

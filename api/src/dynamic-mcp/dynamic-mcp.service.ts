@@ -111,10 +111,10 @@ export class DynamicMcpService {
     const server = await this.projectRepo.findById(serverId);
     if (!server) throw new NotFoundException(`Server ${serverId} not found.`);
 
-    const promptRefs = (server.prompts ?? []) as Array<{ promptId?: string }>;
+    const promptRefs = (server.prompts ?? []) as Array<{ promptId?: string; enabled?: boolean }>;
     const resolvedPrompts: PromptRecord[] = [];
     for (const ref of promptRefs) {
-      if (!ref.promptId) continue;
+      if (!ref.promptId || ref.enabled === false) continue;
       const p = await this.promptRepo.findById(ref.promptId);
       if (p) resolvedPrompts.push(p);
     }
@@ -175,10 +175,31 @@ export class DynamicMcpService {
     const { tools: allTools, chains: allChains, auth: rawAuth, name, version, resources, prompts, secrets, tenantConfig, globalRequestHeaders } = await this.getProjectData(serverId);
     const auth = resolveSecretRefs(rawAuth, secrets);
 
-    const tools: GeneratedTool[] = allTools.filter((t) => t.enabled !== false);
+    // Resolve endpointRef/inputSchema from source endpoint for linked tools/resources
+    const resolveToolRef = (tool: GeneratedTool): GeneratedTool => {
+      if (!tool.endpointSource) return tool;
+      const source = allTools.find((t) => t.name === tool.endpointSource);
+      if (!source?.endpointRef) return tool;
+      // inputSchema and outputSchema belong to the source endpoint, not to the linked tool
+      return {
+        ...tool,
+        endpointRef: source.endpointRef,
+        inputSchema: source.inputSchema,
+        ...(source.outputSchema ? { outputSchema: source.outputSchema } : {}),
+      };
+    };
+    const resolveResourceRef = (resource: McpResource): McpResource => {
+      if (!resource.endpointSource) return resource;
+      const source = allTools.find((t) => t.name === resource.endpointSource);
+      if (!source?.endpointRef) return resource;
+      return { ...resource, endpointRef: source.endpointRef };
+    };
+
+    const tools: GeneratedTool[] = allTools.filter((t) => t.enabled !== false).map(resolveToolRef);
     const toolMap = new Map(tools.map((t) => [t.name, t]));
     const enabledChains: ToolChain[] = allChains.filter((c) => c.enabled !== false);
     const chainMap = new Map(enabledChains.map((c) => [c.name, c]));
+    const enabledResources = resources.filter((r) => r.enabled !== false);
 
     this.logger.log(`MCP server para "${name}": ${tools.length} tools (${allTools.length} total, ${allTools.filter(t => t.enabled === false).length} disabled)`);
 
@@ -345,12 +366,16 @@ export class DynamicMcpService {
       } catch (err: any) {
         this.logger.error(`Erro ao executar "${toolName}": ${err?.message}`);
         this.executionLogs.log({ serverId, serverName: name, toolName, source: 'mcp', isError: true, statusCode: 500, errorMessage: err?.message, responseTimeMs: Date.now() - t0 });
-        return { content: [{ type: 'text' as const, text: `Erro: ${err?.message ?? 'Erro desconhecido'}` }], isError: true };
+        const errMsg = err?.message ?? 'unknown error';
+        const errText = tool.errorConfig?.message
+          ? tool.errorConfig.message.replace('{{error}}', errMsg)
+          : `Error: ${errMsg}`;
+        return { content: [{ type: 'text' as const, text: errText }], isError: true };
       }
     });
 
     server.setRequestHandler(ListResourcesRequestSchema, async () => ({
-      resources: resources.map((r) => ({
+      resources: enabledResources.map((r) => ({
         uri: r.uri,
         name: r.name,
         ...(r.description ? { description: r.description } : {}),
@@ -360,8 +385,9 @@ export class DynamicMcpService {
 
     server.setRequestHandler(ReadResourceRequestSchema, async (req) => {
       const uri = req.params.uri;
-      const resource = resources.find((r) => r.uri === uri);
-      if (!resource) throw new Error(`Resource not found: ${uri}`);
+      const raw = enabledResources.find((r) => r.uri === uri);
+      if (!raw) throw new Error(`Resource not found: ${uri}`);
+      const resource = resolveResourceRef(raw);
 
       if (resource.type !== 'dynamic' || !resource.endpointRef) {
         return { contents: [{ uri, text: resource.content, ...(resource.mimeType ? { mimeType: resource.mimeType } : {}) }] };
@@ -472,8 +498,13 @@ export class DynamicMcpService {
     const { tools: allTools, auth: rawAuth, name, secrets, globalRequestHeaders } = await this.getProjectData(serverId);
     const auth = resolveSecretRefs(rawAuth, secrets);
 
-    const tool = allTools.find((t) => t.name === toolName);
-    if (!tool) throw new NotFoundException(`Tool "${toolName}" not found.`);
+    const rawTool = allTools.find((t) => t.name === toolName);
+    if (!rawTool || rawTool.enabled === false) throw new NotFoundException(`Tool "${toolName}" not found.`);
+    // Resolve endpointRef from source endpoint if this tool references one
+    const sourceEndpoint = rawTool.endpointSource ? allTools.find((t) => t.name === rawTool.endpointSource) : undefined;
+    const tool = sourceEndpoint?.endpointRef
+      ? { ...rawTool, endpointRef: sourceEndpoint.endpointRef, inputSchema: sourceEndpoint.inputSchema }
+      : rawTool;
 
     const t0 = Date.now();
 
@@ -494,7 +525,11 @@ export class DynamicMcpService {
     } catch (err: any) {
       this.logger.error(`Erro ao executar ${toolName}: ${err?.message}`);
       this.executionLogs.log({ serverId, serverName: name, toolName, source: 'direct', isError: true, statusCode: 500, errorMessage: err?.message, responseTimeMs: Date.now() - t0 });
-      return { content: [{ type: 'text', text: `Erro: ${err?.message ?? 'Erro desconhecido'}` }], isError: true };
+      const errorMsg = err?.message ?? 'unknown error';
+      const msg = rawTool.errorConfig?.message
+        ? rawTool.errorConfig.message.replace('{{error}}', errorMsg)
+        : `Error: ${errorMsg}`;
+      return { content: [{ type: 'text', text: msg }], isError: true };
     }
   }
 }

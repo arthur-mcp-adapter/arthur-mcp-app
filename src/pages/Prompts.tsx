@@ -26,9 +26,13 @@ import {
   IconTag,
   IconMessage2,
   IconX,
+  IconArrowsMaximize,
+  IconArrowsMinimize,
 } from '@tabler/icons-react'
+import MonacoEditor from '@monaco-editor/react'
 import api from '../api'
 import { useAuth, Permission } from '../context/AuthContext'
+import { useColorMode } from '../theme/ColorModeContext'
 import ConfirmDialog from '../components/ConfirmDialog'
 import AppSnackbar from '../components/AppSnackbar'
 
@@ -46,13 +50,11 @@ interface Prompt {
 
 // ─── Prompt card ──────────────────────────────────────────────────────────────
 
-function PromptCard({ prompt, onEdit, onDelete, onCopy, canEdit, canDelete }: {
+function PromptCard({ prompt, onEdit, onCopy, canEdit }: {
   prompt: Prompt
   onEdit: (p: Prompt) => void
-  onDelete: (p: Prompt) => void
   onCopy: (p: Prompt) => void
   canEdit: boolean
-  canDelete: boolean
 }) {
   return (
     <Card
@@ -89,14 +91,6 @@ function PromptCard({ prompt, onEdit, onDelete, onCopy, canEdit, canDelete }: {
             <IconButton size="small" onClick={() => onEdit(prompt)}
               sx={{ p: 0.5, bgcolor: 'background.paper', '&:hover': { bgcolor: 'action.hover' } }}>
               <IconEdit size={15} />
-            </IconButton>
-          </Tooltip>
-        )}
-        {canDelete && (
-          <Tooltip title="Delete prompt">
-            <IconButton size="small" color="error" onClick={() => onDelete(prompt)}
-              sx={{ p: 0.5, bgcolor: 'background.paper', '&:hover': { bgcolor: 'action.hover' } }}>
-              <IconTrash size={15} />
             </IconButton>
           </Tooltip>
         )}
@@ -236,16 +230,24 @@ function PromptDialog({
   editTarget,
   onClose,
   onSaved,
+  onDeleted,
+  canDelete,
 }: {
   open: boolean
   editTarget: Prompt | null
   onClose: () => void
   onSaved: (p: Prompt, isNew: boolean) => void
+  onDeleted?: (id: string) => void
+  canDelete?: boolean
 }) {
+  const { mode: colorMode } = useColorMode()
   const empty = (): PromptForm => ({ name: '', description: '', content: '', tags: [] })
   const [form, setForm] = useState<PromptForm>(empty())
   const [saving, setSaving] = useState(false)
+  const [deleting, setDeleting] = useState(false)
   const [error, setError] = useState('')
+  const [expandedOpen, setExpandedOpen] = useState(false)
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false)
 
   useEffect(() => {
     if (open) {
@@ -286,52 +288,137 @@ function PromptDialog({
     }
   }
 
+  const handleDeleteConfirm = async () => {
+    if (!editTarget) return
+    setDeleting(true)
+    try {
+      await api.delete(`/prompts/${editTarget.id}`)
+      onDeleted?.(editTarget.id)
+      setDeleteConfirmOpen(false)
+      onClose()
+    } finally {
+      setDeleting(false)
+    }
+  }
+
+  const monacoOptions = {
+    minimap: { enabled: false },
+    fontSize: 13,
+    lineNumbers: 'on' as const,
+    wordWrap: 'on' as const,
+    scrollBeyondLastLine: false,
+    tabSize: 2,
+    automaticLayout: true,
+    padding: { top: 12 },
+  }
+
   return (
-    <Drawer anchor="right" open={open} onClose={onClose}
-      PaperProps={{ sx: { width: { xs: '100vw', sm: 600 }, display: 'flex', flexDirection: 'column' } }}>
-      <Box sx={{ px: 3, py: 2, borderBottom: 1, borderColor: 'divider', display: 'flex', alignItems: 'center', gap: 1, flexShrink: 0 }}>
-        <Typography variant="h6" fontWeight={700} flexGrow={1}>{editTarget ? `Edit — ${editTarget.name}` : 'New prompt'}</Typography>
-        <IconButton size="small" onClick={onClose}><IconX size={18} /></IconButton>
-      </Box>
-      <Box sx={{ flex: 1, overflowY: 'auto', px: 3, py: 2.5 }}>
-        {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
-        <Box display="flex" flexDirection="column" gap={2}>
+    <>
+      <Drawer anchor="right" open={open} onClose={onClose}
+        PaperProps={{ sx: { width: { xs: '100vw', sm: 640 }, display: 'flex', flexDirection: 'column' } }}>
+        {/* Header */}
+        <Box sx={{ px: 3, py: 2, borderBottom: 1, borderColor: 'divider', display: 'flex', alignItems: 'center', gap: 1, flexShrink: 0 }}>
+          <Typography variant="h6" fontWeight={700} flexGrow={1}>{editTarget ? `Edit — ${editTarget.name}` : 'New prompt'}</Typography>
+          <IconButton size="small" onClick={onClose}><IconX size={18} /></IconButton>
+        </Box>
+
+        {/* Metadata fields */}
+        <Box sx={{ px: 3, py: 2.5, borderBottom: 1, borderColor: 'divider', display: 'flex', flexDirection: 'column', gap: 2, flexShrink: 0 }}>
+          {error && <Alert severity="error">{error}</Alert>}
           <TextField
             size="small" fullWidth required label="Name" value={form.name}
             onChange={(e) => setField('name', e.target.value)}
             placeholder="e.g. Summarize document"
           />
           <TextField
-            size="small" fullWidth multiline minRows={3} label="Description" value={form.description}
+            size="small" fullWidth multiline minRows={2} maxRows={4} label="Description" value={form.description}
             onChange={(e) => setField('description', e.target.value)}
             placeholder="What this prompt does…"
           />
-          <TextField
-            size="small" fullWidth required multiline minRows={10} maxRows={24}
-            label="Prompt content" value={form.content}
-            onChange={(e) => setField('content', e.target.value)}
-            placeholder={"You are a helpful assistant.\n\nSummarize the following text in 3 bullet points:\n\n{{text}}"}
-            InputProps={{ sx: { fontFamily: 'monospace', fontSize: '0.85rem' } }}
-            helperText="Use {{variable}} placeholders for dynamic values"
-          />
           <Box>
-            <Typography variant="caption" color="text.secondary" fontWeight={600} display="block" mb={0.5}>
-              Tags
-            </Typography>
+            <Typography variant="caption" color="text.secondary" fontWeight={600} display="block" mb={0.5}>Tags</Typography>
             <TagInput tags={form.tags} onChange={(t) => setField('tags', t)} />
           </Box>
         </Box>
-      </Box>
-      <Box sx={{ px: 3, py: 2, borderTop: 1, borderColor: 'divider', display: 'flex', gap: 1, flexShrink: 0 }}>
-        <Button onClick={onClose}>Cancel</Button>
-        <Button
-          variant="contained" onClick={handleSave} disabled={saving}
-          startIcon={saving ? <CircularProgress size={14} color="inherit" /> : undefined}
-        >
-          {saving ? 'Saving…' : editTarget ? 'Save changes' : 'Create prompt'}
-        </Button>
-      </Box>
-    </Drawer>
+
+        {/* Editor toolbar */}
+        <Box sx={{ px: 2, borderBottom: 1, borderColor: 'divider', display: 'flex', alignItems: 'center', flexShrink: 0, minHeight: 40 }}>
+          <Typography variant="caption" fontWeight={700} color="text.secondary" sx={{ letterSpacing: '0.06em', flexGrow: 1 }}>
+            CONTENT
+          </Typography>
+          <Typography variant="caption" color="text.disabled" sx={{ mr: 1 }}>
+            Use {'{{variable}}'} for dynamic values
+          </Typography>
+          <Tooltip title="Expand editor">
+            <IconButton size="small" onClick={() => setExpandedOpen(true)}>
+              <IconArrowsMaximize size={16} />
+            </IconButton>
+          </Tooltip>
+        </Box>
+
+        {/* Monaco editor — fills remaining height */}
+        <Box sx={{ flex: 1, overflow: 'hidden' }}>
+          <MonacoEditor
+            height="100%"
+            language="plaintext"
+            value={form.content}
+            theme={colorMode === 'dark' ? 'vs-dark' : 'light'}
+            onChange={(v) => setField('content', v ?? '')}
+            options={monacoOptions}
+          />
+        </Box>
+
+        {/* Footer */}
+        <Box sx={{ px: 3, py: 2, borderTop: 1, borderColor: 'divider', display: 'flex', gap: 1, flexShrink: 0 }}>
+          {editTarget && canDelete && (
+            <Button color="error" onClick={() => setDeleteConfirmOpen(true)} disabled={saving || deleting}
+              startIcon={<IconTrash size={18} />} sx={{ mr: 'auto' }}>
+              Delete prompt
+            </Button>
+          )}
+          <Button onClick={onClose} disabled={saving || deleting}>Cancel</Button>
+          <Button
+            variant="contained" onClick={handleSave} disabled={saving || deleting}
+            startIcon={saving ? <CircularProgress size={14} color="inherit" /> : undefined}
+          >
+            {saving ? 'Saving…' : editTarget ? 'Save changes' : 'Create prompt'}
+          </Button>
+        </Box>
+      </Drawer>
+
+      {/* Expanded Monaco — left drawer */}
+      <Drawer anchor="left" open={expandedOpen} onClose={() => setExpandedOpen(false)}
+        PaperProps={{ sx: { width: { xs: '100vw', sm: 'calc(100vw - 640px)' }, display: 'flex', flexDirection: 'column' } }}>
+        <Box sx={{ px: 3, py: 2, borderBottom: 1, borderColor: 'divider', display: 'flex', alignItems: 'center', gap: 1, flexShrink: 0 }}>
+          <Typography variant="h6" fontWeight={700} flexGrow={1}>Prompt content</Typography>
+          <Typography variant="caption" color="text.disabled">Use {'{{variable}}'} for dynamic values</Typography>
+          <Tooltip title="Collapse">
+            <IconButton size="small" onClick={() => setExpandedOpen(false)}>
+              <IconArrowsMinimize size={16} />
+            </IconButton>
+          </Tooltip>
+        </Box>
+        <Box sx={{ flex: 1, overflow: 'hidden' }}>
+          <MonacoEditor
+            height="100%"
+            language="plaintext"
+            value={form.content}
+            theme={colorMode === 'dark' ? 'vs-dark' : 'light'}
+            onChange={(v) => setField('content', v ?? '')}
+            options={{ ...monacoOptions, minimap: { enabled: true }, fontSize: 14 }}
+          />
+        </Box>
+      </Drawer>
+
+      <ConfirmDialog
+        open={deleteConfirmOpen}
+        title={`Delete "${editTarget?.name}"?`}
+        message="This prompt will be permanently removed."
+        confirmLabel="Delete" confirmColor="error" loading={deleting}
+        onConfirm={handleDeleteConfirm}
+        onClose={() => setDeleteConfirmOpen(false)}
+      />
+    </>
   )
 }
 
@@ -345,8 +432,6 @@ export default function Prompts() {
   const [tagFilter, setTagFilter] = useState<string | null>(null)
   const [dialogOpen, setDialogOpen] = useState(false)
   const [editTarget, setEditTarget] = useState<Prompt | null>(null)
-  const [deleteTarget, setDeleteTarget] = useState<Prompt | null>(null)
-  const [deleting, setDeleting] = useState(false)
   const [snack, setSnack] = useState<{ message: string; severity?: 'success' | 'error' } | null>(null)
 
   useEffect(() => {
@@ -392,19 +477,10 @@ export default function Prompts() {
     }
   }
 
-  const handleDelete = async () => {
-    if (!deleteTarget) return
-    setDeleting(true)
-    try {
-      await api.delete(`/prompts/${deleteTarget.id}`)
-      setPrompts((prev) => prev.filter((p) => p.id !== deleteTarget.id))
-      setSnack({ message: 'Prompt deleted.', severity: 'success' })
-    } catch {
-      setSnack({ message: 'Failed to delete.', severity: 'error' })
-    } finally {
-      setDeleting(false)
-      setDeleteTarget(null)
-    }
+  const handleDeleted = (id: string) => {
+    setPrompts((prev) => prev.filter((p) => p.id !== id))
+    setDialogOpen(false)
+    setSnack({ message: 'Prompt deleted.', severity: 'success' })
   }
 
   return (
@@ -483,10 +559,8 @@ export default function Prompts() {
               <PromptCard
                 prompt={p}
                 onEdit={openEdit}
-                onDelete={setDeleteTarget}
                 onCopy={handleCopy}
                 canEdit={can(Permission.PromptsEdit)}
-                canDelete={can(Permission.PromptsDelete)}
               />
             </Grid>
           ))}
@@ -499,17 +573,8 @@ export default function Prompts() {
         editTarget={editTarget}
         onClose={() => setDialogOpen(false)}
         onSaved={handleSaved}
-      />
-
-      <ConfirmDialog
-        open={deleteTarget !== null}
-        title={`Delete "${deleteTarget?.name}"?`}
-        message="This prompt will be permanently removed."
-        confirmLabel="Delete"
-        confirmColor="error"
-        loading={deleting}
-        onConfirm={handleDelete}
-        onClose={() => setDeleteTarget(null)}
+        onDeleted={handleDeleted}
+        canDelete={can(Permission.PromptsDelete)}
       />
 
       <AppSnackbar

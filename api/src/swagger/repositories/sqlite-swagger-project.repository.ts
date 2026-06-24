@@ -63,8 +63,8 @@ export class SqliteSwaggerProjectRepository implements ISwaggerProjectRepository
     if (data.resources !== undefined) e.resources = JSON.stringify(data.resources);
     if (data.prompts !== undefined) e.prompts = JSON.stringify(data.prompts);
     if (data.chains !== undefined) e.chains = JSON.stringify(data.chains);
-    if ('oauthClientId' in data) e.oauthClientId = data.oauthClientId as string | undefined;
-    if ('oauthClientSecret' in data) e.oauthClientSecret = data.oauthClientSecret as string | undefined;
+    if ('oauthClientId' in data) (e as any).oauthClientId = data.oauthClientId;
+    if ('oauthClientSecret' in data) (e as any).oauthClientSecret = data.oauthClientSecret;
     if (data.tags !== undefined) e.tags = JSON.stringify(data.tags);
     if (data.rateLimit !== undefined) e.rateLimit = JSON.stringify(data.rateLimit);
     if (data.isPaused !== undefined) e.isPaused = data.isPaused;

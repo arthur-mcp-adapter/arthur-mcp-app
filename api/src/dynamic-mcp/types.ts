@@ -79,7 +79,9 @@ export interface GeneratedTool {
   inputSchema: JsonSchema;
   outputSchema?: JsonSchema;
   outputTemplate?: string;
+  errorConfig?: { message: string };
   endpointRef: EndpointRef;
+  endpointSource?: string; // name of the source endpoint tool this was derived from
   enabled?: boolean;
   comments?: ToolComment[];
 }
@@ -112,13 +114,16 @@ export interface McpResource {
   editorData?: string;
   type?: 'static' | 'dynamic';
   endpointRef?: EndpointRef;
+  endpointSource?: string; // name of the source endpoint tool this was derived from
   inputDefaults?: Record<string, unknown>;
   iteratorPath?: string;
   errorConfig?: { message: string };
+  enabled?: boolean;
 }
 
 export interface McpPrompt {
   promptId: string;
+  enabled?: boolean;
 }
 
 // ─── Tool Chaining ────────────────────────────────────────────────────────────

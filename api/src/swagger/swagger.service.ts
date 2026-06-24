@@ -297,8 +297,8 @@ export class SwaggerService {
     dto: { oauthClientId: string | null; oauthClientSecret: string | null },
   ): Promise<SwaggerProjectRecord> {
     const server = await this.projectRepo.update(id, {
-      oauthClientId: dto.oauthClientId ?? undefined,
-      oauthClientSecret: dto.oauthClientSecret ?? undefined,
+      oauthClientId: dto.oauthClientId,
+      oauthClientSecret: dto.oauthClientSecret,
     });
     if (!server) throw new NotFoundException('Project not found.');
     return server;
@@ -394,11 +394,14 @@ export class SwaggerService {
     const idx = server.tools.findIndex((t) => t.name === currentName);
     if (idx === -1) throw new NotFoundException(`Tool "${currentName}" not found.`);
 
+    const existing = server.tools[idx] as any;
     (server.tools as any)[idx] = {
+      // preserve fields not managed by this form (enabled, comments, endpointSource, etc.)
+      ...existing,
       name: dto.name.trim(),
       description: dto.description?.trim() || undefined,
       inputSchema: dto.inputSchema,
-      ...(dto.outputTemplate ? { outputTemplate: dto.outputTemplate } : {}),
+      ...(dto.outputTemplate ? { outputTemplate: dto.outputTemplate } : { outputTemplate: undefined }),
       endpointRef: {
         method: dto.method.toUpperCase(),
         path: dto.path.trim(),
@@ -427,6 +430,9 @@ export class SwaggerService {
       inputSchema: Record<string, unknown>;
       staticHeaders?: { name: string; value: string }[];
       outputTemplate?: string;
+      outputSchema?: Record<string, unknown>;
+      errorConfig?: { message: string };
+      endpointSource?: string;
     },
   ): Promise<SwaggerProjectRecord> {
     const server = await this.projectRepo.findById(id);
@@ -441,7 +447,10 @@ export class SwaggerService {
       name: nameClean,
       description: dto.description?.trim() || undefined,
       inputSchema: dto.inputSchema as any,
+      ...(dto.outputSchema ? { outputSchema: dto.outputSchema } : {}),
       ...(dto.outputTemplate ? { outputTemplate: dto.outputTemplate } : {}),
+      ...(dto.errorConfig ? { errorConfig: dto.errorConfig } : {}),
+      ...(dto.endpointSource ? { endpointSource: dto.endpointSource } : {}),
       endpointRef: {
         method: dto.method.toUpperCase(),
         path: dto.path.trim(),
@@ -580,6 +589,16 @@ export class SwaggerService {
     const idx = refs.findIndex((r) => r.promptId === promptId);
     if (idx === -1) throw new NotFoundException('Prompt reference not found.');
     refs.splice(idx, 1);
+    await this.projectRepo.save(server);
+    this.dynamicMcp.invalidate(id);
+  }
+
+  async togglePromptEnabled(id: string, promptId: string, enabled: boolean): Promise<void> {
+    const server = await this.projectRepo.findById(id);
+    if (!server) throw new NotFoundException('Project not found.');
+    const ref = (server.prompts as Array<{ promptId: string; enabled?: boolean }>).find((r) => r.promptId === promptId);
+    if (!ref) throw new NotFoundException('Prompt reference not found.');
+    ref.enabled = enabled;
     await this.projectRepo.save(server);
     this.dynamicMcp.invalidate(id);
   }

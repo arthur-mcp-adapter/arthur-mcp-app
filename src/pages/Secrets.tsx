@@ -44,10 +44,9 @@ interface Secret {
 
 // ─── Secret card ──────────────────────────────────────────────────────────────
 
-function SecretCard({ secret, onEdit, onDelete, onCopy }: {
+function SecretCard({ secret, onEdit, onCopy }: {
   secret: Secret
   onEdit: (s: Secret) => void
-  onDelete: (s: Secret) => void
   onCopy: (s: Secret) => void
 }) {
   const [revealed, setRevealed] = useState(false)
@@ -87,14 +86,6 @@ function SecretCard({ secret, onEdit, onDelete, onCopy }: {
             <IconButton size="small" onClick={() => onEdit(secret)}
               sx={{ p: 0.5, bgcolor: 'background.paper', '&:hover': { bgcolor: 'action.hover' } }}>
               <IconEdit size={15} />
-            </IconButton>
-          </Tooltip>
-        )}
-        {can(Permission.SecretsDelete) && (
-          <Tooltip title="Delete">
-            <IconButton size="small" color="error" onClick={() => onDelete(secret)}
-              sx={{ p: 0.5, bgcolor: 'background.paper', '&:hover': { bgcolor: 'action.hover' } }}>
-              <IconTrash size={15} />
             </IconButton>
           </Tooltip>
         )}
@@ -163,17 +154,23 @@ function SecretDialog({
   editTarget,
   onClose,
   onSaved,
+  onDeleted,
+  canDelete,
 }: {
   open: boolean
   editTarget: Secret | null
   onClose: () => void
   onSaved: (s: Secret, isNew: boolean) => void
+  onDeleted?: (id: string) => void
+  canDelete?: boolean
 }) {
   const empty = (): SecretForm => ({ name: '', value: '', description: '' })
   const [form, setForm] = useState<SecretForm>(empty())
   const [showValue, setShowValue] = useState(false)
   const [saving, setSaving] = useState(false)
+  const [deleting, setDeleting] = useState(false)
   const [error, setError] = useState('')
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false)
 
   useEffect(() => {
     if (open) {
@@ -214,7 +211,21 @@ function SecretDialog({
     }
   }
 
+  const handleDeleteConfirm = async () => {
+    if (!editTarget) return
+    setDeleting(true)
+    try {
+      await api.delete(`/secrets/${editTarget.id}`)
+      onDeleted?.(editTarget.id)
+      setDeleteConfirmOpen(false)
+      onClose()
+    } finally {
+      setDeleting(false)
+    }
+  }
+
   return (
+    <>
     <Drawer anchor="right" open={open} onClose={onClose}
       PaperProps={{ sx: { width: { xs: '100vw', sm: 480 }, display: 'flex', flexDirection: 'column' } }}>
       <Box sx={{ px: 3, py: 2, borderBottom: 1, borderColor: 'divider', display: 'flex', alignItems: 'center', gap: 1, flexShrink: 0 }}>
@@ -254,15 +265,31 @@ function SecretDialog({
         </Box>
       </Box>
       <Box sx={{ px: 3, py: 2, borderTop: 1, borderColor: 'divider', display: 'flex', gap: 1, flexShrink: 0 }}>
-        <Button onClick={onClose}>Cancel</Button>
+        {editTarget && canDelete && (
+          <Button color="error" onClick={() => setDeleteConfirmOpen(true)} disabled={saving || deleting}
+            startIcon={<IconTrash size={18} />} sx={{ mr: 'auto' }}>
+            Delete secret
+          </Button>
+        )}
+        <Button onClick={onClose} disabled={saving || deleting}>Cancel</Button>
         <Button
-          variant="contained" onClick={handleSave} disabled={saving}
+          variant="contained" onClick={handleSave} disabled={saving || deleting}
           startIcon={saving ? <CircularProgress size={14} color="inherit" /> : undefined}
         >
           {saving ? 'Saving…' : editTarget ? 'Save changes' : 'Create secret'}
         </Button>
       </Box>
     </Drawer>
+
+    <ConfirmDialog
+      open={deleteConfirmOpen}
+      title={`Delete "${editTarget?.name}"?`}
+      message="This secret will be permanently removed. Auth configs using it will stop working."
+      confirmLabel="Delete" confirmColor="error" loading={deleting}
+      onConfirm={handleDeleteConfirm}
+      onClose={() => setDeleteConfirmOpen(false)}
+    />
+    </>
   )
 }
 
@@ -274,8 +301,6 @@ export default function Secrets() {
   const [search, setSearch] = useState('')
   const [dialogOpen, setDialogOpen] = useState(false)
   const [editTarget, setEditTarget] = useState<Secret | null>(null)
-  const [deleteTarget, setDeleteTarget] = useState<Secret | null>(null)
-  const [deleting, setDeleting] = useState(false)
   const [snack, setSnack] = useState<{ message: string; severity?: 'success' | 'error' } | null>(null)
   const { can, loading: authLoading } = useAuth()
 
@@ -314,19 +339,10 @@ export default function Secrets() {
     }
   }
 
-  const handleDelete = async () => {
-    if (!deleteTarget) return
-    setDeleting(true)
-    try {
-      await api.delete(`/secrets/${deleteTarget.id}`)
-      setSecrets((prev) => prev.filter((s) => s.id !== deleteTarget.id))
-      setSnack({ message: 'Secret deleted.', severity: 'success' })
-    } catch {
-      setSnack({ message: 'Failed to delete.', severity: 'error' })
-    } finally {
-      setDeleting(false)
-      setDeleteTarget(null)
-    }
+  const handleDeleted = (id: string) => {
+    setSecrets((prev) => prev.filter((s) => s.id !== id))
+    setDialogOpen(false)
+    setSnack({ message: 'Secret deleted.', severity: 'success' })
   }
 
   return (
@@ -382,7 +398,6 @@ export default function Secrets() {
               <SecretCard
                 secret={s}
                 onEdit={openEdit}
-                onDelete={setDeleteTarget}
                 onCopy={handleCopy}
               />
             </Grid>
@@ -395,17 +410,8 @@ export default function Secrets() {
         editTarget={editTarget}
         onClose={() => setDialogOpen(false)}
         onSaved={handleSaved}
-      />
-
-      <ConfirmDialog
-        open={deleteTarget !== null}
-        title={`Delete "${deleteTarget?.name}"?`}
-        message="This secret will be permanently removed. Auth configs using it will stop working."
-        confirmLabel="Delete"
-        confirmColor="error"
-        loading={deleting}
-        onConfirm={handleDelete}
-        onClose={() => setDeleteTarget(null)}
+        onDeleted={handleDeleted}
+        canDelete={can(Permission.SecretsDelete)}
       />
 
       <AppSnackbar

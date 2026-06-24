@@ -300,6 +300,11 @@ export class SwaggerController {
     return this.swaggerService.updateResource(id, resourceId, dto);
   }
 
+  @Patch('servers/:id/resources/:resourceId')
+  patchResource(@Param('id') id: string, @Param('resourceId') resourceId: string, @Body() dto: any) {
+    return this.swaggerService.updateResource(id, resourceId, dto);
+  }
+
   @Delete('servers/:id/resources/:resourceId')
   @HttpCode(204)
   deleteResource(@Param('id') id: string, @Param('resourceId') resourceId: string) {
@@ -312,6 +317,12 @@ export class SwaggerController {
   @HttpCode(201)
   addPromptRef(@Param('id') id: string, @Body('promptId') promptId: string) {
     return this.swaggerService.addPromptRef(id, promptId);
+  }
+
+  @Patch('servers/:id/prompts/:promptId')
+  @HttpCode(204)
+  togglePromptEnabled(@Param('id') id: string, @Param('promptId') promptId: string, @Body('enabled') enabled: boolean) {
+    return this.swaggerService.togglePromptEnabled(id, promptId, enabled);
   }
 
   @Delete('servers/:id/prompts/:promptId')

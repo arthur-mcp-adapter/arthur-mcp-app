@@ -313,16 +313,21 @@ interface UserDialogProps {
   onClose: () => void
   onSaved: (user: UserProfile) => void
   editUser?: UserProfile
+  onDeleted?: (id: string) => void
+  canDelete?: boolean
+  currentUserId?: string
 }
 
-function UserDialog({ open, onClose, onSaved, editUser }: UserDialogProps) {
+function UserDialog({ open, onClose, onSaved, editUser, onDeleted, canDelete, currentUserId }: UserDialogProps) {
   const isEdit = !!editUser
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [role, setRole] = useState('user')
   const [saving, setSaving] = useState(false)
+  const [deleting, setDeleting] = useState(false)
   const [error, setError] = useState('')
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false)
   const [availableRoles, setAvailableRoles] = useState<{ value: string; label: string }[]>([])
 
   useEffect(() => {
@@ -387,7 +392,23 @@ function UserDialog({ open, onClose, onSaved, editUser }: UserDialogProps) {
     }
   }
 
+  const handleDeleteConfirm = async () => {
+    if (!editUser) return
+    setDeleting(true)
+    try {
+      await api.delete(`/users/${editUser._id}`)
+      onDeleted?.(editUser._id)
+      setDeleteConfirmOpen(false)
+      onClose()
+    } finally {
+      setDeleting(false)
+    }
+  }
+
+  const isSelf = editUser?._id === currentUserId
+
   return (
+    <>
     <Drawer anchor="right" open={open} onClose={onClose}
       PaperProps={{ sx: { width: { xs: '100vw', sm: 480 }, display: 'flex', flexDirection: 'column' } }}>
       <Box sx={{ px: 3, py: 2, borderBottom: 1, borderColor: 'divider', display: 'flex', alignItems: 'center', gap: 1, flexShrink: 0 }}>
@@ -414,13 +435,29 @@ function UserDialog({ open, onClose, onSaved, editUser }: UserDialogProps) {
         </Box>
       </Box>
       <Box sx={{ px: 3, py: 2, borderTop: 1, borderColor: 'divider', display: 'flex', gap: 1, flexShrink: 0 }}>
-        <Button onClick={onClose} disabled={saving}>Cancel</Button>
-        <Button variant="contained" onClick={handleSave} disabled={saving}
+        {isEdit && canDelete && !isSelf && (
+          <Button color="error" onClick={() => setDeleteConfirmOpen(true)} disabled={saving || deleting}
+            startIcon={<IconTrash size={18} />} sx={{ mr: 'auto' }}>
+            Delete user
+          </Button>
+        )}
+        <Button onClick={onClose} disabled={saving || deleting}>Cancel</Button>
+        <Button variant="contained" onClick={handleSave} disabled={saving || deleting}
           startIcon={saving ? <CircularProgress size={14} color="inherit" /> : undefined}>
           {saving ? 'Saving…' : isEdit ? 'Save' : 'Create user'}
         </Button>
       </Box>
     </Drawer>
+
+    <ConfirmDialog
+      open={deleteConfirmOpen}
+      title={`Delete "${editUser?.username}"?`}
+      message="This action cannot be undone."
+      confirmLabel="Delete" confirmColor="error" loading={deleting}
+      onConfirm={handleDeleteConfirm}
+      onClose={() => setDeleteConfirmOpen(false)}
+    />
+    </>
   )
 }
 
@@ -544,11 +581,6 @@ function UsersTab({ currentUserId }: { currentUserId: string }) {
   const [editingUser, setEditingUser] = useState<UserProfile | undefined>()
   const { can } = useAuth()
 
-  // Confirm dialog state
-  const [confirmOpen, setConfirmOpen] = useState(false)
-  const [confirmTarget, setConfirmTarget] = useState<UserProfile | null>(null)
-  const [confirmLoading, setConfirmLoading] = useState(false)
-
   // Snackbar
   const [snackOpen, setSnackOpen] = useState(false)
   const [snackMsg, setSnackMsg] = useState('')
@@ -572,29 +604,12 @@ function UsersTab({ currentUserId }: { currentUserId: string }) {
     })
   }
 
-  const handleDeleteRequest = (user: UserProfile) => {
-    setConfirmTarget(user)
-    setConfirmOpen(true)
-  }
-
-  const handleDeleteConfirm = async () => {
-    if (!confirmTarget) return
-    setConfirmLoading(true)
-    try {
-      await api.delete(`/users/${confirmTarget._id}`)
-      setUsers((prev) => prev.filter((u) => u._id !== confirmTarget._id))
-    } catch (err: unknown) {
-      const msg = err && typeof err === 'object' && 'response' in err
-        ? (err as { response?: { data?: { message?: string } } }).response?.data?.message ?? 'Could not remove user.'
-        : 'Could not remove user.'
-      setSnackMsg(msg)
-      setSnackSeverity('error')
-      setSnackOpen(true)
-    } finally {
-      setConfirmLoading(false)
-      setConfirmOpen(false)
-      setConfirmTarget(null)
-    }
+  const handleDeleted = (id: string) => {
+    setUsers((prev) => prev.filter((u) => u._id !== id))
+    setDialogOpen(false)
+    setSnackMsg('User deleted.')
+    setSnackSeverity('success')
+    setSnackOpen(true)
   }
 
   const handleOpenCreate = () => { setEditingUser(undefined); setDialogOpen(true) }
@@ -653,15 +668,6 @@ function UsersTab({ currentUserId }: { currentUserId: string }) {
                       <IconButton size="small" onClick={() => handleOpenEdit(u)}><IconEdit size={16} /></IconButton>
                     </Tooltip>
                   )}
-                  {can(Permission.UsersDelete) && (
-                    <Tooltip title={u._id === currentUserId ? 'Cannot remove your own account' : 'Remove'}>
-                      <span>
-                        <IconButton size="small" color="error" onClick={() => handleDeleteRequest(u)} disabled={u._id === currentUserId}>
-                          <IconTrash size={16} />
-                        </IconButton>
-                      </span>
-                    </Tooltip>
-                  )}
                 </TableCell>
               </TableRow>
             ))}
@@ -669,17 +675,14 @@ function UsersTab({ currentUserId }: { currentUserId: string }) {
         </Table>
       </Paper>
 
-      <UserDialog open={dialogOpen} onClose={() => setDialogOpen(false)} onSaved={handleSaved} editUser={editingUser} />
-
-      <ConfirmDialog
-        open={confirmOpen}
-        title={`Remove "${confirmTarget?.username}"?`}
-        message="This action cannot be undone."
-        confirmLabel="Remove"
-        confirmColor="error"
-        loading={confirmLoading}
-        onConfirm={handleDeleteConfirm}
-        onClose={() => { setConfirmOpen(false); setConfirmTarget(null) }}
+      <UserDialog
+        open={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        onSaved={handleSaved}
+        editUser={editingUser}
+        onDeleted={handleDeleted}
+        canDelete={can(Permission.UsersDelete)}
+        currentUserId={currentUserId}
       />
 
       <AppSnackbar open={snackOpen} message={snackMsg} severity={snackSeverity} onClose={() => setSnackOpen(false)} />
