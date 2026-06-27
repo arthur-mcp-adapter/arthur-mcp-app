@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import {
-  Box, Drawer, IconButton, InputAdornment, Paper, TextField, Typography,
+  Box, InputAdornment, Paper, TextField, Typography,
 } from '@mui/material'
-import { IconSearch, IconX } from '@tabler/icons-react'
+import { IconSearch } from '@tabler/icons-react'
+import { BaseDialogLayout } from '../../../components/BaseDialogLayout'
 import type { GeneratedTool } from '../types'
 import { METHOD_COLOR } from '../constants'
 
@@ -22,16 +23,14 @@ export function FromEndpointPickerDialog({ open, tools, onPick, onClose, onBlank
   })
 
   return (
-    <Drawer anchor="right" open={open} onClose={onClose}
-      PaperProps={{ sx: { width: { xs: '100vw', sm: 460 }, display: 'flex', flexDirection: 'column' } }}>
-      <Box sx={{ px: 3, py: 2, borderBottom: 1, borderColor: 'divider', display: 'flex', alignItems: 'center', gap: 1, flexShrink: 0 }}>
-        <Typography variant="h6" fontWeight={700} flexGrow={1}>{title}</Typography>
-        <IconButton size="small" onClick={onClose}><IconX size={18} /></IconButton>
-      </Box>
-      <Box sx={{ px: 3, pt: 2, pb: 1, flexShrink: 0 }}>
-        <Typography variant="body2" color="text.secondary" mb={1.5}>
-          {description}
-        </Typography>
+    <BaseDialogLayout
+      open={open}
+      onClose={onClose}
+      title={title}
+      width={460}
+      description={description}
+    >
+      <Box>
         <TextField
           size="small" fullWidth placeholder="Search by path or name…" value={search}
           onChange={(e) => setSearch(e.target.value)}
@@ -99,6 +98,6 @@ export function FromEndpointPickerDialog({ open, tools, onPick, onClose, onBlank
           )}
         </Box>
       </Box>
-    </Drawer>
+    </BaseDialogLayout>
   )
 }

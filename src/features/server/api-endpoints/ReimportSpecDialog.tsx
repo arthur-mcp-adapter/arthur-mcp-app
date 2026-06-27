@@ -1,12 +1,12 @@
 import { useRef, useState } from 'react'
 import {
-  Alert, Box, Button, CircularProgress, Drawer,
-  IconButton, Paper, TextField, Typography,
+  Alert, Box, Button, CircularProgress, Paper, TextField, Typography,
 } from '@mui/material'
 import {
   IconCloudUpload, IconFile, IconRefresh, IconX,
 } from '@tabler/icons-react'
 import api from '../../../api'
+import { BaseDialogLayout } from '../../../components/BaseDialogLayout'
 
 export function ReimportSpecDialog({ projectId, open, onClose, onSuccess }: {
   projectId: string
@@ -56,18 +56,29 @@ export function ReimportSpecDialog({ projectId, open, onClose, onSuccess }: {
   }
 
   return (
-    <Drawer anchor="right" open={open} onClose={handleClose}
-      PaperProps={{ sx: { width: { xs: '100vw', sm: 480 }, display: 'flex', flexDirection: 'column' } }}>
-      <Box sx={{ px: 3, py: 2, borderBottom: 1, borderColor: 'divider', display: 'flex', alignItems: 'center', gap: 1, flexShrink: 0 }}>
-        <IconRefresh size={18} />
-        <Typography variant="h6" fontWeight={700} flexGrow={1}>Re-import API spec</Typography>
-        <IconButton size="small" onClick={handleClose}><IconX size={18} /></IconButton>
-      </Box>
-      <Box sx={{ flex: 1, overflowY: 'auto', px: 3, py: 2.5 }}>
-        <Typography variant="body2" color="text.secondary" mb={2}>
+    <BaseDialogLayout
+      open={open}
+      onClose={handleClose}
+      title="Re-import API spec"
+      width={480}
+      titleIcon={<IconRefresh size={18} />}
+      description={(
+        <>
           Upload a new version of the spec. Tools with the same name will be updated (schema + endpoint);
           new tools will be added. Existing tools not in the new spec are kept — delete them manually if needed.
-        </Typography>
+        </>
+      )}
+      footer={(
+        <>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button variant="contained" onClick={handleImport} disabled={!file || loading}
+            startIcon={loading ? <CircularProgress size={14} color="inherit" /> : <IconRefresh size={18} />}>
+            {loading ? 'Importing…' : 'Import'}
+          </Button>
+        </>
+      )}
+    >
+      <Box>
         {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
 
         <Paper variant="outlined"
@@ -108,13 +119,6 @@ export function ReimportSpecDialog({ projectId, open, onClose, onSuccess }: {
           value={baseUrl} onChange={(e) => setBaseUrl(e.target.value)}
           helperText="Leave blank to use the URL declared in the spec" />
       </Box>
-      <Box sx={{ px: 3, py: 2, borderTop: 1, borderColor: 'divider', display: 'flex', gap: 1, flexShrink: 0 }}>
-        <Button onClick={handleClose}>Cancel</Button>
-        <Button variant="contained" onClick={handleImport} disabled={!file || loading}
-          startIcon={loading ? <CircularProgress size={14} color="inherit" /> : <IconRefresh size={18} />}>
-          {loading ? 'Importing…' : 'Import'}
-        </Button>
-      </Box>
-    </Drawer>
+    </BaseDialogLayout>
   )
 }
