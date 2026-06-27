@@ -26,6 +26,7 @@ import AppSnackbar from '../components/AppSnackbar'
 import { PromptCard } from '../features/prompts/PromptCard'
 import { TagInput } from '../features/prompts/TagInput'
 import { useListPageLogic } from '../hooks/useListPageLogic'
+import { useCopyToClipboard } from '../hooks/useCopyToClipboard'
 import type { Prompt } from '../features/prompts/types'
 
 // ─── Page ──────────────────────────────────────────────────────────────────────
@@ -35,12 +36,15 @@ export default function Prompts() {
   const { t } = useTranslation('prompts')
   const { can } = useAuth()
   const [tagFilter, setTagFilter] = useState<string | null>(null)
-  const [copiedId, setCopiedId] = useState<string | null>(null)
 
   const [state, handlers] = useListPageLogic({
     loadItems: () => api.get<Prompt[]>('/prompts').then((r) => r.data),
     deleteItem: (id) => api.delete(`/prompts/${id}`),
     permission: Permission.PromptsView,
+  })
+
+  const { copiedId, copy } = useCopyToClipboard({
+    onError: (msg) => handlers.setSnack({ message: msg, severity: 'error' }),
   })
 
   const allTags = [...new Set(state.items.flatMap((p) => p.tags))].sort()
@@ -61,15 +65,7 @@ export default function Prompts() {
   const openCreate = () => navigate('/prompts/new')
   const openEdit = (p: Prompt) => navigate(`/prompts/${p.id}`)
 
-  const handleCopy = async (p: Prompt) => {
-    try {
-      await navigator.clipboard.writeText(p.content)
-      setCopiedId(p.id)
-      setTimeout(() => setCopiedId(null), 1500)
-    } catch {
-      handlers.setSnack({ message: t('error.copyFailed'), severity: 'error' })
-    }
-  }
+  const handleCopy = (p: Prompt) => copy(p.content, p.id)
 
   return (
     <Box>

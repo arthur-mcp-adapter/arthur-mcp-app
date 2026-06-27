@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   Box,
@@ -23,6 +22,7 @@ import ConfirmDialog from '../components/ConfirmDialog'
 import AppSnackbar from '../components/AppSnackbar'
 import { SecretCard } from '../features/secrets/SecretCard'
 import { useListPageLogic } from '../hooks/useListPageLogic'
+import { useCopyToClipboard } from '../hooks/useCopyToClipboard'
 import type { Secret } from '../features/secrets/types'
 
 // ─── Page ──────────────────────────────────────────────────────────────────────
@@ -31,12 +31,14 @@ export default function Secrets() {
   const { t } = useTranslation('secrets')
   const navigate = useNavigate()
   const { can } = useAuth()
-  const [copiedId, setCopiedId] = useState<string | null>(null)
 
   const [state, handlers] = useListPageLogic({
     loadItems: () => api.get<Secret[]>('/secrets').then((r) => r.data),
     deleteItem: (id) => api.delete(`/secrets/${id}`),
     permission: Permission.SecretsViewNames,
+  })
+  const { copiedId, copyAsync } = useCopyToClipboard({
+    onError: (msg) => handlers.setSnack({ message: msg, severity: 'error' }),
   })
 
   const visible = state.search
@@ -50,14 +52,11 @@ export default function Secrets() {
   const openEdit = (s: Secret) => navigate(`/secrets/${s.id}`)
 
   const handleCopy = async (s: Secret) => {
-    try {
-      const { data } = await api.get<{ value: string }>(`/secrets/${s.id}/value`)
-      await navigator.clipboard.writeText(data.value)
-      setCopiedId(s.id)
-      setTimeout(() => setCopiedId(null), 1500)
-    } catch {
-      handlers.setSnack({ message: t('error.copyFailed'), severity: 'error' })
-    }
+    copyAsync(
+      () => api.get<{ value: string }>(`/secrets/${s.id}/value`),
+      (res) => res.data.value,
+      s.id
+    )
   }
 
   return (
