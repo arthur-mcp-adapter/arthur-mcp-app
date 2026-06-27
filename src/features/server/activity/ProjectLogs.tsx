@@ -1,20 +1,19 @@
 import { useEffect, useState } from 'react'
 import {
-  Box,
-  Button,
-  Chip,
-  CircularProgress,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  Tooltip,
-  Typography,
+  Box, Button, Chip, CircularProgress, Paper, Table, TableBody,
+  TableCell, TableHead, TableRow, Tooltip, Typography,
 } from '@mui/material'
 import api from '../../../api'
 import type { ExecLog } from '../types'
+
+export function StatCard({ label, value, color }: { label: string; value: number | string; color?: string }) {
+  return (
+    <Paper variant="outlined" sx={{ p: 2, textAlign: 'center', borderColor: color ? `${color}44` : 'divider' }}>
+      <Typography variant="h4" fontWeight={700} color={color ?? 'text.primary'}>{value}</Typography>
+      <Typography variant="body2" color="text.secondary" mt={0.5}>{label}</Typography>
+    </Paper>
+  )
+}
 
 export function ProjectLogs({ projectId }: { projectId: string }) {
   const [logs, setLogs] = useState<ExecLog[]>([])

@@ -60,6 +60,8 @@ The shared context protocol now includes Claude Code specialist agents, backend 
 - Extracted `buildCurl`, `buildMcpCurl`, and `inferSchema` from `ServerDetail.tsx` into `src/features/server/api-endpoints/curl-utils.ts`.
 - Extracted `EndpointAccordion` from `ServerDetail.tsx` into `src/features/server/api-endpoints/EndpointAccordion.tsx`, preserving the main tree's i18n copy instead of using the older hardcoded worktree text.
 - Extracted shared schema field rendering into `src/features/server/api-endpoints/FieldInput.tsx`; `ServerDetail` still imports it for the remaining `ToolAccordion` path.
+- Imported pending uncommitted changes from Claude worktree `.claude/worktrees/agent-ab0722d25387f1c7f` into `develop`.
+- Added modular files from the worktree split, including API endpoint tabs/tool dialogs, chains tab/dialog, prompts tab, resources tab, and shared UI helpers such as `CodePreviewTabs` and `InlineEdit`.
 
 ## Files Changed In This Session
 
@@ -173,6 +175,7 @@ The shared context protocol now includes Claude Code specialist agents, backend 
 - `npm run type-check` passed after extracting `ToolCommentsSection`.
 - `npm run type-check` passed after extracting API endpoint curl/schema helpers.
 - `npm run type-check` passed after extracting `EndpointAccordion` and `FieldInput`.
+- `npm run type-check` passed after importing pending worktree files into `develop`.
 - `npm test --prefix api -- secrets.service.spec.ts swagger.service.spec.ts permissions.guard.spec.ts` passed.
 - `npm run test:cov --prefix api -- --runInBand` passed with 83.85% statements, 71.72% branches, 87.34% functions, and 85.35% lines.
 - `npm run build --prefix api` could not complete because the local system hit the file watcher limit (`ENOSPC`), so backend validation used direct `tsc --noEmit` instead.

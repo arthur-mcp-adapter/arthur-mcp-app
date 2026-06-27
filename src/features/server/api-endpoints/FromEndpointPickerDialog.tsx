@@ -1,18 +1,12 @@
 import { useState } from 'react'
 import {
-  Box,
-  Drawer,
-  IconButton,
-  InputAdornment,
-  Paper,
-  TextField,
-  Typography,
+  Box, Drawer, IconButton, InputAdornment, Paper, TextField, Typography,
 } from '@mui/material'
 import { IconSearch, IconX } from '@tabler/icons-react'
-import { METHOD_COLOR } from '../constants'
 import type { GeneratedTool } from '../types'
+import { METHOD_COLOR } from '../constants'
 
-interface FromEndpointPickerDialogProps {
+export function FromEndpointPickerDialog({ open, tools, onPick, onClose, onBlank, title = 'Create tool from endpoint', description = "Select an endpoint to pre-fill the tool form with its HTTP details. You'll only need to fill in the tool name and description." }: {
   open: boolean
   tools: GeneratedTool[]
   onPick: (tool: GeneratedTool) => void
@@ -20,17 +14,7 @@ interface FromEndpointPickerDialogProps {
   onBlank?: () => void
   title?: string
   description?: string
-}
-
-export function FromEndpointPickerDialog({
-  open,
-  tools,
-  onPick,
-  onClose,
-  onBlank,
-  title = 'Create tool from endpoint',
-  description = "Select an endpoint to pre-fill the tool form with its HTTP details. You'll only need to fill in the tool name and description.",
-}: FromEndpointPickerDialogProps) {
+}) {
   const [search, setSearch] = useState('')
   const filtered = tools.filter((t) => {
     const q = search.toLowerCase()
@@ -38,12 +22,8 @@ export function FromEndpointPickerDialog({
   })
 
   return (
-    <Drawer
-      anchor="right"
-      open={open}
-      onClose={onClose}
-      PaperProps={{ sx: { width: { xs: '100vw', sm: 460 }, display: 'flex', flexDirection: 'column' } }}
-    >
+    <Drawer anchor="right" open={open} onClose={onClose}
+      PaperProps={{ sx: { width: { xs: '100vw', sm: 460 }, display: 'flex', flexDirection: 'column' } }}>
       <Box sx={{ px: 3, py: 2, borderBottom: 1, borderColor: 'divider', display: 'flex', alignItems: 'center', gap: 1, flexShrink: 0 }}>
         <Typography variant="h6" fontWeight={700} flexGrow={1}>{title}</Typography>
         <IconButton size="small" onClick={onClose}><IconX size={18} /></IconButton>
@@ -53,10 +33,7 @@ export function FromEndpointPickerDialog({
           {description}
         </Typography>
         <TextField
-          size="small"
-          fullWidth
-          placeholder="Search by path or name…"
-          value={search}
+          size="small" fullWidth placeholder="Search by path or name…" value={search}
           onChange={(e) => setSearch(e.target.value)}
           InputProps={{ startAdornment: <InputAdornment position="start"><IconSearch size={16} /></InputAdornment> }}
         />

@@ -23,3 +23,7 @@ export const SOURCE_CHIP_COLOR: Record<
   body: 'success',
   header: 'warning',
 }
+
+export const METHODS = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']
+export const SOURCES = ['path', 'query', 'body', 'header'] as const
+export const PARAM_TYPES = ['string', 'number', 'integer', 'boolean', 'object', 'array']

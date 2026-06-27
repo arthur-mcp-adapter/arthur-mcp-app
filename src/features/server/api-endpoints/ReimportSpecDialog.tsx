@@ -1,28 +1,19 @@
 import { useRef, useState } from 'react'
-import { useTranslation } from 'react-i18next'
 import {
-  Alert,
-  Box,
-  Button,
-  CircularProgress,
-  Drawer,
-  IconButton,
-  Paper,
-  TextField,
-  Typography,
+  Alert, Box, Button, CircularProgress, Drawer,
+  IconButton, Paper, TextField, Typography,
 } from '@mui/material'
-import { IconCloudUpload, IconFile, IconRefresh, IconX } from '@tabler/icons-react'
+import {
+  IconCloudUpload, IconFile, IconRefresh, IconX,
+} from '@tabler/icons-react'
 import api from '../../../api'
 
-interface ReimportSpecDialogProps {
+export function ReimportSpecDialog({ projectId, open, onClose, onSuccess }: {
   projectId: string
   open: boolean
   onClose: () => void
   onSuccess: (result: { added: number; updated: number; baseUrl: string }) => void
-}
-
-export function ReimportSpecDialog({ projectId, open, onClose, onSuccess }: ReimportSpecDialogProps) {
-  const { t } = useTranslation('serverDetail')
+}) {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [file, setFile] = useState<File | null>(null)
   const [dragging, setDragging] = useState(false)
@@ -37,7 +28,7 @@ export function ReimportSpecDialog({ projectId, open, onClose, onSuccess }: Reim
   const acceptFile = (f: File) => {
     const n = f.name.toLowerCase()
     if (!n.endsWith('.yaml') && !n.endsWith('.yml') && !n.endsWith('.json')) {
-      setError(t('error.specFormat'))
+      setError('Unsupported format — use .yaml, .yml or .json')
       return
     }
     setFile(f)
@@ -61,31 +52,25 @@ export function ReimportSpecDialog({ projectId, open, onClose, onSuccess }: Reim
     } catch (err: any) {
       const msg = err?.response?.data?.message ?? 'Error importing spec.'
       setError(Array.isArray(msg) ? msg.join(', ') : msg)
-    } finally {
-      setLoading(false)
-    }
+    } finally { setLoading(false) }
   }
 
   return (
-    <Drawer
-      anchor="right"
-      open={open}
-      onClose={handleClose}
-      PaperProps={{ sx: { width: { xs: '100vw', sm: 480 }, display: 'flex', flexDirection: 'column' } }}
-    >
+    <Drawer anchor="right" open={open} onClose={handleClose}
+      PaperProps={{ sx: { width: { xs: '100vw', sm: 480 }, display: 'flex', flexDirection: 'column' } }}>
       <Box sx={{ px: 3, py: 2, borderBottom: 1, borderColor: 'divider', display: 'flex', alignItems: 'center', gap: 1, flexShrink: 0 }}>
         <IconRefresh size={18} />
-        <Typography variant="h6" fontWeight={700} flexGrow={1}>{t('reimport.title')}</Typography>
+        <Typography variant="h6" fontWeight={700} flexGrow={1}>Re-import API spec</Typography>
         <IconButton size="small" onClick={handleClose}><IconX size={18} /></IconButton>
       </Box>
       <Box sx={{ flex: 1, overflowY: 'auto', px: 3, py: 2.5 }}>
         <Typography variant="body2" color="text.secondary" mb={2}>
-          {t('reimport.description')}
+          Upload a new version of the spec. Tools with the same name will be updated (schema + endpoint);
+          new tools will be added. Existing tools not in the new spec are kept — delete them manually if needed.
         </Typography>
         {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
 
-        <Paper
-          variant="outlined"
+        <Paper variant="outlined"
           onDragOver={(e) => { e.preventDefault(); setDragging(true) }}
           onDragLeave={() => setDragging(false)}
           onDrop={(e) => { e.preventDefault(); setDragging(false); const f = e.dataTransfer.files[0]; if (f) acceptFile(f) }}
@@ -107,27 +92,27 @@ export function ReimportSpecDialog({ projectId, open, onClose, onSuccess }: Reim
               <Typography fontWeight={700} color="success.main">{file.name}</Typography>
               <Button size="small" startIcon={<IconX size={18} />}
                 onClick={(e) => { e.stopPropagation(); setFile(null) }}>
-                {t('common:action.remove')}
+                Remove
               </Button>
             </Box>
           ) : (
             <Box display="flex" flexDirection="column" alignItems="center" gap={0.5}>
               <IconCloudUpload size={36} style={{ opacity: 0.5 }} />
-              <Typography variant="body2" fontWeight={500}>{t('placeholder.dragOrBrowse')}</Typography>
-              <Typography variant="caption" color="text.disabled">{t('label.specFormat')}</Typography>
+              <Typography variant="body2" fontWeight={500}>Drag spec here or click to browse</Typography>
+              <Typography variant="caption" color="text.disabled">.yaml · .yml · .json</Typography>
             </Box>
           )}
         </Paper>
 
-        <TextField size="small" fullWidth label={t('reimport.baseUrlLabel')} placeholder="https://api.example.com"
+        <TextField size="small" fullWidth label="Base URL override" placeholder="https://api.example.com"
           value={baseUrl} onChange={(e) => setBaseUrl(e.target.value)}
-          helperText={t('hint.baseUrlOverride')} />
+          helperText="Leave blank to use the URL declared in the spec" />
       </Box>
       <Box sx={{ px: 3, py: 2, borderTop: 1, borderColor: 'divider', display: 'flex', gap: 1, flexShrink: 0 }}>
-        <Button onClick={handleClose}>{t('common:action.cancel')}</Button>
+        <Button onClick={handleClose}>Cancel</Button>
         <Button variant="contained" onClick={handleImport} disabled={!file || loading}
           startIcon={loading ? <CircularProgress size={14} color="inherit" /> : <IconRefresh size={18} />}>
-          {loading ? t('action.importing') : t('action.import')}
+          {loading ? 'Importing…' : 'Import'}
         </Button>
       </Box>
     </Drawer>

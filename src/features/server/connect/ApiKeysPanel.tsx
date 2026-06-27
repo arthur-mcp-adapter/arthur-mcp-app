@@ -1,49 +1,41 @@
 import { useState } from 'react'
-import { useTranslation } from 'react-i18next'
 import {
-  Alert,
-  Box,
-  Button,
-  Chip,
-  CircularProgress,
-  Drawer,
-  IconButton,
-  Paper,
-  TextField,
-  Tooltip,
-  Typography,
+  Alert, Box, Button, Chip, CircularProgress, Drawer,
+  IconButton, Paper, TextField, Tooltip, Typography,
 } from '@mui/material'
-import { IconCopy, IconEye, IconEyeOff, IconLock, IconLockOpen, IconPlus, IconTrash, IconX } from '@tabler/icons-react'
+import {
+  IconCopy, IconEye, IconEyeOff, IconLock, IconLockOpen,
+  IconPlus, IconTrash, IconX,
+} from '@tabler/icons-react'
+import { useAuth, Permission } from '../../../context/AuthContext'
 import api from '../../../api'
 import ConfirmDialog from '../../../components/ConfirmDialog'
 import HelpButton from '../../../components/HelpButton'
-import { Permission, useAuth } from '../../../context/AuthContext'
 import type { McpApiKeyEntry } from '../types'
 
-interface ApiKeysPanelProps {
+export function ApiKeysPanel({ projectId, initialKeys, onChange }: {
   projectId: string
   initialKeys: McpApiKeyEntry[]
   onChange: (keys: McpApiKeyEntry[]) => void
-}
-
-export function ApiKeysPanel({ projectId, initialKeys, onChange }: ApiKeysPanelProps) {
-  const { t } = useTranslation('serverDetail')
+}) {
   const [keys, setKeys] = useState<McpApiKeyEntry[]>(initialKeys)
   const [newKeyName, setNewKeyName] = useState('')
   const [addOpen, setAddOpen] = useState(false)
   const [adding, setAdding] = useState(false)
   const [addError, setAddError] = useState('')
   const { can } = useAuth()
+  // After creation, the newly created key id is tracked to highlight it
   const [newlyCreatedId, setNewlyCreatedId] = useState<string | null>(null)
   const [copiedId, setCopiedId] = useState<string | null>(null)
   const [visibleIds, setVisibleIds] = useState<Set<string>>(new Set())
+  // Revoke confirm dialog
   const [revokeTarget, setRevokeTarget] = useState<McpApiKeyEntry | null>(null)
   const [revoking, setRevoking] = useState(false)
 
   const syncKeys = (updated: McpApiKeyEntry[]) => { setKeys(updated); onChange(updated) }
 
   const handleAdd = async () => {
-    if (!newKeyName.trim()) { setAddError(t('error.keyNameRequired')); return }
+    if (!newKeyName.trim()) { setAddError('Name is required.'); return }
     setAdding(true)
     setAddError('')
     try {
@@ -56,12 +48,10 @@ export function ApiKeysPanel({ projectId, initialKeys, onChange }: ApiKeysPanelP
       setNewKeyName('')
     } catch (err: unknown) {
       const msg = err && typeof err === 'object' && 'response' in err
-        ? (err as { response?: { data?: { message?: string } } }).response?.data?.message ?? t('error.errorCreatingKey')
-        : t('error.errorCreatingKey')
+        ? (err as { response?: { data?: { message?: string } } }).response?.data?.message ?? 'Error creating key.'
+        : 'Error creating key.'
       setAddError(msg)
-    } finally {
-      setAdding(false)
-    }
+    } finally { setAdding(false) }
   }
 
   const handleRevokeConfirm = async () => {
@@ -101,30 +91,31 @@ export function ApiKeysPanel({ projectId, initialKeys, onChange }: ApiKeysPanelP
           ? <IconLock size={18} style={{ color: '#13DEB9' }} />
           : <IconLockOpen size={18} style={{ opacity: 0.38 }} />}
         <Box display="flex" alignItems="center" gap={0.5} flexGrow={1}>
-          <Typography variant="subtitle1" fontWeight={700}>{t('heading.accessKeys')}</Typography>
-          <HelpButton title={t('heading.accessKeys')}>
+          <Typography variant="subtitle1" fontWeight={700}>Access Keys</Typography>
+          <HelpButton title="Access Keys">
             <Typography variant="body2" gutterBottom>
-              {t('hint.accessKeyHint')}
+              Named keys that control who can connect to this server's AI endpoint.
+              Every client must include <code>auth: &lt;key&gt;</code> in their configuration — requests without a valid key are rejected.
             </Typography>
             <Typography variant="body2" gutterBottom>
               Create <strong>one key per client</strong> (e.g. "Claude Desktop", "Cursor") so you can revoke access for a single client without affecting others.
             </Typography>
             <Typography variant="body2">
-              {t('hint.publicAccess')}
+              Without any key, the endpoint is <strong>publicly accessible</strong> to anyone who knows the URL.
             </Typography>
           </HelpButton>
         </Box>
         {can(Permission.ApiKeysCreate) && (
           <Button size="small" variant="contained" startIcon={<IconPlus size={18} />}
             onClick={() => { setAddOpen(true); setNewKeyName(''); setAddError('') }}>
-            {t('action.addKey')}
+            Add key
           </Button>
         )}
       </Box>
 
       {keys.length === 0 ? (
         <Typography variant="body2" color="text.disabled">
-          {t('label.noKeys')}
+          No keys — any MCP client can connect without authentication.
         </Typography>
       ) : (
         <Box display="flex" flexDirection="column" gap={1}>
@@ -142,7 +133,7 @@ export function ApiKeysPanel({ projectId, initialKeys, onChange }: ApiKeysPanelP
                 <Box flexGrow={1} minWidth={0}>
                   <Box display="flex" alignItems="center" gap={0.75} mb={0.25}>
                     <Typography fontWeight={600} fontSize="0.875rem">{entry.name}</Typography>
-                    {isNew && <Chip label={t('label.newCopyNow')} size="small" color="success" sx={{ fontSize: '0.65rem', height: 18 }} />}
+                    {isNew && <Chip label="new — copy now" size="small" color="success" sx={{ fontSize: '0.65rem', height: 18 }} />}
                   </Box>
                   <Box sx={{
                     fontFamily: 'monospace', fontSize: '0.78rem', color: 'text.secondary',
@@ -151,21 +142,21 @@ export function ApiKeysPanel({ projectId, initialKeys, onChange }: ApiKeysPanelP
                     {isVisible ? entry.key : maskKey(entry.key)}
                   </Box>
                   <Typography variant="caption" color="text.disabled">
-                    {t('label.createdAt', { date: new Date(entry.createdAt).toLocaleDateString() })}
+                    Created {new Date(entry.createdAt).toLocaleDateString()}
                   </Typography>
                 </Box>
-                <Tooltip title={isVisible ? t('action.hideKey') : t('action.showKey')}>
+                <Tooltip title={isVisible ? 'Hide key' : 'Show key'}>
                   <IconButton size="small" onClick={() => toggleVisible(entry.id)}>
                     {isVisible ? <IconEyeOff size={18} /> : <IconEye size={18} />}
                   </IconButton>
                 </Tooltip>
-                <Tooltip title={copiedId === entry.id ? t('tooltip.copiedBang') : t('common:action.copy')}>
+                <Tooltip title={copiedId === entry.id ? 'Copied!' : 'Copy key'}>
                   <IconButton size="small" color={copiedId === entry.id ? 'primary' : 'default'} onClick={() => handleCopy(entry)}>
                     <IconCopy size={18} />
                   </IconButton>
                 </Tooltip>
                 {can(Permission.ApiKeysDelete) && (
-                  <Tooltip title={t('confirm.revokeLabel')}>
+                  <Tooltip title="Revoke key">
                     <IconButton size="small" color="error" onClick={() => setRevokeTarget(entry)}>
                       <IconTrash size={18} />
                     </IconButton>
@@ -175,53 +166,43 @@ export function ApiKeysPanel({ projectId, initialKeys, onChange }: ApiKeysPanelP
             )
           })}
           <Typography variant="caption" color="text.secondary" mt={0.5}>
-            {t('label.useInHeader')} <Box component="code" sx={{ bgcolor: 'action.hover', px: 0.8, py: 0.2, borderRadius: 0.5, fontSize: '0.75rem' }}>auth: &lt;key&gt;</Box>
+            Use in the header: <Box component="code" sx={{ bgcolor: 'action.hover', px: 0.8, py: 0.2, borderRadius: 0.5, fontSize: '0.75rem' }}>auth: &lt;key&gt;</Box>
           </Typography>
         </Box>
       )}
 
-      <Drawer
-        anchor="right"
-        open={addOpen}
-        onClose={() => setAddOpen(false)}
-        PaperProps={{ sx: { width: { xs: '100vw', sm: 420 }, display: 'flex', flexDirection: 'column' } }}
-      >
+      {/* Add key dialog */}
+      <Drawer anchor="right" open={addOpen} onClose={() => setAddOpen(false)}
+        PaperProps={{ sx: { width: { xs: '100vw', sm: 420 }, display: 'flex', flexDirection: 'column' } }}>
         <Box sx={{ px: 3, py: 2, borderBottom: 1, borderColor: 'divider', display: 'flex', alignItems: 'center', gap: 1, flexShrink: 0 }}>
-          <Typography variant="h6" fontWeight={700} flexGrow={1}>{t('action.addKey')}</Typography>
+          <Typography variant="h6" fontWeight={700} flexGrow={1}>Add API key</Typography>
           <IconButton size="small" onClick={() => setAddOpen(false)}><IconX size={18} /></IconButton>
         </Box>
         <Box sx={{ flex: 1, overflowY: 'auto', px: 3, py: 2.5 }}>
           {addError && <Alert severity="error" sx={{ mb: 2 }}>{addError}</Alert>}
-          <TextField
-            size="small"
-            fullWidth
-            autoFocus
-            label={t('common:label.name')}
+          <TextField size="small" fullWidth autoFocus label="Key name"
             placeholder="e.g. Claude Desktop, Production client"
             value={newKeyName}
             onChange={(e) => { setNewKeyName(e.target.value); setAddError('') }}
             onKeyDown={(e) => e.key === 'Enter' && !adding && handleAdd()}
-            helperText={t('hint.keyLabel')}
+            helperText="A label to identify which client uses this key"
           />
         </Box>
         <Box sx={{ px: 3, py: 2, borderTop: 1, borderColor: 'divider', display: 'flex', gap: 1, flexShrink: 0 }}>
-          <Button onClick={() => setAddOpen(false)}>{t('common:action.cancel')}</Button>
-          <Button
-            variant="contained"
-            onClick={handleAdd}
-            disabled={adding}
-            startIcon={adding ? <CircularProgress size={14} color="inherit" /> : <IconLock size={18} />}
-          >
-            {adding ? t('action.creating') : t('action.createKey')}
+          <Button onClick={() => setAddOpen(false)}>Cancel</Button>
+          <Button variant="contained" onClick={handleAdd} disabled={adding}
+            startIcon={adding ? <CircularProgress size={14} color="inherit" /> : <IconLock size={18} />}>
+            {adding ? 'Creating…' : 'Create key'}
           </Button>
         </Box>
       </Drawer>
 
+      {/* Revoke confirm */}
       <ConfirmDialog
         open={revokeTarget !== null}
-        title={t('confirm.revokeKey', { name: revokeTarget?.name })}
-        message={t('confirm.revokeKeyMessage')}
-        confirmLabel={t('confirm.revokeLabel')}
+        title={`Revoke "${revokeTarget?.name}"?`}
+        message="Any client using this key will immediately lose access."
+        confirmLabel="Revoke"
         confirmColor="error"
         loading={revoking}
         onConfirm={handleRevokeConfirm}

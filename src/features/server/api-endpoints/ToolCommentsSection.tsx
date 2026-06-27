@@ -1,25 +1,19 @@
 import { useState } from 'react'
 import {
-  Box,
-  Button,
-  CircularProgress,
-  IconButton,
-  TextField,
-  Tooltip,
-  Typography,
+  Box, Button, CircularProgress, IconButton, TextField, Tooltip, Typography,
 } from '@mui/material'
-import { IconChevronDown, IconMessage, IconTrash } from '@tabler/icons-react'
+import {
+  IconChevronDown, IconMessage, IconTrash,
+} from '@tabler/icons-react'
+import { useAuth, Permission } from '../../../context/AuthContext'
 import api from '../../../api'
-import { Permission, useAuth } from '../../../context/AuthContext'
 import type { ToolComment } from '../types'
 
-interface ToolCommentsSectionProps {
+export function ToolCommentsSection({ projectId, toolName, initialComments }: {
   projectId: string
   toolName: string
   initialComments: ToolComment[]
-}
-
-export function ToolCommentsSection({ projectId, toolName, initialComments }: ToolCommentsSectionProps) {
+}) {
   const { can } = useAuth()
   const [comments, setComments] = useState<ToolComment[]>(initialComments)
   const [text, setText] = useState('')
@@ -36,9 +30,7 @@ export function ToolCommentsSection({ projectId, toolName, initialComments }: To
       )
       setComments((prev) => [...prev, data])
       setText('')
-    } finally {
-      setSaving(false)
-    }
+    } finally { setSaving(false) }
   }
 
   const handleDelete = async (id: string) => {
@@ -80,21 +72,11 @@ export function ToolCommentsSection({ projectId, toolName, initialComments }: To
           ))}
           {can(Permission.ToolsEdit) && (
             <Box display="flex" gap={1} mt={0.5}>
-              <TextField
-                size="small"
-                fullWidth
-                placeholder="Add a note…"
-                value={text}
+              <TextField size="small" fullWidth placeholder="Add a note…" value={text}
                 onChange={(e) => setText(e.target.value)}
-                onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleAdd() } }}
-              />
-              <Button
-                size="small"
-                variant="contained"
-                onClick={handleAdd}
-                disabled={!text.trim() || saving}
-                startIcon={saving ? <CircularProgress size={12} color="inherit" /> : undefined}
-              >
+                onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleAdd() } }} />
+              <Button size="small" variant="contained" onClick={handleAdd} disabled={!text.trim() || saving}
+                startIcon={saving ? <CircularProgress size={12} color="inherit" /> : undefined}>
                 Add
               </Button>
             </Box>

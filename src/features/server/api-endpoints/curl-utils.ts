@@ -1,7 +1,6 @@
 import type { GeneratedTool, JsonSchema } from '../types'
 
 export function buildCurl(tool: GeneratedTool): string {
-  if (!tool.endpointRef) return `# No HTTP endpoint for this tool`
   const { method, path, baseUrl, parameterMap } = tool.endpointRef
   const properties = tool.inputSchema.properties ?? {}
   let url = `${baseUrl}${path}`
@@ -28,12 +27,11 @@ export function buildMcpCurl(tool: GeneratedTool, projectId: string, hasKeys: bo
   const url = `${window.location.origin}/api/mcp/server/${projectId}`
   const properties = tool.inputSchema.properties ?? {}
   const args = Object.fromEntries(
-    Object.entries(properties).map(([k, v]) => [k, `<${v.type ?? 'string'}>`]),
+    Object.entries(properties).map(([k, v]) => [k, `<${v.type ?? 'string'}>`])
   )
   const body = JSON.stringify(
     { jsonrpc: '2.0', method: 'tools/call', id: 1, params: { name: tool.name, arguments: args } },
-    null,
-    2,
+    null, 2
   )
   const lines = [
     `curl -X POST "${url}" \\`,

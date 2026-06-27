@@ -22,33 +22,7 @@ This file should be updated when task state changes. It does not replace issues 
 
 ## Done
 
-- [x] Identified the main project structure: React/Vite frontend at the repository root and NestJS backend in `api/`.
-- [x] Created the base files for shared memory between agents.
-- [x] Documented backend entities and persistence shapes in `docs/ENTITIES.md`.
-- [x] Documented backend and frontend design patterns in `docs/DESIGN_PATTERNS.md`.
-- [x] Documented the Secrets Vault flow in `docs/FLOWS.md`.
-- [x] Documented frontend i18n and configurable terminology behavior.
-- [x] Ensured REST server templates create servers with the `source:rest` tag.
-- [x] Standardized prompt and secret creation around page-based stepper flows.
-- [x] Added Claude Code `backend-test-engineer` specialist for backend Jest, NestJS, repository, guard, and API/e2e tests.
-- [x] Added Claude Code `software-engineer` and `software-architect` specialists.
-- [x] Added Claude Code `compliance-counsel` specialist for software licensing, dependency obligations, and compliance risk.
-- [x] Added Claude Code `developer-advocate` specialist for developer adoption, examples, demos, and DX feedback.
-- [x] Added Claude Code `react-frontend-engineer` specialist for React/TypeScript frontend implementation.
-- [x] Added Claude Code `system-tutor` specialist for user-facing tutorials and section guides.
-- [x] Added a Portuguese integration modeling document by explicit user request.
-- [x] Completed phase 1 of the operation-first migration by renaming user-facing data-source execution UI from Queries to Operations.
-- [x] Added input/output schema support to data-source operations and MCP Tool generation.
-- [x] Added backend tests and an 80% coverage gate for focused backend testable units.
-- [x] Started the `ServerDetail` SOLID refactor by extracting shared save status UI and the rate limit settings panel.
-- [x] Continued the `ServerDetail` modular refactor by extracting the API base URL settings panel into `src/features/server/settings/`.
-- [x] Reused the Claude Code worktree selectively to extract the server project controls panel into `src/features/server/settings/`.
-- [x] Extracted the server Connect tab panels into `src/features/server/connect/` while preserving current i18n copy.
-- [x] Extracted the server Activity log panel into `src/features/server/activity/`.
-- [x] Started extracting API endpoint support by moving the endpoint picker dialog into `src/features/server/api-endpoints/`.
-- [x] Extracted tool notes/comments UI into `src/features/server/api-endpoints/`.
-- [x] Extracted API endpoint curl/schema helper functions into `src/features/server/api-endpoints/`.
-- [x] Continued the Claude Code worktree refactor by extracting `EndpointAccordion` and shared schema field input into `src/features/server/api-endpoints/`.
+- [x] Imported pending uncommitted Claude worktree changes from `.claude/worktrees/agent-ab0722d25387f1c7f` into `develop`, including modular tabs and dialogs for API endpoints, resources, prompts, and chains.
 
 ## Decisions
 
