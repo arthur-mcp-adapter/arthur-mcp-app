@@ -44,6 +44,11 @@ This file should be updated when task state changes. It does not replace issues 
 - [x] Continued the `ServerDetail` modular refactor by extracting the API base URL settings panel into `src/features/server/settings/`.
 - [x] Reused the Claude Code worktree selectively to extract the server project controls panel into `src/features/server/settings/`.
 - [x] Extracted the server Connect tab panels into `src/features/server/connect/` while preserving current i18n copy.
+- [x] Extracted the server Activity log panel into `src/features/server/activity/`.
+- [x] Started extracting API endpoint support by moving the endpoint picker dialog into `src/features/server/api-endpoints/`.
+- [x] Extracted tool notes/comments UI into `src/features/server/api-endpoints/`.
+- [x] Extracted API endpoint curl/schema helper functions into `src/features/server/api-endpoints/`.
+- [x] Continued the Claude Code worktree refactor by extracting `EndpointAccordion` and shared schema field input into `src/features/server/api-endpoints/`.
 
 ## Decisions
 
@@ -67,4 +72,4 @@ This file should be updated when task state changes. It does not replace issues 
 - What is the immediate functional priority for the system?
 - Is there a primary deploy environment beyond the files already present in the repository?
 - Which excluded legacy backend facades should receive dedicated coverage next?
-- Which `ServerDetail` section should be extracted next: API endpoint tools, resources/prompts, activity, or operations?
+- Which `ServerDetail` section should be extracted next: API endpoint accordions/tool dialog, resources/prompts, or operations?

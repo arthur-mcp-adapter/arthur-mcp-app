@@ -29,3 +29,79 @@ export interface McpApiKeyEntry {
   key: string
   createdAt: string
 }
+
+export interface ExecLog {
+  _id: string
+  toolName: string
+  source: 'mcp' | 'direct'
+  statusCode: number
+  responseTimeMs: number
+  isError: boolean
+  errorMessage?: string
+  createdAt: string
+}
+
+export interface ParameterMapping {
+  toolParamName: string
+  source: 'path' | 'query' | 'header' | 'body'
+  originalName: string
+  required: boolean
+}
+
+export interface EndpointRef {
+  method: string
+  path: string
+  baseUrl: string
+  contentType?: string
+  parameterMap: ParameterMapping[]
+}
+
+export interface JsonSchema {
+  type?: string
+  properties?: Record<string, JsonSchema>
+  items?: JsonSchema
+  required?: string[]
+  description?: string
+  enum?: unknown[]
+}
+
+export interface ToolComment {
+  id: string
+  text: string
+  author: string
+  createdAt: string
+}
+
+export interface ExecutionRef {
+  type: 'sql' | 'mongodb' | 'redis' | 'elasticsearch' | 'dynamodb' | 'firestore' | 'db' | 'static'
+  dialect?: string
+  query?: string
+  paramStyle?: string
+  resultMode?: string
+  collection?: string
+  operation?: string
+  filterTemplate?: string
+  projectionTemplate?: string
+  pipeline?: unknown[]
+  documentTemplate?: string
+  command?: string
+  keyPattern?: string
+  valueTemplate?: string
+  dbQueryId?: string
+  responseTemplate?: string
+  mimeType?: string
+}
+
+export interface GeneratedTool {
+  name: string
+  description?: string
+  inputSchema: JsonSchema
+  outputSchema?: JsonSchema
+  outputTemplate?: string
+  errorConfig?: { message: string }
+  endpointRef?: EndpointRef
+  executionRef?: ExecutionRef
+  endpointSource?: string
+  enabled?: boolean
+  comments?: ToolComment[]
+}

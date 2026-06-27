@@ -54,6 +54,12 @@ The shared context protocol now includes Claude Code specialist agents, backend 
 - Inspected Claude Code worktree `.claude/worktrees/agent-ab0722d25387f1c7f`; it contains a broad server feature split but should still be reused selectively because the main tree has newer Operations/i18n work.
 - Reused the worktree's project-controls extraction pattern and moved `ProjectControlsPanel` from inline `ServerDetail.tsx` code into `src/features/server/settings/ProjectControlsPanel.tsx`.
 - Extracted the Connect tab from `ServerDetail.tsx` into `src/features/server/connect/McpEndpointBar.tsx`, `ApiKeysPanel.tsx`, and `OAuthClientPanel.tsx`, preserving the current `serverDetail` i18n usage instead of copying the older hardcoded worktree versions.
+- Extracted the Activity log panel from `ServerDetail.tsx` into `src/features/server/activity/ProjectLogs.tsx`, with `ExecLog` moved to shared server feature types.
+- Started the API endpoint extraction by moving `FromEndpointPickerDialog` into `src/features/server/api-endpoints/FromEndpointPickerDialog.tsx` and adding shared server constants/types needed by that module.
+- Extracted `ToolCommentsSection` from `ServerDetail.tsx` into `src/features/server/api-endpoints/ToolCommentsSection.tsx`.
+- Extracted `buildCurl`, `buildMcpCurl`, and `inferSchema` from `ServerDetail.tsx` into `src/features/server/api-endpoints/curl-utils.ts`.
+- Extracted `EndpointAccordion` from `ServerDetail.tsx` into `src/features/server/api-endpoints/EndpointAccordion.tsx`, preserving the main tree's i18n copy instead of using the older hardcoded worktree text.
+- Extracted shared schema field rendering into `src/features/server/api-endpoints/FieldInput.tsx`; `ServerDetail` still imports it for the remaining `ToolAccordion` path.
 
 ## Files Changed In This Session
 
@@ -117,6 +123,13 @@ The shared context protocol now includes Claude Code specialist agents, backend 
 - `src/features/server/connect/McpEndpointBar.tsx`
 - `src/features/server/connect/ApiKeysPanel.tsx`
 - `src/features/server/connect/OAuthClientPanel.tsx`
+- `src/features/server/activity/ProjectLogs.tsx`
+- `src/features/server/api-endpoints/FromEndpointPickerDialog.tsx`
+- `src/features/server/api-endpoints/ToolCommentsSection.tsx`
+- `src/features/server/api-endpoints/curl-utils.ts`
+- `src/features/server/api-endpoints/EndpointAccordion.tsx`
+- `src/features/server/api-endpoints/FieldInput.tsx`
+- `src/features/server/constants.ts`
 - `src/features/server/types.ts`
 - `src/components/SecretAutocomplete.tsx`
 - `src/context/AuthContext.tsx`
@@ -155,13 +168,18 @@ The shared context protocol now includes Claude Code specialist agents, backend 
 - `npm run type-check` passed after extracting `BaseUrlPanel`.
 - `npm run type-check` passed after extracting `ProjectControlsPanel`.
 - `npm run type-check` passed after extracting the Connect tab panels.
+- `npm run type-check` passed after extracting the Activity log panel.
+- `npm run type-check` passed after extracting `FromEndpointPickerDialog`.
+- `npm run type-check` passed after extracting `ToolCommentsSection`.
+- `npm run type-check` passed after extracting API endpoint curl/schema helpers.
+- `npm run type-check` passed after extracting `EndpointAccordion` and `FieldInput`.
 - `npm test --prefix api -- secrets.service.spec.ts swagger.service.spec.ts permissions.guard.spec.ts` passed.
 - `npm run test:cov --prefix api -- --runInBand` passed with 83.85% statements, 71.72% branches, 87.34% functions, and 85.35% lines.
 - `npm run build --prefix api` could not complete because the local system hit the file watcher limit (`ENOSPC`), so backend validation used direct `tsc --noEmit` instead.
 
 ## Recommended Next Step
 
-Continue the `ServerDetail` modular refactor in small behavior-preserving steps. Use the Claude Code worktree as a reference, but do not merge it wholesale. The next high-value extraction is likely API endpoint tools, activity, resources/prompts, or the Operations area.
+Continue the `ServerDetail` modular refactor in small behavior-preserving steps. Use the Claude Code worktree as a reference, but do not merge it wholesale. The next high-value extraction is likely API endpoint accordions/tool dialog, resources/prompts, or the Operations area.
 
 ## Points Of Attention
 
