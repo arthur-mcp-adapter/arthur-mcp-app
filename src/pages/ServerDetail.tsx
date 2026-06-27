@@ -88,7 +88,7 @@ import { QRCodeSVG } from 'qrcode.react'
 import MonacoEditor from '@monaco-editor/react'
 import { useColorMode } from '../theme/ColorModeContext'
 import { useAuth, Permission } from '../context/AuthContext'
-import { useServerNav } from '../context/ServerNavContext'
+import { useDetailPageNav } from '../hooks/useDetailPageNav'
 import api from '../api'
 import HelpButton from '../components/HelpButton'
 import ConfirmDialog from '../components/ConfirmDialog'
@@ -163,7 +163,6 @@ export default function ServerDetail() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const { can } = useAuth()
-  const { setServerDetail } = useServerNav()
   const [project, setProject] = useState<Project | null>(null)
   const [baseUrl, setBaseUrl] = useState('')
   const [loading, setLoading] = useState(true)
@@ -187,10 +186,9 @@ export default function ServerDetail() {
       .finally(() => setLoading(false))
   }, [id])
 
-  useEffect(() => {
-    if (!project) return
-
-    setServerDetail({
+  useDetailPageNav(() => {
+    if (!project) return null
+    return {
       name: project.name,
       sourceEmoji: '🖧',
       sourceColor: '#5D87FF',
@@ -208,11 +206,9 @@ export default function ServerDetail() {
         { label: 'AI View', icon: <IconBook size={17} />, idx: 8 },
       ],
       tab,
-      onTabChange: (next) => setTab(next as number),
-    })
-  }, [project, tab, setServerDetail])
-
-  useEffect(() => () => setServerDetail(null), [setServerDetail])
+      onTabChange: (next: number) => setTab(next),
+    }
+  }, [project, tab])
 
   const saveProjectInfo = async (field: 'name' | 'description', value: string) => {
     await api.patch(`/swagger/servers/${id}/info`, { [field]: value })

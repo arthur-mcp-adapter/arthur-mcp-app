@@ -21,8 +21,8 @@ import {
   IconX,
 } from '@tabler/icons-react'
 import { useTranslation } from 'react-i18next'
-import { useServerNav } from '../context/ServerNavContext'
 import api from '../api'
+import { useDetailPageNav } from '../hooks/useDetailPageNav'
 import Swal from 'sweetalert2'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -491,7 +491,6 @@ export default function PromptDetail() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const { t } = useTranslation('prompts')
-  const { setServerDetail } = useServerNav()
 
   const [prompt, setPrompt] = useState<Prompt | null>(null)
   const [loading, setLoading] = useState(true)
@@ -514,10 +513,9 @@ export default function PromptDetail() {
       .finally(() => setLoading(false))
   }, [id])
 
-  // Sync sidebar nav — runs whenever tab or prompt changes
-  useEffect(() => {
-    if (!prompt) return
-    setServerDetail({
+  useDetailPageNav(() => {
+    if (!prompt) return null
+    return {
       name: prompt.name,
       sourceEmoji: '💬',
       sourceColor: '#5D87FF',
@@ -531,12 +529,9 @@ export default function PromptDetail() {
         { label: t('tab.settings'), icon: <IconSettings size={17} />, idx: 4 },
       ],
       tab,
-      onTabChange: (next) => setTab(next as number),
-    })
-  })
-
-  // Cleanup on unmount
-  useEffect(() => () => setServerDetail(null), [])
+      onTabChange: (next: number) => setTab(next),
+    }
+  }, [prompt, tab, t])
 
   const handleSave = async () => {
     if (!prompt) return

@@ -30,9 +30,9 @@ import {
   IconCopy,
 } from '@tabler/icons-react'
 import { useTranslation } from 'react-i18next'
-import { useServerNav } from '../context/ServerNavContext'
 import { useAuth, Permission } from '../context/AuthContext'
 import api from '../api'
+import { useDetailPageNav } from '../hooks/useDetailPageNav'
 import Swal from 'sweetalert2'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -423,7 +423,6 @@ export default function SecretDetail() {
   const [loading, setLoading] = useState(true)
   const [tab, setTab] = useState(0)
   const [snack, setSnack] = useState<{ msg: string; severity: 'success' | 'error' } | null>(null)
-  const { setServerDetail } = useServerNav()
 
   useEffect(() => {
     if (!id) return
@@ -432,10 +431,9 @@ export default function SecretDetail() {
       .finally(() => setLoading(false))
   }, [id])
 
-  // Keep sidebar nav in sync on every render
-  useEffect(() => {
-    if (!secret) return
-    setServerDetail({
+  useDetailPageNav(() => {
+    if (!secret) return null
+    return {
       name: secret.name,
       sourceEmoji: '🔑',
       sourceColor: '#FFAE1F',
@@ -448,11 +446,9 @@ export default function SecretDetail() {
         { label: t('tab.settings'), icon: <IconSettings size={17} />, idx: 3 },
       ],
       tab,
-      onTabChange: (next) => setTab(next as number),
-    })
-  })
-
-  useEffect(() => () => setServerDetail(null), [])
+      onTabChange: (next: number) => setTab(next),
+    }
+  }, [secret, tab, t])
 
   if (loading) {
     return (

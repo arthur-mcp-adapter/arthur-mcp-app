@@ -39,7 +39,7 @@ import {
 import { useTranslation } from 'react-i18next'
 import api from '../api'
 import { useAuth, Permission } from '../context/AuthContext'
-import { useServerNav } from '../context/ServerNavContext'
+import { useDetailPageNav } from '../hooks/useDetailPageNav'
 import ConfirmDialog from '../components/ConfirmDialog'
 import AppSnackbar from '../components/AppSnackbar'
 
@@ -1042,7 +1042,6 @@ export default function Profile() {
   const [loading, setLoading] = useState(true)
   const [tab, setTab] = useState<'profile' | 'users' | 'roles'>('profile')
   const { can, loading: authLoading } = useAuth()
-  const { setServerDetail } = useServerNav()
 
   useEffect(() => {
     if (authLoading) return
@@ -1051,10 +1050,10 @@ export default function Profile() {
       .finally(() => setLoading(false))
   }, [authLoading])
 
-  useEffect(() => {
-    if (!me) return
+  useDetailPageNav(() => {
+    if (!me) return null
 
-    setServerDetail({
+    return {
       name: me.username,
       sourceEmoji: '👤',
       sourceColor: '#5D87FF',
@@ -1070,11 +1069,9 @@ export default function Profile() {
           : []),
       ],
       tab,
-      onTabChange: (next) => setTab(next as typeof tab),
-    })
-  }, [me, tab, can, setServerDetail, t])
-
-  useEffect(() => () => setServerDetail(null), [setServerDetail])
+      onTabChange: (next: typeof tab) => setTab(next),
+    }
+  }, [me, tab, can, t])
 
   if (loading || authLoading) return (
     <Box display="flex" justifyContent="center" alignItems="center" height="50vh">
