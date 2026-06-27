@@ -40,6 +40,7 @@ import { useTranslation } from 'react-i18next'
 import api from '../api'
 import { useAuth, Permission } from '../context/AuthContext'
 import { useDetailPageNav } from '../hooks/useDetailPageNav'
+import { useAsyncFeedback } from '../hooks/useAsyncFeedback'
 import ConfirmDialog from '../components/ConfirmDialog'
 import AppSnackbar from '../components/AppSnackbar'
 
@@ -462,21 +463,14 @@ function MyProfileTab({ me, onUpdated }: { me: UserProfile; onUpdated: (u: UserP
   const [newPassword, setNewPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [saving, setSaving] = useState(false)
-
-  const [snackOpen, setSnackOpen] = useState(false)
-  const [snackMsg, setSnackMsg] = useState('')
-  const [snackSeverity, setSnackSeverity] = useState<'success' | 'error'>('success')
-
-  const showSnack = (msg: string, sev: 'success' | 'error') => {
-    setSnackMsg(msg); setSnackSeverity(sev); setSnackOpen(true)
-  }
+  const { feedback, showFeedback, clearFeedback } = useAsyncFeedback()
 
   const handleSave = async () => {
     if (newPassword && newPassword !== confirmPassword) {
-      showSnack(t('myProfile.passwordMatchError'), 'error'); return
+      showFeedback(t('myProfile.passwordMatchError'), 'error'); return
     }
     if (newPassword && !currentPassword) {
-      showSnack(t('myProfile.currentPasswordRequired'), 'error'); return
+      showFeedback(t('myProfile.currentPasswordRequired'), 'error'); return
     }
 
     setSaving(true)
@@ -486,17 +480,17 @@ function MyProfileTab({ me, onUpdated }: { me: UserProfile; onUpdated: (u: UserP
       if (email !== me.email) dto.email = email
       if (newPassword) { dto.currentPassword = currentPassword; dto.newPassword = newPassword }
 
-      if (Object.keys(dto).length === 0) { showSnack(t('myProfile.noChanges'), 'error'); return }
+      if (Object.keys(dto).length === 0) { showFeedback(t('myProfile.noChanges'), 'error'); return }
 
       const res = await api.patch<UserProfile>('/users/me', dto)
       onUpdated(res.data)
       setCurrentPassword(''); setNewPassword(''); setConfirmPassword('')
-      showSnack(t('myProfile.saveSuccess'), 'success')
+      showFeedback(t('myProfile.saveSuccess'), 'success')
     } catch (err: unknown) {
       const msg = err && typeof err === 'object' && 'response' in err
         ? (err as { response?: { data?: { message?: string } } }).response?.data?.message ?? t('myProfile.saveError')
         : t('myProfile.saveError')
-      showSnack(msg, 'error')
+      showFeedback(msg, 'error')
     } finally {
       setSaving(false)
     }
@@ -568,7 +562,7 @@ function MyProfileTab({ me, onUpdated }: { me: UserProfile; onUpdated: (u: UserP
         </Grid>
       </Grid>
 
-      <AppSnackbar open={snackOpen} message={snackMsg} severity={snackSeverity} onClose={() => setSnackOpen(false)} />
+      <AppSnackbar open={feedback.open} message={feedback.message} severity={feedback.severity} onClose={clearFeedback} />
     </Box>
   )
 }
@@ -583,10 +577,7 @@ function UsersTab({ currentUserId }: { currentUserId: string }) {
   const [dialogOpen, setDialogOpen] = useState(false)
   const [editingUser, setEditingUser] = useState<UserProfile | undefined>()
   const { can } = useAuth()
-
-  const [snackOpen, setSnackOpen] = useState(false)
-  const [snackMsg, setSnackMsg] = useState('')
-  const [snackSeverity, setSnackSeverity] = useState<'success' | 'error'>('success')
+  const { feedback, showFeedback, clearFeedback } = useAsyncFeedback()
 
   const load = () => {
     setLoading(true)
@@ -609,9 +600,7 @@ function UsersTab({ currentUserId }: { currentUserId: string }) {
   const handleDeleted = (id: string) => {
     setUsers((prev) => prev.filter((u) => u._id !== id))
     setDialogOpen(false)
-    setSnackMsg(t('users.deleteSuccess'))
-    setSnackSeverity('success')
-    setSnackOpen(true)
+    showFeedback(t('users.deleteSuccess'), 'success')
   }
 
   const handleOpenCreate = () => { setEditingUser(undefined); setDialogOpen(true) }
@@ -699,7 +688,7 @@ function UsersTab({ currentUserId }: { currentUserId: string }) {
         currentUserId={currentUserId}
       />
 
-      <AppSnackbar open={snackOpen} message={snackMsg} severity={snackSeverity} onClose={() => setSnackOpen(false)} />
+      <AppSnackbar open={feedback.open} message={feedback.message} severity={feedback.severity} onClose={clearFeedback} />
     </Box>
   )
 }
@@ -720,6 +709,7 @@ function RoleDrawer({
   const [permissions, setPermissions] = useState<RolePermissions>(emptyPermissions())
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
+  const { feedback, showFeedback, clearFeedback } = useAsyncFeedback()
 
   useEffect(() => {
     if (open) {
@@ -769,7 +759,7 @@ function RoleDrawer({
       const msg = err && typeof err === 'object' && 'response' in err
         ? (err as { response?: { data?: { message?: string } } }).response?.data?.message ?? t('roleDrawer.saveError')
         : t('roleDrawer.saveError')
-      setError(msg)
+      showFeedback(msg, 'error')
     } finally {
       setSaving(false)
     }
@@ -789,6 +779,7 @@ function RoleDrawer({
 
       <Box sx={{ flex: 1, overflowY: 'auto', px: 3, py: 2.5, display: 'flex', flexDirection: 'column', gap: 3 }}>
         {error && <Alert severity="error">{error}</Alert>}
+        <AppSnackbar open={feedback.open} message={feedback.message} severity={feedback.severity} onClose={clearFeedback} />
 
         <Box display="flex" flexDirection="column" gap={2}>
           <TextField size="small" fullWidth required autoFocus label={t('roleDrawer.nameLabel')}
@@ -861,8 +852,8 @@ function RolesTab() {
   const [editRole, setEditRole] = useState<Role | undefined>()
   const [deleteTarget, setDeleteTarget] = useState<Role | null>(null)
   const [deleting, setDeleting] = useState(false)
-  const [snack, setSnack] = useState<{ message: string; severity: 'success' | 'error' } | null>(null)
   const { can } = useAuth()
+  const { feedback, showFeedback, clearFeedback } = useAsyncFeedback()
 
   useEffect(() => {
     api.get<Role[]>('/roles')
@@ -884,10 +875,7 @@ function RolesTab() {
       if (idx >= 0) { const next = [...prev]; next[idx] = role; return next }
       return [...prev, role]
     })
-    setSnack({
-      message: editRole ? t('roles.roleUpdated') : t('roles.roleCreated'),
-      severity: 'success',
-    })
+    showFeedback(editRole ? t('roles.roleUpdated') : t('roles.roleCreated'), 'success')
   }
 
   const handleDeleteConfirm = async () => {
@@ -896,9 +884,9 @@ function RolesTab() {
     try {
       await api.delete(`/roles/${deleteTarget._id}`)
       setRoles((prev) => prev.filter((r) => r._id !== deleteTarget._id))
-      setSnack({ message: t('roles.roleDeleted'), severity: 'success' })
+      showFeedback(t('roles.roleDeleted'), 'success')
     } catch {
-      setSnack({ message: t('roles.roleDeleteFailed'), severity: 'error' })
+      showFeedback(t('roles.roleDeleteFailed'), 'error')
     } finally {
       setDeleting(false)
       setDeleteTarget(null)
@@ -1025,10 +1013,10 @@ function RolesTab() {
       />
 
       <AppSnackbar
-        open={snack !== null}
-        message={snack?.message ?? ''}
-        severity={snack?.severity ?? 'success'}
-        onClose={() => setSnack(null)}
+        open={feedback.open}
+        message={feedback.message}
+        severity={feedback.severity}
+        onClose={clearFeedback}
       />
     </Box>
   )

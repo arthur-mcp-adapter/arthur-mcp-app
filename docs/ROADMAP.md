@@ -18,7 +18,7 @@ This file should be updated when task state changes. It does not replace issues 
   - [x] **Phase 4:** Create `BaseDialogLayout` for dialog/drawer wrappers and migrate shared drawer shells.
   - [x] **Phase 5:** Extract `useDetailPageNav` hook for detail page contextual navigation.
   - [x] **Phase 6:** Consolidate type definitions.
-  - [ ] **Phase 7:** Extract `useAsyncFeedback` hook.
+  - [x] **Phase 7:** Extract `useAsyncFeedback` hook.
 
 ## Later
 
@@ -70,6 +70,7 @@ This file should be updated when task state changes. It does not replace issues 
 - [x] **Phase 4 Complete:** Extracted `BaseDialogLayout` and refactored shared right-drawer shells in `FromEndpointPickerDialog` and `ReimportSpecDialog`.
 - [x] **Phase 5 Complete:** Extracted `useDetailPageNav` and refactored `PromptDetail`, `SecretDetail`, `ServerDetail`, and `Profile` to use the shared contextual nav sync.
 - [x] **Phase 6 Complete:** Replaced local prompt/secret/project detail interfaces with shared feature types in `PromptDetail` and `SecretDetail`.
+- [x] **Phase 7 Complete:** Extracted `useAsyncFeedback` and reused it for the repeated snackbar feedback flows in `Profile`.
 
 ## Decisions
 

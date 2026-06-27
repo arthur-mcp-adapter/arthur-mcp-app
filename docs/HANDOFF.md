@@ -10,7 +10,7 @@ Codex
 
 The shared context protocol now includes Claude Code specialist agents, backend entity documentation, backend/frontend design patterns, flow documentation, and a documentation gate. Recent Claude Code work added frontend i18n and configurable terminology. REST server templates now create tagged REST servers by sending `source:rest` during server creation. Prompt and secret creation now use dedicated page-based stepper flows. Server source cards now support double-click to select and continue. A Portuguese integration modeling document was added by explicit user request. Phase 1 of the operation-first migration renamed generic data-source execution UI from Queries to Operations. Data-source operations now support input/output schemas for MCP exposure, with input parameters presented before source-specific query/command editors. A `system-tutor` Claude Code specialist now owns tutorials, section guides, onboarding paths, and product education. A `compliance-counsel` specialist now owns software licensing, dependency obligations, attribution, distribution risk, and compliance/legal notes. A `developer-advocate` specialist now owns developer adoption materials, demos, examples, DX reviews, and community feedback loops. A `react-frontend-engineer` specialist now owns React/TypeScript frontend implementation. A `backend-test-engineer` specialist now owns backend Jest, NestJS, repository, guard, DTO, and API/e2e tests. Backend coverage now has an 80% global gate for focused testable units. `ServerDetail` refactoring is continuing by extracting focused server feature modules without replacing the current Operations implementation.
 
-Frontend duplication optimization is progressing through a phased extraction plan. Phases 1-6 are complete: `BaseListCard`, `useListPageLogic`, `useCopyToClipboard`, `BaseDialogLayout`, `useDetailPageNav`, and shared feature types are in place, with the most repetitive drawer, detail-nav, and page-local entity shapes now centralized.
+Frontend duplication optimization is progressing through a phased extraction plan. Phases 1-7 are complete: `BaseListCard`, `useListPageLogic`, `useCopyToClipboard`, `BaseDialogLayout`, `useDetailPageNav`, shared feature types, and `useAsyncFeedback` are in place, with the most repetitive drawer, detail-nav, snackbar, and page-local entity shapes now centralized.
 
 ## Latest Changes
 
@@ -18,6 +18,7 @@ Frontend duplication optimization is progressing through a phased extraction pla
 - Added `src/components/BaseDialogLayout.tsx` and reused it in `FromEndpointPickerDialog` and `ReimportSpecDialog` to remove repeated right-drawer shell markup.
 - Added `src/hooks/useDetailPageNav.ts` and refactored `PromptDetail`, `SecretDetail`, `ServerDetail`, and `Profile` to reuse the contextual sidebar navigation sync.
 - Consolidated page-local prompt/secret/project entity interfaces in `PromptDetail` and `SecretDetail` by importing the existing shared feature types.
+- Added `src/hooks/useAsyncFeedback.ts` and reused it in `Profile` to reduce repeated snackbar state and async feedback handling.
 - Added `AGENTS.md` with project context, commands, and the agent protocol.
 - Added `docs/ROADMAP.md` with macro status, decisions, and open questions.
 - Added `docs/HANDOFF.md` as the handoff file between sessions.
