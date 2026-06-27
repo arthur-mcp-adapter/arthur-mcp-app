@@ -1,5 +1,8 @@
 {
   "title": "Perfil",
+  "nav": {
+    "backLabel": "Menu principal"
+  },
   "loadError": "Não foi possível carregar o perfil.",
   "tabs": {
     "myProfile": "Meu Perfil",

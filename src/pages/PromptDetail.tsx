@@ -531,7 +531,7 @@ export default function PromptDetail() {
         { label: t('tab.settings'), icon: <IconSettings size={17} />, idx: 4 },
       ],
       tab,
-      onTabChange: setTab,
+      onTabChange: (next) => setTab(next as number),
     })
   })
 

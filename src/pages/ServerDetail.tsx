@@ -34,20 +34,17 @@ import {
   Paper,
   Select,
   Switch,
-  Tab,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableRow,
-  Tabs,
   TextField,
   Tooltip,
   Typography,
 } from '@mui/material'
 import {
   IconPlus,
-  IconArrowLeft,
   IconRefresh,
   IconCheck,
   IconX,
@@ -91,6 +88,7 @@ import { QRCodeSVG } from 'qrcode.react'
 import MonacoEditor from '@monaco-editor/react'
 import { useColorMode } from '../theme/ColorModeContext'
 import { useAuth, Permission } from '../context/AuthContext'
+import { useServerNav } from '../context/ServerNavContext'
 import api from '../api'
 import HelpButton from '../components/HelpButton'
 import ConfirmDialog from '../components/ConfirmDialog'
@@ -165,6 +163,7 @@ export default function ServerDetail() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const { can } = useAuth()
+  const { setServerDetail } = useServerNav()
   const [project, setProject] = useState<Project | null>(null)
   const [baseUrl, setBaseUrl] = useState('')
   const [loading, setLoading] = useState(true)
@@ -187,6 +186,33 @@ export default function ServerDetail() {
       .catch(() => setError('Server not found.'))
       .finally(() => setLoading(false))
   }, [id])
+
+  useEffect(() => {
+    if (!project) return
+
+    setServerDetail({
+      name: project.name,
+      sourceEmoji: '🖧',
+      sourceColor: '#5D87FF',
+      backLabel: 'Servers',
+      backPath: '/',
+      navItems: [
+        { label: 'Connect', icon: <IconWorld size={17} />, idx: 0 },
+        { label: 'API Endpoints', icon: <IconRoute size={17} />, idx: 1 },
+        { label: 'Tools', icon: <IconTool size={17} />, idx: 2, badge: project.tools.length },
+        { label: 'Resources', icon: <IconDatabase size={17} />, idx: 3, badge: (project.resources ?? []).length },
+        { label: 'Prompts', icon: <IconBulb size={17} />, idx: 4, badge: (project.prompts ?? []).length },
+        { label: 'Chains', icon: <IconArrowsShuffle size={17} />, idx: 5, badge: (project.chains ?? []).length, disabled: true },
+        { label: 'Settings', icon: <IconAdjustments size={17} />, idx: 6 },
+        { label: 'Activity', icon: <IconChartBar size={17} />, idx: 7 },
+        { label: 'AI View', icon: <IconBook size={17} />, idx: 8 },
+      ],
+      tab,
+      onTabChange: (next) => setTab(next as number),
+    })
+  }, [project, tab, setServerDetail])
+
+  useEffect(() => () => setServerDetail(null), [setServerDetail])
 
   const saveProjectInfo = async (field: 'name' | 'description', value: string) => {
     await api.patch(`/swagger/servers/${id}/info`, { [field]: value })
@@ -244,11 +270,6 @@ export default function ServerDetail() {
 
   return (
     <Box py={3} px={0}>
-      {/* Nav */}
-      <Box mb={2}>
-        <Button startIcon={<IconArrowLeft size={18} />} size="small" onClick={() => navigate('/')}>Servers</Button>
-      </Box>
-
       {/* Header — always visible */}
       <Paper variant="outlined" sx={{ p: 2.5, mb: 2.5, borderRadius: '10px' }}>
         <Box display="flex" justifyContent="space-between" alignItems="flex-start" flexWrap="wrap" gap={2}>
@@ -290,24 +311,6 @@ export default function ServerDetail() {
           <strong>{reimportSuccess.updated}</strong> updated.
         </Alert>
       )}
-
-      {/* Tabs */}
-      <Tabs value={tab} onChange={(_, v) => setTab(v)} sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
-        <Tab icon={<IconWorld size={16} />} iconPosition="start" label="Connect" />
-        <Tab icon={<IconRoute size={16} />} iconPosition="start"
-          label={`API Endpoints${project.tools.length > 0 ? ` (${project.tools.length})` : ''}`} />
-        <Tab icon={<IconTool size={16} />} iconPosition="start"
-          label={`Tools${project.tools.length > 0 ? ` (${project.tools.length})` : ''}`} />
-        <Tab icon={<IconDatabase size={16} />} iconPosition="start"
-          label={`Resources${(project.resources ?? []).length > 0 ? ` (${project.resources!.length})` : ''}`} />
-        <Tab icon={<IconBulb size={16} />} iconPosition="start"
-          label={`Prompts${(project.prompts ?? []).length > 0 ? ` (${project.prompts!.length})` : ''}`} />
-        <Tab icon={<IconArrowsShuffle size={16} />} iconPosition="start"
-          label={`Chains${(project.chains ?? []).length > 0 ? ` (${project.chains!.length})` : ''} (WIP)`} disabled />
-        <Tab icon={<IconAdjustments size={16} />} iconPosition="start" label="Settings" />
-        <Tab icon={<IconChartBar size={16} />} iconPosition="start" label="Activity" />
-        <Tab icon={<IconBook size={16} />} iconPosition="start" label="AI View" />
-      </Tabs>
 
       {/* ── Tab 0: Connect ─────────────────────────────────────────────────────── */}
       {tab === 0 && (

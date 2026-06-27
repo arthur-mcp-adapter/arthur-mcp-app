@@ -448,7 +448,7 @@ export default function SecretDetail() {
         { label: t('tab.settings'), icon: <IconSettings size={17} />, idx: 3 },
       ],
       tab,
-      onTabChange: setTab,
+      onTabChange: (next) => setTab(next as number),
     })
   })
 

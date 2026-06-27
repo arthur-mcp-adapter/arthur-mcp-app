@@ -1,5 +1,8 @@
 {
   "title": "Profile",
+  "nav": {
+    "backLabel": "Main menu"
+  },
   "loadError": "Unable to load profile.",
   "tabs": {
     "myProfile": "My Profile",

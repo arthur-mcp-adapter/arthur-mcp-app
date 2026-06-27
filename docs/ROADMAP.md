@@ -54,6 +54,9 @@ This file should be updated when task state changes. It does not replace issues 
 - [x] Modularized the `Prompts` route by extracting prompt card and tag input components into `src/features/prompts/` and removing the unused inline drawer implementation.
 - [x] Modularized the `Secrets` route by extracting the secret card into `src/features/secrets/` and removing the unused inline drawer implementation.
 - [x] Started modularizing the `Settings` route by extracting the global headers and terminology panels into `src/features/settings/`.
+- [x] Extracted the `Servers` list card into `src/features/server/ProjectCard.tsx` and moved server health-summary types into shared feature types.
+- [x] Switched `ServerDetail` to the shared contextual sidebar navigation pattern so the back action and section tabs are driven by `ServerNavContext` instead of duplicated inline UI.
+- [x] Switched `Profile` to the shared contextual sidebar navigation pattern so profile sections are selected from the sidebar instead of inline tabs.
 
 ## Decisions
 

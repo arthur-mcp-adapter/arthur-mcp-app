@@ -66,6 +66,9 @@ The shared context protocol now includes Claude Code specialist agents, backend 
 - Extracted `PromptCard`, `TagInput`, and prompt types into `src/features/prompts/`, then removed the unused inline prompt drawer implementation from `src/pages/Prompts.tsx` and reused the shared tag input in `src/pages/NewPrompt.tsx`.
 - Extracted `SecretCard` and secret types into `src/features/secrets/`, then removed the unused inline secret drawer implementation from `src/pages/Secrets.tsx`.
 - Extracted `GlobalRequestHeadersPanel` and `TerminologyPanel` into `src/features/settings/`, keeping save logic in `src/pages/Settings.tsx` while reducing page-owned JSX.
+- Extracted the `Servers` list card into `src/features/server/ProjectCard.tsx`, moved health-summary types into shared server feature types, and left `src/pages/Servers.tsx` as list orchestration plus filters/dialog state.
+- Aligned `ServerDetail` with `PromptDetail` and `SecretDetail` by moving its back navigation and tab switching into `ServerNavContext`, removing the duplicated inline back button and top tab bar from the page content.
+- Switched `Profile` to the same contextual sidebar navigation pattern, so profile sections now use the sidebar menu instead of inline tabs and the contextual back action returns to the main menu.
 
 ## Files Changed In This Session
 
@@ -130,6 +133,10 @@ The shared context protocol now includes Claude Code specialist agents, backend 
 - `src/features/server/connect/ApiKeysPanel.tsx`
 - `src/features/server/connect/OAuthClientPanel.tsx`
 - `src/features/server/activity/ProjectLogs.tsx`
+- `src/features/server/ProjectCard.tsx`
+- `src/context/ServerNavContext.tsx`
+- `src/locales/en/profile.json`
+- `src/locales/pt-BR/profile.json`
 - `src/features/server/api-endpoints/FromEndpointPickerDialog.tsx`
 - `src/features/server/api-endpoints/ToolCommentsSection.tsx`
 - `src/features/server/api-endpoints/curl-utils.ts`
@@ -151,6 +158,7 @@ The shared context protocol now includes Claude Code specialist agents, backend 
 - `src/pages/NewSecret.tsx`
 - `src/pages/NewServer.tsx`
 - `src/pages/ServerDetail.tsx`
+- `src/pages/Profile.tsx`
 - `src/locales/en/serverDetail.json`
 - `src/locales/pt-BR/serverDetail.json`
 - `src/pages/SecretDetail.tsx`
@@ -181,13 +189,16 @@ The shared context protocol now includes Claude Code specialist agents, backend 
 - `npm run type-check` passed after extracting `EndpointAccordion` and `FieldInput`.
 - `npm run type-check` passed after extracting the remaining settings panels and repairing the final `ServerDetail` imports.
 - `npm run type-check` passed after modularizing `Prompts`, `Secrets`, and the first `Settings` panels.
+- `npm run type-check` passed after extracting the `Servers` project card into `src/features/server/ProjectCard.tsx`.
+- `npm run type-check` passed after switching `ServerDetail` to contextual sidebar navigation.
+- `npm run type-check` passed after switching `Profile` to contextual sidebar navigation.
 - `npm test --prefix api -- secrets.service.spec.ts swagger.service.spec.ts permissions.guard.spec.ts` passed.
 - `npm run test:cov --prefix api -- --runInBand` passed with 83.85% statements, 71.72% branches, 87.34% functions, and 85.35% lines.
 - `npm run build --prefix api` could not complete because the local system hit the file watcher limit (`ENOSPC`), so backend validation used direct `tsc --noEmit` instead.
 
 ## Recommended Next Step
 
-Continue the `ServerDetail` modular refactor in small behavior-preserving steps. Use the Claude Code worktree as a reference, but do not merge it wholesale. The next high-value extraction is likely API endpoint accordions/tool dialog, resources/prompts, or the Operations area.
+Continue the frontend route modularization in small behavior-preserving steps. `ServerDetail` now matches the contextual sidebar navigation pattern used by `PromptDetail` and `SecretDetail`, but it remains the largest extraction target for additional decomposition.
 
 ## Points Of Attention
 

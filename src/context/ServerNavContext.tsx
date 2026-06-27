@@ -1,9 +1,11 @@
 import { createContext, useContext, useState, type ReactNode } from 'react'
 
+export type ContextualNavTab = number | string
+
 export interface ServerNavItem {
   label: string
   icon: ReactNode
-  idx: number
+  idx: ContextualNavTab
   badge?: number
   disabled?: boolean
 }
@@ -13,8 +15,8 @@ export interface ServerDetailNav {
   sourceEmoji: string
   sourceColor: string
   navItems: ServerNavItem[]
-  tab: number
-  onTabChange: (n: number) => void
+  tab: ContextualNavTab
+  onTabChange: (n: ContextualNavTab) => void
   backLabel?: string
   backPath?: string
 }

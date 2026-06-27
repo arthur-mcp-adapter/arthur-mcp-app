@@ -17,13 +17,11 @@ import {
   Paper,
   Select,
   Switch,
-  Tab,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableRow,
-  Tabs,
   TextField,
   Tooltip,
   Typography,
@@ -41,6 +39,7 @@ import {
 import { useTranslation } from 'react-i18next'
 import api from '../api'
 import { useAuth, Permission } from '../context/AuthContext'
+import { useServerNav } from '../context/ServerNavContext'
 import ConfirmDialog from '../components/ConfirmDialog'
 import AppSnackbar from '../components/AppSnackbar'
 
@@ -1043,6 +1042,7 @@ export default function Profile() {
   const [loading, setLoading] = useState(true)
   const [tab, setTab] = useState<'profile' | 'users' | 'roles'>('profile')
   const { can, loading: authLoading } = useAuth()
+  const { setServerDetail } = useServerNav()
 
   useEffect(() => {
     if (authLoading) return
@@ -1050,6 +1050,31 @@ export default function Profile() {
       .then((r) => setMe(r.data))
       .finally(() => setLoading(false))
   }, [authLoading])
+
+  useEffect(() => {
+    if (!me) return
+
+    setServerDetail({
+      name: me.username,
+      sourceEmoji: '👤',
+      sourceColor: '#5D87FF',
+      backLabel: t('nav.backLabel'),
+      backPath: '/',
+      navItems: [
+        { label: t('tabs.myProfile'), icon: <IconUser size={17} />, idx: 'profile' },
+        ...(can(Permission.UsersView)
+          ? [{ label: t('tabs.users'), icon: <IconUsers size={17} />, idx: 'users' as const }]
+          : []),
+        ...(can(Permission.RolesView)
+          ? [{ label: t('tabs.roles'), icon: <IconShield size={17} />, idx: 'roles' as const }]
+          : []),
+      ],
+      tab,
+      onTabChange: (next) => setTab(next as typeof tab),
+    })
+  }, [me, tab, can, setServerDetail, t])
+
+  useEffect(() => () => setServerDetail(null), [setServerDetail])
 
   if (loading || authLoading) return (
     <Box display="flex" justifyContent="center" alignItems="center" height="50vh">
@@ -1066,16 +1091,6 @@ export default function Profile() {
   return (
     <Box>
       <Typography variant="h5" fontWeight={700} mb={2.5} letterSpacing="-0.2px">{t('title')}</Typography>
-
-      <Tabs value={tab} onChange={(_, v) => setTab(v as typeof tab)} sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
-        <Tab value="profile" icon={<IconUser size={16} />} iconPosition="start" label={t('tabs.myProfile')} />
-        {can(Permission.UsersView) && (
-          <Tab value="users" icon={<IconUsers size={16} />} iconPosition="start" label={t('tabs.users')} />
-        )}
-        {can(Permission.RolesView) && (
-          <Tab value="roles" icon={<IconShield size={16} />} iconPosition="start" label={t('tabs.roles')} />
-        )}
-      </Tabs>
 
       {tab === 'profile' && <MyProfileTab me={me} onUpdated={setMe} />}
       {tab === 'users' && can(Permission.UsersView) && <UsersTab currentUserId={me._id} />}
