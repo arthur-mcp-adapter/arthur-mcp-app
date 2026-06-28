@@ -41,6 +41,7 @@ Important folders:
 - Test services with mocked repository contracts.
 - Test controllers only when route behavior, guards, DTOs, or response shape matters.
 - Test guards and interceptors around permissions, authentication, and request behavior.
+- Treat new permissions as testable behavior. When a feature adds a protected endpoint or action, verify the permission exists in the backend contract and role presets, and add focused positive/negative guard/controller/service tests where practical.
 - Test pure transformation helpers directly.
 - Add e2e/API tests when module wiring, guards, pipes, or request/response integration is the main risk.
 - Keep tests readable, deterministic, and aligned with existing project patterns.
@@ -68,6 +69,7 @@ High-risk areas:
 
 - Secret values must not leak through metadata list/read endpoints.
 - Permission guards must enforce backend permissions regardless of frontend checks.
+- Backend permission additions must stay aligned with frontend `Permission`/`UserPermissions` and frontend fallback presets; call out mismatches as test or implementation gaps.
 - Server source tags such as `source:rest` must be preserved.
 - Data-source operations must carry `inputSchema` and optional `outputSchema`.
 - Tools generated from operations should inherit operation schemas when available.

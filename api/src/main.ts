@@ -2,12 +2,15 @@ import { NestFactory } from '@nestjs/core';
 import { RequestMethod } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { SpaFilter } from './common/filters/spa.filter';
-import { JsonLogger } from './logging/json-logger';
+import { AppLoggerService } from './observability/logger/app-logger.service';
+import { initializeOpenTelemetry } from './observability/tracing/otel.config';
 import { join } from 'path';
 import * as express from 'express';
 
 async function bootstrap() {
-  const logger = new JsonLogger();
+  initializeOpenTelemetry();
+
+  const logger = new AppLoggerService();
 
   const app = await NestFactory.create(AppModule, { logger });
 
@@ -20,6 +23,9 @@ async function bootstrap() {
   app.setGlobalPrefix('api', {
     exclude: [
       { path: 'health',      method: RequestMethod.ALL },
+      { path: 'ready',       method: RequestMethod.ALL },
+      { path: 'live',        method: RequestMethod.ALL },
+      { path: 'metrics',     method: RequestMethod.ALL },
       { path: 'mcp/*',                              method: RequestMethod.ALL },
       { path: 'mcp-docs',                           method: RequestMethod.ALL },
       { path: 'mcp-docs/*',                         method: RequestMethod.ALL },
@@ -38,7 +44,7 @@ async function bootstrap() {
   app.useGlobalFilters(new SpaFilter());
 
   const port = parseInt(process.env.PORT, 10) || 3000;
-  await app.listen(port);
+  await app.listen(port, '0.0.0.0');
 
   logger.log(`MCP server started on :${port}`, 'Bootstrap');
 }

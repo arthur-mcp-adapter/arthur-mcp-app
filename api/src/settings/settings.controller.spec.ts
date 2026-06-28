@@ -1,6 +1,7 @@
 import { SettingsController } from './settings.controller';
 import { SettingsService } from './settings.service';
 import { AuditLogsService } from '../audit-logs/audit-logs.service';
+import { PERMISSION_KEY } from '../common/decorators/require-permission.decorator';
 
 describe('SettingsController', () => {
   const settings = {
@@ -47,5 +48,11 @@ describe('SettingsController', () => {
       entityName: 'System settings',
       ip: '127.0.0.1',
     });
+  });
+
+  it('requires settings_manage to update settings', () => {
+    const permission = Reflect.getMetadata(PERMISSION_KEY, controller.update);
+
+    expect(permission).toBe('settings_manage');
   });
 });

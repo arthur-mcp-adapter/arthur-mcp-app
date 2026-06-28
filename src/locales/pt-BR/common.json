@@ -9,19 +9,30 @@
     "remove": "Remover",
     "reload": "Recarregar",
     "retry": "Tentar novamente",
+    "reset": "Redefinir",
     "close": "Fechar",
     "back": "Voltar",
     "next": "Próximo",
     "confirm": "Confirmar",
     "copy": "Copiar",
+    "code": "Código",
     "copied": "Copiado",
+    "preview": "Prévia",
+    "expandEditor": "Expandir editor",
+    "collapse": "Recolher",
     "search": "Buscar",
     "filter": "Filtrar",
     "clear": "Limpar",
     "loading": "Carregando…",
     "saving": "Salvando…",
+    "saved": "Salvo",
     "deleting": "Excluindo…",
-    "duplicate": "Duplicar"
+    "duplicate": "Duplicar",
+    "learnMore": "Saiba mais",
+    "saveChanges": "Salvar alterações",
+    "createResource": "Criar recurso",
+    "deleteResource": "Excluir recurso",
+    "creating": "Criando…"
   },
   "status": {
     "active": "Ativo",
@@ -46,12 +57,14 @@
     "generic": "Algo deu errado. Tente novamente.",
     "forbidden": "Você não tem permissão para realizar esta ação.",
     "notFound": "Não encontrado.",
-    "loadFailed": "Falha ao carregar os dados."
+    "loadFailed": "Falha ao carregar os dados.",
+    "saveFailed": "Falha ao salvar."
   },
   "terms": {
     "server": "Servidor",
     "tool": "Ferramenta",
     "resource": "Recurso",
+    "endpoint": "Endpoint",
     "prompt": "Prompt",
     "chain": "Chain",
     "secret": "Segredo"

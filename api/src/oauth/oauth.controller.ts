@@ -134,7 +134,7 @@ export class OAuthController {
       return res.status(400).json({ error: 'invalid_grant' });
     }
 
-    const accessToken = this.oauthService.issueToken(entry.userId, entry.username, entry.role, serverId);
+    const accessToken = await this.oauthService.issueToken(entry.userId, entry.username, entry.role, serverId);
     return res.json({
       access_token: accessToken,
       token_type: 'Bearer',

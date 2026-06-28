@@ -1,4 +1,7 @@
 {
+  "nav": {
+    "backToServers": "Servers"
+  },
   "tab": {
     "connect": "Connect",
     "apiEndpoints": "API Endpoints",
@@ -12,9 +15,17 @@
     "schema": "Schema",
     "connection": "Connection",
     "activity": "Activity",
-    "aiView": "AI View"
+    "aiView": "AI View",
+    "harness": "Harness",
+    "guardRails": "Guard Rails"
   },
   "heading": {
+    "steps": "Steps",
+    "editChain": "Edit chain - {{name}}",
+    "resources": "Resources",
+    "newResource": "New resource",
+    "editResource": "Edit resource - {{name}}",
+    "newDynamicResource": "New dynamic resource",
     "connectionUrl": "Connection URL",
     "accessKeys": "Access Keys",
     "oauthClient": "OAuth Client",
@@ -122,18 +133,101 @@
     "visible": "{{visible}} of {{total}}",
     "deletedQuery": "deleted operation",
     "specFormat": ".yaml · .yml · .json",
-    "truncated": "… (truncated)"
+    "truncated": "… (truncated)",
+    "maintenanceMessageToClients": "Message shown to clients when maintenance is active",
+    "timezone": "Timezone",
+    "day": "Day",
+    "from": "From",
+    "to": "To",
+    "reqPerMin": "Req / min",
+    "parameterName": "Parameter name",
+    "descriptionOptional": "Description (optional)",
+    "required": "Required",
+    "optional": "Optional",
+    "fixed": "Fixed",
+    "linear": "Linear",
+    "exponential": "Exponential",
+    "maxRetries": "Max retries",
+    "initialDelayMs": "Initial delay (ms)",
+    "backoffStrategy": "Backoff strategy",
+    "retryOnHttpCodes": "Retry on HTTP status codes",
+    "retryMaxWaitPrefix": "With {{retries}} retries and {{strategy}} backoff starting at {{delay}}ms, the maximum wait before giving up is approximately",
+    "seconds": "{{value}}s",
+    "globalTimeoutMs": "Global timeout (ms)",
+    "timeoutMs": "Timeout (ms)",
+    "timeoutAppliesAll": "= {{seconds}}s — applies to all tools without an override",
+    "perToolOverrides": "Per-tool overrides",
+    "phase": "Phase",
+    "before": "Before",
+    "after": "After",
+    "action": "Action",
+    "key": "Key",
+    "value": "Value",
+    "injectRequestHeader": "Inject request header",
+    "addQueryParameter": "Add query parameter",
+    "logCall": "Log call",
+    "allTools": "* (all tools)",
+    "all": "* (all)",
+    "blocked": "Blocked",
+    "maxCallsPerSession": "Max calls per session",
+    "requireConfirmation": "Require confirmation",
+    "restriction": "Restriction",
+    "maxCalls": "Max calls",
+    "maskField": "Mask field",
+    "removeField": "Remove field",
+    "redactPattern": "Redact pattern",
+    "filterType": "Filter type",
+    "target": "Target",
+    "replacement": "Replacement",
+    "blockValue": "Block value",
+    "maxLength": "Max length",
+    "allowedValues": "Allowed values",
+    "regexMatch": "Regex match",
+    "parameter": "Parameter",
+    "source": "Source",
+    "valueReference": "Value / Reference",
+    "chainInput": "Chain input",
+    "stepOutput": "Step output",
+    "stepNumber": "Step {{step}}",
+    "dynamic": "Dynamic",
+    "contentStats": "{{chars}} chars · {{lines}} lines",
+    "uri": "URI",
+    "mimeType": "MIME Type",
+    "selectEndpoint": "Select endpoint",
+    "errorMessage": "Error message",
+    "httpMethod": "HTTP Method",
+    "path": "Path",
+    "contentType": "Content-Type",
+    "constraint": "Constraint",
+    "alertThreshold": "Alert when error rate exceeds (%)",
+    "alertEmail": "Send alert to (email)"
   },
   "placeholder": {
     "searchPathOrName": "Search by path or name…",
     "searchNameOrDescription": "Search by name or description…",
     "searchByPathNameDesc": "Search by path, name or description…",
     "searchPrompts": "Search prompts…",
+    "chainNameExample": "e.g. search_and_book",
+    "chainDescription": "What this chain does…",
+    "chainParamName": "chain param name…",
+    "jsonPathExample": "JSON path (e.g. data.id)",
+    "resourceUriHelp": "Unique identifier used by the MCP client to read this resource",
     "serverName": "Server name",
     "addDescription": "Add a short description…",
     "toolName": "Tool name",
     "describeParam": "Describe this parameter so the AI knows what to pass…",
-    "dragOrBrowse": "Drag spec here or click to browse"
+    "dragOrBrowse": "Drag spec here or click to browse",
+    "customerIdExample": "e.g. Customer ID",
+    "staticValue": "static value",
+    "fieldPath": "Field path (e.g. data.password)",
+    "replacement": "Replacement (e.g. *****)",
+    "fieldPathToRemove": "Field path to remove (e.g. data.internalId)",
+    "regexPattern": "Regex pattern (e.g. \\b\\d{16}\\b)",
+    "replacementRedacted": "Replacement (e.g. [REDACTED])",
+    "blockValue": "Exact value to reject (e.g. \"admin\")",
+    "maxLength": "Max character length (e.g. 255)",
+    "allowedValues": "Comma-separated list of allowed values",
+    "regexMatch": "Regular expression the value must match"
   },
   "hint": {
     "baseUrl": "Base URL used for all HTTP calls in this server",
@@ -142,6 +236,7 @@
     "keyLabel": "A label to identify which client uses this key",
     "uriAutoGenerated": "Auto-generated from name",
     "uriUnique": "Unique identifier used by the MCP client to read this resource",
+    "resourceUriHelp": "Unique identifier used by the MCP client to read this resource",
     "pathCombined": "Combined with server Base URL: {{baseUrl}}",
     "errorMessageHelp": "Shown to the MCP client if the API call fails. Use {{error}} to include the original error.",
     "rateLimitActive": "Limits MCP server calls to {{rpm}} req/min. Exceeding the limit returns HTTP 429.",
@@ -180,7 +275,9 @@
     "chainInputHelp": "Creates an input param on this chain",
     "selectToolAbove": "Select a tool above to configure input mapping.",
     "toolNoParams": "This tool has no parameters.",
-    "addStepToStart": "Click Add step to start building the chain. Each step calls a tool and passes its output to the next step."
+    "addStepToStart": "Click Add step to start building the chain. Each step calls a tool and passes its output to the next step.",
+    "errorAlertsDesc": "Receive an email when the error rate exceeds a threshold.",
+    "constraintRequired": "Rejects the call if this parameter is missing"
   },
   "empty": {
     "noEndpoints": "No endpoints — upload an OpenAPI spec or click \"Add endpoint\" to create one manually.",
@@ -204,7 +301,12 @@
     "noResourcesPermission": "You don't have permission to view resources.",
     "noSettingsPermission": "You don't have permission to manage server settings.",
     "noQueriesYet": "No {{label}} yet. Click \"Add {{singular}}\" to define your first source operation, then create tools from it in the Tools tab.",
-    "noTablesWarning": "No tools available. Upload a spec first to create tool chains."
+    "noTablesWarning": "No tools available. Upload a spec first to create tool chains.",
+    "noHooks": "No hooks configured. Add a hook to inject headers, append query params, or log every call.",
+    "noInputConstraints": "No constraints defined. Add rules to validate or block specific parameter values.",
+    "noOutputFilters": "No output filters defined. Add rules to hide sensitive data from AI responses.",
+    "noToolRestrictions": "No tool restrictions defined. Add rules to block, limit, or gate specific tools."
+    ,"noFixedHeaders": "No fixed headers yet. Add one to send it with every request."
   },
   "confirm": {
     "revokeKey": "Revoke \"{{name}}\"?",
@@ -247,10 +349,26 @@
     "queryDeleted": "Operation was deleted — cannot execute.",
     "introspectFailed": "Introspection failed. Check your connection settings.",
     "connectionFailed": "Connection failed"
+    ,"chainNameRequired": "Name is required.",
+    "chainStepRequired": "Add at least one step.",
+    "resourceNameRequired": "Name is required.",
+    "resourceUriRequired": "URI is required.",
+    "resourceContentRequired": "Content is required.",
+    "resourceTemplateRequired": "Template content is required.",
+    "selectEndpointFirst": "Select an endpoint first.",
+    "resourceLoadFailedTemplate": "Error loading resource: {{error}}",
+    "toolCallFailedTemplate": "Error calling tool: {{error}}",
+    "pathRequired": "Path is required."
+  },
+  "section": {
+    "endpoint": "1. Endpoint",
+    "metadataError": "4. Metadata & error"
   },
   "status": {
     "paused": "Paused",
     "active": "Active",
+    "inactive": "Inactive",
+    "error": "Error",
     "on": "On",
     "off": "Off",
     "saving": "Saving…",
@@ -304,6 +422,7 @@
     "refresh": "Refresh",
     "addConnection": "Add connection",
     "editConnection": "Edit connection",
+    "editEntity": "Edit {{entity}} - {{name}}",
     "editEndpoint": "Edit endpoint",
     "newTool": "New tool",
     "hideTestPanel": "Hide test panel",
@@ -334,9 +453,17 @@
     "run": "Run",
     "closePreview": "Close preview",
     "searchTables": "Search {{entity}}s…",
-    "updateToolsFromSpec": "Update tools from spec"
+    "updateToolsFromSpec": "Update tools from spec",
+    "remove": "Remove",
+    "addToolOverride": "Add tool override",
+    "addHook": "Add hook",
+    "addRestriction": "Add restriction",
+    "addFilter": "Add filter",
+    "addConstraint": "Add constraint"
+    ,"createResourceFromEndpoint": "Create resource from endpoint"
   },
   "tooltip": {
+    "updateFromSpec": "Upload a new version of the spec to add or update tools",
     "resumeServer": "Resume — allow AI to use this server again",
     "pauseServer": "Pause — block all AI requests to this server",
     "enableTool": "Enable — make this tool available to the AI",
@@ -352,7 +479,9 @@
     "cancelEsc": "Cancel (Esc)",
     "tenantRequired": "Required — rejects calls missing this param",
     "tenantOptional": "Optional — ignored if not provided",
-    "copiedBang": "Copied!"
+    "copiedBang": "Copied!",
+    "removeOverride": "Remove override",
+    "removeHook": "Remove hook"
   },
   "reimport": {
     "title": "Re-import API spec",
@@ -390,5 +519,129 @@
     "errorCol": "Error",
     "mcp": "MCP",
     "direct": "Direct"
+  },
+  "help": {
+    "tools": {
+      "intro": "Each tool maps one API endpoint to a specific action your AI can take — for example 'search for a contact', 'create a ticket', or 'get order details'. The AI reads every tool name and description before deciding which one to call. A server with zero tools means the AI has nothing to do — create tools before connecting an AI client.",
+      "naming": "Tool names are the primary signal the AI uses to understand what each action does. Use short, specific names that describe both the action and its subject: get_customer_by_id, create_invoice, list_open_orders. Avoid generic names like do_action or api_call — the AI cannot reliably tell tools apart when names are vague or overlap with each other.",
+      "betterDesc": "Write descriptions the way you would explain the function to a junior developer. Instead of 'Get user', write 'Fetch a user account by their numeric ID — returns name, email, role, status, and last login date.' Mention what data comes back, what happens on failure, and any important limits such as 'max 100 results per page'. The AI uses descriptions to decide both whether to call a tool and how to fill in its parameters correctly.",
+      "parameters": "Each tool has input parameters that the AI fills in automatically from context. Give every parameter a clear name and description. 'user_id (integer): the numeric ID of the user to fetch' is far better than just 'id'. If a parameter only accepts a fixed set of values — like a status field — list all accepted values in the description so the AI never has to guess.",
+      "disable": "Use Disable to hide a tool from the AI without deleting it. The tool stays fully configured but becomes invisible to all AI clients. Useful when an endpoint is temporarily down, in maintenance, or too sensitive to expose to automation. Re-enable it instantly when you are ready — no reconfiguration needed.",
+      "troubleshoot": "If the AI calls the wrong tool: check that tool names are unique and unambiguous across the server. If the AI fills in parameters incorrectly: add concrete examples and the full list of accepted values to the parameter description. If a tool consistently returns errors: open the Activity Log tab to see the raw error response from the upstream API and diagnose from there."
+    },
+    "activity": {
+      "intro": "A reverse-chronological record of every request made through this server. Each row is one tool call — showing which tool was used, where the request came from, whether it succeeded, how long the external API took to reply, and any error details.",
+      "columns": "Columns — Tool: which tool was called. Source: MCP (called by an AI client via the MCP protocol) or Direct (called via the REST API, typically from your own code or a test). Status: circle colour indicates success or failure. Time ms: how long the upstream API took to respond. Error: the message returned if the request failed.",
+      "greenStatus": "Green status — the upstream API responded with a 2xx HTTP code within the timeout. The tool call completed successfully and the result was returned to the AI.",
+      "redStatus": "Red status — the call failed. Most common causes: incorrect base URL, missing or expired authentication credentials, the upstream API returned a 4xx or 5xx error, or the request timed out. Click the row to expand the full error message.",
+      "responseTime": "Response time — how long the upstream API took to respond, in milliseconds. Under 1,000 ms is healthy. 1,000–3,000 ms turns orange and signals a slow upstream API. Over 3,000 ms turns red — consider raising the server default timeout in Settings, or investigate what is slowing the upstream service.",
+      "sources": "Source column — MCP means the call originated from an AI client (Claude, ChatGPT, a custom agent, etc.) through the MCP protocol. Direct means the call was made via the REST API, typically from your own code, a CI script, or a manual test with curl.",
+      "whenErrors": "Diagnosing red rows: note the HTTP status code in the error message. 401 or 403 means authentication is wrong or a key has expired. 404 means the endpoint path does not exist on the upstream API — check the tool path and the server base URL. 5xx means the upstream service itself is having problems. A timeout with no status code means Arthur gave up waiting — increase the timeout in Settings.",
+      "retention": "Logs are kept for 7 days and are not exportable from the UI. For longer retention or structured log access, configure your infrastructure to forward server logs to an external observability platform such as Datadog, Grafana Loki, or CloudWatch."
+    },
+    "aiView": {
+      "desc": "This is the exact payload your AI client receives when it connects to this server over the MCP protocol — the full list of tools, their parameter schemas, and the descriptions the AI reads to understand what each action does. What you see here is precisely what the AI works from, nothing more and nothing less.",
+      "howAiDecides": "When you send a message to the AI, it scans every tool name and description shown here to decide which tool to call and what values to pass as parameters. If two tools have similar names the AI may pick the wrong one. If a description is vague the AI may guess at parameter values — sometimes incorrectly. This view lets you audit exactly what the AI sees before a problem surfaces in production.",
+      "improving": "To improve AI accuracy: make tool names unique and specific, add concrete examples in descriptions ('e.g. customer_id: 123 for John Smith'), list all accepted values for enum-style parameters, and describe what each tool returns and what errors it can raise. After editing tools, return to this view to verify the changes look exactly as intended — the AI sees the updated version immediately on its next connection."
+    },
+    "rateLimit": {
+      "intro": "Caps the number of MCP requests this server accepts per minute. When the limit is exceeded, the server responds with HTTP 429 (Too Many Requests) and a Retry-After header — the AI client should wait before retrying.",
+      "whyTitle": "Why set a rate limit?",
+      "protectTitle": "Protect the upstream API:",
+      "protectText": "many APIs have their own rate limits. Staying within them prevents your API credentials from being throttled or suspended.",
+      "costTitle": "Control costs:",
+      "costText": "every call to a paid API costs money. A rate limit prevents AI agents from accidentally making thousands of calls in a loop.",
+      "runawayTitle": "Prevent runaway agents:",
+      "runawayText": "AI agents in agentic workflows can sometimes get stuck in retry loops. A rate limit acts as a circuit breaker.",
+      "fairTitle": "Fair usage:",
+      "fairText": "if multiple AI clients share this endpoint, a limit ensures no single client monopolises the quota.",
+      "howTitle": "How to set the right limit:",
+      "howText": "check your upstream API's documented rate limit (e.g. 100 req/min) and set Arthur's limit slightly below it to leave headroom. Start conservative and increase if the AI frequently hits 429.",
+      "toggleText": "Toggle the switch to Inactive to disable rate limiting entirely. Changes save automatically."
+    },
+    "retryPolicy": {
+      "intro": "When a tool call fails, Arthur can automatically retry it before returning an error to the AI.",
+      "backoffTitle": "Backoff strategies:",
+      "fixed": "waits the same delay between every retry.",
+      "linear": "increases the delay by the initial delay on each attempt (e.g. 500ms -> 1000ms -> 1500ms).",
+      "exponential": "doubles the delay on each attempt (e.g. 500ms -> 1000ms -> 2000ms). Best for rate-limit errors.",
+      "safeCodes": "Only retry on codes that are safe to retry (idempotent calls). Avoid retrying POST calls that modify state unless the upstream API is idempotent."
+    },
+    "timeout": {
+      "intro": "Sets the maximum time Arthur waits for a tool call to complete before returning a timeout error to the AI.",
+      "overrides": "The global timeout applies to all tools. Per-tool overrides let you give more time to known slow endpoints (e.g. a report generation endpoint) or less time to fast ones.",
+      "upstream": "If the upstream API has its own timeout, set Arthur's lower so the AI receives a clean error rather than a dropped connection."
+    },
+    "executionHooks": {
+      "intro": "Hooks run automatically before or after every tool call on this server.",
+      "inject": "adds a fixed header to every upstream API request (e.g. X-Tenant-ID).",
+      "query": "appends a fixed query parameter to every request URL.",
+      "log": "records phase, tool name, and timestamp to the activity log — useful for auditing without custom code.",
+      "phases": "Before hooks run before the request is sent. After hooks run after the response is received. Disabled hooks are saved but not executed."
+    },
+    "inputConstraints": {
+      "intro": "Rules that validate or block tool call parameters before the request reaches the upstream API.",
+      "required": "rejects the call if the parameter is absent.",
+      "blockValue": "rejects calls where the parameter equals the blocked value.",
+      "maxLength": "rejects string values longer than the limit.",
+      "allowedValues": "rejects values not in a comma-separated whitelist.",
+      "regex": "rejects values that do not match the regular expression.",
+      "allTools": "Use * as tool name to apply a rule to all tools."
+    },
+    "outputFiltering": {
+      "intro": "Rules that scrub, mask, or remove sensitive data from tool responses before the AI sees them.",
+      "mask": "replaces a field's value with a fixed string (e.g. *****). Use to hide secrets while keeping the structure intact.",
+      "remove": "deletes the field entirely from the response. Use for internal metadata the AI does not need.",
+      "redact": "replaces any string matching a regex with a placeholder. Use to scrub credit card numbers, SSNs, or tokens anywhere in the response.",
+      "paths": "Field paths use dot-notation (e.g. data.user.email). Use * as tool name to apply a rule to all tools."
+    },
+    "toolRestrictions": {
+      "intro": "Rules that restrict how specific tools can be invoked by the AI.",
+      "blocked": "prevents the AI from calling this tool entirely. The tool is still visible in the schema but returns an error if invoked.",
+      "maxCalls": "limits how many times the AI can invoke a tool within a single conversation session. Useful for expensive or destructive operations.",
+      "confirmation": "pauses execution and asks the human user to confirm before the tool is called. Recommended for any tool that writes, deletes, or sends data.",
+      "disabled": "Disabled restrictions are saved but not enforced."
+    }
+  },
+  "days": {
+    "sunday": "Sunday",
+    "monday": "Monday",
+    "tuesday": "Tuesday",
+    "wednesday": "Wednesday",
+    "thursday": "Thursday",
+    "friday": "Friday",
+    "saturday": "Saturday"
+  },
+  "harness": {
+    "title": "Harness",
+    "subtitle": "Configure execution hooks, retry policies, and timeout settings for this server's tools.",
+    "badge": {
+      "comingSoon": "Coming soon"
+    },
+    "section": {
+      "hooks": "Execution Hooks",
+      "hooksDesc": "Run custom logic before and after each tool call — inject headers, transform inputs, log results, or trigger side-effects without touching the upstream API.",
+      "retryPolicy": "Retry Policy",
+      "retryPolicyDesc": "Define how many times a failed tool call should be retried, with which backoff strategy, and for which HTTP error codes.",
+      "timeouts": "Timeout Settings",
+      "timeoutsDesc": "Set per-tool or server-wide timeout limits to prevent slow upstream APIs from stalling the AI's responses."
+    },
+    "empty": "No harness configuration yet. Execution hooks, retry policies, and timeouts will be managed here."
+  },
+  "guardRails": {
+    "title": "Guard Rails",
+    "subtitle": "Define safety rules that constrain what the AI is allowed to send and receive through this server's tools.",
+    "badge": {
+      "comingSoon": "Coming soon"
+    },
+    "section": {
+      "inputConstraints": "Input Constraints",
+      "inputConstraintsDesc": "Validate or reject tool call parameters before they reach the upstream API — block forbidden values, enforce allowed ranges, or require specific formats.",
+      "outputFiltering": "Output Filtering",
+      "outputFilteringDesc": "Scrub sensitive data from tool responses before they are returned to the AI — mask PII, redact secrets, or strip fields the model should not see.",
+      "toolRestrictions": "Tool Restrictions",
+      "toolRestrictionsDesc": "Restrict which tools can be called under certain conditions — by user role, time of day, rate limits, or any custom rule."
+    },
+    "empty": "No guard rails configured yet. Input constraints, output filters, and tool restrictions will be managed here."
   }
 }

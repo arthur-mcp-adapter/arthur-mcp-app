@@ -12,6 +12,8 @@ export interface RolePermissions {
   roles_view: boolean; roles_manage: boolean;
   audit_view: boolean; audit_export: boolean; templates_use: boolean;
   settings_manage: boolean;
+  observability_view: boolean; observability_create: boolean; observability_edit: boolean; observability_delete: boolean;
+  error_tracking_view: boolean; error_tracking_create: boolean; error_tracking_edit: boolean; error_tracking_delete: boolean;
 }
 
 export interface RoleRecord {

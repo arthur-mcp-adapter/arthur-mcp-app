@@ -39,6 +39,18 @@ export const ALL_PERMISSIONS_OFF: UserPermissions = {
   audit_export: false,
   templates_use: false,
   settings_manage: false,
+  ai_providers_view: false,
+  ai_providers_create: false,
+  ai_providers_edit: false,
+  ai_providers_delete: false,
+  observability_view: false,
+  observability_create: false,
+  observability_edit: false,
+  observability_delete: false,
+  error_tracking_view: false,
+  error_tracking_create: false,
+  error_tracking_edit: false,
+  error_tracking_delete: false,
 }
 
 export const ROLE_PERMISSION_FALLBACKS: Record<string, UserPermissions> = {
@@ -70,6 +82,15 @@ export const ROLE_PERMISSION_FALLBACKS: Record<string, UserPermissions> = {
     api_keys_delete: true,
     audit_view: true,
     templates_use: true,
+    ai_providers_view: true,
+    ai_providers_create: true,
+    ai_providers_edit: true,
+    ai_providers_delete: true,
+    observability_view: true,
+    error_tracking_view: true,
+    error_tracking_create: true,
+    error_tracking_edit: true,
+    error_tracking_delete: true,
   },
   editor: {
     ...ALL_PERMISSIONS_OFF,
@@ -89,6 +110,13 @@ export const ROLE_PERMISSION_FALLBACKS: Record<string, UserPermissions> = {
     secrets_view_names: true,
     api_keys_view: true,
     templates_use: true,
+    ai_providers_view: true,
+    ai_providers_create: true,
+    ai_providers_edit: true,
+    observability_view: true,
+    error_tracking_view: true,
+    error_tracking_create: true,
+    error_tracking_edit: true,
   },
   viewer: {
     ...ALL_PERMISSIONS_OFF,
@@ -106,4 +134,3 @@ export const READ_ONLY_FALLBACK: UserPermissions = {
   resources_view: true,
   prompts_view: true,
 }
-

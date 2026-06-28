@@ -97,6 +97,10 @@ Rules:
 - Keep built-in backend role presets in `api/src/roles/permissions.ts`.
 - Keep frontend fallback presets in `src/context/permissionPresets.ts`.
 - Admin bypass behavior belongs in the guard, not each controller.
+- Treat permissions as part of feature design. Any new API endpoint, page, tab, integration, credential surface, settings panel, or create/edit/delete/test/share action must either reuse an existing permission intentionally or introduce a new permission end-to-end.
+- When introducing a new permission, update all permission surfaces in one change: backend `RolePermissions`, backend role presets, frontend `Permission`, frontend `UserPermissions`, frontend fallback presets, backend guards/decorators, UI `can(Permission.X)` gates, tests, and documentation.
+- Do not add frontend-only permissions without backend support. If backend support must be deferred, record the gap in `docs/ROADMAP.md` and keep the UI inaccessible or clearly non-shipping until the backend permission exists.
+- Do not add backend-only protected behavior without updating the frontend permission model and user-facing restricted/disabled states.
 
 ### Cross-Cutting Filters and Interceptors
 
@@ -105,15 +109,39 @@ Pattern: global providers handle behavior that cuts across modules.
 Examples:
 
 - `McpExceptionFilter` registered through `APP_FILTER`.
-- `McpLoggingInterceptor` registered through `APP_INTERCEPTOR`.
+- Observability interceptors registered through `APP_INTERCEPTOR` in `ObservabilityModule`.
 - `SpaFilter` registered in `main.ts` for React Router fallback.
-- `JsonLogger` configured during bootstrap.
+- `AppLoggerService` configured during bootstrap for structured JSON logs.
 
 Rules:
 
 - Use filters for consistent exception shaping or routing fallback.
 - Use interceptors for logging, metrics, or request lifecycle behavior.
 - Keep MCP-specific behavior isolated from regular REST API behavior when possible.
+
+### Observability
+
+Pattern: technical observability is a reusable cross-cutting module under `api/src/observability/`.
+
+Examples:
+
+- `HealthController` exposes `/health`, `/ready`, and `/live`.
+- `MetricsController` exposes `/metrics` using `prom-client`.
+- `CorrelationIdMiddleware` generates or reuses `x-request-id`, `x-correlation-id`, and trace identifiers.
+- `RequestLoggerMiddleware` emits structured HTTP completion logs.
+- `MetricsInterceptor` records HTTP request totals, errors, and latency.
+- `TracingInterceptor` creates HTTP spans when tracing is enabled.
+- `DynamicMcpService` records MCP tool, resource, prompt, and external HTTP metrics/traces through `MetricsService` and `TracingService`.
+
+Rules:
+
+- Keep observability optional through environment variables; disabling metrics or tracing must not prevent startup.
+- Emit logs to stdout/stderr as structured JSON when `ENABLE_STRUCTURED_LOGS=true`.
+- Do not couple observability to user-facing feature permissions. `/health`, `/ready`, `/live`, and `/metrics` are public operational endpoints by design.
+- Use `MetricsService` for new Prometheus metrics instead of constructing counters in feature modules.
+- Use `TracingService.runInSpan()` for feature-specific spans so tracing remains a no-op when disabled.
+- Propagate correlation headers to outbound HTTP requests.
+- Keep Grafana, Prometheus, and Tempo helper files under the root `observability/` folder.
 
 ### Pure Functions for Protocol Transformations
 
@@ -175,14 +203,18 @@ Examples:
 
 - `ConfigModule.forRoot({ isGlobal: true, validate: validateEnv })`
 - Global `/api` prefix with explicit exclusions for health, MCP, docs, and OAuth endpoints.
+- Operational endpoints `/health`, `/ready`, `/live`, and `/metrics` are excluded from the `/api` prefix.
 - CORS controlled by `CORS_ORIGIN`.
 - Static Vite build serving through Express when nginx is not in front.
 
 Rules:
 
 - Keep environment validation in `api/src/config/env.validation.ts`.
+- `JWT_SECRET` remains the bootstrap/fallback signing secret, but runtime token signing and verification should resolve through `JwtSecretService` so the Settings singleton can override it with the saved `jwtSecret` value.
+- Do not expose saved JWT secrets through API reads; safe Settings responses should expose only `jwtSecretSet`.
 - Document command/setup changes in `AGENTS.md`.
 - Document deployment behavior changes in the relevant infra docs or `docs/ROADMAP.md` if no dedicated doc exists yet.
+- Bind the NestJS HTTP server to `0.0.0.0` and read `process.env.PORT` so Docker and Render can route traffic correctly.
 
 ### Testing Pattern
 
@@ -207,7 +239,7 @@ Rules:
 
 ## Frontend Patterns
 
-The frontend is a React/Vite application organized around route-level pages, shared components, small context providers, and Material UI composition.
+The frontend is a React/Vite application organized around route-level pages, feature-driven modules, shared Atomic Design components where reuse justifies them, small context providers, controlled barrel exports, and Material UI composition.
 
 ### Route-Level Pages
 
@@ -216,14 +248,96 @@ Pattern: each main route maps to a page component under `src/pages/`.
 Examples:
 
 - Route table in `src/App.tsx`.
-- Pages in `src/pages/Servers.tsx`, `src/pages/ServerDetail.tsx`, `src/pages/Settings.tsx`, and related files.
+- Pages in `src/pages/Servers/index.tsx`, `src/pages/ServerDetail/index.tsx`, `src/pages/Settings/index.tsx`, and related files.
 
 Rules:
 
 - Put route orchestration, page-specific data loading, and page-local UI state in page components.
-- Extract reusable widgets to `src/components/` when they are shared across pages.
-- Extract cohesive route feature sections to `src/features/<route-or-domain>/` when a page grows beyond orchestration and starts owning unrelated UI, state, and API concerns.
+- Store route pages in `src/pages/PageName/index.tsx`, not loose `src/pages/PageName.tsx` files.
+- Colocate page-specific tests in the page folder, such as `src/pages/Login/Login.test.tsx`.
+- Extract cohesive route feature sections to `src/features/<feature>/` when a page grows beyond orchestration and starts owning unrelated UI, state, and API concerns.
+- Extract reusable widgets to `src/components/` only when they are shared across features or are truly domain-neutral.
 - Keep route guards in `App.tsx` unless a more general auth/routing abstraction becomes necessary.
+
+### Feature-Driven Architecture
+
+Pattern: domain-specific frontend implementation belongs under `src/features/<feature>/`, while route pages compose feature modules.
+
+Examples:
+
+- `src/features/server/`
+- `src/features/prompts/`
+- `src/features/secrets/`
+- `src/features/settings/`
+- Feature barrels such as `src/features/server/index.tsx` and `src/features/secrets/index.tsx`
+
+Rules:
+
+- Treat a feature as a product capability or domain surface, not just a technical folder.
+- Keep feature-owned components, hooks, API helpers, types, constants, and utilities under the owning feature.
+- Use nested feature areas when a feature is large, such as `src/features/server/settings/`, `src/features/server/connect/`, and `src/features/server/api-endpoints/`.
+- Keep `src/pages/` thin: routing, route params, top-level data loading, page-level state, and composition.
+- Avoid importing another feature's internal files. If cross-feature reuse is needed, expose a stable public API through the owning feature's barrel file.
+- Do not promote code to shared folders until reuse is real or the code is clearly cross-cutting.
+- Preserve behavior during modularization; avoid combining feature extraction with product changes.
+
+Suggested feature shape when useful:
+
+```text
+src/features/<feature>/
+  components/
+  hooks/
+  api/
+  types.ts
+  constants.ts
+  utils.ts
+  index.tsx
+```
+
+Use only the folders a feature needs; small features can stay flat.
+
+### Atomic Design
+
+Pattern: shared reusable UI can follow Atomic Design when the component set grows across features.
+
+Examples:
+
+- Atoms: `src/components/atoms/HelpButton/index.tsx`, `src/components/atoms/SaveIndicator/index.tsx`
+- Organisms: `src/components/organisms/BaseListCard/index.tsx`, `src/components/organisms/ConfirmDialog/index.tsx`
+- Templates: `src/components/templates/BaseDialogLayout/index.tsx`, `src/components/templates/Layout/index.tsx`
+
+Rules:
+
+- Use atoms for domain-neutral primitives such as labels, status chips, badges, icon actions, field pieces, and compact indicators.
+- Use molecules for composed controls such as search/filter bars, tag inputs, field rows, action clusters, and compact form groups.
+- Use organisms for larger reusable sections such as panels, drawers, accordions, list cards, tables, and settings groups.
+- Use templates for reusable page, drawer, or dialog layout shells that do not own domain behavior.
+- Keep pages as route-level composition under `src/pages/`.
+- Do not create `atoms/`, `molecules/`, `organisms/`, or `templates/` folders for one-off components; introduce them when shared UI volume justifies the structure.
+- Keep atoms domain-neutral. If a component knows about servers, prompts, secrets, operations, or MCP details, it usually belongs in a feature.
+- Store React components in `ComponentName/index.tsx` folders rather than loose `ComponentName.tsx` files when applying this architecture.
+
+### Barrel Exports
+
+Pattern: `index.tsx` files define controlled public APIs for React feature and shared component groups.
+
+Examples:
+
+- `src/components/index.tsx`
+- `src/components/atoms/index.tsx`
+- `src/features/server/index.tsx`
+- `src/features/server/settings/index.tsx`
+- `src/features/prompts/index.tsx`
+- `src/features/secrets/index.tsx`
+
+Rules:
+
+- Use `index.tsx` barrels at feature or shared component boundaries when they make imports clearer.
+- Export only stable public components, hooks, types, constants, and helpers.
+- Prefer named exports and explicit type exports over broad `export *`.
+- Avoid barrels in tiny folders with one file unless the folder is expected to grow.
+- Avoid importing from a barrel inside the same folder when a direct relative import is clearer.
+- Watch for circular dependencies; split modules or use direct imports if a barrel creates cycles.
 
 ### Server Detail Feature Modules
 
@@ -354,6 +468,9 @@ Rules:
 - Keep role fallback presets in `src/context/permissionPresets.ts`.
 - Do not rely on frontend permission checks as the only security layer; backend guards remain authoritative.
 - When adding a permission, update backend role permissions, frontend `Permission`, docs, and affected UI.
+- Every new route, sidebar item, tab, primary action, destructive action, credential action, execution/test action, and settings control needs a permission decision before implementation is complete.
+- Use restricted empty states or disabled controls when the user can view a page but cannot perform a specific action; hide navigation only when the user cannot view the surface at all.
+- Keep permission names domain-oriented and action-oriented, such as `<domain>_view`, `<domain>_create`, `<domain>_edit`, `<domain>_delete`, `<domain>_test`, `<domain>_share`, or a more specific verb when the risk is distinct.
 
 ### Local Page State
 
@@ -489,6 +606,7 @@ When changing frontend patterns:
 2. Update or create flow documentation when user journeys change.
 3. Update locale files when user-facing copy changes.
 4. Update permission docs and backend permission definitions when action visibility changes.
+5. Verify new features have backend and frontend permission coverage before considering the implementation complete.
 
 When adding a new pattern:
 

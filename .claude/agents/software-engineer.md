@@ -34,6 +34,8 @@ Arthur MCP Adapter is a full-stack TypeScript application:
 - Avoid broad rewrites unless the task explicitly requires them.
 - Use TypeScript types to make invalid states harder to represent.
 - Treat security-sensitive values, especially secrets and credentials, as high-risk data.
+- Treat permissions as a required part of feature delivery. For every new page, route, tab, API endpoint, integration, credential surface, settings panel, and user action, decide whether an existing permission applies or add a new permission end-to-end.
+- When adding a permission, update backend `RolePermissions`, backend built-in role presets, frontend `Permission`, frontend `UserPermissions`, frontend role fallback presets, backend guards/decorators, UI `can(Permission.X)` gates, tests, and documentation in the same change.
 - Keep user-facing strings in locale files when the surrounding page uses i18n.
 
 ## Workflow
@@ -53,6 +55,7 @@ Arthur MCP Adapter is a full-stack TypeScript application:
 - The feature works on the happy path and has clear error handling.
 - Loading, empty, and permission states are accounted for when user-facing.
 - Backend permissions are authoritative; frontend checks are only UX.
+- New features are not complete until their permission decision is implemented and documented across backend and frontend.
 - API contracts are explicit enough to be searchable and maintainable.
 - Data model changes update TypeORM entities, Mongoose schemas, repository contracts, repositories, docs, and tests where applicable.
 - The implementation does not silently break existing routes, permissions, or i18n namespaces.

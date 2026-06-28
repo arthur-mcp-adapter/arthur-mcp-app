@@ -185,7 +185,27 @@
       "Cloud": "Cloud & Analytics"
     },
     "available": "Disponível",
-    "soon": "Em breve"
+    "soon": "Em breve",
+    "types": {
+      "blank":         { "name": "Blank / Static",  "description": "Sem conexão externa. Defina ferramentas que retornam respostas fixas ou baseadas em parâmetros." },
+      "rest":          { "name": "REST API",         "description": "APIs HTTP descritas com OpenAPI, Swagger ou coleções Postman." },
+      "graphql":       { "name": "GraphQL",          "description": "Exponha queries e mutations de um endpoint GraphQL como ferramentas MCP." },
+      "grpc":          { "name": "gRPC",             "description": "Serviços RPC de alta performance usando definições Protocol Buffer." },
+      "postgresql":    { "name": "PostgreSQL",       "description": "Banco de dados objeto-relacional open-source." },
+      "mysql":         { "name": "MySQL",            "description": "O banco de dados relacional open-source mais popular do mundo." },
+      "mariadb":       { "name": "MariaDB",          "description": "Banco de dados relacional open-source compatível com MySQL." },
+      "mssql":         { "name": "SQL Server",       "description": "Sistema de gerenciamento de banco de dados relacional empresarial da Microsoft." },
+      "oracle":        { "name": "Oracle DB",        "description": "Banco de dados relacional empresarial da Oracle." },
+      "cockroachdb":   { "name": "CockroachDB",      "description": "Banco de dados SQL distribuído com compatibilidade PostgreSQL." },
+      "clickhouse":    { "name": "ClickHouse",       "description": "Banco de dados orientado a colunas para análises em tempo real em escala." },
+      "mongodb":       { "name": "MongoDB",          "description": "Banco de dados NoSQL orientado a documentos com schema flexível." },
+      "redis":         { "name": "Redis",            "description": "Armazenamento chave-valor em memória para cache, filas e pub/sub." },
+      "cassandra":     { "name": "Cassandra",        "description": "Armazenamento wide-column para alta disponibilidade e datasets massivos." },
+      "firestore":     { "name": "Firestore",        "description": "Banco de dados de documentos serverless do Google para apps web e mobile." },
+      "dynamodb":      { "name": "DynamoDB",         "description": "Serviço de banco de dados chave-valor e documentos totalmente gerenciado pela AWS." },
+      "elasticsearch": { "name": "Elasticsearch",    "description": "Motor de busca e análise distribuído construído sobre Apache Lucene." },
+      "snowflake":     { "name": "Snowflake",        "description": "Data warehouse em nuvem com arquitetura de dados compartilhados multi-cluster." }
+    }
   },
   "auth": {
     "apiAuthentication": "Autenticação da API",
@@ -293,7 +313,48 @@
     "processError": "Erro ao processar o arquivo.",
     "toolsGenerated_one": "{{count}} ferramenta gerada.",
     "toolsGenerated_other": "{{count}} ferramentas geradas.",
-    "importedFull": "{{name}} importado com sucesso — {{count}} ferramenta{{plural}} gerada{{plural}}."
+    "importedFull": "{{name}} importado com sucesso — {{count}} ferramenta{{plural}} gerada{{plural}}.",
+    "help": {
+      "intro": "A página de Upload de API permite criar um servidor MCP totalmente configurado importando um arquivo de definição de API existente, em vez de criar ferramentas manualmente uma por uma.",
+      "howToUseTitle": "Como usar:",
+      "howToUseStep1Prefix": "Solte seu arquivo (ou clique para selecionar). Suportado:",
+      "howToUseStep1OpenApi": "OpenAPI 3.x",
+      "howToUseStep1And": "e",
+      "howToUseStep1Swagger": "Swagger 2.0",
+      "howToUseStep1Suffix": "nos formatos .yaml, .yml ou .json.",
+      "howToUseStep2Prefix": "Opcionalmente, informe uma",
+      "howToUseStep2Strong": "substituição de URL base",
+      "howToUseStep2Suffix": "Use quando a spec declara uma URL de staging, mas você quer apontar o Arthur para produção.",
+      "howToUseStep3Prefix": "Clique em",
+      "howToUseStep3Suffix": "O Arthur lê todos os caminhos e operações da spec, cria um servidor e gera uma ferramenta por endpoint.",
+      "howToUseStep4Prefix": "Quando a importação terminar com sucesso, clique em",
+      "howToUseStep4Suffix": "para revisar as ferramentas geradas.",
+      "generatedTitle": "O que o Arthur gera a partir da spec:",
+      "generatedItem1Prefix": "Um servidor nomeado a partir de",
+      "generatedItem2Prefix": "Uma ferramenta por operação, nomeada a partir de",
+      "generatedItem2Suffix": "(ou derivada do método + caminho).",
+      "generatedItem3Prefix": "Descrições de ferramenta a partir dos campos",
+      "generatedItem3And": "e",
+      "generatedItem3Suffix": "da operação.",
+      "generatedItem4": "Parâmetros de entrada (path, query, body) mapeados para o schema de parâmetros da ferramenta MCP.",
+      "tipStrong": "Dica:",
+      "tipBody": "Quanto mais rica for a descrição da sua spec, melhor a IA vai entender quando e como usar cada ferramenta. Após a importação, você pode editar cada ferramenta individualmente na aba Tools do servidor."
+    }
+  },
+  "help": {
+    "intro": "Um servidor é o conceito central do Arthur MCP Adapter. Cada servidor representa uma API externa — como seu CRM, provedor de pagamentos, microsserviço interno ou banco de dados — adaptada ao protocolo MCP para que clientes de IA (Claude, ChatGPT, agentes personalizados) possam consultá-la e interagir com ela naturalmente em qualquer conversa, sem que o usuário precise alternar entre ferramentas.",
+    "howItWorks": "Como funciona, do início ao fim:",
+    "step1": "Crie um servidor e dê a ele um nome e uma URL base — o endereço raiz da API que você deseja conectar (ex: https://api.meu-crm.com). A URL base é prefixada ao caminho de endpoint de cada ferramenta, então você só precisa defini-la uma vez.",
+    "step2": "Adicione ferramentas — manualmente (um endpoint por vez) ou importando uma spec OpenAPI/Swagger para gerar todas as ferramentas automaticamente de uma vez. Cada ferramenta mapeia um endpoint da API para uma função chamável pela IA, com nomes e descrições de parâmetros.",
+    "step3": "Configure a autenticação para que o Arthur saiba como se identificar na API — por exemplo, um Bearer token, Basic auth ou um cabeçalho de chave de API. Sem autenticação, chamadas a APIs protegidas retornarão erros 401.",
+    "step4": "Copie a URL do endpoint MCP da aba Conectar do servidor e cole na configuração de servidor do seu cliente de IA. Cada cliente de IA tem uma interface diferente para isso — consulte a documentação do cliente se não tiver certeza de onde colar a URL.",
+    "step5": "Uma vez conectada, a IA descobre automaticamente todas as ferramentas habilitadas e pode chamá-las em qualquer conversa. O usuário pergunta naturalmente — 'buscar o cliente 123' — e a IA escolhe a ferramenta certa, preenche os parâmetros e retorna o resultado.",
+    "cardIndicators": "Indicadores do cartão — o que cada elemento em um cartão de servidor significa:",
+    "colouredDot": "Ponto colorido (canto superior direito): semáforo de saúde baseado na última hora de atividade. Verde = todas as requisições bem-sucedidas. Amarelo = alguns erros (taxa de falha de 1–19%). Vermelho = alta taxa de erros (20%+), requer atenção. Cinza = sem atividade na última hora, ou o servidor está pausado.",
+    "activePaused": "Chip Ativo / Pausado: Ativo significa que o servidor está aceitando requisições de clientes de IA agora. Pausado significa que está temporariamente offline — todas as chamadas serão rejeitadas até que você o reative. Pausar é útil durante manutenção ou quando uma API upstream está fora do ar.",
+    "toolCount": "Contagem de ferramentas: quantas ferramentas MCP habilitadas estão registradas neste servidor. Zero ferramentas significa que nenhum cliente de IA pode fazer nada útil com este servidor — adicione pelo menos uma ferramenta antes de conectar uma IA. Ferramentas desabilitadas não contam para esse número.",
+    "tags": "Tags: rótulos personalizados que você define para organização e filtragem. Use-os para agrupar servidores por equipe, ambiente (produção, staging) ou o tipo de API que conectam. Clique em uma tag na barra de filtros acima para mostrar apenas servidores com aquela tag.",
+    "newServerHint": "Clique em Novo servidor para abrir o assistente de criação. Você pode preencher os detalhes do servidor manualmente, ou arrastar um arquivo de spec OpenAPI/Swagger para gerar automaticamente todas as ferramentas, parâmetros e descrições em uma etapa. Após a criação, vá para a aba Conectar do servidor para obter a URL do endpoint MCP."
   },
   "period": {
     "24h": "Hoje",

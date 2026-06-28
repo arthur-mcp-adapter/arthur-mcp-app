@@ -62,12 +62,50 @@ Frontend behavior:
 - `TerminologyProvider` loads saved terminology after a token is present.
 - `useTerm()` returns a saved terminology override when present, otherwise the active locale default from `common.terms`.
 - Saving terminology in Settings reloads the terminology context so labels can update without a full page reload.
+- Settings uses the same contextual tab navigation pattern as server/detail pages. The tabs are Server, Security, Headers, E-mail, and Terminology; each tab places its primary save action in the same footer position, while Terminology still calls its dedicated terminology save flow.
+- The Settings page includes a Security section for configuring the JWT signing secret. Saving it requires `settings_manage`; safe settings reads expose only `jwtSecretSet`, never the secret value. The backend falls back to `JWT_SECRET` from the process environment when no database value is saved.
+- Rotating the JWT secret invalidates existing signed sessions, OAuth/MCP bearer tokens, and share links because token verification immediately uses the saved value.
 
 Risk to preserve:
 
 - Do not hardcode new user-facing strings on pages that already use i18n.
 - Keep translation keys in English even when locale values are translated.
 - Keep configurable terms limited to domain labels; do not use terminology overrides for complete sentences.
+
+## Observability Runtime
+
+Goal: let authorized operators verify the technical observability layer that the backend exposes: health probes, Prometheus metrics, structured logs, correlation IDs, and optional OpenTelemetry tracing.
+
+Entry points:
+
+- `/observability`
+
+Permissions:
+
+- `observability_view`: can view the Observability runtime page.
+- `settings_manage`: can save the persisted environment-control draft shown on the Observability page. Operators without this permission can still view and copy the values.
+
+Backend behavior:
+
+- `GET /health`, `GET /ready`, `GET /live`, and `GET /metrics` are public operational endpoints outside the `/api` prefix.
+- The operational endpoints do not mutate user data and are intended for infrastructure probes and Prometheus scraping.
+- Logs are emitted to stdout/stderr as structured JSON when `ENABLE_STRUCTURED_LOGS=true`.
+- Metrics include Node.js defaults, HTTP request metrics, and MCP-specific metrics for tools, resources, prompts, and external HTTP.
+- Tracing is optional and controlled by `ENABLE_TRACING`, `OTEL_EXPORTER_TYPE`, and `OTEL_EXPORTER_OTLP_ENDPOINT`.
+
+Frontend behavior:
+
+- The Observability page checks `/health`, `/ready`, `/live`, and `/metrics` directly from the browser instead of calling provider CRUD APIs.
+- The page summarizes a small Prometheus sample, including HTTP request/error counts, MCP tool counters, external HTTP counters, memory, event loop lag, and uptime when present.
+- The page lets operators customize an environment variable draft that matches the backend observability implementation. Boolean variables use switches, enum-like variables use selects, and free-form variables use text inputs. These controls are persisted in the global Settings singleton as `observabilityEnvironment` and can be copied as `.env` lines; they do not mutate the already-running backend process.
+- The page lists the local Prometheus/Grafana/Tempo stack command that matches the backend observability implementation.
+- Legacy provider creation/detail routes under `/observability/new` and `/observability/:id` redirect back to `/observability`.
+
+Risk to preserve:
+
+- Do not reintroduce provider-management UI unless matching backend endpoints and permission decisions exist.
+- Do not require authentication for the operational probe endpoints themselves; the UI page is permission-gated, but infrastructure probes stay public.
+- Keep the page focused on technical observability. Do not add AI insight, automatic log analysis, or Grafana Cloud coupling here.
 
 ## REST Server Templates
 

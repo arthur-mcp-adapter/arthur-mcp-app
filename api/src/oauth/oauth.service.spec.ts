@@ -3,6 +3,9 @@ import * as jwt from 'jsonwebtoken';
 import { OAuthService } from './oauth.service';
 import { UsersService } from '../users/users.service';
 import { ISwaggerProjectRepository, SwaggerProjectRecord } from '../swagger/swagger-project.repository';
+import { JwtSecretService } from '../settings/jwt-secret.service';
+
+const jwtSecret = 'test-jwt-secret-value';
 
 const server = (override: Partial<SwaggerProjectRecord> = {}): SwaggerProjectRecord => ({
   _id: 'server-1',
@@ -34,12 +37,20 @@ describe('OAuthService', () => {
   const projectRepo: jest.Mocked<Pick<ISwaggerProjectRepository, 'findById'>> = {
     findById: jest.fn(),
   };
+  const jwtSecretService: jest.Mocked<Pick<JwtSecretService, 'getSecret'>> = {
+    getSecret: jest.fn(),
+  };
 
   let service: OAuthService;
 
   beforeEach(() => {
     jest.clearAllMocks();
-    service = new OAuthService(users as unknown as UsersService, projectRepo as unknown as ISwaggerProjectRepository);
+    jwtSecretService.getSecret.mockResolvedValue(jwtSecret);
+    service = new OAuthService(
+      users as unknown as UsersService,
+      projectRepo as unknown as ISwaggerProjectRepository,
+      jwtSecretService as unknown as JwtSecretService,
+    );
   });
 
   it('validates OAuth clients and optional secrets', async () => {
@@ -111,15 +122,15 @@ describe('OAuthService', () => {
     jest.useRealTimers();
   });
 
-  it('issues and verifies JWT access tokens', () => {
-    const token = service.issueToken('user-1', 'alex', 'admin', 'server-1');
-    const decoded = service.verifyToken(token);
+  it('issues and verifies JWT access tokens', async () => {
+    const token = await service.issueToken('user-1', 'alex', 'admin', 'server-1');
+    const decoded = await service.verifyToken(token);
 
     expect(decoded).toMatchObject({ sub: 'user-1', username: 'alex', role: 'admin', serverId: 'server-1' });
     expect(jwt.decode(token)).toMatchObject({ sub: 'user-1' });
   });
 
-  it('returns null for invalid JWT access tokens', () => {
-    expect(service.verifyToken('not-a-token')).toBeNull();
+  it('returns null for invalid JWT access tokens', async () => {
+    await expect(service.verifyToken('not-a-token')).resolves.toBeNull();
   });
 });

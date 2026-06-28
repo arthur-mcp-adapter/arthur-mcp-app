@@ -524,8 +524,8 @@ export class SwaggerController {
   // ── Share link ────────────────────────────────────────────────────────────────
 
   @Post('servers/:id/share-link')
-  generateShareLink(@Param('id') id: string) {
-    const token = this.swaggerService.generateShareToken(id);
+  async generateShareLink(@Param('id') id: string) {
+    const token = await this.swaggerService.generateShareToken(id);
     return { token, url: `/share/${token}` };
   }
 }

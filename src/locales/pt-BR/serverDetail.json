@@ -1,4 +1,7 @@
 {
+  "nav": {
+    "backToServers": "Servidores"
+  },
   "tab": {
     "connect": "Conectar",
     "apiEndpoints": "Endpoints da API",
@@ -12,9 +15,17 @@
     "schema": "Esquema",
     "connection": "Conexão",
     "activity": "Atividade",
-    "aiView": "Visão da IA"
+    "aiView": "Visão da IA",
+    "harness": "Harness",
+    "guardRails": "Guard Rails"
   },
   "heading": {
+    "steps": "Etapas",
+    "editChain": "Editar cadeia - {{name}}",
+    "resources": "Recursos",
+    "newResource": "Novo recurso",
+    "editResource": "Editar recurso - {{name}}",
+    "newDynamicResource": "Novo recurso dinâmico",
     "connectionUrl": "URL de conexão",
     "accessKeys": "Chaves de acesso",
     "oauthClient": "Cliente OAuth",
@@ -122,18 +133,101 @@
     "visible": "{{visible}} de {{total}}",
     "deletedQuery": "operação excluída",
     "specFormat": ".yaml · .yml · .json",
-    "truncated": "… (truncado)"
+    "truncated": "… (truncado)",
+    "maintenanceMessageToClients": "Mensagem exibida aos clientes quando a manutenção estiver ativa",
+    "timezone": "Fuso horário",
+    "day": "Dia",
+    "from": "De",
+    "to": "Até",
+    "reqPerMin": "Req / min",
+    "parameterName": "Nome do parâmetro",
+    "descriptionOptional": "Descrição (opcional)",
+    "required": "Obrigatório",
+    "optional": "Opcional",
+    "fixed": "Fixo",
+    "linear": "Linear",
+    "exponential": "Exponencial",
+    "maxRetries": "Máximo de tentativas",
+    "initialDelayMs": "Atraso inicial (ms)",
+    "backoffStrategy": "Estratégia de backoff",
+    "retryOnHttpCodes": "Repetir nos códigos HTTP",
+    "retryMaxWaitPrefix": "Com {{retries}} tentativas e backoff {{strategy}} começando em {{delay}}ms, o tempo máximo antes de desistir é aproximadamente",
+    "seconds": "{{value}}s",
+    "globalTimeoutMs": "Timeout global (ms)",
+    "timeoutMs": "Timeout (ms)",
+    "timeoutAppliesAll": "= {{seconds}}s — aplica-se a todas as ferramentas sem substituição",
+    "perToolOverrides": "Substituições por ferramenta",
+    "phase": "Fase",
+    "before": "Antes",
+    "after": "Depois",
+    "action": "Ação",
+    "key": "Chave",
+    "value": "Valor",
+    "injectRequestHeader": "Injetar cabeçalho da requisição",
+    "addQueryParameter": "Adicionar parâmetro de query",
+    "logCall": "Registrar chamada",
+    "allTools": "* (todas as ferramentas)",
+    "all": "* (todas)",
+    "blocked": "Bloqueado",
+    "maxCallsPerSession": "Máximo de chamadas por sessão",
+    "requireConfirmation": "Exigir confirmação",
+    "restriction": "Restrição",
+    "maxCalls": "Máximo de chamadas",
+    "maskField": "Mascarar campo",
+    "removeField": "Remover campo",
+    "redactPattern": "Redigir padrão",
+    "filterType": "Tipo de filtro",
+    "target": "Alvo",
+    "replacement": "Substituição",
+    "blockValue": "Bloquear valor",
+    "maxLength": "Comprimento máximo",
+    "allowedValues": "Valores permitidos",
+    "regexMatch": "Correspondência regex",
+    "parameter": "Parâmetro",
+    "source": "Fonte",
+    "valueReference": "Valor / Referência",
+    "chainInput": "Entrada da cadeia",
+    "stepOutput": "Saída da etapa",
+    "stepNumber": "Etapa {{step}}",
+    "dynamic": "Dinâmico",
+    "contentStats": "{{chars}} caracteres · {{lines}} linhas",
+    "uri": "URI",
+    "mimeType": "Tipo MIME",
+    "selectEndpoint": "Selecionar endpoint",
+    "errorMessage": "Mensagem de erro",
+    "httpMethod": "Método HTTP",
+    "path": "Caminho",
+    "contentType": "Content-Type",
+    "constraint": "Restrição",
+    "alertThreshold": "Alertar quando taxa de erro exceder (%)",
+    "alertEmail": "Enviar alerta para (email)"
   },
   "placeholder": {
     "searchPathOrName": "Buscar por caminho ou nome…",
     "searchNameOrDescription": "Buscar por nome ou descrição…",
     "searchByPathNameDesc": "Buscar por caminho, nome ou descrição…",
     "searchPrompts": "Buscar prompts…",
+    "chainNameExample": "ex.: buscar_e_reservar",
+    "chainDescription": "O que esta cadeia faz…",
+    "chainParamName": "nome do parâmetro da cadeia…",
+    "jsonPathExample": "Caminho JSON (ex.: data.id)",
+    "resourceUriHelp": "Identificador único usado pelo cliente MCP para ler este recurso",
     "serverName": "Nome do servidor",
     "addDescription": "Adicione uma descrição curta…",
     "toolName": "Nome da ferramenta",
     "describeParam": "Descreva este parâmetro para que a IA saiba o que passar…",
-    "dragOrBrowse": "Arraste o spec aqui ou clique para navegar"
+    "dragOrBrowse": "Arraste o spec aqui ou clique para navegar",
+    "customerIdExample": "ex.: ID do cliente",
+    "staticValue": "valor estático",
+    "fieldPath": "Caminho do campo (ex.: data.password)",
+    "replacement": "Substituição (ex.: *****)",
+    "fieldPathToRemove": "Caminho do campo a remover (ex.: data.internalId)",
+    "regexPattern": "Padrão regex (ex.: \\b\\d{16}\\b)",
+    "replacementRedacted": "Substituição (ex.: [REDACTED])",
+    "blockValue": "Valor exato a rejeitar (ex.: \"admin\")",
+    "maxLength": "Comprimento máximo de caracteres (ex.: 255)",
+    "allowedValues": "Lista de valores permitidos separada por vírgulas",
+    "regexMatch": "Expressão regular que o valor deve corresponder"
   },
   "hint": {
     "baseUrl": "URL base usada para todas as chamadas HTTP neste servidor",
@@ -142,6 +236,7 @@
     "keyLabel": "Um rótulo para identificar qual cliente usa esta chave",
     "uriAutoGenerated": "Gerado automaticamente a partir do nome",
     "uriUnique": "Identificador único usado pelo cliente MCP para ler este recurso",
+    "resourceUriHelp": "Identificador único usado pelo cliente MCP para ler este recurso",
     "pathCombined": "Combinado com a URL base do servidor: {{baseUrl}}",
     "errorMessageHelp": "Exibido ao cliente MCP se a chamada de API falhar. Use {{error}} para incluir o erro original.",
     "rateLimitActive": "Limita as chamadas ao servidor MCP a {{rpm}} req/min. Exceder o limite retorna HTTP 429.",
@@ -180,7 +275,9 @@
     "chainInputHelp": "Cria um parâmetro de entrada nesta cadeia",
     "selectToolAbove": "Selecione uma ferramenta acima para configurar o mapeamento de entrada.",
     "toolNoParams": "Esta ferramenta não tem parâmetros.",
-    "addStepToStart": "Clique em Adicionar etapa para começar a construir a cadeia. Cada etapa chama uma ferramenta e passa sua saída para a próxima etapa."
+    "addStepToStart": "Clique em Adicionar etapa para começar a construir a cadeia. Cada etapa chama uma ferramenta e passa sua saída para a próxima etapa.",
+    "errorAlertsDesc": "Receba um email quando a taxa de erro exceder um limite.",
+    "constraintRequired": "Rejeita a chamada se este parâmetro estiver ausente"
   },
   "empty": {
     "noEndpoints": "Sem endpoints — envie um spec OpenAPI ou clique em \"Adicionar endpoint\" para criar um manualmente.",
@@ -204,7 +301,12 @@
     "noResourcesPermission": "Você não tem permissão para ver recursos.",
     "noSettingsPermission": "Você não tem permissão para gerenciar as configurações do servidor.",
     "noQueriesYet": "Nenhum(a) {{label}} ainda. Clique em \"Adicionar {{singular}}\" para definir sua primeira operação de fonte, depois crie ferramentas a partir dela na aba Ferramentas.",
-    "noTablesWarning": "Nenhuma ferramenta disponível. Envie um spec primeiro para criar cadeias de ferramentas."
+    "noTablesWarning": "Nenhuma ferramenta disponível. Envie um spec primeiro para criar cadeias de ferramentas.",
+    "noHooks": "Nenhum hook configurado. Adicione um hook para injetar cabeçalhos, anexar parâmetros de query ou registrar cada chamada.",
+    "noInputConstraints": "Nenhuma restrição definida. Adicione regras para validar ou bloquear valores específicos de parâmetros.",
+    "noOutputFilters": "Nenhum filtro de saída definido. Adicione regras para ocultar dados sensíveis das respostas da IA.",
+    "noToolRestrictions": "Nenhuma restrição de ferramenta definida. Adicione regras para bloquear, limitar ou proteger ferramentas específicas."
+    ,"noFixedHeaders": "Ainda não há cabeçalhos fixos. Adicione um para enviá-lo em toda requisição."
   },
   "confirm": {
     "revokeKey": "Revogar \"{{name}}\"?",
@@ -246,11 +348,27 @@
     "executionFailed": "Execução falhou",
     "queryDeleted": "Operação foi excluída — não é possível executar.",
     "introspectFailed": "Introspecção falhou. Verifique suas configurações de conexão.",
-    "connectionFailed": "Conexão falhou"
+    "connectionFailed": "Conexão falhou",
+    "chainNameRequired": "Nome é obrigatório.",
+    "chainStepRequired": "Adicione pelo menos uma etapa.",
+    "resourceNameRequired": "O nome é obrigatório.",
+    "resourceUriRequired": "A URI é obrigatória.",
+    "resourceContentRequired": "O conteúdo é obrigatório.",
+    "resourceTemplateRequired": "O conteúdo do template é obrigatório.",
+    "selectEndpointFirst": "Selecione um endpoint primeiro.",
+    "resourceLoadFailedTemplate": "Erro ao carregar recurso: {{error}}",
+    "toolCallFailedTemplate": "Erro ao chamar ferramenta: {{error}}",
+    "pathRequired": "O caminho é obrigatório."
+  },
+  "section": {
+    "endpoint": "1. Endpoint",
+    "metadataError": "4. Metadados e erro"
   },
   "status": {
     "paused": "Pausado",
     "active": "Ativo",
+    "inactive": "Inativo",
+    "error": "Erro",
     "on": "Ligado",
     "off": "Desligado",
     "saving": "Salvando…",
@@ -304,6 +422,7 @@
     "refresh": "Atualizar",
     "addConnection": "Adicionar conexão",
     "editConnection": "Editar conexão",
+    "editEntity": "Editar {{entity}} - {{name}}",
     "editEndpoint": "Editar endpoint",
     "newTool": "Nova ferramenta",
     "hideTestPanel": "Ocultar painel de teste",
@@ -334,9 +453,17 @@
     "run": "Executar",
     "closePreview": "Fechar prévia",
     "searchTables": "Buscar {{entity}}s…",
-    "updateToolsFromSpec": "Atualizar ferramentas do spec"
+    "updateToolsFromSpec": "Atualizar ferramentas do spec",
+    "remove": "Remover",
+    "addToolOverride": "Adicionar substituição de ferramenta",
+    "addHook": "Adicionar hook",
+    "addRestriction": "Adicionar restrição",
+    "addFilter": "Adicionar filtro",
+    "addConstraint": "Adicionar restrição",
+    "createResourceFromEndpoint": "Criar recurso a partir de endpoint"
   },
   "tooltip": {
+    "updateFromSpec": "Envie uma nova versão da spec para adicionar ou atualizar ferramentas",
     "resumeServer": "Retomar — permitir que a IA use este servidor novamente",
     "pauseServer": "Pausar — bloquear todas as requisições de IA para este servidor",
     "enableTool": "Ativar — disponibilizar esta ferramenta para a IA",
@@ -352,7 +479,9 @@
     "cancelEsc": "Cancelar (Esc)",
     "tenantRequired": "Obrigatório — rejeita chamadas sem este parâmetro",
     "tenantOptional": "Opcional — ignorado se não fornecido",
-    "copiedBang": "Copiado!"
+    "copiedBang": "Copiado!",
+    "removeOverride": "Remover substituição",
+    "removeHook": "Remover hook"
   },
   "reimport": {
     "title": "Reimportar spec da API",
@@ -390,5 +519,129 @@
     "errorCol": "Erro",
     "mcp": "MCP",
     "direct": "Direto"
+  },
+  "help": {
+    "tools": {
+      "intro": "Cada ferramenta mapeia um endpoint de API para uma ação específica que sua IA pode realizar — por exemplo 'pesquisar um contato', 'criar um ticket' ou 'obter detalhes de um pedido'. A IA lê o nome e a descrição de cada ferramenta antes de decidir qual chamar. Um servidor sem ferramentas significa que a IA não tem nada a fazer — crie ferramentas antes de conectar um cliente de IA.",
+      "naming": "Os nomes das ferramentas são o principal sinal que a IA usa para entender o que cada ação faz. Use nomes curtos e específicos que descrevam tanto a ação quanto o seu objeto: obter_cliente_por_id, criar_fatura, listar_pedidos_abertos. Evite nomes genéricos como fazer_acao ou chamar_api — a IA não consegue distinguir ferramentas com confiança quando os nomes são vagos ou se sobrepõem.",
+      "betterDesc": "Escreva descrições como se estivesse explicando a função para um desenvolvedor júnior. Em vez de 'Buscar usuário', escreva 'Busca uma conta de usuário pelo ID numérico — retorna nome, e-mail, papel, status e data do último acesso.' Mencione quais dados são retornados, o que acontece em caso de falha e limites importantes como 'máximo de 100 resultados por página'. A IA usa as descrições para decidir tanto se deve chamar uma ferramenta quanto como preencher os parâmetros corretamente.",
+      "parameters": "Cada ferramenta possui parâmetros de entrada que a IA preenche automaticamente com base no contexto. Dê a cada parâmetro um nome e uma descrição claros. 'user_id (inteiro): o ID numérico do usuário a ser buscado' é muito melhor do que apenas 'id'. Se um parâmetro aceita apenas um conjunto fixo de valores — como um campo de status — liste todos os valores aceitos na descrição para que a IA nunca precise adivinhar.",
+      "disable": "Use Desativar para ocultar uma ferramenta da IA sem excluí-la. A ferramenta permanece totalmente configurada, mas fica invisível para todos os clientes de IA. Útil quando um endpoint está temporariamente fora do ar, em manutenção ou é sensível demais para expor à automação. Reative instantaneamente quando estiver pronto — nenhuma reconfiguração necessária.",
+      "troubleshoot": "Se a IA chamar a ferramenta errada: verifique se os nomes das ferramentas são únicos e sem ambiguidade no servidor. Se a IA preencher os parâmetros incorretamente: adicione exemplos concretos e a lista completa de valores aceitos na descrição do parâmetro. Se uma ferramenta retornar erros constantemente: abra a aba Log de Atividade para ver a resposta de erro bruta da API upstream e diagnosticar a partir daí."
+    },
+    "activity": {
+      "intro": "Um registro em ordem cronológica inversa de todas as requisições feitas por este servidor. Cada linha é uma chamada de ferramenta — mostrando qual ferramenta foi usada, de onde veio a requisição, se teve sucesso, quanto tempo a API externa levou para responder e quaisquer detalhes de erro.",
+      "columns": "Colunas — Ferramenta: qual ferramenta foi chamada. Origem: MCP (chamada por um cliente de IA via protocolo MCP) ou Direto (chamada via API REST, geralmente pelo seu próprio código ou um teste). Status: a cor do círculo indica sucesso ou falha. Tempo ms: quanto a API upstream levou para responder. Erro: a mensagem retornada se a requisição falhou.",
+      "greenStatus": "Status verde — a API upstream respondeu com um código HTTP 2xx dentro do timeout configurado. A chamada da ferramenta foi concluída com sucesso e o resultado foi retornado à IA.",
+      "redStatus": "Status vermelho — a chamada falhou. Causas mais comuns: URL base incorreta, credenciais de autenticação ausentes ou expiradas, a API upstream retornou um erro 4xx ou 5xx, ou a requisição atingiu o tempo limite. Clique na linha para expandir a mensagem de erro completa.",
+      "responseTime": "Tempo de resposta — quantos milissegundos a API upstream levou para responder. Abaixo de 1.000 ms é saudável. De 1.000 a 3.000 ms fica laranja e indica uma API upstream lenta. Acima de 3.000 ms fica vermelho — considere aumentar o timeout padrão do servidor nas Configurações, ou investigue o que está deixando o serviço upstream lento.",
+      "sources": "Coluna de Origem — MCP significa que a chamada partiu de um cliente de IA (Claude, ChatGPT, um agente personalizado, etc.) via protocolo MCP. Direto significa que a chamada foi feita via API REST, geralmente pelo seu próprio código, um script de CI ou um teste manual com curl.",
+      "whenErrors": "Diagnosticando linhas vermelhas: observe o código de status HTTP na mensagem de erro. 401 ou 403 significa que a autenticação está errada ou uma chave expirou. 404 significa que o caminho do endpoint não existe na API upstream — verifique o caminho da ferramenta e a URL base do servidor. 5xx significa que o próprio serviço upstream está com problemas. Um timeout sem código de status significa que o Arthur desistiu de esperar — aumente o timeout nas Configurações.",
+      "retention": "Os logs são mantidos por 7 dias e não podem ser exportados pela interface. Para retenção mais longa ou acesso estruturado aos logs, configure sua infraestrutura para encaminhar os logs do servidor para uma plataforma de observabilidade externa como Datadog, Grafana Loki ou CloudWatch."
+    },
+    "aiView": {
+      "desc": "Este é o payload exato que seu cliente de IA recebe ao se conectar a este servidor pelo protocolo MCP — a lista completa de ferramentas, seus esquemas de parâmetros e as descrições que a IA lê para entender o que cada ação faz. O que você vê aqui é precisamente o que a IA utiliza, nem mais nem menos.",
+      "howAiDecides": "Quando você envia uma mensagem à IA, ela verifica o nome e a descrição de cada ferramenta exibida aqui para decidir qual chamar e quais valores passar como parâmetros. Se duas ferramentas tiverem nomes semelhantes, a IA pode escolher a errada. Se uma descrição for vaga, a IA pode adivinhar os valores dos parâmetros — às vezes incorretamente. Esta visualização permite auditar exatamente o que a IA vê antes que um problema apareça em produção.",
+      "improving": "Para melhorar a precisão da IA: torne os nomes das ferramentas únicos e específicos, adicione exemplos concretos nas descrições ('ex: customer_id: 123 para João Silva'), liste todos os valores aceitos para parâmetros do tipo enum e descreva o que cada ferramenta retorna e quais erros pode gerar. Após editar ferramentas, volte a esta visualização para verificar se as alterações estão exatamente como pretendido — a IA verá a versão atualizada imediatamente na próxima conexão."
+    },
+    "rateLimit": {
+      "intro": "Limita o número de requisições MCP que este servidor aceita por minuto. Quando o limite é excedido, o servidor responde com HTTP 429 (Too Many Requests) e um cabeçalho Retry-After — o cliente de IA deve aguardar antes de tentar novamente.",
+      "whyTitle": "Por que definir um limite de requisições?",
+      "protectTitle": "Proteger a API upstream:",
+      "protectText": "muitas APIs têm seus próprios limites de taxa. Permanecer dentro deles evita que suas credenciais sejam limitadas ou suspensas.",
+      "costTitle": "Controlar custos:",
+      "costText": "cada chamada a uma API paga custa dinheiro. Um limite evita que agentes de IA façam milhares de chamadas acidentalmente em um loop.",
+      "runawayTitle": "Evitar agentes em loop:",
+      "runawayText": "agentes de IA em fluxos agentic às vezes podem ficar presos em loops de repetição. Um limite atua como disjuntor.",
+      "fairTitle": "Uso justo:",
+      "fairText": "se vários clientes de IA compartilham este endpoint, um limite garante que nenhum cliente monopolize a cota.",
+      "howTitle": "Como definir o limite correto:",
+      "howText": "verifique o limite documentado da API upstream (ex.: 100 req/min) e configure o limite do Arthur ligeiramente abaixo para manter margem. Comece conservador e aumente se a IA atingir 429 com frequência.",
+      "toggleText": "Desative o switch para Inativo para desabilitar totalmente o limite. As alterações são salvas automaticamente."
+    },
+    "retryPolicy": {
+      "intro": "Quando uma chamada de ferramenta falha, o Arthur pode repeti-la automaticamente antes de retornar um erro à IA.",
+      "backoffTitle": "Estratégias de backoff:",
+      "fixed": "aguarda o mesmo atraso entre cada tentativa.",
+      "linear": "aumenta o atraso pelo atraso inicial a cada tentativa (ex.: 500ms -> 1000ms -> 1500ms).",
+      "exponential": "dobra o atraso a cada tentativa (ex.: 500ms -> 1000ms -> 2000ms). Melhor para erros de limite de taxa.",
+      "safeCodes": "Repita apenas em códigos seguros para tentar novamente (chamadas idempotentes). Evite repetir chamadas POST que alteram estado, a menos que a API upstream seja idempotente."
+    },
+    "timeout": {
+      "intro": "Define o tempo máximo que o Arthur aguarda uma chamada de ferramenta concluir antes de retornar um erro de timeout à IA.",
+      "overrides": "O timeout global se aplica a todas as ferramentas. Substituições por ferramenta permitem dar mais tempo a endpoints sabidamente lentos (ex.: geração de relatório) ou menos tempo aos rápidos.",
+      "upstream": "Se a API upstream tiver seu próprio timeout, configure o do Arthur abaixo dele para que a IA receba um erro claro em vez de uma conexão interrompida."
+    },
+    "executionHooks": {
+      "intro": "Hooks executam automaticamente antes ou depois de cada chamada de ferramenta neste servidor.",
+      "inject": "adiciona um cabeçalho fixo a cada requisição da API upstream (ex.: X-Tenant-ID).",
+      "query": "anexa um parâmetro de query fixo a cada URL de requisição.",
+      "log": "registra fase, nome da ferramenta e timestamp no log de atividade — útil para auditoria sem código customizado.",
+      "phases": "Hooks Antes executam antes de enviar a requisição. Hooks Depois executam após receber a resposta. Hooks desativados são salvos, mas não executados."
+    },
+    "inputConstraints": {
+      "intro": "Regras que validam ou bloqueiam parâmetros de chamadas de ferramenta antes da requisição chegar à API upstream.",
+      "required": "rejeita a chamada se o parâmetro estiver ausente.",
+      "blockValue": "rejeita chamadas quando o parâmetro é igual ao valor bloqueado.",
+      "maxLength": "rejeita strings maiores que o limite.",
+      "allowedValues": "rejeita valores que não estejam em uma lista permitida separada por vírgulas.",
+      "regex": "rejeita valores que não correspondem à expressão regular.",
+      "allTools": "Use * como nome da ferramenta para aplicar uma regra a todas as ferramentas."
+    },
+    "outputFiltering": {
+      "intro": "Regras que limpam, mascaram ou removem dados sensíveis das respostas das ferramentas antes que a IA as veja.",
+      "mask": "substitui o valor de um campo por uma string fixa (ex.: *****). Use para ocultar segredos mantendo a estrutura.",
+      "remove": "remove o campo inteiro da resposta. Use para metadados internos que a IA não precisa.",
+      "redact": "substitui qualquer string que corresponda a uma regex por um placeholder. Use para limpar números de cartão, documentos ou tokens em qualquer parte da resposta.",
+      "paths": "Caminhos de campo usam notação com pontos (ex.: data.user.email). Use * como nome da ferramenta para aplicar uma regra a todas as ferramentas."
+    },
+    "toolRestrictions": {
+      "intro": "Regras que restringem como ferramentas específicas podem ser invocadas pela IA.",
+      "blocked": "impede completamente que a IA chame esta ferramenta. A ferramenta ainda aparece no schema, mas retorna erro se for invocada.",
+      "maxCalls": "limita quantas vezes a IA pode invocar uma ferramenta em uma única sessão de conversa. Útil para operações caras ou destrutivas.",
+      "confirmation": "pausa a execução e pede confirmação humana antes de chamar a ferramenta. Recomendado para qualquer ferramenta que escreve, exclui ou envia dados.",
+      "disabled": "Restrições desativadas são salvas, mas não aplicadas."
+    }
+  },
+  "days": {
+    "sunday": "Domingo",
+    "monday": "Segunda-feira",
+    "tuesday": "Terça-feira",
+    "wednesday": "Quarta-feira",
+    "thursday": "Quinta-feira",
+    "friday": "Sexta-feira",
+    "saturday": "Sábado"
+  },
+  "harness": {
+    "title": "Harness",
+    "subtitle": "Configure hooks de execução, políticas de retry e timeouts para as ferramentas deste servidor.",
+    "badge": {
+      "comingSoon": "Em breve"
+    },
+    "section": {
+      "hooks": "Hooks de Execução",
+      "hooksDesc": "Execute lógica personalizada antes e depois de cada chamada de ferramenta — injete cabeçalhos, transforme entradas, registre resultados ou dispare efeitos colaterais sem alterar a API upstream.",
+      "retryPolicy": "Política de Retry",
+      "retryPolicyDesc": "Defina quantas vezes uma chamada de ferramenta com falha deve ser repetida, com qual estratégia de backoff e para quais códigos de erro HTTP.",
+      "timeouts": "Configurações de Timeout",
+      "timeoutsDesc": "Defina limites de tempo por ferramenta ou para o servidor inteiro para evitar que APIs upstream lentas travem as respostas da IA."
+    },
+    "empty": "Nenhuma configuração de harness ainda. Hooks de execução, políticas de retry e timeouts serão gerenciados aqui."
+  },
+  "guardRails": {
+    "title": "Guard Rails",
+    "subtitle": "Defina regras de segurança que restringem o que a IA pode enviar e receber pelas ferramentas deste servidor.",
+    "badge": {
+      "comingSoon": "Em breve"
+    },
+    "section": {
+      "inputConstraints": "Restrições de Entrada",
+      "inputConstraintsDesc": "Valide ou rejeite parâmetros de chamadas de ferramentas antes de chegarem à API upstream — bloqueie valores proibidos, imponha intervalos permitidos ou exija formatos específicos.",
+      "outputFiltering": "Filtragem de Saída",
+      "outputFilteringDesc": "Remova dados sensíveis das respostas das ferramentas antes de retorná-los à IA — mascare PII, oculte segredos ou remova campos que o modelo não deve ver.",
+      "toolRestrictions": "Restrições de Ferramentas",
+      "toolRestrictionsDesc": "Restrinja quais ferramentas podem ser chamadas em determinadas condições — por papel do usuário, horário, limites de taxa ou qualquer regra personalizada."
+    },
+    "empty": "Nenhum guard rail configurado ainda. Restrições de entrada, filtros de saída e restrições de ferramentas serão gerenciados aqui."
   }
 }

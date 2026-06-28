@@ -9,19 +9,30 @@
     "remove": "Remove",
     "reload": "Reload",
     "retry": "Retry",
+    "reset": "Reset",
     "close": "Close",
     "back": "Back",
     "next": "Next",
     "confirm": "Confirm",
     "copy": "Copy",
+    "code": "Code",
     "copied": "Copied",
+    "preview": "Preview",
+    "expandEditor": "Expand editor",
+    "collapse": "Collapse",
     "search": "Search",
     "filter": "Filter",
     "clear": "Clear",
     "loading": "Loading…",
     "saving": "Saving…",
+    "saved": "Saved",
     "deleting": "Deleting…",
-    "duplicate": "Duplicate"
+    "duplicate": "Duplicate",
+    "learnMore": "Learn more",
+    "saveChanges": "Save changes",
+    "createResource": "Create resource",
+    "deleteResource": "Delete resource",
+    "creating": "Creating…"
   },
   "status": {
     "active": "Active",
@@ -46,12 +57,14 @@
     "generic": "Something went wrong. Please try again.",
     "forbidden": "You don't have permission to perform this action.",
     "notFound": "Not found.",
-    "loadFailed": "Failed to load data."
+    "loadFailed": "Failed to load data.",
+    "saveFailed": "Failed to save."
   },
   "terms": {
     "server": "Server",
     "tool": "Tool",
     "resource": "Resource",
+    "endpoint": "Endpoint",
     "prompt": "Prompt",
     "chain": "Chain",
     "secret": "Secret"

@@ -2,7 +2,7 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 import { ServerNavProvider } from './context/ServerNavContext'
 import { TerminologyProvider } from './context/TerminologyContext'
-import Layout from './components/Layout'
+import { Layout } from './components'
 import Login from './pages/Login'
 import ForgotPassword from './pages/ForgotPassword'
 import ResetPassword from './pages/ResetPassword'
@@ -24,6 +24,11 @@ import PromptTemplates from './pages/PromptTemplates'
 import Secrets from './pages/Secrets'
 import NewSecret from './pages/NewSecret'
 import SecretDetail from './pages/SecretDetail'
+import AiProviders from './pages/AiProviders'
+import NewAiProvider from './pages/NewAiProvider'
+import AiProviderDetail from './pages/AiProviderDetail'
+import Observability from './pages/Observability'
+import ErrorTracking from './pages/ErrorTracking'
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
   const token = localStorage.getItem('token')
@@ -75,6 +80,13 @@ export default function App() {
                   <Route path="/secrets" element={<Secrets />} />
                   <Route path="/secrets/new" element={<NewSecret />} />
                   <Route path="/secrets/:id" element={<SecretDetail />} />
+                  <Route path="/ai-providers" element={<AiProviders />} />
+                  <Route path="/ai-providers/new" element={<NewAiProvider />} />
+                  <Route path="/ai-providers/:id" element={<AiProviderDetail />} />
+                  <Route path="/observability" element={<Observability />} />
+                  <Route path="/observability/new" element={<Navigate to="/observability" replace />} />
+                  <Route path="/observability/:id" element={<Navigate to="/observability" replace />} />
+                  <Route path="/error-tracking" element={<ErrorTracking />} />
                   <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
               </Layout>

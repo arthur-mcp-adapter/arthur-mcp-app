@@ -178,7 +178,9 @@ Fields:
 | `smtpUser` | string | yes | SMTP username. |
 | `smtpPass` | string | yes | SMTP password. Treat as sensitive. |
 | `smtpFrom` | string | yes | Sender address for email. |
+| `jwtSecret` | string | yes | JWT signing secret persisted for runtime auth, OAuth/MCP bearer tokens, and share links. Treat as sensitive; safe settings responses only expose `jwtSecretSet`. Falls back to `JWT_SECRET` from the process environment when empty. |
 | `globalRequestHeaders` | `{ name: string; value: string }[]` | no | Headers injected into outbound requests. SQLite may store `null`; Mongo defaults to `[]`. |
+| `observabilityEnvironment` | `Record<string, string>` | no | Saved Observability page environment-control draft, including feature flags, log level, service identity, metrics path, and OTEL exporter settings. SQLite stores it as JSON; Mongo stores it as an object. |
 | `termServer` | string | no | User-facing terminology override for the Server concept. |
 | `termTool` | string | no | User-facing terminology override for the Tool concept. |
 | `termResource` | string | no | User-facing terminology override for the Resource concept. |
@@ -191,6 +193,19 @@ Terminology note:
 - The frontend `TerminologyProvider` loads these optional fields from `/api/settings`.
 - Empty or `null` terminology fields fall back to the active i18n locale defaults.
 - When adding a configurable term, update `SettingsRecord`, both persistence models, both settings repositories, `src/context/TerminologyContext.tsx`, settings UI, locale defaults, and this document.
+
+Observability environment note:
+
+- The Observability runtime page loads and saves `observabilityEnvironment` through `/api/settings`.
+- Saved values are a deployment/configuration draft for operators and do not mutate environment variables inside an already-running backend process.
+- Saving this field reuses the existing `settings_manage` permission because it is persisted global settings data.
+
+JWT secret note:
+
+- The Settings page can save a replacement JWT signing secret in `jwtSecret`; blank form submissions keep the current saved value.
+- Safe settings reads do not expose `jwtSecret`; they expose `jwtSecretSet`.
+- If no `jwtSecret` is saved, auth falls back to the process `JWT_SECRET` value for bootstrap compatibility.
+- Rotating the saved secret invalidates previously signed sessions, OAuth/MCP bearer tokens, and share links.
 
 ## Prompt
 

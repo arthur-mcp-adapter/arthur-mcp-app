@@ -13,6 +13,7 @@ import { UsersService } from '../users/users.service';
 import { PASSWORD_RESET_REPO } from '../database/database.tokens';
 import { IPasswordResetRepository } from './password-reset.repository';
 import { SettingsService } from '../settings/settings.service';
+import { JwtSecretService } from '../settings/jwt-secret.service';
 
 export interface JwtPayload {
   sub: string;
@@ -34,6 +35,7 @@ export class AuthService {
     private readonly users: UsersService,
     private readonly jwt: JwtService,
     private readonly settingsService: SettingsService,
+    private readonly jwtSecretService: JwtSecretService,
     @Inject(PASSWORD_RESET_REPO) private readonly resetRepo: IPasswordResetRepository,
   ) {}
 
@@ -45,9 +47,10 @@ export class AuthService {
     return { _id: user._id, username: user.username, role: user.role };
   }
 
-  login(user: AuthUser): { access_token: string } {
+  async login(user: AuthUser): Promise<{ access_token: string }> {
     const payload: JwtPayload = { sub: user._id, username: user.username, role: user.role };
-    return { access_token: this.jwt.sign(payload) };
+    const secret = await this.jwtSecretService.getSecret();
+    return { access_token: await this.jwt.signAsync(payload, { secret, expiresIn: '24h' }) };
   }
 
   async register(username: string, password: string, email: string): Promise<{ access_token: string }> {

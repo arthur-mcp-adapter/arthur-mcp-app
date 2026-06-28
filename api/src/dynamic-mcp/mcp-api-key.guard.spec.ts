@@ -2,7 +2,9 @@ import * as jwt from 'jsonwebtoken';
 import { UnauthorizedException } from '@nestjs/common';
 import { McpApiKeyGuard } from './mcp-api-key.guard';
 import { ISwaggerProjectRepository } from '../swagger/swagger-project.repository';
-import { config } from '../config/configuration';
+import { JwtSecretService } from '../settings/jwt-secret.service';
+
+const jwtSecret = 'test-jwt-secret-value';
 
 const context = (req: any) => ({
   switchToHttp: () => ({ getRequest: () => req }),
@@ -12,16 +14,23 @@ describe('McpApiKeyGuard', () => {
   const repo: jest.Mocked<Pick<ISwaggerProjectRepository, 'findById'>> = {
     findById: jest.fn(),
   };
+  const jwtSecretService: jest.Mocked<Pick<JwtSecretService, 'getSecret'>> = {
+    getSecret: jest.fn(),
+  };
 
   let guard: McpApiKeyGuard;
 
   beforeEach(() => {
     jest.clearAllMocks();
-    guard = new McpApiKeyGuard(repo as unknown as ISwaggerProjectRepository);
+    jwtSecretService.getSecret.mockResolvedValue(jwtSecret);
+    guard = new McpApiKeyGuard(
+      repo as unknown as ISwaggerProjectRepository,
+      jwtSecretService as unknown as JwtSecretService,
+    );
   });
 
   it('accepts valid OAuth bearer tokens for the requested server', async () => {
-    const token = jwt.sign({ serverId: 'server-1' }, config.jwtSecret);
+    const token = jwt.sign({ serverId: 'server-1' }, jwtSecret);
 
     await expect(guard.canActivate(context({
       headers: { authorization: `Bearer ${token}` },
@@ -31,7 +40,7 @@ describe('McpApiKeyGuard', () => {
   });
 
   it('rejects bearer tokens for a different server', async () => {
-    const token = jwt.sign({ serverId: 'server-2' }, config.jwtSecret);
+    const token = jwt.sign({ serverId: 'server-2' }, jwtSecret);
 
     await expect(guard.canActivate(context({
       headers: { authorization: `Bearer ${token}` },

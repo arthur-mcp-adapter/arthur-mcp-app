@@ -1,4 +1,5 @@
 import type { EndpointRef, ParameterMapping } from './types';
+import { getCorrelationContext } from '../observability/middlewares/correlation-id.middleware';
 
 export interface PreparedRequest {
   url: string;
@@ -15,6 +16,12 @@ export function buildRequest(
   let path = endpointRef.path;
   const query: Record<string, string> = {};
   const headers: Record<string, string> = { ...extraHeaders };
+  const correlation = getCorrelationContext();
+  if (correlation) {
+    headers['x-request-id'] = headers['x-request-id'] ?? correlation.requestId;
+    headers['x-correlation-id'] = headers['x-correlation-id'] ?? correlation.correlationId;
+    headers['x-trace-id'] = headers['x-trace-id'] ?? correlation.traceId;
+  }
   for (const h of endpointRef.staticHeaders ?? []) {
     if (h.name) headers[h.name] = h.value;
   }

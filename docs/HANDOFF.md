@@ -8,12 +8,50 @@ Codex
 
 ## Current State
 
-The shared context protocol now includes Claude Code specialist agents, backend entity documentation, backend/frontend design patterns, flow documentation, and a documentation gate. Recent Claude Code work added frontend i18n and configurable terminology. REST server templates now create tagged REST servers by sending `source:rest` during server creation. Prompt and secret creation now use dedicated page-based stepper flows. Server source cards now support double-click to select and continue. A Portuguese integration modeling document was added by explicit user request. Phase 1 of the operation-first migration renamed generic data-source execution UI from Queries to Operations. Data-source operations now support input/output schemas for MCP exposure, with input parameters presented before source-specific query/command editors. A `system-tutor` Claude Code specialist now owns tutorials, section guides, onboarding paths, and product education. A `compliance-counsel` specialist now owns software licensing, dependency obligations, attribution, distribution risk, and compliance/legal notes. A `developer-advocate` specialist now owns developer adoption materials, demos, examples, DX reviews, and community feedback loops. A `react-frontend-engineer` specialist now owns React/TypeScript frontend implementation. A `backend-test-engineer` specialist now owns backend Jest, NestJS, repository, guard, DTO, and API/e2e tests. Backend coverage now has an 80% global gate for focused testable units. `ServerDetail` refactoring is continuing by extracting focused server feature modules without replacing the current Operations implementation.
+The shared context protocol now includes Claude Code specialist agents, backend entity documentation, backend/frontend design patterns, flow documentation, and a documentation gate. Recent Claude Code work added frontend i18n and configurable terminology. REST server templates now create tagged REST servers by sending `source:rest` during server creation. Prompt and secret creation now use dedicated page-based stepper flows. Server source cards now support double-click to select and continue. A Portuguese integration modeling document was added by explicit user request. Phase 1 of the operation-first migration renamed generic data-source execution UI from Queries to Operations. Data-source operations now support input/output schemas for MCP exposure, with input parameters presented before source-specific query/command editors. A `system-tutor` Claude Code specialist now owns tutorials, section guides, onboarding paths, and product education. A `compliance-counsel` specialist now owns software licensing, dependency obligations, attribution, distribution risk, and compliance/legal notes. A `developer-advocate` specialist now owns developer adoption materials, demos, examples, DX reviews, and community feedback loops. A `react-frontend-engineer` specialist now owns React/TypeScript frontend implementation. A `backend-test-engineer` specialist now owns backend Jest, NestJS, repository, guard, DTO, and API/e2e tests. A `gof-expert` specialist now owns Gang of Four design pattern guidance, and a `solid-expert` specialist now owns SOLID responsibility, interface, dependency direction, and maintainability reviews. Backend coverage now has an 80% global gate for focused testable units. `ServerDetail` refactoring is continuing by extracting focused server feature modules without replacing the current Operations implementation.
 
-Frontend duplication optimization is progressing through a phased extraction plan. Phases 1-7 are complete: `BaseListCard`, `useListPageLogic`, `useCopyToClipboard`, `BaseDialogLayout`, `useDetailPageNav`, shared feature types, and `useAsyncFeedback` are in place, with the most repetitive drawer, detail-nav, snackbar, and page-local entity shapes now centralized.
+Frontend duplication optimization is progressing through a phased extraction plan. Phases 1-7 are complete: `BaseListCard`, `useListPageLogic`, `useCopyToClipboard`, `BaseDialogLayout`, `useDetailPageNav`, shared feature types, and `useAsyncFeedback` are in place, with the most repetitive drawer, detail-nav, snackbar, and page-local entity shapes now centralized. Frontend specialists are now explicitly prepared to use Feature-Driven Architecture, Atomic Design, and controlled barrel exports. `docs/FRONTEND_ARCHITECTURE_PLAN.md` defines the incremental migration plan; its first implementation slice is complete with feature/shared `index.tsx` barrels and Atomic Design component folders.
 
 ## Latest Changes
 
+- Reworked the Settings page to use the contextual tab navigation pattern used by server/detail pages. Settings now has Server, Security, Headers, E-mail, and Terminology tabs, with primary save actions aligned in the same footer position; Terminology still uses its dedicated terminology save flow behind that matching action.
+- Added a configurable JWT signing secret to Settings. The value is stored as sensitive Settings data, safe reads expose only `jwtSecretSet`, and auth/OAuth/MCP bearer token/share-link signing and verification use the saved value with fallback to `JWT_SECRET`.
+- Added a Settings Security section for rotating the JWT secret, including validation and copy warning that existing signed sessions, OAuth/MCP tokens, and share links may be invalidated.
+- Persisted the Observability runtime page environment controls in the global Settings singleton as `observabilityEnvironment`, with SQLite/Mongo repository support and `/api/settings` load/save wiring from the frontend.
+- Protected `PATCH /api/settings` with `settings_manage`; Observability users with only `observability_view` can view/copy persisted controls but cannot save them.
+- Updated the Observability runtime page environment controls from read-only rows into editable controls: booleans use switches, `LOG_LEVEL` and `OTEL_EXPORTER_TYPE` use selects, text values use inputs, and the persisted draft can be copied or reset without mutating backend process environment variables.
+- Reworked `/observability` from provider CRUD into a runtime observability dashboard that checks `/health`, `/ready`, `/live`, and `/metrics`, summarizes Prometheus metrics, shows emitted signal types, lists env controls, and includes the local Prometheus/Grafana/Tempo command.
+- Redirected legacy `/observability/new` and `/observability/:id` routes back to `/observability` because provider CRUD is not implemented in the backend observability layer.
+- Updated the Vite dev proxy so `/ready`, `/live`, and `/metrics` are forwarded to the backend alongside `/health`.
+- Added `observability_view/create/edit/delete` to the backend `RolePermissions` contract and built-in role defaults, while the current UI only uses `observability_view`.
+- Updated frontend fallback role presets so observability defaults are view-only for developer/editor roles.
+- Added `docs/FLOWS.md` coverage for the Observability Runtime flow and documented that probe endpoints stay public while the app page is permission-gated.
+- Resolved the root frontend `npm audit` findings by upgrading the Vite toolchain to `vite@8.1.0`, `vitest@4.1.9`, and `@vitejs/plugin-react@6.0.3`, plus adding a `dompurify@3.4.11` override for Monaco's transitive sanitizer dependency.
+- Renamed the Vite/Vitest config to `vite.config.mts` and updated `tsconfig.node.json` so the ESM-only Vite React plugin loads cleanly.
+- Excluded `.claude/**` from Vitest discovery so local Claude Code worktrees do not get picked up by broad test patterns.
+- Added `api/src/observability/` as the reusable backend observability layer for public `/health`, `/ready`, `/live`, and `/metrics` endpoints, structured JSON logs, request/correlation IDs, Prometheus metrics, and optional OpenTelemetry tracing.
+- Switched Nest bootstrap to `AppLoggerService`, initialized OpenTelemetry when enabled, excluded `/ready`, `/live`, and `/metrics` from the `/api` prefix, and bound the server to `0.0.0.0` using `process.env.PORT`.
+- Added HTTP request logging middleware, correlation ID middleware, HTTP metrics/tracing interceptors, and MCP-specific metrics/traces for tool calls, resource reads, prompt calls, and external HTTP requests.
+- Added local observability helpers under `observability/`: Prometheus config, Docker Compose for Prometheus/Grafana/Tempo, a Grafana dashboard JSON, and usage docs.
+- Updated `render.yaml`, `docker-compose.yml`, `nginx.conf`, `api/.env.example`, `README.md`, `AGENTS.md`, and `docs/DESIGN_PATTERNS.md` for the observability behavior and Render-ready defaults.
+- Added focused backend tests for health endpoints, metrics endpoint rendering, correlation ID generation/reuse, HTTP request logs, HTTP/MCP metrics, and tracing enabled/disabled behavior.
+- Internationalized chain and prompt test hardcoded UI strings in the server detail feature modules (`ChainsTab`, `ChainDialog`, `StepBuilder`, and `PromptTestPanel`) by switching visible copy, labels, tooltips, placeholders, empty/error text, and confirm dialog strings to `serverDetail`/`common` locale keys.
+- Continued the server module i18n sweep in `ResourcesTab`, `DynamicResourceDialog`, and the connect/auth panels, moving the first visible resource and credential chrome strings to locale keys while validation remains in progress.
+- Completed another i18n pass across `DynamicResourceDialog`, `ToolOutputTemplateSection`, `ToolDialog`, and `OAuthClientPanel`, replacing their main visible labels/actions/errors with `serverDetail`/`common` keys and fixing broken locale references in `ResourcesTab`.
+- Repaired `serverDetail` locale drift by adding missing resource/tool-dialog keys and removing duplicate/overlapping `confirm`/`error`/`tooltip` blocks that were overriding values in the Portuguese namespace.
+- Internationalized shared `CodePreviewTabs` labels (`Code` / `Preview`) via `common.action` keys to eliminate repeated hardcoded tab copy.
+- Added new i18n keys for chain-specific UI content in both English and Portuguese locale files (`serverDetail.json`) and shared action labels in `common.json`.
+- Added a project-wide permission gate to `AGENTS.md`: every new page, tab, endpoint, integration, credential surface, settings panel, or user action must explicitly reuse an existing permission or add a new permission end-to-end.
+- Reinforced permission alignment rules in `docs/DESIGN_PATTERNS.md` for backend guards/decorators, frontend `can(Permission.X)` gates, role presets, tests, and documentation.
+- Updated Claude Code agent guidance (`README`, `software-engineer`, `react-frontend-engineer`, `backend-test-engineer`, `software-architect`, `nestjs-expert`, `ui-expert`, `ux-analyst`, and `product-owner`) so feature work includes permission decisions before implementation is considered complete.
+- Added a roadmap audit item to verify permission coverage for newly added feature domains such as AI providers, observability, and error tracking.
+- Internationalized remaining hardcoded instructional copy in `SetupWizard` by replacing list item text with `auth` namespace keys in both English and Portuguese locales.
+- Internationalized the `Upload` page help modal body by moving all visible instructional text to new `servers.upload.help.*` locale keys in both English and Portuguese.
+- Internationalized `SaveIndicator` status/fallback messages by switching to `common` namespace keys and adding shared `saved`/`saveFailed` translations.
+- Internationalized additional Server Detail panels by moving visible Settings, Harness, and Guard Rails UI copy to the `serverDetail` locale namespace in English and Portuguese.
+- Updated Server Detail settings panels for pause/maintenance/availability, rate limit, alerts, and multi-tenant parameters to use `useTranslation('serverDetail')`.
+- Updated Harness panels for retry policy, timeout settings, and execution hooks to use translated labels, actions, empty states, and help copy.
+- Updated Guard Rails panels for input constraints, output filtering, and tool restrictions to use translated labels, actions, empty states, and help copy.
 - Added `docs/FRONTEND_MODULARIZATION_PLAN.md` with a phased execution plan for modularizing the frontend by domain, using `src/features/server/` as the first reference slice.
 - Added `src/components/BaseDialogLayout.tsx` and reused it in `FromEndpointPickerDialog` and `ReimportSpecDialog` to remove repeated right-drawer shell markup.
 - Added `src/hooks/useDetailPageNav.ts` and refactored `PromptDetail`, `SecretDetail`, `ServerDetail`, and `Profile` to reuse the contextual sidebar navigation sync.
@@ -52,6 +90,17 @@ Frontend duplication optimization is progressing through a phased extraction pla
 - Added Claude Code `developer-advocate` specialist and registered it in the shared agent indexes.
 - Added Claude Code `react-frontend-engineer` specialist and registered it in the shared agent indexes.
 - Added Claude Code `backend-test-engineer` specialist and registered it in the shared agent indexes.
+- Added Claude Code `gof-expert` specialist and registered it in the shared agent indexes.
+- Added Claude Code `solid-expert` specialist and registered it in the shared agent indexes.
+- Updated frontend Claude Code specialists to use Feature-Driven Architecture, Atomic Design, and controlled barrel exports.
+- Documented Feature-Driven Architecture, Atomic Design, and barrel export frontend conventions in `docs/DESIGN_PATTERNS.md`.
+- Added `docs/FRONTEND_ARCHITECTURE_PLAN.md` with phases, ownership rules, acceptance criteria, validation guidance, and a recommended first slice for frontend architecture migration.
+- Added explicit `index.tsx` barrels for shared components and current feature modules.
+- Organized shared components into `src/components/atoms/`, `src/components/organisms/`, and `src/components/templates/`, with each component in a `ComponentName/index.tsx` folder.
+- Moved current feature React components into `ComponentName/index.tsx` folders.
+- Moved route pages into `src/pages/PageName/index.tsx` folders and colocated `Login`/`Servers` page tests.
+- Moved `SecretAutocomplete` from shared components into `src/features/secrets/` because it is domain-specific secret UI.
+- Rewired current page and feature imports to consume public barrels instead of deep component/feature paths.
 - Added backend Jest coverage for audit logs, settings, dashboard, prompts, Swagger API keys, email, OAuth, MCP API key guard, project state guard, rate limit guard, schema conversion, parameter building, and tool generation.
 - Configured `api/package.json` coverage collection and global thresholds: 80% statements, 70% branches, 80% functions, and 80% lines.
 - Found Claude Code worktree at `.claude/worktrees/agent-ab0722d25387f1c7f`. It compiles and contains a broad `ServerDetail` split, but it is based on an older state and does not include the current Operations/`DbQuery` UI, so do not copy it wholesale into the main worktree.
@@ -76,6 +125,25 @@ Frontend duplication optimization is progressing through a phased extraction pla
 - Aligned `ServerDetail` with `PromptDetail` and `SecretDetail` by moving its back navigation and tab switching into `ServerNavContext`, removing the duplicated inline back button and top tab bar from the page content.
 - Switched `Profile` to the same contextual sidebar navigation pattern, so profile sections now use the sidebar menu instead of inline tabs and the contextual back action returns to the main menu.
 
+## Latest Architecture Slice
+
+- Moved shared UI into Atomic Design folders:
+  - `src/components/atoms/`
+  - `src/components/organisms/`
+  - `src/components/templates/`
+- Added shared component `index.tsx` barrels:
+  - `src/components/index.tsx`
+  - `src/components/atoms/index.tsx`
+  - `src/components/organisms/index.tsx`
+  - `src/components/templates/index.tsx`
+- Added feature `index.tsx` barrels for `server`, `prompts`, `secrets`, and `settings`, including server subfeatures.
+- Moved `SecretAutocomplete` into `src/features/secrets/SecretAutocomplete/index.tsx`.
+- Moved route pages into `src/pages/<PageName>/index.tsx`.
+- Moved page tests into their page folders:
+  - `src/pages/Login/Login.test.tsx`
+  - `src/pages/Servers/Servers.test.tsx`
+- Rewired existing imports away from deep component paths and toward public barrels.
+
 ## Files Changed In This Session
 
 - `AGENTS.md`
@@ -83,10 +151,14 @@ Frontend duplication optimization is progressing through a phased extraction pla
 - `.claude/agents/backend-test-engineer.md`
 - `.claude/agents/compliance-counsel.md`
 - `.claude/agents/developer-advocate.md`
+- `.claude/agents/gof-expert.md`
 - `.claude/agents/react-frontend-engineer.md`
 - `.claude/agents/software-architect.md`
 - `.claude/agents/software-engineer.md`
+- `.claude/agents/solid-expert.md`
 - `.claude/agents/system-tutor.md`
+- `.claude/agents/ui-expert.md`
+- `.claude/agents/ux-analyst.md`
 - `api/package.json`
 - `api/src/audit-logs/audit-logs.controller.spec.ts`
 - `api/src/audit-logs/audit-logs.service.spec.ts`
@@ -174,6 +246,7 @@ Frontend duplication optimization is progressing through a phased extraction pla
 - `src/App.tsx`
 - `src/pages/Prompts.tsx`
 - `docs/DESIGN_PATTERNS.md`
+- `docs/FRONTEND_ARCHITECTURE_PLAN.md`
 - `docs/ENTITIES.md`
 - `docs/FLOWS.md`
 - `docs/INTEGRATION_MODEL.pt-BR.md`
@@ -182,6 +255,39 @@ Frontend duplication optimization is progressing through a phased extraction pla
 
 ## Validation
 
+- `npm run type-check` passed after aligning the Terminology tab save action with the other Settings tabs.
+- `npm run type-check` passed after converting Settings to contextual tabs.
+- `node -e "for (const f of ['src/locales/en/settings.json','src/locales/pt-BR/settings.json']) { JSON.parse(require('fs').readFileSync(f,'utf8')); console.log(f + ' ok') }"` passed after adding Settings tab copy.
+- `npx tsc -p api/tsconfig.json --noEmit` passed after adding database-backed JWT secret resolution.
+- `npm run type-check` passed after adding the Settings Security section.
+- `npm test --prefix api -- settings auth.service oauth.service mcp-api-key.guard swagger.service` passed with 6 suites and 39 tests.
+- `node -e "for (const f of ['src/locales/en/settings.json','src/locales/pt-BR/settings.json']) { JSON.parse(require('fs').readFileSync(f,'utf8')); console.log(f + ' ok') }"` passed.
+- `npx tsc -p api/tsconfig.json --noEmit` passed after persisting Observability environment controls in Settings.
+- `npm test --prefix api -- settings` passed with 2 suites and 7 tests.
+- `npm run type-check` passed after wiring the Observability UI to `/api/settings`.
+- `node -e "for (const f of ['src/locales/en/common.json','src/locales/pt-BR/common.json','src/locales/en/observability.json','src/locales/pt-BR/observability.json']) { JSON.parse(require('fs').readFileSync(f,'utf8')); console.log(f + ' ok') }"` passed.
+- `npm run type-check` passed after making the Observability environment controls editable in the frontend.
+- `node -e "JSON.parse(require('fs').readFileSync('src/locales/en/common.json','utf8')); JSON.parse(require('fs').readFileSync('src/locales/pt-BR/common.json','utf8')); console.log('common locale JSON ok')"` passed.
+- `npm run type-check` passed after reworking the Observability UI.
+- `npx tsc -p api/tsconfig.json --noEmit` passed after adding observability permissions to the backend role contract.
+- `npm test --prefix api -- roles.service.spec.ts permissions.guard.spec.ts` passed with 2 suites and 15 tests.
+- `npm run build` passed after the Observability UI change; it still reports non-failing warnings about the large `@tabler/icons-react` barrel and chunk size.
+- `node -e "JSON.parse(require('fs').readFileSync('src/locales/en/observability.json','utf8')); JSON.parse(require('fs').readFileSync('src/locales/pt-BR/observability.json','utf8')); console.log('observability locale JSON ok')"` passed.
+- `npm audit` passed with 0 vulnerabilities after the frontend dependency updates.
+- `npm run type-check` passed after the Vite/Vitest upgrade and `vite.config.mts` rename.
+- `npm test -- Login.test.tsx Servers.test.tsx` passed with 2 files and 11 tests after excluding `.claude/**` from Vitest discovery.
+- `npm run build` passed with Vite 8; it reported non-failing warnings about the large `@tabler/icons-react` barrel and chunk size.
+- `npx tsc -p api/tsconfig.json --noEmit` passed after adding the observability module and MCP metrics/tracing hooks.
+- `npm test --prefix api -- observability` passed with 5 suites and 14 tests.
+- `node -e "JSON.parse(require('fs').readFileSync('observability/grafana-dashboard.json','utf8')); console.log('grafana dashboard JSON ok')"` passed.
+- `node -e "const yaml=require('js-yaml'); for (const f of ['render.yaml','docker-compose.yml','observability/prometheus.yml','observability/docker-compose.yml']) { yaml.load(require('fs').readFileSync(f,'utf8')); console.log(f + ' yaml ok') }"` passed.
+- `docker compose -f observability/docker-compose.yml config` passed.
+- Not run for the permission-gate documentation/agent guidance update because no application code changed.
+- `npm run type-check` passed after replacing hardcoded Setup Wizard, Upload help, and SaveIndicator copy with i18n keys.
+- `npm run type-check` passed after the latest `DynamicResourceDialog`, `ToolOutputTemplateSection`, `ToolDialog`, and `OAuthClientPanel` i18n changes.
+- `node -e "JSON.parse(require('fs').readFileSync('src/locales/en/serverDetail.json','utf8')); JSON.parse(require('fs').readFileSync('src/locales/pt-BR/serverDetail.json','utf8')); console.log('serverDetail locale JSON ok')"` passed after repairing the server detail locale files.
+- `node -e "JSON.parse(require('fs').readFileSync('src/locales/en/serverDetail.json','utf8')); JSON.parse(require('fs').readFileSync('src/locales/pt-BR/serverDetail.json','utf8')); console.log('serverDetail locale JSON ok')"` passed.
+- `npm run type-check` passed after internationalizing additional Server Detail panels.
 - `npx tsc -p api/tsconfig.json --noEmit` passed.
 - `npm run type-check` passed.
 - `npm run type-check` passed after extracting `SaveIndicator` and `RateLimitPanel`.
@@ -198,13 +304,19 @@ Frontend duplication optimization is progressing through a phased extraction pla
 - `npm run type-check` passed after extracting the `Servers` project card into `src/features/server/ProjectCard.tsx`.
 - `npm run type-check` passed after switching `ServerDetail` to contextual sidebar navigation.
 - `npm run type-check` passed after switching `Profile` to contextual sidebar navigation.
+- `npm run type-check` passed after converting feature/shared component barrels to `index.tsx`, moving React components into `ComponentName/index.tsx` folders, moving `SecretAutocomplete` into the `secrets` feature, and rewiring imports.
+- `npm run type-check` passed after moving route pages into `PageName/index.tsx` folders.
+- `npm test -- Login.test.tsx Servers.test.tsx` passed after moving page tests into page folders and updating their mocks/imports.
 - `npm test --prefix api -- secrets.service.spec.ts swagger.service.spec.ts permissions.guard.spec.ts` passed.
 - `npm run test:cov --prefix api -- --runInBand` passed with 83.85% statements, 71.72% branches, 87.34% functions, and 85.35% lines.
 - `npm run build --prefix api` could not complete because the local system hit the file watcher limit (`ENOSPC`), so backend validation used direct `tsc --noEmit` instead.
+- Not run for the `gof-expert` and `solid-expert` agent documentation change because no application code changed.
+- Not run for the frontend specialist architecture guidance update because only agent and documentation files changed.
+- Not run for `docs/FRONTEND_ARCHITECTURE_PLAN.md` because it is a documentation-only planning change.
 
 ## Recommended Next Step
 
-Continue the frontend route modularization in small behavior-preserving steps. `ServerDetail` now matches the contextual sidebar navigation pattern used by `PromptDetail` and `SecretDetail`, but it remains the largest extraction target for additional decomposition.
+Deploy to a Render free instance and verify `/health`, `/ready`, `/live`, `/metrics`, structured logs, and cold-start behavior, then continue `docs/FRONTEND_ARCHITECTURE_PLAN.md` with Phase 2.
 
 ## Points Of Attention
 

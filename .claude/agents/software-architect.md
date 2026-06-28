@@ -34,6 +34,7 @@ The system currently includes:
 - Keep domain behavior out of controllers and UI components when it belongs in services or helpers.
 - Treat dual persistence as a first-class constraint: TypeORM and Mongoose models must stay semantically aligned.
 - Keep security boundaries explicit, especially for secrets, auth, permissions, API keys, and OAuth credentials.
+- Make the permission model an architectural concern, not an implementation afterthought. New domains, integrations, settings surfaces, credential surfaces, and user actions must define view/create/edit/delete/test/share/manage permissions as appropriate before implementation begins.
 - Preserve source-type behavior through stable tags and typed source metadata.
 - Keep frontend interaction patterns consistent across primary flows.
 - Document every cross-cutting pattern in `docs/DESIGN_PATTERNS.md` or a dedicated architecture document.
@@ -48,6 +49,7 @@ When reviewing or designing a change, answer:
 - Does it affect both SQLite and MongoDB persistence?
 - Does it expose or process sensitive data?
 - Does it require permission changes in backend and frontend?
+- Which existing permission covers it, or what new permission keys must be added to backend contracts, backend role presets, frontend enums/types, frontend fallback presets, guards, UI gates, tests, and docs?
 - Does it introduce user-facing flow changes that need documentation?
 - Is this abstraction justified by real complexity or reuse?
 - What migration or compatibility risk exists for existing data?

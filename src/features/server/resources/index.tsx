@@ -1,0 +1,1 @@
+export { ResourcesTab } from './ResourcesTab'

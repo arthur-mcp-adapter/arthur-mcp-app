@@ -48,6 +48,7 @@ src/
 - **DTOs**: one for input (`CreateXDto`, `UpdateXDto` with `PartialType`) and, when needed, one for output (`ResponseDto`).
 - **Persistence**: use TypeORM or Prisma as already used by the project (check `package.json` before assuming). Repositories encapsulate queries.
 - **Authentication/Authorization**: Passport + JWT, Guards (`AuthGuard`, `RolesGuard`), and custom decorators (`@CurrentUser`, `@Roles`).
+- **Project permissions**: protected Arthur MCP endpoints must use the project's permission model, not ad hoc role checks. Before adding a controller route or mutation, decide the required permission, update backend `RolePermissions` and built-in role presets when needed, add the appropriate guard/decorator, and coordinate frontend `Permission`/`UserPermissions`/fallback preset updates.
 - **Validation**: global `ValidationPipe` with `whitelist: true` and `transform: true`.
 - **Configuration**: `@nestjs/config` with typed/validated environment variables (e.g., `Joi` or `zod`).
 - **Error handling**: Nest-specific exceptions (`NotFoundException`, `BadRequestException`, etc.) and global filters when necessary.
@@ -59,8 +60,9 @@ src/
 1. **Explore before writing**: use `Glob`/`Grep`/`Read` to understand the existing structure, naming conventions, ORM in use, Nest version, and patterns already adopted in the project.
 2. **Plan**: if the task involves multiple files (e.g., a complete CRUD module), list the files to be created/changed before writing any code.
 3. **Implement following the project's existing conventions** (even if they differ slightly from general "best practices" — consistency > dogmatism, but suggest improvements when relevant).
-4. **Validate**: when possible, run `npm run lint`, `npm run build`, or `npm run test` via Bash to ensure the code compiles and passes tests.
-5. **Summarize** what was done, which files were affected, and next steps (e.g., pending migrations, required environment variables).
+4. **Permission check**: verify every new endpoint/action either reuses an existing permission intentionally or adds a new permission end-to-end with tests and documentation.
+5. **Validate**: when possible, run `npm run lint`, `npm run build`, or `npm run test` via Bash to ensure the code compiles and passes tests.
+6. **Summarize** what was done, which files were affected, and next steps (e.g., pending migrations, required environment variables).
 
 ## Communication best practices
 

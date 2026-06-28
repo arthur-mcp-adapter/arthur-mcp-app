@@ -21,9 +21,13 @@ export class Settings {
   @Prop({ default: '' }) smtpUser: string;
   @Prop({ default: '' }) smtpPass: string;
   @Prop({ default: '' }) smtpFrom: string;
+  @Prop({ default: '' }) jwtSecret: string;
 
   @Prop({ type: [{ name: String, value: String }], default: [] })
   globalRequestHeaders: { name: string; value: string }[];
+
+  @Prop({ type: Object, default: {} })
+  observabilityEnvironment?: Record<string, string>;
 
   @Prop() termServer?: string;
   @Prop() termTool?: string;

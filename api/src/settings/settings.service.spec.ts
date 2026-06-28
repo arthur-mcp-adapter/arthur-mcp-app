@@ -11,7 +11,9 @@ const settingsRecord = (override: Partial<SettingsRecord> = {}): SettingsRecord 
   smtpUser: 'mailer',
   smtpPass: 'secret',
   smtpFrom: 'noreply@example.com',
+  jwtSecret: 'stored-jwt-secret-value',
   globalRequestHeaders: [],
+  observabilityEnvironment: {},
   ...override,
 });
 
@@ -37,11 +39,12 @@ describe('SettingsService', () => {
   });
 
   it('updates global settings through the repository', async () => {
-    const updated = settingsRecord({ defaultTimeoutMs: 15000 });
+    const observabilityEnvironment = { ENABLE_TRACING: 'true' };
+    const updated = settingsRecord({ defaultTimeoutMs: 15000, observabilityEnvironment });
     repo.updateGlobal.mockResolvedValue(updated);
 
-    await expect(service.update({ defaultTimeoutMs: 15000 })).resolves.toBe(updated);
-    expect(repo.updateGlobal).toHaveBeenCalledWith({ defaultTimeoutMs: 15000 });
+    await expect(service.update({ defaultTimeoutMs: 15000, observabilityEnvironment })).resolves.toBe(updated);
+    expect(repo.updateGlobal).toHaveBeenCalledWith({ defaultTimeoutMs: 15000, observabilityEnvironment });
   });
 
   it('removes smtpPass from safe settings and exposes smtpPassSet', async () => {
@@ -51,11 +54,18 @@ describe('SettingsService', () => {
 
     expect(safe.smtpPassSet).toBe(true);
     expect(safe).not.toHaveProperty('smtpPass');
+    expect(safe.jwtSecretSet).toBe(true);
+    expect(safe).not.toHaveProperty('jwtSecret');
   });
 
   it('marks smtpPassSet false when no SMTP password exists', async () => {
     repo.getGlobal.mockResolvedValue(settingsRecord({ smtpPass: '' }));
 
     await expect(service.getSafe()).resolves.toMatchObject({ smtpPassSet: false });
+  });
+
+  it('rejects short JWT secrets', async () => {
+    await expect(service.update({ jwtSecret: 'short' })).rejects.toThrow('JWT secret must be at least 16 characters.');
+    expect(repo.updateGlobal).not.toHaveBeenCalled();
   });
 });

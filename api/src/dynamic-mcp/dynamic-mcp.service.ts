@@ -9,13 +9,15 @@ import {
   ListToolsRequestSchema,
   ReadResourceRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js';
-import type { AuthConfig, ChainInputSource, DbConnectionConfig, GeneratedTool, JsonSchema, McpResource, ToolChain } from './types';
+import type { AuthConfig, ChainInputSource, GeneratedTool, JsonSchema, McpResource, ToolChain } from './types';
 import { buildRequest } from './request-builder';
 import { executeRequest } from './http-client';
-import { executeWithRef } from './adapters/index';
 import { mapResponse, McpToolResult } from './response-mapper';
 import { applyAuth, resolveSecretRefs } from './auth-provider';
 import { ExecutionLogsService } from '../execution-logs/execution-logs.service';
+import { ErrorTrackingService } from '../error-tracking/error-tracking.service';
+import { MetricsService } from '../observability/metrics/metrics.service';
+import { TracingService } from '../observability/tracing/tracing.service';
 import { PROJECT_REPO, PROMPT_REPO, SECRET_REPO, SETTINGS_REPO } from '../database/database.tokens';
 import { ISwaggerProjectRepository } from '../swagger/swagger-project.repository';
 import type { IPromptRepository, PromptRecord } from '../prompts/prompt.repository';
@@ -40,8 +42,6 @@ interface CachedProject {
   secrets: Map<string, string>;
   tenantConfig: { enabled: boolean; params: TenantParamDef[] };
   globalRequestHeaders: Record<string, string>;
-  connectionConfig: DbConnectionConfig | undefined;
-  dbQueries: import('./types').DbQuery[];
   expiresAt: number;
 }
 
@@ -101,6 +101,9 @@ export class DynamicMcpService {
     @Inject(SECRET_REPO) private readonly secretRepo: ISecretRepository,
     @Inject(SETTINGS_REPO) private readonly settingsRepo: ISettingsRepository,
     private readonly executionLogs: ExecutionLogsService,
+    private readonly errorTracking: ErrorTrackingService,
+    private readonly metrics: MetricsService,
+    private readonly tracing: TracingService,
   ) {}
 
   invalidate(serverId: string): void {
@@ -141,8 +144,6 @@ export class DynamicMcpService {
       secrets: secretsMap,
       tenantConfig: (server as any).tenantConfig ?? { enabled: false, params: [] },
       globalRequestHeaders,
-      connectionConfig: (server as any).connectionConfig,
-      dbQueries: (server as any).dbQueries ?? [],
       expiresAt: Date.now() + this.CACHE_TTL_MS,
     };
     this.projectCache.set(serverId, entry);
@@ -165,7 +166,6 @@ export class DynamicMcpService {
     queryParams: Record<string, string>,
   ): Record<string, unknown> {
     if (!tenantConfig.enabled || tenantConfig.params.length === 0) return args;
-    if (!tool.endpointRef?.parameterMap) return args;
     const injected = { ...args };
     for (const def of tenantConfig.params) {
       const value = queryParams[def.name];
@@ -178,7 +178,7 @@ export class DynamicMcpService {
   }
 
   async createMcpServer(serverId: string, queryParams: Record<string, string> = {}): Promise<Server> {
-    const { tools: allTools, chains: allChains, auth: rawAuth, name, version, resources, prompts, secrets, tenantConfig, globalRequestHeaders, connectionConfig, dbQueries } = await this.getProjectData(serverId);
+    const { tools: allTools, chains: allChains, auth: rawAuth, name, version, resources, prompts, secrets, tenantConfig, globalRequestHeaders } = await this.getProjectData(serverId);
     const auth = resolveSecretRefs(rawAuth, secrets);
 
     // Resolve endpointRef/inputSchema from source endpoint for linked tools/resources
@@ -207,7 +207,7 @@ export class DynamicMcpService {
     const chainMap = new Map(enabledChains.map((c) => [c.name, c]));
     const enabledResources = resources.filter((r) => r.enabled !== false);
 
-    this.logger.log(`MCP server for "${name}": ${tools.length} tools (${allTools.length} total, ${allTools.filter(t => t.enabled === false).length} disabled)`);
+    this.logger.log(`MCP server para "${name}": ${tools.length} tools (${allTools.length} total, ${allTools.filter(t => t.enabled === false).length} disabled)`);
 
     const server = new Server(
       { name: `arthur-mcp-adapter:${name}`, version },
@@ -291,32 +291,38 @@ export class DynamicMcpService {
       const chain = chainMap.get(toolName);
       if (chain) {
         try {
-          const result = await this.executeChain(chain, args, tools, auth, globalRequestHeaders);
-          this.executionLogs.log({ serverId, serverName: name, toolName, source: 'mcp', statusCode: result.isError ? 500 : 200, responseTimeMs: Date.now() - t0, isError: result.isError ?? false });
+          const result = await this.tracing.runInSpan('mcp.tool.call', {
+            'mcp.tool.name': toolName,
+            'mcp.transport': 'mcp',
+            'mcp.server.id': serverId,
+          }, () => this.executeChain(chain, args, tools, auth, globalRequestHeaders));
+          const durationMs = Date.now() - t0;
+          this.executionLogs.log({ serverId, serverName: name, toolName, source: 'mcp', statusCode: result.isError ? 500 : 200, responseTimeMs: durationMs, isError: result.isError ?? false });
+          this.recordToolMetric(toolName, durationMs, result.isError ? 'error' : 'ok', 'mcp', result.isError);
           return result;
         } catch (err: any) {
           this.logger.error(`Chain "${toolName}" error: ${err?.message}`);
-          this.executionLogs.log({ serverId, serverName: name, toolName, source: 'mcp', isError: true, statusCode: 500, errorMessage: err?.message, responseTimeMs: Date.now() - t0 });
+          const durationMs = Date.now() - t0;
+          this.executionLogs.log({ serverId, serverName: name, toolName, source: 'mcp', isError: true, statusCode: 500, errorMessage: err?.message, responseTimeMs: durationMs });
+          this.errorTracking.captureToolError({ serverId, serverName: name, toolName, error: err });
+          this.recordToolMetric(toolName, durationMs, 'error', 'mcp', true);
           return { content: [{ type: 'text' as const, text: `Chain error: ${err?.message ?? 'unknown'}` }], isError: true };
         }
       }
 
       if (!tool) {
         this.logger.warn(`Tool not found: "${toolName}" | available: [${[...toolMap.keys()].join(', ')}]`);
-        this.executionLogs.log({ serverId, serverName: name, toolName, source: 'mcp', isError: true, statusCode: 404, errorMessage: 'Tool not found', responseTimeMs: Date.now() - t0 });
+        const durationMs = Date.now() - t0;
+        this.executionLogs.log({ serverId, serverName: name, toolName, source: 'mcp', isError: true, statusCode: 404, errorMessage: 'Tool not found', responseTimeMs: durationMs });
+        this.recordToolMetric(toolName, durationMs, 'not_found', 'mcp', true);
         return { content: [{ type: 'text' as const, text: `Unknown tool: ${toolName}` }], isError: true };
       }
 
-      // type:'static' ref → render template, no external call
-      const isStaticRef = tool.executionRef?.type === 'static';
-      // type:'db' ref → resolve DbQuery from server's dbQueries list
-      const isDbRef = tool.executionRef?.type === 'db';
-      const hasExecRef = tool.executionRef && tool.executionRef.type !== 'http' && !isDbRef && !isStaticRef;
-      const hasEndpointRef = !!tool.endpointRef || tool.executionRef?.type === 'http';
-
-      if (!isStaticRef && !isDbRef && !hasExecRef && !hasEndpointRef) {
-        this.logger.error(`Tool "${toolName}" has no executionRef or endpointRef.`);
-        this.executionLogs.log({ serverId, serverName: name, toolName, source: 'mcp', isError: true, statusCode: 500, errorMessage: 'execution config missing', responseTimeMs: Date.now() - t0 });
+      if (!tool.endpointRef) {
+        this.logger.error(`Tool "${toolName}" has no endpointRef — data may be stale. Re-upload the spec.`);
+        const durationMs = Date.now() - t0;
+        this.executionLogs.log({ serverId, serverName: name, toolName, source: 'mcp', isError: true, statusCode: 500, errorMessage: 'endpointRef missing', responseTimeMs: durationMs });
+        this.recordToolMetric(toolName, durationMs, 'configuration_error', 'mcp', true);
         return { content: [{ type: 'text' as const, text: `Invalid internal configuration for "${toolName}". Re-upload the spec.` }], isError: true };
       }
 
@@ -324,10 +330,13 @@ export class DynamicMcpService {
       if (validationErrors.length > 0) {
         const msg = `Invalid arguments: ${validationErrors.join('; ')}`;
         this.logger.warn(`Tool "${toolName}" — ${msg}`);
-        this.executionLogs.log({ serverId, serverName: name, toolName, source: 'mcp', isError: true, statusCode: 400, errorMessage: msg, responseTimeMs: Date.now() - t0 });
+        const durationMs = Date.now() - t0;
+        this.executionLogs.log({ serverId, serverName: name, toolName, source: 'mcp', isError: true, statusCode: 400, errorMessage: msg, responseTimeMs: durationMs });
+        this.recordToolMetric(toolName, durationMs, 'validation_error', 'mcp', true);
         return { content: [{ type: 'text' as const, text: msg }], isError: true };
       }
 
+      // Validate required tenant params before executing
       if (tenantConfig.enabled) {
         const missingRequired = tenantConfig.params
           .filter((def) => def.required && queryParams[def.name] === undefined)
@@ -335,68 +344,34 @@ export class DynamicMcpService {
         if (missingRequired.length > 0) {
           const msg = `Missing required tenant parameter`;
           this.logger.warn(`Tool "${toolName}" — ${msg}`);
-          this.executionLogs.log({ serverId, serverName: name, toolName, source: 'mcp', isError: true, statusCode: 400, errorMessage: msg, responseTimeMs: Date.now() - t0 });
+          const durationMs = Date.now() - t0;
+          this.executionLogs.log({ serverId, serverName: name, toolName, source: 'mcp', isError: true, statusCode: 400, errorMessage: msg, responseTimeMs: durationMs });
+          this.recordToolMetric(toolName, durationMs, 'tenant_error', 'mcp', true);
           return { content: [{ type: 'text' as const, text: msg }], isError: true };
         }
       }
 
       try {
+        return await this.tracing.runInSpan('mcp.tool.call', {
+          'mcp.tool.name': toolName,
+          'mcp.transport': 'mcp',
+          'mcp.server.id': serverId,
+        }, async () => {
         const effectiveArgs = this.injectTenantParams(args, tool, tenantConfig, queryParams);
-
-        // ── Static tool (blank server) ─────────────────────────────────────
-        if (isStaticRef) {
-          const ref = tool.executionRef as { type: 'static'; responseTemplate: string; mimeType?: string };
-          const text = (ref.responseTemplate ?? '').replace(/\{\{(\w+)\}\}/g, (_, key) =>
-            effectiveArgs[key] !== undefined ? String(effectiveArgs[key]) : `{{${key}}}`,
-          );
-          this.executionLogs.log({ serverId, serverName: name, toolName, source: 'mcp', statusCode: 200, responseTimeMs: Date.now() - t0, isError: false });
-          return { content: [{ type: 'text' as const, text }] };
-        }
-
-        // ── DB query ref (dbQueryId) ───────────────────────────────────────
-        if (isDbRef) {
-          const dbQueryId = (tool.executionRef as any).dbQueryId as string;
-          const dbQuery = dbQueries.find((q) => q.id === dbQueryId);
-          if (!dbQuery) throw new Error(`DbQuery "${dbQueryId}" not found on this server.`);
-          this.logger.log(`→ DB [${dbQuery.sourceType}] query "${dbQuery.name}" via tool "${toolName}"`);
-          const { executeDbQuery } = await import('./adapters/index');
-          const raw = await executeDbQuery(dbQuery, effectiveArgs, connectionConfig);
-          const text = tool.outputTemplate
-            ? compileAndRender(tool.outputTemplate, Array.isArray(raw) ? { items: raw } : (raw as any) ?? {})
-            : (typeof raw === 'string' ? raw : JSON.stringify(raw, null, 2));
-          this.executionLogs.log({ serverId, serverName: name, toolName, source: 'mcp', statusCode: 200, responseTimeMs: Date.now() - t0, isError: false });
-          const result: any = { content: [{ type: 'text' as const, text }] };
-          if (tool.outputSchema && raw !== null && raw !== undefined) result.structuredContent = raw;
-          return result;
-        }
-
-        // ── Legacy inline DB execution path ───────────────────────────────
-        if (hasExecRef) {
-          this.logger.log(`→ ${tool.executionRef!.type.toUpperCase()} tool "${toolName}"`);
-          const raw = await executeWithRef(tool.executionRef!, effectiveArgs, connectionConfig);
-          const text = tool.outputTemplate
-            ? compileAndRender(tool.outputTemplate, Array.isArray(raw) ? { items: raw } : (raw as any) ?? {})
-            : (typeof raw === 'string' ? raw : JSON.stringify(raw, null, 2));
-          this.executionLogs.log({ serverId, serverName: name, toolName, source: 'mcp', statusCode: 200, responseTimeMs: Date.now() - t0, isError: false });
-          const result: any = { content: [{ type: 'text' as const, text }] };
-          if (tool.outputSchema && raw !== null && raw !== undefined) result.structuredContent = raw;
-          return result;
-        }
-
-        // ── HTTP execution path (existing) ─────────────────────────────────
-        const endpointRef = tool.endpointRef ?? (tool.executionRef as any);
-        let httpReq = buildRequest(effectiveArgs, endpointRef, globalRequestHeaders);
+        let httpReq = buildRequest(effectiveArgs, tool.endpointRef, globalRequestHeaders);
         httpReq = await applyAuth(httpReq, auth);
         this.logger.log(`→ HTTP ${httpReq.method} ${httpReq.url}`);
-        const httpRes = await executeRequest(httpReq);
+        const httpRes = await this.executeObservedRequest(httpReq);
         this.logger.log(`← HTTP ${httpRes.status} ${httpRes.statusText}`);
-
+        // If the tool has an HTML output template, render with Handlebars instead of raw JSON
         if (tool.outputTemplate && !httpRes.body.trim().startsWith('<')) {
           try {
             const parsed = JSON.parse(httpRes.body);
             const ctx = Array.isArray(parsed) ? { items: parsed } : parsed;
             const html = compileAndRender(tool.outputTemplate, ctx);
-            this.executionLogs.log({ serverId, serverName: name, toolName, source: 'mcp', statusCode: httpRes.status, responseTimeMs: Date.now() - t0, isError: false });
+            const durationMs = Date.now() - t0;
+            this.executionLogs.log({ serverId, serverName: name, toolName, source: 'mcp', statusCode: httpRes.status, responseTimeMs: durationMs, isError: false });
+            this.recordToolMetric(toolName, durationMs, 'ok', 'mcp', false);
             return { content: [{ type: 'text' as const, text: html }] };
           } catch (tplErr: any) {
             this.logger.warn(`Template render failed for "${toolName}": ${tplErr?.message}`);
@@ -404,19 +379,29 @@ export class DynamicMcpService {
         }
 
         const result = mapResponse(httpRes);
-        this.executionLogs.log({ serverId, serverName: name, toolName, source: 'mcp', statusCode: httpRes.status, responseTimeMs: Date.now() - t0, isError: result.isError ?? false });
+        const durationMs = Date.now() - t0;
+        this.executionLogs.log({ serverId, serverName: name, toolName, source: 'mcp', statusCode: httpRes.status, responseTimeMs: durationMs, isError: result.isError ?? false });
+        this.recordToolMetric(toolName, durationMs, result.isError ? 'error' : 'ok', 'mcp', result.isError);
 
+        // If the tool declares an outputSchema, also populate structuredContent
         if (tool.outputSchema && !result.isError) {
           const rawText = (result as any).content?.[0]?.text;
           if (rawText) {
-            try { return { ...result, structuredContent: JSON.parse(rawText) }; } catch { /* non-JSON */ }
+            try {
+              const parsed = JSON.parse(rawText);
+              return { ...result, structuredContent: parsed };
+            } catch { /* non-JSON response — structuredContent omitted */ }
           }
         }
 
         return result;
+        });
       } catch (err: any) {
         this.logger.error(`Erro ao executar "${toolName}": ${err?.message}`);
-        this.executionLogs.log({ serverId, serverName: name, toolName, source: 'mcp', isError: true, statusCode: 500, errorMessage: err?.message, responseTimeMs: Date.now() - t0 });
+        const durationMs = Date.now() - t0;
+        this.executionLogs.log({ serverId, serverName: name, toolName, source: 'mcp', isError: true, statusCode: 500, errorMessage: err?.message, responseTimeMs: durationMs });
+        this.errorTracking.captureToolError({ serverId, serverName: name, toolName, error: err });
+        this.recordToolMetric(toolName, durationMs, 'error', 'mcp', true);
         const errMsg = err?.message ?? 'unknown error';
         const errText = tool.errorConfig?.message
           ? tool.errorConfig.message.replace('{{error}}', errMsg)
@@ -437,48 +422,35 @@ export class DynamicMcpService {
     server.setRequestHandler(ReadResourceRequestSchema, async (req) => {
       const uri = req.params.uri;
       const raw = enabledResources.find((r) => r.uri === uri);
-      if (!raw) throw new Error(`Resource not found: ${uri}`);
+      if (!raw) {
+        this.metrics.recordMcpResource({ resourceName: uri, status: 'not_found', isError: true });
+        throw new Error(`Resource not found: ${uri}`);
+      }
       const resource = resolveResourceRef(raw);
 
-      // Static resource
-      if (resource.type !== 'dynamic' && !resource.queryRef) {
+      if (resource.type !== 'dynamic' || !resource.endpointRef) {
+        this.metrics.recordMcpResource({ resourceName: resource.name ?? uri, status: 'ok' });
         return { contents: [{ uri, text: resource.content, ...(resource.mimeType ? { mimeType: resource.mimeType } : {}) }] };
       }
 
       try {
-        // DB-driven resource (queryRef takes precedence)
-        if (resource.queryRef) {
-          let raw: unknown;
-          if (resource.queryRef.dbQueryId) {
-            const dbQuery = dbQueries.find((q) => q.id === resource.queryRef!.dbQueryId);
-            if (!dbQuery) throw new Error(`DbQuery "${resource.queryRef.dbQueryId}" not found on this server.`);
-            const { executeDbQuery } = await import('./adapters/index');
-            raw = await executeDbQuery(dbQuery, resource.queryRef.inputDefaults ?? {}, connectionConfig);
-          } else if (resource.queryRef.executionRef) {
-            raw = await executeWithRef(resource.queryRef.executionRef, resource.queryRef.inputDefaults ?? {}, connectionConfig);
-          } else {
-            throw new Error('queryRef has neither dbQueryId nor executionRef');
-          }
-          const iteratorPath = resource.queryRef.iteratorPath;
-          const rows = iteratorPath
-            ? iteratorPath.split('.').reduce((o: any, k) => o?.[k], raw)
-            : raw;
-          const items: unknown[] = Array.isArray(rows) ? rows : [rows];
-          const rendered = items.map((item) => compileAndRender(resource.content, Array.isArray(item) ? { items: item } : (item as any) ?? {})).join('\n');
-          return { contents: [{ uri, text: rendered, mimeType: resource.mimeType ?? 'text/html' }] };
-        }
-
-        // HTTP dynamic resource (existing behaviour)
-        let httpReq = buildRequest(resource.inputDefaults ?? {}, resource.endpointRef!, globalRequestHeaders);
+        const rendered = await this.tracing.runInSpan('mcp.resource.read', {
+          'mcp.resource.name': resource.name ?? uri,
+          'mcp.server.id': serverId,
+        }, async () => {
+        let httpReq = buildRequest(resource.inputDefaults ?? {}, resource.endpointRef, globalRequestHeaders);
         httpReq = await applyAuth(httpReq, auth);
-        const httpRes = await executeRequest(httpReq);
+        const httpRes = await this.executeObservedRequest(httpReq);
         if (httpRes.status >= 400) throw new Error(`HTTP ${httpRes.status}: ${httpRes.body.slice(0, 200)}`);
         const parsed = JSON.parse(httpRes.body);
-        const rendered = compileAndRender(resource.content, parsed);
+        return compileAndRender(resource.content, parsed);
+        });
+        this.metrics.recordMcpResource({ resourceName: resource.name ?? uri, status: 'ok' });
         return { contents: [{ uri, text: rendered, mimeType: resource.mimeType ?? 'text/html' }] };
       } catch (err: any) {
         const errorMsg = err?.message ?? 'unknown error';
         const msg = (resource.errorConfig?.message ?? 'Error loading resource: {{error}}').replace('{{error}}', errorMsg);
+        this.metrics.recordMcpResource({ resourceName: resource.name ?? uri, status: 'error', isError: true });
         return { contents: [{ uri, text: msg, mimeType: 'text/plain' }] };
       }
     });
@@ -497,13 +469,17 @@ export class DynamicMcpService {
     server.setRequestHandler(GetPromptRequestSchema, async (req) => {
       const { name, arguments: args = {} } = req.params as { name: string; arguments?: Record<string, string> };
       const prompt = prompts.find((p) => p.name === name);
-      if (!prompt) throw new Error(`Prompt not found: ${name}`);
+      if (!prompt) {
+        this.metrics.recordMcpPrompt({ promptName: name, status: 'not_found' });
+        throw new Error(`Prompt not found: ${name}`);
+      }
 
       const text = prompt.content.replace(
         /\{\{(\w+)\}\}/g,
         (_, key) => String((args as Record<string, string>)[key] ?? `{{${key}}}`),
       );
 
+      this.metrics.recordMcpPrompt({ promptName: name, status: 'ok' });
       return {
         messages: [{ role: 'user' as const, content: { type: 'text' as const, text } }],
       };
@@ -543,7 +519,7 @@ export class DynamicMcpService {
       try {
         let httpReq = buildRequest(stepArgs, tool.endpointRef, globalRequestHeaders);
         httpReq = await applyAuth(httpReq, auth);
-        const httpRes = await executeRequest(httpReq);
+        const httpRes = await this.executeObservedRequest(httpReq);
 
         if (httpRes.status >= 400) {
           return { content: [{ type: 'text' as const, text: `Chain step "${step.toolName}" failed: HTTP ${httpRes.status} — ${httpRes.body.slice(0, 200)}` }], isError: true };
@@ -587,24 +563,85 @@ export class DynamicMcpService {
     if (validationErrors.length > 0) {
       const msg = `Invalid arguments: ${validationErrors.join('; ')}`;
       this.executionLogs.log({ serverId, serverName: name, toolName, source: 'direct', isError: true, statusCode: 400, errorMessage: msg, responseTimeMs: 0 });
+      this.recordToolMetric(toolName, 0, 'validation_error', 'direct', true);
       return { content: [{ type: 'text', text: msg }], isError: true };
     }
 
     try {
+      return await this.tracing.runInSpan('mcp.tool.call', {
+        'mcp.tool.name': toolName,
+        'mcp.transport': 'direct',
+        'mcp.server.id': serverId,
+      }, async () => {
       let httpReq = buildRequest(args, tool.endpointRef, globalRequestHeaders);
       httpReq = await applyAuth(httpReq, auth);
-      const httpRes = await executeRequest(httpReq);
+      const httpRes = await this.executeObservedRequest(httpReq);
       const result = mapResponse(httpRes);
-      this.executionLogs.log({ serverId, serverName: name, toolName, source: 'direct', statusCode: httpRes.status, responseTimeMs: Date.now() - t0, isError: result.isError ?? false });
+      const durationMs = Date.now() - t0;
+      this.executionLogs.log({ serverId, serverName: name, toolName, source: 'direct', statusCode: httpRes.status, responseTimeMs: durationMs, isError: result.isError ?? false });
+      this.recordToolMetric(toolName, durationMs, result.isError ? 'error' : 'ok', 'direct', result.isError);
       return result;
+      });
     } catch (err: any) {
       this.logger.error(`Erro ao executar ${toolName}: ${err?.message}`);
-      this.executionLogs.log({ serverId, serverName: name, toolName, source: 'direct', isError: true, statusCode: 500, errorMessage: err?.message, responseTimeMs: Date.now() - t0 });
+      const durationMs = Date.now() - t0;
+      this.executionLogs.log({ serverId, serverName: name, toolName, source: 'direct', isError: true, statusCode: 500, errorMessage: err?.message, responseTimeMs: durationMs });
+      this.errorTracking.captureToolError({ serverId, serverName: name, toolName, error: err });
+      this.recordToolMetric(toolName, durationMs, 'error', 'direct', true);
       const errorMsg = err?.message ?? 'unknown error';
       const msg = rawTool.errorConfig?.message
         ? rawTool.errorConfig.message.replace('{{error}}', errorMsg)
         : `Error: ${errorMsg}`;
       return { content: [{ type: 'text', text: msg }], isError: true };
+    }
+  }
+
+  private recordToolMetric(toolName: string, durationMs: number, status: string, transport: string, isError?: boolean): void {
+    this.metrics.recordMcpTool({
+      toolName,
+      durationSeconds: durationMs / 1000,
+      status,
+      transport,
+      isError,
+    });
+  }
+
+  private async executeObservedRequest(request: ReturnType<typeof buildRequest>) {
+    const start = process.hrtime.bigint();
+    const provider = this.providerFromUrl(request.url);
+    try {
+      const response = await this.tracing.runInSpan('mcp.external_http.request', {
+        'http.method': request.method,
+        'http.url': request.url,
+        'net.peer.name': provider,
+      }, () => executeRequest(request));
+      const durationSeconds = Number(process.hrtime.bigint() - start) / 1_000_000_000;
+      this.metrics.recordExternalHttp({
+        provider,
+        status: response.status >= 400 ? 'error' : 'ok',
+        statusCode: response.status,
+        durationSeconds,
+        isError: response.status >= 400,
+      });
+      return response;
+    } catch (error) {
+      const durationSeconds = Number(process.hrtime.bigint() - start) / 1_000_000_000;
+      this.metrics.recordExternalHttp({
+        provider,
+        status: 'error',
+        statusCode: 'network_error',
+        durationSeconds,
+        isError: true,
+      });
+      throw error;
+    }
+  }
+
+  private providerFromUrl(url: string): string {
+    try {
+      return new URL(url).hostname;
+    } catch {
+      return 'unknown';
     }
   }
 }

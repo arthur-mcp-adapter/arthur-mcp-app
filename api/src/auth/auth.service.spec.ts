@@ -4,6 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
 import { SettingsService } from '../settings/settings.service';
+import { JwtSecretService } from '../settings/jwt-secret.service';
 import { PASSWORD_RESET_REPO } from '../database/database.tokens';
 
 const mockUser = { _id: 'user123', username: 'testuser', password: 'hashed', role: 'user' };
@@ -17,7 +18,8 @@ const mockUsersService = {
   updateByAdmin: jest.fn(),
 };
 
-const mockJwtService = { sign: jest.fn().mockReturnValue('jwt.token.here') };
+const mockJwtService = { signAsync: jest.fn().mockResolvedValue('jwt.token.here') };
+const mockJwtSecretService = { getSecret: jest.fn().mockResolvedValue('test-jwt-secret-value') };
 
 const mockPasswordResetRepo = {
   findByToken: jest.fn(),
@@ -40,13 +42,15 @@ describe('AuthService', () => {
         { provide: UsersService, useValue: mockUsersService },
         { provide: JwtService, useValue: mockJwtService },
         { provide: SettingsService, useValue: mockSettingsService },
+        { provide: JwtSecretService, useValue: mockJwtSecretService },
         { provide: PASSWORD_RESET_REPO, useValue: mockPasswordResetRepo },
       ],
     }).compile();
 
     service = module.get<AuthService>(AuthService);
     jest.clearAllMocks();
-    mockJwtService.sign.mockReturnValue('jwt.token.here');
+    mockJwtService.signAsync.mockResolvedValue('jwt.token.here');
+    mockJwtSecretService.getSecret.mockResolvedValue('test-jwt-secret-value');
     mockSettingsService.get.mockResolvedValue({ serverBaseUrl: 'http://localhost:3000', smtpHost: null });
     mockPasswordResetRepo.create.mockResolvedValue({});
     mockPasswordResetRepo.deleteByUserId.mockResolvedValue(undefined);
@@ -74,10 +78,14 @@ describe('AuthService', () => {
   });
 
   describe('login', () => {
-    it('returns access_token signed by JwtService', () => {
-      const result = service.login({ _id: 'user123', username: 'testuser', role: 'user' });
+    it('returns access_token signed by JwtService', async () => {
+      const result = await service.login({ _id: 'user123', username: 'testuser', role: 'user' });
       expect(result).toEqual({ access_token: 'jwt.token.here' });
-      expect(mockJwtService.sign).toHaveBeenCalledWith({ sub: 'user123', username: 'testuser', role: 'user' });
+      expect(mockJwtSecretService.getSecret).toHaveBeenCalledTimes(1);
+      expect(mockJwtService.signAsync).toHaveBeenCalledWith(
+        { sub: 'user123', username: 'testuser', role: 'user' },
+        { secret: 'test-jwt-secret-value', expiresIn: '24h' },
+      );
     });
   });
 

@@ -9,12 +9,13 @@ import {
 import type { Request } from 'express';
 import { PROJECT_REPO } from '../database/database.tokens';
 import { ISwaggerProjectRepository } from '../swagger/swagger-project.repository';
-import { config } from '../config/configuration';
+import { JwtSecretService } from '../settings/jwt-secret.service';
 
 @Injectable()
 export class McpApiKeyGuard implements CanActivate {
   constructor(
     @Inject(PROJECT_REPO) private readonly projectRepo: ISwaggerProjectRepository,
+    private readonly jwtSecretService: JwtSecretService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -25,7 +26,7 @@ export class McpApiKeyGuard implements CanActivate {
     if (typeof authHeader === 'string' && authHeader.startsWith('Bearer ')) {
       const token = authHeader.slice(7);
       try {
-        const payload = jwt.verify(token, config.jwtSecret) as { serverId?: string };
+        const payload = jwt.verify(token, await this.jwtSecretService.getSecret()) as { serverId?: string };
         const serverId = req.params['serverId'];
         if (payload.serverId && serverId && payload.serverId !== serverId) {
           throw new UnauthorizedException('Token not valid for this server');

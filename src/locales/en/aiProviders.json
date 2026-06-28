@@ -1,0 +1,94 @@
+{
+  "heading": {
+    "title": "AI Providers",
+    "subtitle": "Configure AI model integrations to power automated features across your servers."
+  },
+  "create": {
+    "title": "New AI Provider",
+    "steps": {
+      "details": "Details",
+      "config": "Configuration",
+      "review": "Review"
+    },
+    "detailsTitle": "Name this provider",
+    "detailsHint": "Give a descriptive name so you can identify which model and provider this entry represents.",
+    "configTitle": "Provider configuration",
+    "configHint": "Select the provider and enter the model name and API key. The key is stored encrypted.",
+    "reviewTitle": "Review configuration",
+    "reviewHint": "Confirm everything looks correct before saving."
+  },
+  "provider": {
+    "openai": "OpenAI",
+    "anthropic": "Anthropic",
+    "gemini": "Google Gemini",
+    "mistral": "Mistral",
+    "groq": "Groq",
+    "azure": "Azure OpenAI",
+    "custom": "Custom (OpenAI-compatible)"
+  },
+  "action": {
+    "newProvider": "New provider",
+    "createProvider": "Create provider",
+    "saveChanges": "Save changes",
+    "deleteProvider": "Delete provider",
+    "testConnection": "Test connection"
+  },
+  "label": {
+    "name": "Name",
+    "description": "Description (optional)",
+    "provider": "Provider",
+    "model": "Model",
+    "apiKey": "API key",
+    "baseUrl": "Base URL (optional)",
+    "isActive": "Active",
+    "general": "General",
+    "dangerZone": "Danger zone",
+    "created": "Created",
+    "lastUpdated": "Last updated",
+    "noDescription": "No description",
+    "updated": "Updated {{date}}"
+  },
+  "placeholder": {
+    "searchProviders": "Search providers…",
+    "name": "e.g. GPT-4o Production",
+    "description": "What this provider is used for…",
+    "model": "e.g. gpt-4o",
+    "apiKey": "sk-…",
+    "baseUrl": "https://api.example.com/v1"
+  },
+  "hint": {
+    "apiKeyProtected": "API key is encrypted and cannot be retrieved after saving.",
+    "baseUrlOptional": "Leave empty to use the provider's default endpoint.",
+    "deleteWarning": "This will permanently remove the provider configuration."
+  },
+  "empty": {
+    "noProviders": "No AI providers yet. Click New provider to add one.",
+    "noMatch": "No providers match your search.",
+    "notFound": "Provider not found."
+  },
+  "confirm": {
+    "deleteTitle": "Delete \"{{name}}\"?",
+    "deleteMessage": "This AI provider configuration will be permanently removed."
+  },
+  "error": {
+    "saveFailed": "Failed to save.",
+    "loadFailed": "Failed to load providers.",
+    "deleteFailed": "Failed to delete provider.",
+    "nameRequired": "Name is required.",
+    "providerRequired": "Provider is required.",
+    "modelRequired": "Model is required.",
+    "apiKeyRequired": "API key is required."
+  },
+  "toast": {
+    "saved": "Provider created.",
+    "updated": "Provider updated.",
+    "deleted": "Provider deleted."
+  },
+  "tab": {
+    "overview": "Overview",
+    "settings": "Settings"
+  },
+  "nav": {
+    "backLabel": "AI Providers"
+  }
+}

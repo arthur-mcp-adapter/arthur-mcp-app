@@ -6,6 +6,7 @@ import { DynamicMcpService } from '../dynamic-mcp/dynamic-mcp.service';
 import type { SwaggerProjectRecord } from './swagger-project.repository';
 import { SwaggerApiKeysService } from './swagger-api-keys.service';
 import { SwaggerImportService } from './swagger-import.service';
+import { JwtSecretService } from '../settings/jwt-secret.service';
 
 const makeProject = (overrides: Partial<SwaggerProjectRecord> = {}): SwaggerProjectRecord => ({
   _id: 'proj-1',
@@ -43,6 +44,7 @@ const mockDynamicMcp = {
 
 const mockImportService = {};
 const mockApiKeysService = {};
+const mockJwtSecretService = { getSecret: jest.fn().mockResolvedValue('test-jwt-secret-value') };
 
 describe('SwaggerService', () => {
   let service: SwaggerService;
@@ -55,11 +57,13 @@ describe('SwaggerService', () => {
         { provide: DynamicMcpService, useValue: mockDynamicMcp },
         { provide: SwaggerImportService, useValue: mockImportService },
         { provide: SwaggerApiKeysService, useValue: mockApiKeysService },
+        { provide: JwtSecretService, useValue: mockJwtSecretService },
       ],
     }).compile();
 
     service = module.get<SwaggerService>(SwaggerService);
     jest.clearAllMocks();
+    mockJwtSecretService.getSecret.mockResolvedValue('test-jwt-secret-value');
   });
 
   describe('updateRateLimit', () => {

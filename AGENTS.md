@@ -28,6 +28,8 @@ Arthur MCP is a full-stack application for managing MCP servers/projects, import
 - `api/src/swagger/`: Swagger/OpenAPI project import and persistence.
 - `api/src/prompts/`, `api/src/secrets/`, `api/src/settings/`, `api/src/users/`, `api/src/roles/`: domain modules.
 - `api/src/audit-logs/` and `api/src/execution-logs/`: audit trails and execution history.
+- `api/src/observability/`: operational health checks, structured logging, Prometheus metrics, correlation IDs, and OpenTelemetry tracing.
+- `observability/`: local Prometheus, Grafana, and Tempo helper configuration.
 - `docs/ENTITIES.md`: backend domain entity reference across SQLite/TypeORM and MongoDB/Mongoose.
 - `docs/DESIGN_PATTERNS.md`: backend and frontend architecture/design pattern reference.
 - `docs/FLOWS.md`: user-facing workflow notes and API/UI behavior that affects journeys.
@@ -64,11 +66,21 @@ While working:
 
 - Prefer existing repository patterns.
 - Avoid broad refactors when the task is focused.
+- Treat permissions as part of every new feature, not as follow-up work. Any new user-facing surface, route, action, API endpoint, integration, or settings panel must either reuse an existing permission intentionally or add a new permission end-to-end.
 - Update tests when changing meaningful behavior.
 - Update the relevant documentation in the same change whenever behavior, architecture, entities, flows, commands, infrastructure, agents, or project conventions change.
 - Do not change local database files, lockfiles, or deploy configuration unless there is a clear reason.
 - If you change frontend code, validate with at least `npm run type-check` or `npm test` when practical.
 - If you change backend code, validate with at least `npm test --prefix api` or a focused test when practical.
+
+Permission gate for new features:
+
+1. Decide the permission model before implementing the feature UI/API.
+2. Reuse an existing permission only when the feature is genuinely covered by that permission's domain and risk.
+3. When adding a permission, update the backend `RolePermissions` contract, backend built-in role presets, frontend `Permission` enum, frontend `UserPermissions`, frontend role fallback presets, affected route/action guards, tests, and documentation.
+4. Backend guards/decorators are authoritative for protected API behavior; frontend `can(Permission.X)` checks are required for navigation, disabled states, hidden actions, and permission-specific empty/restricted states.
+5. Do not ship a new page, tab, create/edit/delete action, integration, credential surface, or settings panel without explicitly documenting its permission decision.
+6. Operational endpoints `/health`, `/ready`, `/live`, and `/metrics` are intentionally public because they are infrastructure probes/scrape targets and do not mutate user data.
 
 After finishing:
 
@@ -101,6 +113,7 @@ If a change affects user-facing flows, add or update the relevant flow documenta
 Before finalizing, agents must answer the documentation check internally:
 
 - Did the change alter behavior, data, commands, setup, deployment, UI flow, permissions, or agent workflow?
+- Did every new feature, endpoint, page, tab, action, and settings/control surface make an explicit permission decision and update backend/frontend permission definitions if needed?
 - If yes, which documentation file was updated?
 - If no documentation update was needed, why not?
 
@@ -121,16 +134,18 @@ Known specialists:
 - `devops-expert`: CI/CD, GitHub Actions, deploy automation, infrastructure scripts, monitoring, logging, and operational best practices.
 - `docker-compose-expert`: Docker Compose environments, networks, volumes, service dependencies, environment variables, and healthchecks.
 - `docker-expert`: Dockerfiles, multi-stage builds, minimal images, container security, and production container best practices.
+- `gof-expert`: Gang of Four design pattern selection, naming, refactoring, and misuse review.
 - `nestjs-expert`: NestJS backend modules, controllers, services, DTOs, guards, interceptors, persistence, authentication, and Jest tests.
 - `oss-scout`: open source tool/library discovery, maturity review, comparisons, and project health research.
 - `product-owner`: user stories, acceptance criteria, backlog prioritization, MVP scope, requirements, and product documentation.
-- `react-frontend-engineer`: React/TypeScript frontend implementation, hooks, forms, routes, state, API integration, i18n, and frontend tests.
+- `react-frontend-engineer`: React/TypeScript frontend implementation, Feature-Driven Architecture, Atomic Design, barrel exports, hooks, forms, routes, state, API integration, i18n, and frontend tests.
 - `render-expert`: Render.com services, `render.yaml`, environment variables, managed databases, health checks, and production deployments.
 - `software-architect`: architecture, module boundaries, data modeling, integration strategy, cross-cutting patterns, and technical roadmap decisions.
 - `software-engineer`: full-stack implementation, debugging, refactoring, testing, and documentation updates across frontend and backend.
+- `solid-expert`: SOLID responsibility boundaries, interface design, dependency direction, substitutability, and maintainability review.
 - `system-tutor`: user-facing tutorials, walkthroughs, section guides, onboarding paths, and product explanations for Arthur MCP Adapter.
-- `ui-expert`: React, TypeScript, and MUI interface creation, redesign, and review using the project's "openclaw" style.
-- `ux-analyst`: user journeys, usability audits, onboarding friction, empty/error/loading states, and user-facing flow analysis.
+- `ui-expert`: React, TypeScript, and MUI interface creation, redesign, and review using the project's "openclaw" style with Feature-Driven Architecture, Atomic Design, and controlled barrel exports.
+- `ux-analyst`: user journeys, usability audits, onboarding friction, empty/error/loading states, and user-facing flow analysis across pages, features, and shared UI conventions.
 - `vercel-expert`: Vercel frontend/API deployment, `vercel.json`, environment variables, preview deployments, domains, and GitHub integration.
 - `tool-instructor`: user-facing copy for Arthur MCP Adapter — tooltips, helper text, empty states, error messages, onboarding guides, and in-app documentation.
 - `naming-expert`: naming variables, functions, types, components, routes, API endpoints, DB columns, MCP tool/resource/prompt names, and UI labels across the full stack.

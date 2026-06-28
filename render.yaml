@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: mcp-server
+    name: arthur-mcp-adapter
     runtime: docker
     region: oregon
     plan: free
@@ -11,6 +11,22 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
+      - key: ENABLE_OBSERVABILITY
+        value: true
+      - key: ENABLE_STRUCTURED_LOGS
+        value: true
+      - key: ENABLE_METRICS
+        value: true
+      - key: ENABLE_TRACING
+        value: false
+      - key: LOG_LEVEL
+        value: info
+      - key: SERVICE_NAME
+        value: arthur-mcp-adapter
+      - key: SERVICE_VERSION
+        value: 1.0.0
+      - key: PROMETHEUS_METRICS_PATH
+        value: /metrics
 
       # ── Database ─────────────────────────────────────────────────────────────
       - key: DATABASE

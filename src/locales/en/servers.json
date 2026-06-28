@@ -185,7 +185,27 @@
       "Cloud": "Cloud & Analytics"
     },
     "available": "Available",
-    "soon": "Soon"
+    "soon": "Soon",
+    "types": {
+      "blank":         { "name": "Blank / Static",  "description": "No external connection. Define tools that return hardcoded or parameter-based responses." },
+      "rest":          { "name": "REST API",         "description": "HTTP APIs described with OpenAPI, Swagger, or Postman collections." },
+      "graphql":       { "name": "GraphQL",          "description": "Expose queries and mutations from a GraphQL endpoint as MCP tools." },
+      "grpc":          { "name": "gRPC",             "description": "High-performance RPC services using Protocol Buffer definitions." },
+      "postgresql":    { "name": "PostgreSQL",       "description": "Open-source object-relational database system." },
+      "mysql":         { "name": "MySQL",            "description": "The world's most popular open-source relational database." },
+      "mariadb":       { "name": "MariaDB",          "description": "MySQL-compatible community-driven relational database." },
+      "mssql":         { "name": "SQL Server",       "description": "Microsoft's enterprise relational database management system." },
+      "oracle":        { "name": "Oracle DB",        "description": "Oracle's enterprise-grade relational database." },
+      "cockroachdb":   { "name": "CockroachDB",      "description": "Distributed SQL database with PostgreSQL compatibility." },
+      "clickhouse":    { "name": "ClickHouse",       "description": "Column-oriented database for real-time analytics at scale." },
+      "mongodb":       { "name": "MongoDB",          "description": "Document-oriented NoSQL database with flexible schema." },
+      "redis":         { "name": "Redis",            "description": "In-memory key-value store for caching, queues, and pub/sub." },
+      "cassandra":     { "name": "Cassandra",        "description": "Wide-column store for high availability and massive datasets." },
+      "firestore":     { "name": "Firestore",        "description": "Google's serverless document database for web and mobile apps." },
+      "dynamodb":      { "name": "DynamoDB",         "description": "AWS fully managed key-value and document database service." },
+      "elasticsearch": { "name": "Elasticsearch",    "description": "Distributed search and analytics engine built on Apache Lucene." },
+      "snowflake":     { "name": "Snowflake",        "description": "Cloud data warehouse with multi-cluster shared data architecture." }
+    }
   },
   "auth": {
     "apiAuthentication": "API Authentication",
@@ -293,7 +313,48 @@
     "processError": "Error processing the file.",
     "toolsGenerated_one": "{{count}} tool generated.",
     "toolsGenerated_other": "{{count}} tools generated.",
-    "importedFull": "{{name}} imported successfully — {{count}} tool{{plural}} generated."
+    "importedFull": "{{name}} imported successfully — {{count}} tool{{plural}} generated.",
+    "help": {
+      "intro": "The API Upload page lets you create a fully configured MCP server by importing an existing API definition file, instead of creating tools one by one by hand.",
+      "howToUseTitle": "How to use it:",
+      "howToUseStep1Prefix": "Drop your file (or click to browse). Supported:",
+      "howToUseStep1OpenApi": "OpenAPI 3.x",
+      "howToUseStep1And": "and",
+      "howToUseStep1Swagger": "Swagger 2.0",
+      "howToUseStep1Suffix": "in .yaml, .yml, or .json format.",
+      "howToUseStep2Prefix": "Optionally enter a",
+      "howToUseStep2Strong": "Base URL override",
+      "howToUseStep2Suffix": "Use this when the spec declares a staging URL but you want to point Arthur at production.",
+      "howToUseStep3Prefix": "Click",
+      "howToUseStep3Suffix": "Arthur reads every path and operation in the spec, creates a server, and generates one tool per endpoint.",
+      "howToUseStep4Prefix": "When the import succeeds, click",
+      "howToUseStep4Suffix": "to review the generated tools.",
+      "generatedTitle": "What Arthur generates from the spec:",
+      "generatedItem1Prefix": "A server named after the spec's",
+      "generatedItem2Prefix": "One tool per operation, named from the",
+      "generatedItem2Suffix": "(or derived from method + path).",
+      "generatedItem3Prefix": "Tool descriptions from the operation's",
+      "generatedItem3And": "and",
+      "generatedItem3Suffix": "fields.",
+      "generatedItem4": "Input parameters (path, query, body) mapped to the MCP tool's parameter schema.",
+      "tipStrong": "Tip:",
+      "tipBody": "The richer your spec's descriptions, the better the AI will understand when and how to use each tool. After import you can edit any tool individually from the server's Tools tab."
+    }
+  },
+  "help": {
+    "intro": "A server is the central concept in Arthur MCP Adapter. Each server represents one external API — such as your CRM, payment provider, internal microservice, or database — adapted to the MCP protocol so that AI clients (Claude, ChatGPT, custom agents) can query and interact with it naturally in any conversation, without the user needing to switch between tools.",
+    "howItWorks": "How it works, end-to-end:",
+    "step1": "Create a server and give it a name and base URL — the root address of the API you want to connect (e.g. https://api.my-crm.com). The base URL is prepended to every tool's endpoint path, so you only need to set it once.",
+    "step2": "Add tools — either manually (one endpoint at a time) or by importing an OpenAPI / Swagger spec to auto-generate all tools at once. Each tool maps one API endpoint to a callable function the AI can invoke, complete with parameter names and descriptions.",
+    "step3": "Configure authentication so Arthur knows how to identify itself to the API — for example, a Bearer token, Basic auth, or an API key header. Without authentication, calls to protected APIs will return 401 errors.",
+    "step4": "Copy the MCP endpoint URL from the server's Connect tab and paste it into your AI client's server configuration. Each AI client has a different interface for this — check the client's documentation if you are unsure where to paste the URL.",
+    "step5": "Once connected, the AI discovers all enabled tools automatically and can call them in any conversation. The user just asks naturally — 'look up customer 123' — and the AI picks the right tool, fills in the parameters, and returns the result.",
+    "cardIndicators": "Card indicators — what each element on a server card means:",
+    "colouredDot": "Coloured dot (top-right): health traffic light based on the last hour of activity. Green = all requests succeeded. Yellow = some errors (1–19% failure rate). Red = high error rate (20%+), needs attention. Grey = no activity in the last hour, or the server is paused.",
+    "activePaused": "Active / Paused chip: Active means the server is accepting requests from AI clients right now. Paused means it is temporarily offline — all calls will be rejected until you re-enable it. Pausing is useful during maintenance or when an upstream API is down.",
+    "toolCount": "Tool count: how many enabled MCP tools are registered on this server. Zero tools means no AI client can do anything useful with this server — add at least one tool before connecting an AI. Disabled tools do not count toward this number.",
+    "tags": "Tags: custom labels you define for organisation and filtering. Use them to group servers by team, environment (production, staging), or the API type they connect to. Click a tag on the filter bar above to show only servers with that tag.",
+    "newServerHint": "Click New server to open the creation wizard. You can fill in the server details manually, or drop an OpenAPI/Swagger spec file to auto-generate all tools, parameters, and descriptions in one step. After creation, go to the server's Connect tab to get the MCP endpoint URL."
   },
   "period": {
     "24h": "Today",

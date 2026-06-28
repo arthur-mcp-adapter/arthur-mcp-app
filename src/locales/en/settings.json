@@ -5,10 +5,22 @@
   "help": {
     "title": "Settings",
     "intro": "Global configuration for the entire Arthur MCP Adapter server. Changes saved here apply to all projects and all users — only administrators can access this page.",
-    "sections": "This page has two sections:",
+    "sections": "This page includes server, security, request header, e-mail, and terminology settings.",
     "sectionServer": "Server — the public URL of this instance and the default HTTP timeout for upstream API calls.",
+    "sectionSecurity": "Security — JWT signing secret rotation for sessions, bearer tokens, and share links.",
+    "sectionHeaders": "Global request headers — headers injected into outbound requests made by servers.",
     "sectionEmail": "E-mail (SMTP) — credentials used to send password-reset emails.",
+    "sectionTerminology": "Terminology — optional labels used across the interface.",
+    "sectionObservability": "Observability — environment variables that control logging, metrics, tracing, and OpenTelemetry settings.",
     "saveReminder": "Always click Save settings at the bottom after making changes. Navigating away without saving will discard your edits."
+  },
+  "tab": {
+    "server": "Server",
+    "security": "Security",
+    "headers": "Headers",
+    "email": "E-mail",
+    "terminology": "Terminology",
+    "observability": "Observability"
   },
   "server": {
     "title": "Server",
@@ -17,7 +29,12 @@
     "urlPlaceholder": "https://mcp.my-company.com",
     "urlHelper": "Used to generate curl examples and password reset links.",
     "timeoutLabel": "Default timeout (ms)",
-    "timeoutHelper": "Max time per HTTP call."
+    "timeoutHelper": "Max time per HTTP call.",
+    "helpIntro": "Public Server URL — the externally reachable base address of this Arthur instance (e.g. https://mcp.my-company.com). This is the URL end-users and AI clients use to reach Arthur from outside your network. It must be publicly accessible and must not include a trailing slash. This URL is used in two specific places:",
+    "helpPasswordReset": "Password-reset emails: when a user requests a password reset, Arthur sends an email with a link built as [your URL]/reset-password. If this URL is wrong or not reachable from the user's browser, the link in the email will be broken and the user will be unable to complete the reset. The most common mistake is entering an internal hostname or a localhost address.",
+    "helpMcpEndpoint": "MCP endpoint construction: the Connect tab of each server builds the full MCP endpoint URL from this base, so users can copy the correct address and paste it into their AI client. If this base URL is wrong, users will copy an incorrect endpoint. Check this setting first if users report that their AI client cannot connect.",
+    "helpTimeout": "Default timeout (ms) — how many milliseconds Arthur waits for a response from the upstream API before cancelling the request and returning a timeout error to the AI client. The default is 30,000 ms (30 seconds). This applies to every tool call across all servers unless a server overrides it.",
+    "helpTimeoutTip": "Increase the timeout when your APIs are slow — for example, endpoints that run heavy database queries, generate large reports, or process file uploads. Decrease it when you prefer to fail fast and keep the AI client responsive. A timeout that is too low will cause legitimate slow requests to fail; one that is too high will freeze AI clients while they wait for Arthur to give up on a stalled call."
   },
   "headers": {
     "title": "Global request headers",
@@ -29,10 +46,29 @@
     "placeholderValue": "value",
     "removeTooltip": "Remove"
   },
+  "security": {
+    "title": "Security",
+    "helpTitle": "JWT secret",
+    "helpIntro": "JWT secret signs user sessions, OAuth bearer tokens, MCP bearer tokens, and share links. Store a long random value here when you want to manage it from the database instead of only from .env.",
+    "helpRotation": "Rotating this secret invalidates existing signed tokens. Users may need to sign in again, OAuth clients may need fresh tokens, and existing share links may stop working.",
+    "jwtSecretAlreadySet": "JWT secret already configured — leave blank to keep it.",
+    "jwtSecretLabel": "JWT secret",
+    "jwtSecretChangeLabel": "New JWT secret (blank = keep)",
+    "jwtSecretHelper": "Use at least 16 characters. A long random value is recommended.",
+    "jwtSecretError": "JWT secret must be at least 16 characters."
+  },
   "smtp": {
     "title": "E-mail (SMTP)",
     "helpTitle": "E-mail (SMTP)",
     "passwordAlreadySet": "SMTP password already set — leave blank to keep it.",
+    "helpIntro": "SMTP credentials used by Arthur to send transactional emails — currently the password-reset flow only. Without valid SMTP settings the 'Forgot password' feature silently fails: users who request a reset will see a success message but never receive an email. Test the SMTP connection after saving by triggering a password reset from the login page.",
+    "helpFieldGuide": "Field guide:",
+    "helpHost": "SMTP Host: the outbound mail server hostname provided by your email provider. Common examples: smtp.gmail.com (Gmail), smtp.office365.com (Microsoft 365), smtp.sendgrid.net (SendGrid), email-smtp.us-east-1.amazonaws.com (AWS SES). Use the exact hostname from your provider's documentation — a wrong host will cause a connection timeout.",
+    "helpPort": "Port: the port your provider uses for outbound mail. Use 587 for STARTTLS (the most common modern option) or 465 for implicit SSL/TLS. Avoid port 25 — it is typically blocked by cloud hosting providers to prevent spam. If unsure, try 587 first.",
+    "helpUser": "SMTP User: the username used to authenticate with the SMTP server. For most providers this is the full sender email address (e.g. noreply@company.com). For AWS SES it is an IAM access key ID, not an email address — check your provider's documentation.",
+    "helpPassword": "SMTP Password: the authentication password for the SMTP user. For Gmail with two-factor authentication enabled, you must generate an App Password — your regular Google account password will be rejected. For SendGrid, use your API key here instead of a password.",
+    "helpFrom": "From email: the sender address that appears in the recipient's inbox in the 'From' field (e.g. noreply@company.com or Arthur MCP <noreply@company.com>). This address must be authorised by your SMTP account — sending from an unauthorised domain will cause delivery failures or spam-folder routing.",
+    "helpRotation": "Password persistence: if a password was already set, leaving this field blank keeps the existing password unchanged — you only need to fill it in when rotating credentials. After rotating, test immediately by triggering a password-reset request to confirm the new credentials are accepted.",
     "hostLabel": "SMTP Host",
     "portLabel": "Port",
     "portError": "Port must be between 1 and 65535",

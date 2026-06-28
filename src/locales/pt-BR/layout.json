@@ -5,7 +5,10 @@
     "prompts": "Prompts",
     "secrets": "Segredos",
     "settings": "Configurações",
-    "auditLogs": "Logs de Auditoria"
+    "auditLogs": "Logs de Auditoria",
+    "aiProviders": "Provedores de IA",
+    "observability": "Observabilidade",
+    "errorTracking": "Rastreamento de Erros"
   },
   "section": {
     "overview": "VISÃO GERAL",
@@ -23,7 +26,7 @@
   },
   "promo": {
     "title": "Arthur MCP Adapter",
-    "subtitle": "Conecte sua IA às suas APIs"
+    "subtitle": "Conecte sua IA às suas fontes de dados"
   },
   "sidebar": {
     "backToServers": "Servidores"

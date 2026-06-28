@@ -9,6 +9,7 @@ import { PasswordReset, PasswordResetSchema } from '../auth/password-reset.schem
 import { Prompt, PromptSchema } from '../prompts/prompt.schema';
 import { Secret, SecretSchema } from '../secrets/secret.schema';
 import { Role, RoleSchema } from '../roles/role.schema';
+import { ErrorTrackingProvider, ErrorTrackingProviderSchema } from '../error-tracking/error-tracking-provider.schema';
 
 import { UserEntity } from '../users/user.entity';
 import { SwaggerProjectEntity } from '../swagger/swagger-project.entity';
@@ -17,6 +18,7 @@ import { PasswordResetEntity } from '../auth/password-reset.entity';
 import { PromptEntity } from '../prompts/prompt.entity';
 import { SecretEntity } from '../secrets/secret.entity';
 import { RoleEntity } from '../roles/role.entity';
+import { ErrorTrackingProviderEntity } from '../error-tracking/error-tracking-provider.entity';
 
 import { MongoUserRepository } from '../users/repositories/mongo-user.repository';
 import { SqliteUserRepository } from '../users/repositories/sqlite-user.repository';
@@ -32,8 +34,10 @@ import { MongoSecretRepository } from '../secrets/repositories/mongo-secret.repo
 import { SqliteSecretRepository } from '../secrets/repositories/sqlite-secret.repository';
 import { MongoRoleRepository } from '../roles/repositories/mongo-role.repository';
 import { SqliteRoleRepository } from '../roles/repositories/sqlite-role.repository';
+import { MongoErrorTrackingProviderRepository } from '../error-tracking/repositories/mongo-error-tracking-provider.repository';
+import { SqliteErrorTrackingProviderRepository } from '../error-tracking/repositories/sqlite-error-tracking-provider.repository';
 
-import { USER_REPO, PROJECT_REPO, SETTINGS_REPO, PASSWORD_RESET_REPO, PROMPT_REPO, SECRET_REPO, ROLE_REPO } from './database.tokens';
+import { USER_REPO, PROJECT_REPO, SETTINGS_REPO, PASSWORD_RESET_REPO, PROMPT_REPO, SECRET_REPO, ROLE_REPO, ERROR_TRACKING_PROVIDER_REPO } from './database.tokens';
 
 @Module({})
 export class DatabaseModule {
@@ -56,6 +60,7 @@ export class DatabaseModule {
             { name: Prompt.name, schema: PromptSchema },
             { name: Secret.name, schema: SecretSchema },
             { name: Role.name, schema: RoleSchema },
+            { name: ErrorTrackingProvider.name, schema: ErrorTrackingProviderSchema },
           ]),
         ],
         providers: [
@@ -66,6 +71,7 @@ export class DatabaseModule {
           MongoPromptRepository,
           MongoSecretRepository,
           MongoRoleRepository,
+          MongoErrorTrackingProviderRepository,
           { provide: USER_REPO, useExisting: MongoUserRepository },
           { provide: PROJECT_REPO, useExisting: MongoSwaggerProjectRepository },
           { provide: SETTINGS_REPO, useExisting: MongoSettingsRepository },
@@ -73,8 +79,9 @@ export class DatabaseModule {
           { provide: PROMPT_REPO, useExisting: MongoPromptRepository },
           { provide: SECRET_REPO, useExisting: MongoSecretRepository },
           { provide: ROLE_REPO, useExisting: MongoRoleRepository },
+          { provide: ERROR_TRACKING_PROVIDER_REPO, useExisting: MongoErrorTrackingProviderRepository },
         ],
-        exports: [USER_REPO, PROJECT_REPO, SETTINGS_REPO, PASSWORD_RESET_REPO, PROMPT_REPO, SECRET_REPO, ROLE_REPO],
+        exports: [USER_REPO, PROJECT_REPO, SETTINGS_REPO, PASSWORD_RESET_REPO, PROMPT_REPO, SECRET_REPO, ROLE_REPO, ERROR_TRACKING_PROVIDER_REPO],
       };
     }
 
@@ -85,10 +92,10 @@ export class DatabaseModule {
         TypeOrmModule.forRoot({
           type: 'sqlite',
           database: process.env.SQLITE_PATH ?? 'database.sqlite',
-          entities: [UserEntity, SwaggerProjectEntity, SettingsEntity, PasswordResetEntity, PromptEntity, SecretEntity, RoleEntity],
+          entities: [UserEntity, SwaggerProjectEntity, SettingsEntity, PasswordResetEntity, PromptEntity, SecretEntity, RoleEntity, ErrorTrackingProviderEntity],
           synchronize: true,
         }),
-        TypeOrmModule.forFeature([UserEntity, SwaggerProjectEntity, SettingsEntity, PasswordResetEntity, PromptEntity, SecretEntity, RoleEntity]),
+        TypeOrmModule.forFeature([UserEntity, SwaggerProjectEntity, SettingsEntity, PasswordResetEntity, PromptEntity, SecretEntity, RoleEntity, ErrorTrackingProviderEntity]),
       ],
       providers: [
         SqliteUserRepository,
@@ -98,6 +105,7 @@ export class DatabaseModule {
         SqlitePromptRepository,
         SqliteSecretRepository,
         SqliteRoleRepository,
+        SqliteErrorTrackingProviderRepository,
         { provide: USER_REPO, useExisting: SqliteUserRepository },
         { provide: PROJECT_REPO, useExisting: SqliteSwaggerProjectRepository },
         { provide: SETTINGS_REPO, useExisting: SqliteSettingsRepository },
@@ -105,8 +113,9 @@ export class DatabaseModule {
         { provide: PROMPT_REPO, useExisting: SqlitePromptRepository },
         { provide: SECRET_REPO, useExisting: SqliteSecretRepository },
         { provide: ROLE_REPO, useExisting: SqliteRoleRepository },
+        { provide: ERROR_TRACKING_PROVIDER_REPO, useExisting: SqliteErrorTrackingProviderRepository },
       ],
-      exports: [USER_REPO, PROJECT_REPO, SETTINGS_REPO, PASSWORD_RESET_REPO, PROMPT_REPO, SECRET_REPO, ROLE_REPO],
+      exports: [USER_REPO, PROJECT_REPO, SETTINGS_REPO, PASSWORD_RESET_REPO, PROMPT_REPO, SECRET_REPO, ROLE_REPO, ERROR_TRACKING_PROVIDER_REPO],
     };
   }
 }

@@ -5,7 +5,10 @@
     "prompts": "Prompts",
     "secrets": "Secrets",
     "settings": "Settings",
-    "auditLogs": "Audit Logs"
+    "auditLogs": "Audit Logs",
+    "aiProviders": "AI Providers",
+    "observability": "Observability",
+    "errorTracking": "Error Tracking"
   },
   "section": {
     "overview": "OVERVIEW",
@@ -14,7 +17,7 @@
   },
   "account": {
     "menu": "Account menu",
-    "myProfile": "My Profile",
+    "myProfile": "Profile",
     "logout": "Logout"
   },
   "theme": {
@@ -23,7 +26,7 @@
   },
   "promo": {
     "title": "Arthur MCP Adapter",
-    "subtitle": "Connect your AI to your APIs"
+    "subtitle": "Connect your AI to your data sources"
   },
   "sidebar": {
     "backToServers": "Servers"

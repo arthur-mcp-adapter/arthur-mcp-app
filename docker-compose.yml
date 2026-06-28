@@ -10,6 +10,17 @@ services:
       DASHBOARD_USER: ${DASHBOARD_USER:-admin}
       DASHBOARD_PASSWORD: ${DASHBOARD_PASSWORD:-admin}
       JWT_SECRET: ${JWT_SECRET:-dev-jwt-secret-change-in-production}
+      ENABLE_OBSERVABILITY: ${ENABLE_OBSERVABILITY:-true}
+      ENABLE_STRUCTURED_LOGS: ${ENABLE_STRUCTURED_LOGS:-true}
+      ENABLE_METRICS: ${ENABLE_METRICS:-true}
+      ENABLE_TRACING: ${ENABLE_TRACING:-false}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      SERVICE_NAME: ${SERVICE_NAME:-arthur-mcp-adapter}
+      SERVICE_VERSION: ${SERVICE_VERSION:-1.0.0}
+      PROMETHEUS_METRICS_PATH: ${PROMETHEUS_METRICS_PATH:-/metrics}
+      OTEL_SERVICE_NAME: ${OTEL_SERVICE_NAME:-arthur-mcp-adapter}
+      OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT:-}
+      OTEL_EXPORTER_TYPE: ${OTEL_EXPORTER_TYPE:-console}
     volumes:
       - sqlite_data:/app/data
     restart: unless-stopped

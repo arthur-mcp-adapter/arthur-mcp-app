@@ -16,8 +16,8 @@ import { ISwaggerProjectRepository, McpApiKeyEntry, SwaggerProjectRecord } from 
 import { parsePostmanCollection } from './postman-parser';
 import { SwaggerApiKeysService } from './swagger-api-keys.service';
 import { SwaggerImportService } from './swagger-import.service';
+import { JwtSecretService } from '../settings/jwt-secret.service';
 
-const SHARE_SECRET = process.env.JWT_SECRET ?? 'mcp-share-secret';
 const SPEC_PATHS = [
   '/openapi.json', '/openapi.yaml', '/openapi.yml',
   '/swagger.json', '/swagger.yaml',
@@ -35,6 +35,7 @@ export class SwaggerService {
     private readonly dynamicMcp: DynamicMcpService,
     private readonly imports: SwaggerImportService,
     private readonly apiKeys: SwaggerApiKeysService,
+    private readonly jwtSecretService: JwtSecretService,
   ) {}
 
   private parseContent(content: string, filename: string): Record<string, any> {
@@ -565,8 +566,8 @@ export class SwaggerService {
     return ids.map((id) => ({ serverId: id, errorRatePct: 0, totalCalls: 0 }));
   }
 
-  generateShareToken(serverId: string): string {
-    return jwt.sign({ serverId, type: 'share' }, SHARE_SECRET, { expiresIn: '30d' });
+  async generateShareToken(serverId: string): Promise<string> {
+    return jwt.sign({ serverId, type: 'share' }, await this.jwtSecretService.getSecret(), { expiresIn: '30d' });
   }
 
   async getProjectForShare(
@@ -574,7 +575,7 @@ export class SwaggerService {
   ): Promise<{ name: string; mcpUrl: string; hasKey: boolean; description?: string; toolCount: number }> {
     let payload: any;
     try {
-      payload = jwt.verify(token, SHARE_SECRET);
+      payload = jwt.verify(token, await this.jwtSecretService.getSecret());
     } catch {
       throw new BadRequestException('Invalid or expired share link.');
     }

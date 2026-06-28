@@ -41,6 +41,18 @@ export enum Permission {
   AuditExport = 'audit_export',
   TemplatesUse = 'templates_use',
   SettingsManage = 'settings_manage',
+  AiProvidersView = 'ai_providers_view',
+  AiProvidersCreate = 'ai_providers_create',
+  AiProvidersEdit = 'ai_providers_edit',
+  AiProvidersDelete = 'ai_providers_delete',
+  ObservabilityView = 'observability_view',
+  ObservabilityCreate = 'observability_create',
+  ObservabilityEdit = 'observability_edit',
+  ObservabilityDelete = 'observability_delete',
+  ErrorTrackingView = 'error_tracking_view',
+  ErrorTrackingCreate = 'error_tracking_create',
+  ErrorTrackingEdit = 'error_tracking_edit',
+  ErrorTrackingDelete = 'error_tracking_delete',
 }
 
 export interface UserPermissions {
@@ -82,6 +94,18 @@ export interface UserPermissions {
   audit_export: boolean
   templates_use: boolean
   settings_manage: boolean
+  ai_providers_view: boolean
+  ai_providers_create: boolean
+  ai_providers_edit: boolean
+  ai_providers_delete: boolean
+  observability_view: boolean
+  observability_create: boolean
+  observability_edit: boolean
+  observability_delete: boolean
+  error_tracking_view: boolean
+  error_tracking_create: boolean
+  error_tracking_edit: boolean
+  error_tracking_delete: boolean
 }
 
 export interface Me {

@@ -39,11 +39,27 @@ export const ALL_PERMISSIONS_OFF: RolePermissions = {
   audit_export: false,
   templates_use: false,
   settings_manage: false,
+  observability_view: false,
+  observability_create: false,
+  observability_edit: false,
+  observability_delete: false,
+  error_tracking_view: false,
+  error_tracking_create: false,
+  error_tracking_edit: false,
+  error_tracking_delete: false,
 };
 
 export const BUILTIN_ROLE_PERMISSIONS: Record<string, RolePermissions> = {
   developer: {
     ...ALL_PERMISSIONS_OFF,
+    error_tracking_view: true,
+    error_tracking_create: true,
+    error_tracking_edit: true,
+    error_tracking_delete: true,
+    observability_view: true,
+    observability_create: false,
+    observability_edit: false,
+    observability_delete: false,
     servers_view: true,
     servers_create: true,
     servers_edit_settings: true,
@@ -72,6 +88,13 @@ export const BUILTIN_ROLE_PERMISSIONS: Record<string, RolePermissions> = {
   },
   editor: {
     ...ALL_PERMISSIONS_OFF,
+    error_tracking_view: true,
+    error_tracking_create: true,
+    error_tracking_edit: true,
+    observability_view: true,
+    observability_create: false,
+    observability_edit: false,
+    observability_delete: false,
     servers_view: true,
     servers_share: true,
     tools_view: true,
@@ -91,10 +114,11 @@ export const BUILTIN_ROLE_PERMISSIONS: Record<string, RolePermissions> = {
   },
   viewer: {
     ...ALL_PERMISSIONS_OFF,
+    error_tracking_view: true,
+    observability_view: true,
     servers_view: true,
     tools_view: true,
     resources_view: true,
     prompts_view: true,
   },
 };
-
