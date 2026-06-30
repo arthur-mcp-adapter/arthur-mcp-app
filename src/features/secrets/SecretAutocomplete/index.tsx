@@ -30,12 +30,13 @@ export function useSecrets() {
   return { secrets, loading }
 }
 
-export default function SecretAutocomplete({ value, onChange, label, secrets, loadingSecrets }: {
+export default function SecretAutocomplete({ value, onChange, label, secrets, loadingSecrets, disabled }: {
   value: string
   onChange: (v: string) => void
   label: string
   secrets: SecretEntry[]
   loadingSecrets: boolean
+  disabled?: boolean
 }) {
   const options = secrets.map((s) => `{{secret:${s.name}}}`)
   const isSecretRef = value.startsWith('{{secret:')
@@ -46,6 +47,7 @@ export default function SecretAutocomplete({ value, onChange, label, secrets, lo
       options={options}
       value={isSecretRef ? value : null}
       loading={loadingSecrets}
+      disabled={disabled}
       onChange={(_, newVal) => onChange(newVal ?? '')}
       getOptionLabel={(opt) => opt.replace(/^\{\{secret:/, '').replace(/\}\}$/, '')}
       filterOptions={(opts, { inputValue }) => {

@@ -1,13 +1,13 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import {
   Alert,
+  Autocomplete,
   Box,
   Button,
   CircularProgress,
   Grid,
-  IconButton,
   InputAdornment,
   Paper,
   Step,
@@ -16,22 +16,35 @@ import {
   TextField,
   ToggleButton,
   ToggleButtonGroup,
-  Tooltip,
   Typography,
+  FormControlLabel,
+  Switch,
 } from '@mui/material'
 import {
   IconArrowLeft,
   IconArrowRight,
   IconCheck,
-  IconEye,
-  IconEyeOff,
+  IconPlayerPlay,
   IconRobot,
 } from '@tabler/icons-react'
 import api from '../../api'
 import { Permission, useAuth } from '../../context/AuthContext'
-import type { AiProviderType } from '../../features/aiProviders'
+import type { AiProvider, AiProviderType } from '../../features/aiProviders'
+import { SecretAutocomplete, useSecrets } from '../../features/secrets'
 
-const PROVIDER_TYPES: AiProviderType[] = ['openai', 'anthropic', 'gemini', 'mistral', 'groq', 'azure', 'custom']
+const PROVIDER_TYPES: AiProviderType[] = ['openai', 'anthropic', 'google', 'mistral', 'groq', 'cohere', 'azure-openai', 'ollama', 'custom']
+
+const MODEL_OPTIONS: Record<string, string[]> = {
+  openai: ['gpt-4o-mini', 'gpt-4o', 'gpt-4.1-mini', 'gpt-4.1'],
+  anthropic: ['claude-3-5-haiku-latest', 'claude-3-5-sonnet-latest', 'claude-3-7-sonnet-latest'],
+  google: ['gemini-1.5-flash', 'gemini-1.5-pro', 'gemini-2.0-flash'],
+  mistral: ['mistral-small-latest', 'mistral-large-latest', 'codestral-latest'],
+  groq: ['llama-3.1-8b-instant', 'llama-3.3-70b-versatile', 'mixtral-8x7b-32768'],
+  cohere: ['command-r', 'command-r-plus'],
+  'azure-openai': ['gpt-4o-mini', 'gpt-4o'],
+  ollama: ['llama3.2', 'llama3.1', 'mistral', 'qwen2.5'],
+  custom: ['gpt-4o-mini', 'llama-3.1-8b-instant'],
+}
 
 interface AiProviderRecord { id: string }
 
@@ -42,16 +55,21 @@ interface AiProviderForm {
   model: string
   apiKey: string
   baseUrl: string
+  isDefault: boolean
 }
 
 export default function NewAiProvider() {
   const navigate = useNavigate()
   const { t } = useTranslation(['aiProviders', 'common'])
   const { can, loading: authLoading } = useAuth()
+  const { secrets, loading: loadingSecrets } = useSecrets()
   const [activeStep, setActiveStep] = useState(0)
   const [saving, setSaving] = useState(false)
+  const [testing, setTesting] = useState(false)
+  const [loadingExistingProvider, setLoadingExistingProvider] = useState(true)
+  const [existingProvider, setExistingProvider] = useState<AiProvider | null>(null)
   const [error, setError] = useState('')
-  const [showApiKey, setShowApiKey] = useState(false)
+  const [testResult, setTestResult] = useState<{ ok: boolean; message: string; latencyMs: number } | null>(null)
   const [form, setForm] = useState<AiProviderForm>({
     name: '',
     description: '',
@@ -59,6 +77,7 @@ export default function NewAiProvider() {
     model: '',
     apiKey: '',
     baseUrl: '',
+    isDefault: false,
   })
 
   const steps = [
@@ -70,12 +89,69 @@ export default function NewAiProvider() {
   const setField = <K extends keyof AiProviderForm>(key: K, value: AiProviderForm[K]) =>
     setForm((f) => ({ ...f, [key]: value }))
 
+  useEffect(() => {
+    if (authLoading) return
+    if (!can(Permission.AiProvidersView)) {
+      setLoadingExistingProvider(false)
+      return
+    }
+
+    let active = true
+    setLoadingExistingProvider(true)
+    api.get<AiProvider[]>('/ai-providers')
+      .then((r) => {
+        if (active) setExistingProvider(r.data[0] ?? null)
+      })
+      .catch(() => {
+        if (active) setExistingProvider(null)
+      })
+      .finally(() => {
+        if (active) setLoadingExistingProvider(false)
+      })
+
+    return () => { active = false }
+  }, [authLoading, can])
+
+  const setProvider = (provider: AiProviderType) => {
+    setForm((f) => ({
+      ...f,
+      provider,
+      model: MODEL_OPTIONS[provider]?.[0] ?? '',
+      apiKey: provider === 'ollama' ? '' : f.apiKey,
+    }))
+    setTestResult(null)
+  }
+
   const canNext =
     activeStep === 0
       ? form.name.trim().length > 0
       : activeStep === 1
-        ? form.model.trim().length > 0 && form.apiKey.trim().length > 0
+        ? form.model.trim().length > 0 && (form.provider === 'ollama' || form.apiKey.trim().length > 0)
         : true
+
+  const handleTest = async () => {
+    if (!canNext) {
+      setError(form.model.trim() ? t('aiProviders:error.apiKeyRequired') : t('aiProviders:error.modelRequired'))
+      return
+    }
+    setTesting(true); setError(''); setTestResult(null)
+    try {
+      const { data } = await api.post<{ ok: boolean; message: string; latencyMs: number }>('/ai-providers/test-config', {
+        name: form.name.trim() || t('aiProviders:create.draftName'),
+        description: form.description.trim() || undefined,
+        provider: form.provider,
+        model: form.model.trim(),
+        apiKey: form.apiKey,
+        baseUrl: form.baseUrl.trim() || undefined,
+        isActive: true,
+      })
+      setTestResult(data)
+    } catch (err: any) {
+      setTestResult({ ok: false, message: err?.response?.data?.message ?? t('aiProviders:error.testFailed'), latencyMs: 0 })
+    } finally {
+      setTesting(false)
+    }
+  }
 
   const handleNext = () => {
     if (!canNext) {
@@ -88,9 +164,10 @@ export default function NewAiProvider() {
   }
 
   const handleCreate = async () => {
+    if (existingProvider) { setError(t('aiProviders:error.singleProviderLimit')); return }
     if (!form.name.trim()) { setError(t('aiProviders:error.nameRequired')); return }
     if (!form.model.trim()) { setError(t('aiProviders:error.modelRequired')); return }
-    if (!form.apiKey.trim()) { setError(t('aiProviders:error.apiKeyRequired')); return }
+    if (form.provider !== 'ollama' && !form.apiKey.trim()) { setError(t('aiProviders:error.apiKeyRequired')); return }
     setSaving(true); setError('')
     try {
       const { data } = await api.post<AiProviderRecord>('/ai-providers', {
@@ -100,6 +177,7 @@ export default function NewAiProvider() {
         model: form.model.trim(),
         apiKey: form.apiKey,
         baseUrl: form.baseUrl.trim() || undefined,
+        isDefault: form.isDefault,
       })
       navigate(`/ai-providers/${data.id}`)
     } catch (err: any) {
@@ -112,6 +190,38 @@ export default function NewAiProvider() {
     return (
       <Box display="flex" flexDirection="column" alignItems="center" gap={2} py={12}>
         <Typography variant="h6" color="text.secondary">{t('common:error.forbidden')}</Typography>
+      </Box>
+    )
+  }
+
+  if (authLoading || loadingExistingProvider) {
+    return (
+      <Box display="flex" justifyContent="center" py={12}>
+        <CircularProgress size={24} />
+      </Box>
+    )
+  }
+
+  if (existingProvider) {
+    return (
+      <Box maxWidth={720} mx="auto">
+        <Box display="flex" alignItems="center" gap={1.5} mb={4}>
+          <Button
+            size="small"
+            startIcon={<IconArrowLeft size={16} />}
+            onClick={() => navigate('/ai-providers')}
+            sx={{ mr: 0.5 }}
+          >
+            {t('aiProviders:heading.title')}
+          </Button>
+          <Typography variant="h5" fontWeight={700}>{t('aiProviders:create.title')}</Typography>
+        </Box>
+        <Alert severity="info" sx={{ mb: 3 }}>
+          {t('aiProviders:hint.singleProviderLimit')}
+        </Alert>
+        <Button variant="contained" onClick={() => navigate(`/ai-providers/${existingProvider.id}`)}>
+          {t('aiProviders:action.editExistingProvider')}
+        </Button>
       </Box>
     )
   }
@@ -184,7 +294,7 @@ export default function NewAiProvider() {
               <ToggleButtonGroup
                 exclusive
                 value={form.provider}
-                onChange={(_e, val) => { if (val) setField('provider', val) }}
+                onChange={(_e, val) => { if (val) setProvider(val) }}
                 sx={{ flexWrap: 'wrap', gap: 0.75, '& .MuiToggleButtonGroup-grouped': { borderRadius: '6px !important', border: '1px solid !important', borderColor: 'divider !important', '&.Mui-selected': { borderColor: 'primary.main !important' } } }}
               >
                 {PROVIDER_TYPES.map((pt) => (
@@ -204,34 +314,32 @@ export default function NewAiProvider() {
               </ToggleButtonGroup>
             </Grid>
             <Grid item xs={12} sm={6}>
-              <TextField
-                size="small" fullWidth required
-                label={t('aiProviders:label.model')}
+              <Autocomplete
+                freeSolo
+                options={MODEL_OPTIONS[form.provider] ?? []}
                 value={form.model}
-                onChange={(e) => setField('model', e.target.value)}
-                placeholder={t('aiProviders:placeholder.model')}
+                onChange={(_, value) => setField('model', value ?? '')}
+                onInputChange={(_, value) => setField('model', value)}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    size="small"
+                    fullWidth
+                    required
+                    label={t('aiProviders:label.model')}
+                    placeholder={t('aiProviders:placeholder.model')}
+                    helperText={t('aiProviders:hint.modelPreset')}
+                  />
+                )}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <TextField
-                size="small" fullWidth required
-                label={t('aiProviders:label.apiKey')}
-                type={showApiKey ? 'text' : 'password'}
+              <SecretAutocomplete
                 value={form.apiKey}
-                onChange={(e) => setField('apiKey', e.target.value)}
-                placeholder={t('aiProviders:placeholder.apiKey')}
-                helperText={t('aiProviders:hint.apiKeyProtected')}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <Tooltip title={showApiKey ? t('common:action.hide') : t('common:action.show')}>
-                        <IconButton size="small" onClick={() => setShowApiKey((v) => !v)} edge="end">
-                          {showApiKey ? <IconEyeOff size={16} /> : <IconEye size={16} />}
-                        </IconButton>
-                      </Tooltip>
-                    </InputAdornment>
-                  ),
-                }}
+                onChange={(value) => setField('apiKey', value)}
+                label={form.provider === 'ollama' ? t('aiProviders:label.apiKeyOptional') : t('aiProviders:label.apiKeySecret')}
+                secrets={secrets}
+                loadingSecrets={loadingSecrets}
               />
             </Grid>
             <Grid item xs={12}>
@@ -243,6 +351,38 @@ export default function NewAiProvider() {
                 placeholder={t('aiProviders:placeholder.baseUrl')}
                 helperText={t('aiProviders:hint.baseUrlOptional')}
               />
+            </Grid>
+            <Grid item xs={12}>
+              <Box
+                display="flex"
+                alignItems={{ xs: 'stretch', sm: 'center' }}
+                justifyContent="space-between"
+                flexDirection={{ xs: 'column', sm: 'row' }}
+                gap={1.5}
+              >
+                <FormControlLabel
+                  sx={{ m: 0, alignSelf: { xs: 'flex-start', sm: 'center' } }}
+                  control={<Switch size="small" checked={form.isDefault} onChange={(e) => setField('isDefault', e.target.checked)} />}
+                  label={<Typography variant="body2">{t('aiProviders:label.makeDefault')}</Typography>}
+                />
+                {can(Permission.AiProvidersExecute) ? (
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    startIcon={testing ? <CircularProgress size={14} color="inherit" /> : <IconPlayerPlay size={15} />}
+                    disabled={testing || !canNext}
+                    onClick={handleTest}
+                    sx={{ alignSelf: { xs: 'flex-start', sm: 'center' } }}
+                  >
+                    {testing ? t('aiProviders:action.testingConnection') : t('aiProviders:action.testConnection')}
+                  </Button>
+                ) : <Box />}
+              </Box>
+              {testResult && (
+                <Alert severity={testResult.ok ? 'success' : 'error'} sx={{ mt: 1.5 }}>
+                  {testResult.ok ? t('aiProviders:toast.testSucceeded', { latency: testResult.latencyMs }) : testResult.message}
+                </Alert>
+              )}
             </Grid>
           </Grid>
         </Paper>
@@ -274,6 +414,12 @@ export default function NewAiProvider() {
               <Box>
                 <Typography variant="caption" color="text.secondary" fontWeight={700}>{t('aiProviders:label.baseUrl')}</Typography>
                 <Typography variant="body2" fontFamily="monospace" fontSize="0.875rem">{form.baseUrl}</Typography>
+              </Box>
+            )}
+            {form.isDefault && (
+              <Box>
+                <Typography variant="caption" color="text.secondary" fontWeight={700}>{t('aiProviders:label.default')}</Typography>
+                <Typography>{t('aiProviders:label.defaultEnabled')}</Typography>
               </Box>
             )}
             {form.description && (

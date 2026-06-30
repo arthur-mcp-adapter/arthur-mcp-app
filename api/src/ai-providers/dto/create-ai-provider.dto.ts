@@ -6,4 +6,5 @@ export class CreateAiProviderDto {
   apiKey: string;
   baseUrl?: string;
   isActive?: boolean;
+  isDefault?: boolean;
 }

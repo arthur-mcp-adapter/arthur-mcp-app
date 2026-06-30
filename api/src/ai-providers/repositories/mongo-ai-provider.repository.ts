@@ -19,18 +19,27 @@ export class MongoAiProviderRepository implements IAiProviderRepository {
       apiKey: obj.apiKey,
       baseUrl: obj.baseUrl,
       isActive: obj.isActive ?? true,
+      isDefault: obj.isDefault ?? false,
+      lastTestStatus: obj.lastTestStatus,
+      lastTestedAt: obj.lastTestedAt,
+      lastTestError: obj.lastTestError,
       createdAt: obj.createdAt,
       updatedAt: obj.updatedAt,
     };
   }
 
   async findAll(): Promise<AiProviderRecord[]> {
-    const docs = await this.model.find().sort({ createdAt: -1 }).exec();
+    const docs = await this.model.find().sort({ isDefault: -1, createdAt: -1 }).exec();
     return docs.map((d) => this.toRecord(d));
   }
 
   async findById(id: string): Promise<AiProviderRecord | null> {
     const doc = await this.model.findById(id).exec();
+    return doc ? this.toRecord(doc) : null;
+  }
+
+  async findDefault(): Promise<AiProviderRecord | null> {
+    const doc = await this.model.findOne({ isDefault: true, isActive: true }).exec();
     return doc ? this.toRecord(doc) : null;
   }
 
@@ -42,6 +51,11 @@ export class MongoAiProviderRepository implements IAiProviderRepository {
   async update(id: string, data: Partial<Omit<AiProviderRecord, 'id' | 'createdAt' | 'updatedAt'>>): Promise<AiProviderRecord | null> {
     const doc = await this.model.findByIdAndUpdate(id, { $set: data }, { new: true }).exec();
     return doc ? this.toRecord(doc) : null;
+  }
+
+  async clearDefaultExcept(id?: string): Promise<void> {
+    const filter = id ? { isDefault: true, _id: { $ne: id } } : { isDefault: true };
+    await this.model.updateMany(filter, { $set: { isDefault: false } }).exec();
   }
 
   async delete(id: string): Promise<boolean> {

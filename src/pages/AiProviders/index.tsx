@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import {
+  Alert,
   Box,
   Button,
   Grid,
@@ -40,6 +41,7 @@ export default function AiProviders() {
         )
       })
     : state.items
+  const providerLimitReached = state.items.length >= 1
 
   return (
     <Box>
@@ -53,16 +55,27 @@ export default function AiProviders() {
           </Tooltip>
         </Box>
         {can(Permission.AiProvidersCreate) && (
-          <Button
-            size="small"
-            variant="contained"
-            startIcon={<IconPlus size={18} />}
-            onClick={() => navigate('/ai-providers/new')}
-          >
-            {t('action.newProvider')}
-          </Button>
+          <Tooltip title={providerLimitReached ? <span>{t('hint.singleProviderLimit')}</span> : ''}>
+            <span>
+              <Button
+                size="small"
+                variant="contained"
+                startIcon={<IconPlus size={18} />}
+                disabled={providerLimitReached}
+                onClick={() => navigate('/ai-providers/new')}
+              >
+                {t('action.newProvider')}
+              </Button>
+            </span>
+          </Tooltip>
         )}
       </Box>
+
+      {providerLimitReached && (
+        <Alert severity="info" sx={{ mb: 3 }}>
+          {t('hint.singleProviderLimit')}
+        </Alert>
+      )}
 
       <Box display="flex" alignItems="center" gap={1.5} mb={3}>
         <TextField

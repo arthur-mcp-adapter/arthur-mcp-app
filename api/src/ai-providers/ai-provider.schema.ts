@@ -12,6 +12,10 @@ export class AiProvider {
   @Prop({ required: true }) apiKey: string;
   @Prop() baseUrl?: string;
   @Prop({ default: true }) isActive: boolean;
+  @Prop({ default: false }) isDefault: boolean;
+  @Prop() lastTestStatus?: string;
+  @Prop() lastTestedAt?: Date;
+  @Prop() lastTestError?: string;
 }
 
 export const AiProviderSchema = SchemaFactory.createForClass(AiProvider);

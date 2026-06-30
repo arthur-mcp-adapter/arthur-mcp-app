@@ -1,5 +1,6 @@
 import { Inject, Injectable, Logger, NotFoundException } from '@nestjs/common'
 import * as Sentry from '@sentry/node'
+import type { Request } from 'express'
 import { ERROR_TRACKING_PROVIDER_REPO } from '../database/database.tokens'
 import type { IErrorTrackingProviderRepository, ErrorTrackingProviderRecord } from './error-tracking-provider.repository'
 import type { CreateErrorTrackingProviderDto } from './dto/create-error-tracking-provider.dto'
@@ -10,6 +11,15 @@ export interface ToolErrorContext {
   serverName: string
   toolName: string
   error: Error | unknown
+}
+
+export interface BackendErrorContext {
+  error: Error | unknown
+  source: 'http_request' | 'mcp_request' | 'mcp_tool' | 'process'
+  request?: Request
+  statusCode?: number
+  tags?: Record<string, string | number | boolean | undefined>
+  extras?: Record<string, unknown>
 }
 
 export interface ErrorTrackingProviderResponse {
@@ -66,12 +76,44 @@ export class ErrorTrackingService {
   }
 
   captureToolError(ctx: ToolErrorContext): void {
+    this.captureBackendError({
+      error: ctx.error,
+      source: 'mcp_tool',
+      tags: {
+        mcp_server_id: ctx.serverId,
+        mcp_server_name: ctx.serverName,
+        mcp_tool_name: ctx.toolName,
+      },
+    })
+  }
+
+  captureBackendError(ctx: BackendErrorContext): void {
     if (!this.activeRecord) return
     try {
       Sentry.withScope((scope) => {
-        scope.setTag('mcp_server_id', ctx.serverId)
-        scope.setTag('mcp_server_name', ctx.serverName)
-        scope.setTag('mcp_tool_name', ctx.toolName)
+        scope.setTag('backend_error_source', ctx.source)
+        if (ctx.statusCode) scope.setTag('http_status_code', ctx.statusCode)
+        for (const [key, value] of Object.entries(ctx.tags ?? {})) {
+          if (value !== undefined) scope.setTag(key, value)
+        }
+
+        if (ctx.request) {
+          const user = (ctx.request as any).user as { userId?: string; username?: string; role?: string } | undefined
+          scope.setTag('http_method', ctx.request.method)
+          scope.setTag('http_path', ctx.request.path)
+          if (user?.userId) scope.setUser({ id: user.userId, username: user.username })
+          if (user?.role) scope.setTag('user_role', user.role)
+          scope.setExtra('request', {
+            method: ctx.request.method,
+            path: ctx.request.path,
+            originalUrl: ctx.request.originalUrl,
+            ip: ctx.request.ip,
+          })
+        }
+
+        for (const [key, value] of Object.entries(ctx.extras ?? {})) {
+          scope.setExtra(key, value)
+        }
         scope.setExtra('environment', this.activeRecord!.environment ?? 'production')
         Sentry.captureException(ctx.error instanceof Error ? ctx.error : new Error(String(ctx.error)))
       })

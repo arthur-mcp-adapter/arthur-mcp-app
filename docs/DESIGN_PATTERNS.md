@@ -128,8 +128,30 @@ Examples:
 Rules:
 
 - Use filters for consistent exception shaping or routing fallback.
+- `McpExceptionFilter` reports every HTTP/MCP exception it handles to the active Error Tracking provider before returning the existing HTTP or JSON-RPC error response.
+- `SpaFilter` reports API/MCP 404 responses it handles, while still avoiding client-side React Router fallback routes.
 - Use interceptors for logging, metrics, or request lifecycle behavior.
 - Keep MCP-specific behavior isolated from regular REST API behavior when possible.
+
+### Error Tracking
+
+Pattern: backend errors are routed to the active Error Tracking provider through `ErrorTrackingService`.
+
+Examples:
+
+- `McpExceptionFilter` captures thrown HTTP and MCP exceptions.
+- `SpaFilter` captures API/MCP 404s when it handles routing fallback.
+- `DynamicMcpService` captures MCP tool/resource/prompt failures, including paths that return `isError` instead of throwing.
+- `AiProvidersService` and `SwaggerService` capture provider/database test failures that are normalized into `{ ok: false }` or `{ error }` responses.
+- `main.ts` registers process-level `unhandledRejection` and `uncaughtException` handlers.
+
+Rules:
+
+- Error tracking is active only when an Error Tracking provider is enabled; capture methods must be no-ops otherwise.
+- Error tracking capture must never change the HTTP/MCP response or throw back into the request path.
+- Do not send raw request bodies, cookies, authorization headers, API keys, DSNs, or secret values to Error Tracking. Prefer method, path, status, user id/role, and domain tags.
+- When adding a new backend path that catches an exception and returns a normal error response, call `ErrorTrackingService.captureBackendError(...)` in that catch block.
+- When adding MCP flows that return `isError` without throwing, capture the error explicitly because those paths bypass global Nest exception filters.
 
 ### Observability
 
@@ -190,6 +212,22 @@ Rules:
 - Keep driver-specific logic inside the adapter.
 - Return normalized results from adapters so MCP response logic can stay generic.
 - Fail with actionable missing-driver messages.
+
+### AI Provider Execution
+
+Pattern: AI provider CRUD is separated from provider execution.
+
+Examples:
+
+- `AiProvidersService` owns metadata, default-provider selection, and safe API responses that omit API keys.
+- `AiProviderExecutorService` owns provider-specific HTTP calls for connection tests and AI-assisted generation.
+
+Rules:
+
+- Keep API keys server-side and out of metadata responses.
+- Protect provider execution with `ai_providers_execute`; do not treat execution as simple provider viewing/editing because it can consume external model credits.
+- Use the configured default provider only when a generation request does not explicitly select a provider.
+- Assisted-generation requests should send only the minimum metadata needed for the task. For REST tool improvement, the frontend sends endpoint names, methods, paths, and descriptions, not upstream API credentials.
 
 ### Facade and Feature Services
 

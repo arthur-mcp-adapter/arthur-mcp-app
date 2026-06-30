@@ -51,6 +51,7 @@ export const ALL_PERMISSIONS_OFF: RolePermissions = {
   ai_providers_create: false,
   ai_providers_edit: false,
   ai_providers_delete: false,
+  ai_providers_execute: false,
 };
 
 export const BUILTIN_ROLE_PERMISSIONS: Record<string, RolePermissions> = {
@@ -65,6 +66,7 @@ export const BUILTIN_ROLE_PERMISSIONS: Record<string, RolePermissions> = {
     ai_providers_create: true,
     ai_providers_edit: true,
     ai_providers_delete: true,
+    ai_providers_execute: true,
     observability_create: false,
     observability_edit: false,
     observability_delete: false,
@@ -103,6 +105,7 @@ export const BUILTIN_ROLE_PERMISSIONS: Record<string, RolePermissions> = {
     ai_providers_view: true,
     ai_providers_create: true,
     ai_providers_edit: true,
+    ai_providers_execute: true,
     observability_create: false,
     observability_edit: false,
     observability_delete: false,

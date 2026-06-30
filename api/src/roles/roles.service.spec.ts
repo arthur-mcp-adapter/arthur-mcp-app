@@ -19,7 +19,7 @@ const allOff: RolePermissions = {
   audit_view: false, audit_export: false, templates_use: false, settings_manage: false, endpoints_create: false,
   observability_view: false, observability_create: false, observability_edit: false, observability_delete: false,
   error_tracking_view: false, error_tracking_create: false, error_tracking_edit: false, error_tracking_delete: false,
-  ai_providers_view: false, ai_providers_create: false, ai_providers_edit: false, ai_providers_delete: false,
+  ai_providers_view: false, ai_providers_create: false, ai_providers_edit: false, ai_providers_delete: false, ai_providers_execute: false,
 };
 
 const makeRole = (overrides: Partial<RoleRecord> = {}): RoleRecord => ({

@@ -164,6 +164,7 @@
     "postmanParseError": "Error parsing Postman collection.",
     "createError": "Error creating server.",
     "createTemplateError": "Something went wrong creating the server.",
+    "aiGenerationFailed": "AI tool generation failed.",
     "unknownError": "Unknown error.",
     "linkExpired": "This link is invalid or has expired."
   },
@@ -173,6 +174,15 @@
     "duplicated": "\"{{name}}\" created successfully.",
     "duplicateFailed": "Could not duplicate the server.",
     "importedSuccess": "{{name}} imported successfully"
+  },
+  "ai": {
+    "improveTitle": "Improve tools with AI",
+    "improveHint": "Use a configured provider to refine tool names, descriptions, and output schema hints before creation.",
+    "provider": "AI provider",
+    "default": "default",
+    "improveAction": "Improve",
+    "improving": "Improving…",
+    "connectProvider": "Connect provider"
   },
   "source": {
     "chooseSource": "Choose your data source",
@@ -296,7 +306,32 @@
     "anyClientAuthHint": " Include the header auth: <your-api-key> in every request.",
     "requiresKey": "This server requires an API key. Contact the person who shared this link to obtain your personal key.",
     "poweredBy": "Powered by MCP Convert · This page is publicly accessible via the share link.",
-    "copyLabel": "Copy {{label}}"
+    "copyLabel": "Copy {{label}}",
+    "resourcesAvailable": "{{count}} resources",
+    "promptsAvailable": "{{count}} prompts",
+    "referenceTitle": "MCP server reference",
+    "referenceDescription": "Public, read-only documentation for this MCP server, including tools, resources, prompts, descriptions, and output schemas.",
+    "version": "Version",
+    "status": "Status",
+    "notSpecified": "Not specified",
+    "toolsTitle": "Tools ({{count}})",
+    "resourcesTitle": "Resources ({{count}})",
+    "promptsTitle": "Prompts ({{count}})",
+    "noTools": "No tools are exposed by this server.",
+    "noResources": "No resources are exposed by this server.",
+    "noPrompts": "No prompts are exposed by this server.",
+    "parameters": "Parameters",
+    "noParameters": "This tool has no parameters.",
+    "required": "Required",
+    "optional": "Optional",
+    "acceptedValues": "Accepted values: {{values}}",
+    "outputSchema": "Output schema",
+    "noOutputSchema": "No output schema declared.",
+    "comments": "Notes",
+    "uri": "URI",
+    "arguments": "Arguments",
+    "noArguments": "No arguments.",
+    "argumentsCount": "{{count}} arguments"
   },
   "upload": {
     "dragHint": "Drag your Swagger / OpenAPI file here",

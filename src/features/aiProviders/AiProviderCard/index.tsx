@@ -8,10 +8,14 @@ import type { AiProvider } from '../types'
 const PROVIDER_COLORS: Record<string, string> = {
   openai: '#10a37f',
   anthropic: '#d97559',
+  google: '#1a73e8',
   gemini: '#1a73e8',
   mistral: '#ff6b35',
   groq: '#f55036',
+  cohere: '#39594d',
+  'azure-openai': '#0078d4',
   azure: '#0078d4',
+  ollama: '#111827',
   custom: '#7c3aed',
 }
 
@@ -59,6 +63,23 @@ export function AiProviderCard({ provider, onEdit, onDelete }: {
           <Typography variant="caption" fontFamily="monospace" color="text.secondary">
             {provider.model}
           </Typography>
+          {provider.isDefault && (
+            <Chip
+              label={t('label.default')}
+              size="small"
+              color="primary"
+              sx={{ height: 20, fontSize: '0.7rem' }}
+            />
+          )}
+          {provider.lastTestStatus && (
+            <Chip
+              label={t(`status.${provider.lastTestStatus}`)}
+              size="small"
+              color={provider.lastTestStatus === 'success' ? 'success' : 'error'}
+              variant="outlined"
+              sx={{ height: 20, fontSize: '0.7rem' }}
+            />
+          )}
           {!provider.isActive && (
             <Chip
               label={t('common:label.inactive')}

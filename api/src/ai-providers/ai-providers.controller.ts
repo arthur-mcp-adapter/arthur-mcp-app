@@ -5,6 +5,7 @@ import { RequirePermission } from '../common/decorators/require-permission.decor
 import { AiProvidersService } from './ai-providers.service';
 import { CreateAiProviderDto } from './dto/create-ai-provider.dto';
 import { UpdateAiProviderDto } from './dto/update-ai-provider.dto';
+import { GenerateToolsDto } from './dto/generate-tools.dto';
 
 @Controller('ai-providers')
 @UseGuards(JwtAuthGuard, PermissionsGuard)
@@ -24,6 +25,18 @@ export class AiProvidersController {
     return this.service.create(dto);
   }
 
+  @Post('generate-tools')
+  @RequirePermission('ai_providers_execute')
+  generateTools(@Body() dto: GenerateToolsDto) {
+    return this.service.generateTools(dto);
+  }
+
+  @Post('test-config')
+  @RequirePermission('ai_providers_execute')
+  testConfig(@Body() dto: CreateAiProviderDto) {
+    return this.service.testConfig(dto);
+  }
+
   @Get(':id')
   @RequirePermission('ai_providers_view')
   findOne(@Param('id') id: string) {
@@ -34,6 +47,18 @@ export class AiProvidersController {
   @RequirePermission('ai_providers_edit')
   update(@Param('id') id: string, @Body() dto: UpdateAiProviderDto) {
     return this.service.update(id, dto);
+  }
+
+  @Post(':id/default')
+  @RequirePermission('ai_providers_edit')
+  setDefault(@Param('id') id: string) {
+    return this.service.setDefault(id);
+  }
+
+  @Post(':id/test')
+  @RequirePermission('ai_providers_execute')
+  test(@Param('id') id: string) {
+    return this.service.test(id);
   }
 
   @Delete(':id')

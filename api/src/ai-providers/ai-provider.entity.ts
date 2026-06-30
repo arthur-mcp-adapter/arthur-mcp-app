@@ -10,6 +10,10 @@ export class AiProviderEntity {
   @Column('text') apiKey: string;
   @Column({ nullable: true }) baseUrl?: string;
   @Column({ default: true }) isActive: boolean;
+  @Column({ default: false }) isDefault: boolean;
+  @Column({ nullable: true }) lastTestStatus?: string;
+  @Column({ nullable: true }) lastTestedAt?: Date;
+  @Column({ nullable: true }) lastTestError?: string;
   @CreateDateColumn() createdAt: Date;
   @UpdateDateColumn() updatedAt: Date;
 }

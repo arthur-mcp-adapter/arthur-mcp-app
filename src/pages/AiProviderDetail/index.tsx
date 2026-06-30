@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import {
   Alert,
+  Autocomplete,
   Box,
   Button,
   Chip,
@@ -21,35 +22,85 @@ import {
   IconRobot,
   IconSettings,
   IconInfoCircle,
+  IconPlayerPlay,
+  IconStar,
 } from '@tabler/icons-react'
 import { useTranslation } from 'react-i18next'
 import { useAuth, Permission } from '../../context/AuthContext'
 import api from '../../api'
 import { useDetailPageNav } from '../../hooks/useDetailPageNav'
 import type { AiProvider, AiProviderType } from '../../features/aiProviders'
+import { SecretAutocomplete, useSecrets } from '../../features/secrets'
 import Swal from 'sweetalert2'
 
-const PROVIDER_TYPES: AiProviderType[] = ['openai', 'anthropic', 'gemini', 'mistral', 'groq', 'azure', 'custom']
+const PROVIDER_TYPES: AiProviderType[] = ['openai', 'anthropic', 'google', 'mistral', 'groq', 'cohere', 'azure-openai', 'ollama', 'custom']
+
+const MODEL_OPTIONS: Record<string, string[]> = {
+  openai: ['gpt-4o-mini', 'gpt-4o', 'gpt-4.1-mini', 'gpt-4.1'],
+  anthropic: ['claude-3-5-haiku-latest', 'claude-3-5-sonnet-latest', 'claude-3-7-sonnet-latest'],
+  google: ['gemini-1.5-flash', 'gemini-1.5-pro', 'gemini-2.0-flash'],
+  mistral: ['mistral-small-latest', 'mistral-large-latest', 'codestral-latest'],
+  groq: ['llama-3.1-8b-instant', 'llama-3.3-70b-versatile', 'mixtral-8x7b-32768'],
+  cohere: ['command-r', 'command-r-plus'],
+  'azure-openai': ['gpt-4o-mini', 'gpt-4o'],
+  ollama: ['llama3.2', 'llama3.1', 'mistral', 'qwen2.5'],
+  custom: ['gpt-4o-mini', 'llama-3.1-8b-instant'],
+}
 
 const PROVIDER_COLORS: Record<string, string> = {
   openai: '#10a37f',
   anthropic: '#d97559',
+  google: '#1a73e8',
   gemini: '#1a73e8',
   mistral: '#ff6b35',
   groq: '#f55036',
+  cohere: '#39594d',
+  'azure-openai': '#0078d4',
   azure: '#0078d4',
+  ollama: '#111827',
   custom: '#7c3aed',
 }
 
 // ─── Tab 0 — Overview ─────────────────────────────────────────────────────────
 
-function OverviewTab({ provider }: { provider: AiProvider }) {
+function OverviewTab({ provider, onUpdated }: { provider: AiProvider; onUpdated: (p: AiProvider) => void }) {
   const { t } = useTranslation(['aiProviders', 'common'])
+  const { can } = useAuth()
+  const [testing, setTesting] = useState(false)
+  const [snack, setSnack] = useState<{ msg: string; severity: 'success' | 'error' } | null>(null)
   const color = PROVIDER_COLORS[provider.provider] ?? '#7c3aed'
 
+  const handleTest = async () => {
+    setTesting(true)
+    try {
+      const { data } = await api.post<{ ok: boolean; message: string; latencyMs: number }>(`/ai-providers/${provider.id}/test`)
+      const refreshed = await api.get<AiProvider>(`/ai-providers/${provider.id}`)
+      onUpdated(refreshed.data)
+      setSnack({ msg: data.ok ? t('toast.testSucceeded', { latency: data.latencyMs }) : data.message, severity: data.ok ? 'success' : 'error' })
+    } catch (err: any) {
+      setSnack({ msg: err?.response?.data?.message ?? t('error.testFailed'), severity: 'error' })
+    } finally {
+      setTesting(false)
+    }
+  }
+
   return (
+    <>
     <Paper variant="outlined" sx={{ p: 2 }}>
+      <Box display="flex" alignItems="center" justifyContent="space-between" gap={1} mb={2}>
       <Typography fontWeight={600} fontSize="0.875rem" mb={2}>{t('label.general')}</Typography>
+        {can(Permission.AiProvidersExecute) && (
+          <Button
+            size="small"
+            variant="outlined"
+            startIcon={testing ? <CircularProgress size={14} color="inherit" /> : <IconPlayerPlay size={15} />}
+            disabled={testing}
+            onClick={handleTest}
+          >
+            {testing ? t('action.testingConnection') : t('action.testConnection')}
+          </Button>
+        )}
+      </Box>
       <Box display="flex" flexDirection="column" gap={1}>
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Typography variant="body2" color="text.secondary">{t('label.provider')}</Typography>
@@ -92,6 +143,37 @@ function OverviewTab({ provider }: { provider: AiProvider }) {
         </Box>
         <Divider />
         <Box display="flex" justifyContent="space-between">
+          <Typography variant="body2" color="text.secondary">{t('label.default')}</Typography>
+          <Chip
+            label={provider.isDefault ? t('label.defaultEnabled') : t('label.defaultDisabled')}
+            size="small"
+            color={provider.isDefault ? 'primary' : 'default'}
+            sx={{ height: 20, fontSize: '0.7rem' }}
+          />
+        </Box>
+        <Divider />
+        <Box display="flex" justifyContent="space-between">
+          <Typography variant="body2" color="text.secondary">{t('label.lastTest')}</Typography>
+          {provider.lastTestStatus ? (
+            <Chip
+              label={t(`status.${provider.lastTestStatus}`)}
+              size="small"
+              color={provider.lastTestStatus === 'success' ? 'success' : 'error'}
+              variant="outlined"
+              sx={{ height: 20, fontSize: '0.7rem' }}
+            />
+          ) : (
+            <Typography variant="body2" color="text.secondary">{t('status.notTested')}</Typography>
+          )}
+        </Box>
+        {provider.lastTestError && (
+          <>
+            <Divider />
+            <Alert severity="error">{provider.lastTestError}</Alert>
+          </>
+        )}
+        <Divider />
+        <Box display="flex" justifyContent="space-between">
           <Typography variant="body2" color="text.secondary">{t('label.created')}</Typography>
           <Typography variant="body2">{new Date(provider.createdAt).toLocaleString()}</Typography>
         </Box>
@@ -102,6 +184,10 @@ function OverviewTab({ provider }: { provider: AiProvider }) {
         </Box>
       </Box>
     </Paper>
+    <Snackbar open={!!snack} autoHideDuration={3000} onClose={() => setSnack(null)}>
+      <Alert severity={snack?.severity} onClose={() => setSnack(null)}>{snack?.msg}</Alert>
+    </Snackbar>
+    </>
   )
 }
 
@@ -111,16 +197,21 @@ function SettingsTab({ provider, onUpdated }: { provider: AiProvider; onUpdated:
   const { t } = useTranslation(['aiProviders', 'common'])
   const navigate = useNavigate()
   const { can } = useAuth()
+  const { secrets, loading: loadingSecrets } = useSecrets()
   const [editName, setEditName] = useState(provider.name)
   const [editDescription, setEditDescription] = useState(provider.description ?? '')
   const [editProvider, setEditProvider] = useState<AiProviderType>(provider.provider)
   const [editModel, setEditModel] = useState(provider.model)
+  const [editApiKey, setEditApiKey] = useState('')
   const [editBaseUrl, setEditBaseUrl] = useState(provider.baseUrl ?? '')
   const [editIsActive, setEditIsActive] = useState(provider.isActive)
   const [saving, setSaving] = useState(false)
+  const [testing, setTesting] = useState(false)
+  const [settingDefault, setSettingDefault] = useState(false)
   const [snack, setSnack] = useState<{ msg: string; severity: 'success' | 'error' } | null>(null)
 
   const canEdit = can(Permission.AiProvidersEdit)
+  const canExecute = can(Permission.AiProvidersExecute)
 
   const handleSave = async () => {
     setSaving(true)
@@ -130,6 +221,7 @@ function SettingsTab({ provider, onUpdated }: { provider: AiProvider; onUpdated:
         description: editDescription.trim() || undefined,
         provider: editProvider,
         model: editModel.trim(),
+        ...(editApiKey ? { apiKey: editApiKey } : {}),
         baseUrl: editBaseUrl.trim() || undefined,
         isActive: editIsActive,
       })
@@ -139,6 +231,33 @@ function SettingsTab({ provider, onUpdated }: { provider: AiProvider; onUpdated:
       setSnack({ msg: t('error.saveFailed'), severity: 'error' })
     } finally {
       setSaving(false)
+    }
+  }
+
+  const handleSetDefault = async () => {
+    setSettingDefault(true)
+    try {
+      const { data } = await api.post<AiProvider>(`/ai-providers/${provider.id}/default`)
+      onUpdated(data)
+      setSnack({ msg: t('toast.defaultSaved'), severity: 'success' })
+    } catch {
+      setSnack({ msg: t('error.saveFailed'), severity: 'error' })
+    } finally {
+      setSettingDefault(false)
+    }
+  }
+
+  const handleTest = async () => {
+    setTesting(true)
+    try {
+      const { data } = await api.post<{ ok: boolean; message: string; latencyMs: number }>(`/ai-providers/${provider.id}/test`)
+      const refreshed = await api.get<AiProvider>(`/ai-providers/${provider.id}`)
+      onUpdated(refreshed.data)
+      setSnack({ msg: data.ok ? t('toast.testSucceeded', { latency: data.latencyMs }) : data.message, severity: data.ok ? 'success' : 'error' })
+    } catch (err: any) {
+      setSnack({ msg: err?.response?.data?.message ?? t('error.testFailed'), severity: 'error' })
+    } finally {
+      setTesting(false)
     }
   }
 
@@ -205,16 +324,35 @@ function SettingsTab({ provider, onUpdated }: { provider: AiProvider; onUpdated:
             </ToggleButtonGroup>
           </Grid>
           <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth size="small"
-              label={t('label.model')}
+            <Autocomplete
+              freeSolo
+              options={MODEL_OPTIONS[editProvider] ?? []}
               value={editModel}
-              onChange={(e) => setEditModel(e.target.value)}
-              placeholder={t('placeholder.model')}
+              onChange={(_, value) => setEditModel(value ?? '')}
+              onInputChange={(_, value) => setEditModel(value)}
               disabled={!canEdit}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  fullWidth
+                  size="small"
+                  label={t('label.model')}
+                  placeholder={t('placeholder.model')}
+                  helperText={t('hint.modelPreset')}
+                />
+              )}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
+            <SecretAutocomplete
+              value={editApiKey}
+              onChange={setEditApiKey}
+              label={provider.apiKeySet ? t('label.replaceApiKeySecret') : t('label.apiKeySecret')}
+              secrets={secrets}
+              loadingSecrets={loadingSecrets}
+            />
+          </Grid>
+          <Grid item xs={12}>
             <TextField
               fullWidth size="small"
               label={t('label.baseUrl')}
@@ -239,15 +377,41 @@ function SettingsTab({ provider, onUpdated }: { provider: AiProvider; onUpdated:
             />
           </Grid>
         </Grid>
-        {canEdit && (
-          <Box mt={2} display="flex" justifyContent="flex-end">
-            <Button
-              size="small" variant="contained"
-              onClick={handleSave} disabled={saving}
-              startIcon={saving ? <CircularProgress size={14} color="inherit" /> : undefined}
-            >
-              {t('action.saveChanges')}
-            </Button>
+        {(canEdit || canExecute) && (
+          <Box mt={2} display="flex" justifyContent="space-between" gap={1} flexWrap="wrap">
+            <Box display="flex" gap={1} flexWrap="wrap">
+              {canEdit && (
+                <Button
+                  size="small"
+                  variant="outlined"
+                  startIcon={settingDefault ? <CircularProgress size={14} color="inherit" /> : <IconStar size={15} />}
+                  disabled={settingDefault || provider.isDefault}
+                  onClick={handleSetDefault}
+                >
+                  {provider.isDefault ? t('label.defaultEnabled') : t('action.makeDefault')}
+                </Button>
+              )}
+              {canExecute && (
+                <Button
+                  size="small"
+                  variant="outlined"
+                  startIcon={testing ? <CircularProgress size={14} color="inherit" /> : <IconPlayerPlay size={15} />}
+                  disabled={testing}
+                  onClick={handleTest}
+                >
+                  {testing ? t('action.testingConnection') : t('action.testConnection')}
+                </Button>
+              )}
+            </Box>
+            {canEdit && (
+              <Button
+                size="small" variant="contained"
+                onClick={handleSave} disabled={saving}
+                startIcon={saving ? <CircularProgress size={14} color="inherit" /> : undefined}
+              >
+                {t('action.saveChanges')}
+              </Button>
+            )}
           </Box>
         )}
       </Paper>
@@ -351,6 +515,14 @@ export default function AiProviderDetail() {
             variant="outlined"
             sx={{ height: 22, fontSize: '0.7rem', fontFamily: 'monospace' }}
           />
+          {provider.isDefault && (
+            <Chip
+              label={t('label.default')}
+              size="small"
+              color="primary"
+              sx={{ height: 22, fontSize: '0.7rem' }}
+            />
+          )}
           <Box flexGrow={1} />
           <Typography variant="caption" color="text.secondary">
             {t('label.updated', { date: new Date(provider.updatedAt).toLocaleDateString() })}
@@ -364,7 +536,7 @@ export default function AiProviderDetail() {
         </Box>
       </Paper>
 
-      {tab === 0 && <OverviewTab provider={provider} />}
+      {tab === 0 && <OverviewTab provider={provider} onUpdated={setProvider} />}
       {tab === 1 && <SettingsTab provider={provider} onUpdated={setProvider} />}
     </Box>
   )

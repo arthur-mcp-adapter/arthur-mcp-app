@@ -299,7 +299,7 @@ export class DynamicMcpService {
             'mcp.tool.name': toolName,
             'mcp.transport': 'mcp',
             'mcp.server.id': serverId,
-          }, () => this.executeChain(chain, args, tools, auth, globalRequestHeaders));
+          }, () => this.executeChain(chain, args, tools, auth, globalRequestHeaders, serverId, name));
           const durationMs = Date.now() - t0;
           this.executionLogs.log({ serverId, serverName: name, toolName, source: 'mcp', statusCode: result.isError ? 500 : 200, responseTimeMs: durationMs, isError: result.isError ?? false });
           this.recordToolMetric(toolName, durationMs, result.isError ? 'error' : 'ok', 'mcp', result.isError);
@@ -318,6 +318,7 @@ export class DynamicMcpService {
         this.logger.warn(`Tool not found: "${toolName}" | available: [${[...toolMap.keys()].join(', ')}]`);
         const durationMs = Date.now() - t0;
         this.executionLogs.log({ serverId, serverName: name, toolName, source: 'mcp', isError: true, statusCode: 404, errorMessage: 'Tool not found', responseTimeMs: durationMs });
+        this.captureMcpToolError(serverId, name, toolName, 'Tool not found', 'mcp', 404);
         this.recordToolMetric(toolName, durationMs, 'not_found', 'mcp', true);
         return { content: [{ type: 'text' as const, text: `Unknown tool: ${toolName}` }], isError: true };
       }
@@ -326,6 +327,7 @@ export class DynamicMcpService {
         this.logger.error(`Tool "${toolName}" has no endpointRef — data may be stale. Re-upload the spec.`);
         const durationMs = Date.now() - t0;
         this.executionLogs.log({ serverId, serverName: name, toolName, source: 'mcp', isError: true, statusCode: 500, errorMessage: 'endpointRef missing', responseTimeMs: durationMs });
+        this.captureMcpToolError(serverId, name, toolName, 'endpointRef missing', 'mcp', 500);
         this.recordToolMetric(toolName, durationMs, 'configuration_error', 'mcp', true);
         return { content: [{ type: 'text' as const, text: `Invalid internal configuration for "${toolName}". Re-upload the spec.` }], isError: true };
       }
@@ -336,6 +338,7 @@ export class DynamicMcpService {
         this.logger.warn(`Tool "${toolName}" — ${msg}`);
         const durationMs = Date.now() - t0;
         this.executionLogs.log({ serverId, serverName: name, toolName, source: 'mcp', isError: true, statusCode: 400, errorMessage: msg, responseTimeMs: durationMs });
+        this.captureMcpToolError(serverId, name, toolName, msg, 'mcp', 400);
         this.recordToolMetric(toolName, durationMs, 'validation_error', 'mcp', true);
         return { content: [{ type: 'text' as const, text: msg }], isError: true };
       }
@@ -347,12 +350,13 @@ export class DynamicMcpService {
           .map((def) => def.name);
         if (missingRequired.length > 0) {
           const msg = `Missing required tenant parameter`;
-          this.logger.warn(`Tool "${toolName}" — ${msg}`);
-          const durationMs = Date.now() - t0;
-          this.executionLogs.log({ serverId, serverName: name, toolName, source: 'mcp', isError: true, statusCode: 400, errorMessage: msg, responseTimeMs: durationMs });
-          this.recordToolMetric(toolName, durationMs, 'tenant_error', 'mcp', true);
-          return { content: [{ type: 'text' as const, text: msg }], isError: true };
-        }
+              this.logger.warn(`Tool "${toolName}" — ${msg}`);
+              const durationMs = Date.now() - t0;
+              this.executionLogs.log({ serverId, serverName: name, toolName, source: 'mcp', isError: true, statusCode: 400, errorMessage: msg, responseTimeMs: durationMs });
+              this.captureMcpToolError(serverId, name, toolName, msg, 'mcp', 400);
+              this.recordToolMetric(toolName, durationMs, 'tenant_error', 'mcp', true);
+              return { content: [{ type: 'text' as const, text: msg }], isError: true };
+            }
       }
 
       try {
@@ -385,6 +389,9 @@ export class DynamicMcpService {
         const result = mapResponse(httpRes);
         const durationMs = Date.now() - t0;
         this.executionLogs.log({ serverId, serverName: name, toolName, source: 'mcp', statusCode: httpRes.status, responseTimeMs: durationMs, isError: result.isError ?? false, requestPayload: effectiveArgs, responsePayload: tryParseJson(httpRes.body) });
+        if (result.isError) {
+          this.captureMcpToolError(serverId, name, toolName, `HTTP ${httpRes.status}: ${httpRes.body.slice(0, 200)}`, 'mcp', httpRes.status);
+        }
         this.recordToolMetric(toolName, durationMs, result.isError ? 'error' : 'ok', 'mcp', result.isError);
 
         // If the tool declares an outputSchema, also populate structuredContent
@@ -428,7 +435,14 @@ export class DynamicMcpService {
       const raw = enabledResources.find((r) => r.uri === uri);
       if (!raw) {
         this.metrics.recordMcpResource({ resourceName: uri, status: 'not_found', isError: true });
-        throw new Error(`Resource not found: ${uri}`);
+        const error = new Error(`Resource not found: ${uri}`);
+        this.errorTracking.captureBackendError({
+          error,
+          source: 'mcp_request',
+          statusCode: 404,
+          tags: { mcp_server_id: serverId, mcp_resource_uri: uri },
+        });
+        throw error;
       }
       const resource = resolveResourceRef(raw);
 
@@ -454,6 +468,11 @@ export class DynamicMcpService {
       } catch (err: any) {
         const errorMsg = err?.message ?? 'unknown error';
         const msg = (resource.errorConfig?.message ?? 'Error loading resource: {{error}}').replace('{{error}}', errorMsg);
+        this.errorTracking.captureBackendError({
+          error: err,
+          source: 'mcp_request',
+          tags: { mcp_server_id: serverId, mcp_resource_name: resource.name ?? uri },
+        });
         this.metrics.recordMcpResource({ resourceName: resource.name ?? uri, status: 'error', isError: true });
         return { contents: [{ uri, text: msg, mimeType: 'text/plain' }] };
       }
@@ -475,7 +494,14 @@ export class DynamicMcpService {
       const prompt = prompts.find((p) => p.name === name);
       if (!prompt) {
         this.metrics.recordMcpPrompt({ promptName: name, status: 'not_found' });
-        throw new Error(`Prompt not found: ${name}`);
+        const error = new Error(`Prompt not found: ${name}`);
+        this.errorTracking.captureBackendError({
+          error,
+          source: 'mcp_request',
+          statusCode: 404,
+          tags: { mcp_server_id: serverId, mcp_prompt_name: name },
+        });
+        throw error;
       }
 
       const text = prompt.content.replace(
@@ -498,6 +524,8 @@ export class DynamicMcpService {
     tools: GeneratedTool[],
     auth: AuthConfig,
     globalRequestHeaders: Record<string, string> = {},
+    serverId = '',
+    serverName = '',
   ): Promise<McpToolResult> {
     const stepOutputs = new Map<string, unknown>();
 
@@ -512,6 +540,7 @@ export class DynamicMcpService {
     for (const step of chain.steps) {
       const tool = tools.find((t) => t.name === step.toolName);
       if (!tool) {
+        this.captureMcpToolError(serverId, serverName, step.toolName, `Chain step tool "${step.toolName}" not found`, 'chain', 404);
         return { content: [{ type: 'text' as const, text: `Chain step error: tool "${step.toolName}" not found` }], isError: true };
       }
 
@@ -526,6 +555,7 @@ export class DynamicMcpService {
         const httpRes = await this.executeObservedRequest(httpReq);
 
         if (httpRes.status >= 400) {
+          this.captureMcpToolError(serverId, serverName, step.toolName, `Chain step HTTP ${httpRes.status}: ${httpRes.body.slice(0, 200)}`, 'chain', httpRes.status);
           return { content: [{ type: 'text' as const, text: `Chain step "${step.toolName}" failed: HTTP ${httpRes.status} — ${httpRes.body.slice(0, 200)}` }], isError: true };
         }
 
@@ -535,6 +565,7 @@ export class DynamicMcpService {
           stepOutputs.set(step.id, httpRes.body);
         }
       } catch (err: any) {
+        this.captureMcpToolError(serverId, serverName, step.toolName, err, 'chain', 500);
         return { content: [{ type: 'text' as const, text: `Chain step "${step.toolName}" error: ${err?.message}` }], isError: true };
       }
     }
@@ -563,13 +594,14 @@ export class DynamicMcpService {
 
     const t0 = Date.now();
 
-    const validationErrors = validateToolArgs(args, tool.inputSchema);
-    if (validationErrors.length > 0) {
-      const msg = `Invalid arguments: ${validationErrors.join('; ')}`;
-      this.executionLogs.log({ serverId, serverName: name, toolName, source: 'direct', isError: true, statusCode: 400, errorMessage: msg, responseTimeMs: 0 });
-      this.recordToolMetric(toolName, 0, 'validation_error', 'direct', true);
-      return { content: [{ type: 'text', text: msg }], isError: true };
-    }
+      const validationErrors = validateToolArgs(args, tool.inputSchema);
+      if (validationErrors.length > 0) {
+        const msg = `Invalid arguments: ${validationErrors.join('; ')}`;
+        this.executionLogs.log({ serverId, serverName: name, toolName, source: 'direct', isError: true, statusCode: 400, errorMessage: msg, responseTimeMs: 0 });
+        this.captureMcpToolError(serverId, name, toolName, msg, 'direct', 400);
+        this.recordToolMetric(toolName, 0, 'validation_error', 'direct', true);
+        return { content: [{ type: 'text', text: msg }], isError: true };
+      }
 
     try {
       return await this.tracing.runInSpan('mcp.tool.call', {
@@ -583,6 +615,9 @@ export class DynamicMcpService {
       const result = mapResponse(httpRes);
       const durationMs = Date.now() - t0;
       this.executionLogs.log({ serverId, serverName: name, toolName, source: 'direct', statusCode: httpRes.status, responseTimeMs: durationMs, isError: result.isError ?? false });
+      if (result.isError) {
+        this.captureMcpToolError(serverId, name, toolName, `HTTP ${httpRes.status}: ${httpRes.body.slice(0, 200)}`, 'direct', httpRes.status);
+      }
       this.recordToolMetric(toolName, durationMs, result.isError ? 'error' : 'ok', 'direct', result.isError);
       return result;
       });
@@ -607,6 +642,27 @@ export class DynamicMcpService {
       status,
       transport,
       isError,
+    });
+  }
+
+  private captureMcpToolError(
+    serverId: string,
+    serverName: string,
+    toolName: string,
+    error: Error | unknown,
+    transport: string,
+    statusCode: number,
+  ): void {
+    this.errorTracking.captureBackendError({
+      error: error instanceof Error ? error : new Error(String(error)),
+      source: 'mcp_tool',
+      statusCode,
+      tags: {
+        mcp_server_id: serverId || undefined,
+        mcp_server_name: serverName || undefined,
+        mcp_tool_name: toolName,
+        mcp_transport: transport,
+      },
     });
   }
 

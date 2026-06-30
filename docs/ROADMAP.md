@@ -12,7 +12,7 @@ This file should be updated when task state changes. It does not replace issues 
 ## In Progress
 
 - [ ] Audit permission coverage for newly added feature domains and integrations:
-  - [x] Verify frontend permissions for AI providers are present in backend `RolePermissions`, backend built-in role presets, frontend fallback presets, and AI Provider UI gates.
+  - [x] Verify frontend permissions for AI providers are present in backend `RolePermissions`, backend built-in role presets, frontend fallback presets, and AI Provider UI gates, including `ai_providers_execute` for test/generation actions.
   - [ ] Verify frontend permissions for error tracking are present in backend `RolePermissions` and backend built-in role presets.
   - [x] Verify observability permissions are present in backend `RolePermissions` and backend/frontend role presets; `/observability` uses `observability_view` only for the runtime dashboard.
   - [ ] Verify every new page/tab/action added during frontend expansion has an explicit permission decision and matching backend/frontend enforcement.
@@ -37,7 +37,7 @@ This file should be updated when task state changes. It does not replace issues 
 
 ## Later
 
-- [ ] Document the main system flows, including MCP server creation/import, prompts, secrets, audit, and sharing.
+- [ ] Document the main system flows, including MCP server creation/import, prompts, secrets, and audit.
 - [ ] Record important architectural decisions as they come up.
 - [ ] Create or complete tests in the most frequently changed areas.
 
@@ -66,6 +66,7 @@ This file should be updated when task state changes. It does not replace issues 
 - [x] Added a Portuguese integration modeling document by explicit user request.
 - [x] Completed phase 1 of the operation-first migration by renaming user-facing data-source execution UI from Queries to Operations.
 - [x] Added input/output schema support to data-source operations and MCP Tool generation.
+- [x] Expanded public `/share/:token` documentation with a privacy-scoped MCP server reference covering exposed tools, public tool parameters, resources, prompts, descriptions, resource URIs, MIME types, prompt arguments/content, and output schemas while excluding private source/origin details.
 - [x] Added backend tests and an 80% coverage gate for focused backend testable units.
 - [x] Started the `ServerDetail` SOLID refactor by extracting shared save status UI and the rate limit settings panel.
 - [x] Continued the `ServerDetail` modular refactor by extracting the API base URL settings panel into `src/features/server/settings/`.
@@ -101,6 +102,8 @@ This file should be updated when task state changes. It does not replace issues 
 - [x] Fixed `ServerDetail` contextual sidebar tab labels so they refresh when the active frontend language changes.
 - [x] Restored shared `common:terms.*` locale coverage so server detail dialogs no longer render fallback keys such as `terms.endpoint`.
 - [x] Repaired the AI Providers CRUD surface by aligning common namespace usage, active/inactive labels, list snackbar translation, and frontend/backend validation checks.
+- [x] Expanded AI Providers from CRUD into an adoption accelerator with default provider selection, connection testing, execution permission, and AI-assisted REST tool improvement during server creation.
+- [x] Expanded and documented the public MCP Share page as a privacy-scoped MCP server reference while preserving the existing connection setup flow.
 
 ## Decisions
 
@@ -111,6 +114,7 @@ This file should be updated when task state changes. It does not replace issues 
 - Keep locale translation values under `src/locales/<locale>/` in the target language; translation keys stay in English.
 - Treat documentation updates as part of every change whenever behavior, data, commands, infrastructure, flows, or agent workflow are affected.
 - Treat permissions as part of feature design and implementation. New pages, tabs, endpoints, integrations, credential surfaces, settings panels, and user actions must explicitly reuse an existing permission or add a new permission across backend contracts, backend role presets, frontend permission types, frontend fallback presets, UI gates, tests, and documentation.
+- AI provider execution is intentionally separated from AI provider CRUD through `ai_providers_execute`, because testing and generation can consume external model credits.
 - Use `docs/DESIGN_PATTERNS.md` as the reference for backend and frontend implementation patterns.
 - Sensitive values must use explicit reveal flows; metadata endpoints should not expose secret values.
 - User-facing copy should use i18n namespaces when the surrounding page has been migrated to translations.

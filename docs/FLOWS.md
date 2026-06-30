@@ -96,6 +96,42 @@ Risk to preserve:
 - Do not require authentication for operational probe endpoints.
 - Keep the page focused on technical observability.
 
+## Public MCP Share Page
+
+Goal: let someone with a share link understand and connect to an MCP server without needing an app login.
+
+Entry points:
+
+- `POST /api/swagger/servers/:id/share-link` from the authenticated server Connect tab.
+- Public `/share/:token` route.
+- Public `GET /api/share/:token` endpoint.
+
+Permissions:
+
+- Generating a share link requires `servers_share`.
+- Viewing `/share/:token` is public because the signed token is the access boundary.
+
+Backend behavior:
+
+- Share tokens are signed JWTs with a 30-day expiration and contain only the server id and share type.
+- `GET /api/share/:token` validates the token and returns public, read-only MCP server documentation.
+- The public payload includes only the MCP-facing contract for exposed items: server metadata, MCP URL, auth-required flag, counts, tools, public tool parameters, resources, resolved prompts, descriptions, prompt arguments/content, resource URIs, MIME types, and output schemas.
+- The public payload must not include MCP API key values, upstream auth credentials, OAuth client secrets, connection credentials, Error Tracking DSNs, secret values, raw request bodies, raw input schemas, endpoint methods/paths, HTTP method markers in descriptions, operations, API base URLs, source/data-source types, source tags, prompt tags, internal enabled/disabled flags, resource implementation type, runtime settings, or other origin details.
+
+Frontend behavior:
+
+- The share page keeps the existing MCP URL, QR code, and setup instructions for Claude Desktop, Cursor, and generic MCP clients.
+- The page also renders an MCP server reference with overview metadata and expandable sections for Tools, Resources, and Prompts.
+- Tools show public parameters and output schema JSON when declared; resources show output schema JSON when declared.
+- Prompts show resolved prompt content and template arguments.
+- Resources show URI, MIME type, and output schema where available.
+
+Risk to preserve:
+
+- Do not require login on `/share/:token`.
+- Treat the share page as public documentation; never expose credentials or secret values there.
+- Add fields to the share payload rather than removing existing setup fields, so older clients/pages remain compatible.
+
 ## REST Server Templates
 
 Goal: let users create a preconfigured REST server from a template while preserving source-type filtering.
@@ -172,22 +208,29 @@ Permissions:
 - `ai_providers_create`: can create providers.
 - `ai_providers_edit`: can update provider settings.
 - `ai_providers_delete`: can delete providers.
+- `ai_providers_execute`: can test provider connectivity and use configured providers for AI-assisted generation.
 
 Backend behavior:
 
 - `GET /api/ai-providers` and `GET /api/ai-providers/:id` return metadata only — `apiKey` is always stripped from responses.
-- `POST /api/ai-providers` accepts `name`, `provider`, `model`, `apiKey` (required), `baseUrl` (optional), `description` (optional), `isActive` (default true).
+- `POST /api/ai-providers` accepts `name`, `provider`, `model`, `apiKey`, `baseUrl` (optional), `description` (optional), `isActive` (default true), and `isDefault` (default false). Ollama can be saved with an empty API key.
 - `PATCH /api/ai-providers/:id` accepts any subset of the above fields. The `apiKey` field is write-only and not returned.
+- `POST /api/ai-providers/:id/default` marks a provider active/default and clears the default flag on all other providers.
+- `POST /api/ai-providers/:id/test` calls the provider with a minimal prompt, stores `lastTestStatus`, `lastTestedAt`, and `lastTestError`, and returns a success/error summary.
+- `POST /api/ai-providers/test-config` tests an unsaved provider draft and returns the same success/error summary without persisting metadata; upstream provider failures are normalized as `{ ok: false, message, latencyMs: 0 }`.
+- `POST /api/ai-providers/generate-tools` uses the selected provider, or the active default provider when omitted, to improve imported REST tool names, descriptions, and output schema hints.
 - `DELETE /api/ai-providers/:id` hard-deletes the record.
-- `provider` must be one of the known enum values: `openai`, `anthropic`, `ollama`, `groq`, `cohere`, `azure-openai`, `google`, `mistral`, `custom`.
+- `provider` must be one of the known enum values: `openai`, `anthropic`, `ollama`, `groq`, `cohere`, `azure-openai`, `google`, `mistral`, `custom`. Legacy frontend values `azure` and `gemini` are still read as Azure OpenAI and Google Gemini labels for compatibility.
 - All endpoints require `JwtAuthGuard` + `PermissionsGuard`.
 - Repository pattern with `AI_PROVIDER_REPO` injection token; TypeORM and MongoDB implementations.
 
 Frontend behavior:
 
-- List page shows name, provider type, model, active/inactive chip, and creation date. API key is never displayed.
-- Detail page shows the same metadata with an edit form. API key field is write-only: filled in on creation, shown as masked placeholder on edit.
-- Provider and model dropdowns are grouped by provider family.
+- List page shows name, provider type, model, default status, test status, active/inactive chip, and update date. API key is never displayed.
+- Detail page shows the same metadata with an edit form, test connection action, and default-provider action.
+- The current frontend only allows one AI provider to be configured: the list disables the new-provider action once a provider exists, and `/ai-providers/new` shows a limited-state message with a link to edit the existing provider. This is a UI/platform constraint for the current version, not a backend persistence guarantee.
+- New provider setup supports OpenAI, Anthropic, Google Gemini, Mistral, Groq, Cohere, Azure OpenAI, Ollama, and custom OpenAI-compatible providers.
+- The REST server creation flow can use an active AI provider to improve imported tool names/descriptions before creation. The frontend applies those improvements to the created server after the import completes.
 
 Risk to preserve:
 
@@ -302,12 +345,39 @@ Permission groups and their keys (as of this writing):
 | Settings | `settings_manage` |
 | Observability | `observability_view` `observability_create` `observability_edit` `observability_delete` |
 | Error Tracking | `error_tracking_view` `error_tracking_create` `error_tracking_edit` `error_tracking_delete` |
-| AI Providers | `ai_providers_view` `ai_providers_create` `ai_providers_edit` `ai_providers_delete` |
+| AI Providers | `ai_providers_view` `ai_providers_create` `ai_providers_edit` `ai_providers_delete` `ai_providers_execute` |
 
 Risk to preserve:
 
 - Adding a new permission key requires changes in: `role.repository.ts`, `permissions.ts` (ALL_PERMISSIONS_OFF + builtin presets), `Profile/index.tsx` (RolePermissions type + PERMISSION_GROUPS + ALL_OFF + BUILTIN_ROLES), and both locale files (`en/profile.json`, `pt-BR/profile.json`).
 - Do not rely on frontend permission checks as the sole gate; backend `@RequirePermission` is authoritative.
+
+## Error Tracking
+
+Goal: send backend request and application errors to the active Error Tracking provider when one is enabled.
+
+Entry points:
+
+- Any backend HTTP route under `/api`.
+- MCP routes under `/mcp/*`.
+- Backend flows that normalize failures into response bodies, such as AI provider tests and database operation tests.
+- Process-level `unhandledRejection` and `uncaughtException` events.
+
+Backend behavior:
+
+- `ErrorTrackingService.captureBackendError(...)` is the shared capture path. It is a no-op when no provider is active.
+- `McpExceptionFilter` reports every exception it handles before preserving the existing HTTP or JSON-RPC error response.
+- `SpaFilter` reports API/MCP 404s that it handles, but does not report normal client-side React Router fallback routes.
+- `DynamicMcpService` reports MCP tool, chain, resource, and prompt failures, including paths that return `isError` or text error content instead of throwing.
+- `AiProvidersService` reports failed saved/draft provider tests even when the API returns `{ ok: false }`.
+- `SwaggerService` reports database connection/query test failures that are returned to the frontend as `{ error }`.
+- `main.ts` registers process-level handlers for unhandled promise rejections and uncaught exceptions.
+
+Risk to preserve:
+
+- Error capture must never block or alter the user's API/MCP response.
+- Do not send raw request bodies, cookies, authorization headers, API keys, DSNs, or secret values to Error Tracking.
+- New backend catch blocks that convert exceptions into normal response bodies must call `captureBackendError(...)`.
 
 ## MCP Tool Execution (dynamic-mcp)
 
@@ -327,7 +397,7 @@ Flow:
 6. `executeObservedRequest(req)` executes and records metrics/tracing.
 7. On success: response is mapped with `mapResponse(httpRes)` → MCP content array.
 8. `executionLogs.log(...)` records `requestPayload: effectiveArgs` and `responsePayload: tryParseJson(httpRes.body)`.
-9. On error: `errorTrackingService.record(...)` and `executionLogs.log({ isError: true })`.
+9. On error: `ErrorTrackingService.captureBackendError(...)` or `captureToolError(...)` reports to the active provider, and `executionLogs.log({ isError: true })` records local execution history.
 10. If the tool is part of a chain, chain orchestration sequentially calls each step using prior step outputs as inputs.
 
 Risk to preserve:

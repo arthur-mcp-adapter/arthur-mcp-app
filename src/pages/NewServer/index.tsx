@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth, Permission } from '../../context/AuthContext'
@@ -157,10 +157,26 @@ const AUTH_TYPE_LABELS: Record<AuthType, string> = {
 }
 
 interface LocalTool {
-  id: string; name: string; description?: string; method: string; path: string; enabled: boolean; fromSpec: boolean
+  id: string
+  name: string
+  originalName?: string
+  description?: string
+  method: string
+  path: string
+  enabled: boolean
+  fromSpec: boolean
+  outputSchema?: Record<string, unknown>
 }
 interface SpecMeta {
   name: string; version?: string; description?: string; resolvedBaseUrl: string
+}
+interface AiProviderOption {
+  id: string
+  name: string
+  provider: string
+  model: string
+  isActive: boolean
+  isDefault?: boolean
 }
 
 function isValidUrl(u: string) { try { new URL(u); return true } catch { return false } }
@@ -200,6 +216,9 @@ export default function NewServer() {
   // ── REST: Tools overview (step 3)
   const [specMeta, setSpecMeta] = useState<SpecMeta | null>(null)
   const [localTools, setLocalTools] = useState<LocalTool[]>([])
+  const [aiProviders, setAiProviders] = useState<AiProviderOption[]>([])
+  const [selectedAiProviderId, setSelectedAiProviderId] = useState('')
+  const [aiGenerating, setAiGenerating] = useState(false)
 
   // ── GraphQL (step 2)
   const [gqlEndpoint, setGqlEndpoint] = useState('')
@@ -270,6 +289,7 @@ export default function NewServer() {
   const stepKeys = sourceType ? STEP_KEYS[sourceType] : DEFAULT_STEP_KEYS
   const steps = stepKeys.map((k) => t(`servers:label.${k}` as Parameters<typeof t>[0]))
   const isLastStep = activeStep === steps.length - 1
+  const activeAiProviders = aiProviders.filter((provider) => provider.isActive)
 
   const activeFile = importTab === 0 ? file : postmanFile
   const restStep2Valid = importTab === 0
@@ -300,6 +320,17 @@ export default function NewServer() {
   }
 
   // ── Helpers ────────────────────────────────────────────────────────────────
+
+  useEffect(() => {
+    if (!can(Permission.AiProvidersView)) return
+    api.get<AiProviderOption[]>('/ai-providers')
+      .then((r) => {
+        setAiProviders(r.data)
+        const preferred = r.data.find((provider) => provider.isActive && provider.isDefault) ?? r.data.find((provider) => provider.isActive)
+        if (preferred) setSelectedAiProviderId((current) => current || preferred.id)
+      })
+      .catch(() => setAiProviders([]))
+  }, [can])
 
   const addTag = (raw: string) => {
     const t = raw.trim().toLowerCase().replace(/\s+/g, '-')
@@ -360,7 +391,7 @@ export default function NewServer() {
       )
       if (data.tools?.length) {
         setSpecMeta({ name: data.name, version: data.version, description: data.description, resolvedBaseUrl: data.resolvedBaseUrl ?? baseUrl.trim() })
-        setLocalTools(data.tools.map((t) => ({ id: uid(), name: t.name, description: t.description, method: t.method, path: t.path, enabled: true, fromSpec: true })))
+        setLocalTools(data.tools.map((t) => ({ id: uid(), name: t.name, originalName: t.name, description: t.description, method: t.method, path: t.path, enabled: true, fromSpec: true })))
         setFetchedForFile(null)
       } else {
         setError('No spec found at this URL. Try uploading the file manually.')
@@ -368,6 +399,46 @@ export default function NewServer() {
     } catch (err: any) {
       setError(err?.response?.data?.message ?? t('servers:error.noSpecFound'))
     } finally { setDiscovering(false) }
+  }
+
+  const handleAiImproveTools = async () => {
+    if (!localTools.length || !can(Permission.AiProvidersExecute)) return
+    setAiGenerating(true); setError('')
+    try {
+      const { data } = await api.post<{
+        providerId: string
+        tools: Array<{ name: string; description?: string; method: string; path: string; outputSchema?: Record<string, unknown> }>
+      }>('/ai-providers/generate-tools', {
+        providerId: selectedAiProviderId || undefined,
+        serverName: specMeta?.name || name,
+        baseUrl: specMeta?.resolvedBaseUrl || baseUrl,
+        description: specMeta?.description || description,
+        tools: localTools.map((tool) => ({
+          name: tool.name,
+          description: tool.description,
+          method: tool.method,
+          path: tool.path,
+        })),
+      })
+      setSelectedAiProviderId(data.providerId)
+      setLocalTools((current) => current.map((tool, index) => {
+        const suggestion = data.tools[index]
+        if (!suggestion) return tool
+        return {
+          ...tool,
+          name: suggestion.name || tool.name,
+          description: suggestion.description ?? tool.description,
+          method: suggestion.method || tool.method,
+          path: suggestion.path || tool.path,
+          outputSchema: suggestion.outputSchema,
+        }
+      }))
+    } catch (err: any) {
+      const msg = err?.response?.data?.message ?? t('servers:error.aiGenerationFailed')
+      setError(Array.isArray(msg) ? msg.join(', ') : msg)
+    } finally {
+      setAiGenerating(false)
+    }
   }
 
   // ── Navigation ─────────────────────────────────────────────────────────────
@@ -383,7 +454,7 @@ export default function NewServer() {
             '/swagger/preview', form, { params, headers: { 'Content-Type': 'multipart/form-data' } }
           )
           setSpecMeta({ name: data.name, version: data.version, description: data.description, resolvedBaseUrl: data.resolvedBaseUrl })
-          setLocalTools(data.tools.map((t) => ({ id: uid(), name: t.name, description: t.description, method: t.method, path: t.path, enabled: true, fromSpec: true })))
+          setLocalTools(data.tools.map((t) => ({ id: uid(), name: t.name, originalName: t.name, description: t.description, method: t.method, path: t.path, enabled: true, fromSpec: true })))
           setFetchedForFile(file)
         } catch (err: any) {
           const msg = err?.response?.data?.message ?? t('servers:error.parseError')
@@ -398,7 +469,7 @@ export default function NewServer() {
             '/swagger/parse-postman', form, { params, headers: { 'Content-Type': 'multipart/form-data' } }
           )
           setSpecMeta({ name: data.name ?? 'Postman Collection', version: data.version, description: data.description, resolvedBaseUrl: data.resolvedBaseUrl ?? baseUrl.trim() })
-          setLocalTools((data.tools ?? []).map((toolItem) => ({ id: uid(), name: toolItem.name, description: toolItem.description, method: toolItem.method, path: toolItem.path, enabled: true, fromSpec: true })))
+          setLocalTools((data.tools ?? []).map((toolItem) => ({ id: uid(), name: toolItem.name, originalName: toolItem.name, description: toolItem.description, method: toolItem.method, path: toolItem.path, enabled: true, fromSpec: true })))
           setFetchedForFile(postmanFile)
         } catch (err: any) {
           const msg = err?.response?.data?.message ?? t('servers:error.postmanParseError')
@@ -420,6 +491,32 @@ export default function NewServer() {
       case 'custom':        return { type: 'custom', headers: customHeaders.filter((h) => h.name.trim()) }
       default:              return { type: 'none' }
     }
+  }
+
+  const applyAiToolImprovements = async (projectId: string) => {
+    const improved = localTools.filter((tool) =>
+      tool.originalName && (
+        tool.name !== tool.originalName ||
+        tool.description ||
+        tool.outputSchema
+      )
+    )
+    if (!improved.length) return
+
+    await Promise.allSettled(improved.map(async (tool) => {
+      const originalName = tool.originalName!
+      if (tool.name !== originalName || tool.description) {
+        await api.patch(`/swagger/servers/${projectId}/tools/${encodeURIComponent(originalName)}`, {
+          name: tool.name,
+          description: tool.description,
+        })
+      }
+      if (tool.outputSchema) {
+        await api.patch(`/swagger/servers/${projectId}/tools/${encodeURIComponent(tool.name)}/output-schema`, {
+          outputSchema: tool.outputSchema,
+        })
+      }
+    }))
   }
 
   // ── Create ─────────────────────────────────────────────────────────────────
@@ -445,6 +542,7 @@ export default function NewServer() {
           projectId = data._id
         }
         if (authType !== 'none') await api.patch(`/swagger/servers/${projectId}/auth`, buildAuth())
+        await applyAiToolImprovements(projectId)
       } else {
         // Non-REST: create empty server with source-type tag
         const serverBaseUrl =
@@ -771,6 +869,48 @@ export default function NewServer() {
                   </Box>
                 </Box>
               </Paper>
+              {can(Permission.AiProvidersExecute) && (
+                <Paper variant="outlined" sx={{ p: 2 }}>
+                  <Box display="flex" alignItems="center" gap={1.5} flexWrap="wrap">
+                    <IconSparkles size={18} style={{ opacity: 0.7 }} />
+                    <Box flexGrow={1} minWidth={220}>
+                      <Typography variant="subtitle2" fontWeight={700}>{t('servers:ai.improveTitle')}</Typography>
+                      <Typography variant="caption" color="text.secondary">{t('servers:ai.improveHint')}</Typography>
+                    </Box>
+                    {activeAiProviders.length > 0 ? (
+                      <>
+                        <FormControl size="small" sx={{ minWidth: 220 }}>
+                          <InputLabel>{t('servers:ai.provider')}</InputLabel>
+                          <Select
+                            label={t('servers:ai.provider')}
+                            value={selectedAiProviderId}
+                            onChange={(e) => setSelectedAiProviderId(e.target.value)}
+                          >
+                            {activeAiProviders.map((provider) => (
+                              <MenuItem key={provider.id} value={provider.id}>
+                                {provider.name} · {provider.model}{provider.isDefault ? ` · ${t('servers:ai.default')}` : ''}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                        <Button
+                          size="small"
+                          variant="contained"
+                          startIcon={aiGenerating ? <CircularProgress size={14} color="inherit" /> : <IconSparkles size={15} />}
+                          disabled={!selectedAiProviderId || aiGenerating}
+                          onClick={handleAiImproveTools}
+                        >
+                          {aiGenerating ? t('servers:ai.improving') : t('servers:ai.improveAction')}
+                        </Button>
+                      </>
+                    ) : (
+                      <Button size="small" variant="outlined" onClick={() => navigate('/ai-providers/new')}>
+                        {t('servers:ai.connectProvider')}
+                      </Button>
+                    )}
+                  </Box>
+                </Paper>
+              )}
               {localTools.length > 0 && (
                 <Paper variant="outlined" sx={{ overflow: 'hidden' }}>
                   {localTools.slice(0, 8).map((t, i) => (

@@ -168,7 +168,8 @@
     "ai_providers_view": "Visualizar provedores de IA",
     "ai_providers_create": "Criar provedores de IA",
     "ai_providers_edit": "Editar provedores de IA",
-    "ai_providers_delete": "Excluir provedores de IA"
+    "ai_providers_delete": "Excluir provedores de IA",
+    "ai_providers_execute": "Usar provedores de IA para geração e testes"
   },
   "builtinRoles": {
     "admin": "Acesso completo a tudo.",

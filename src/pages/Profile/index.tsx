@@ -105,6 +105,7 @@ interface RolePermissions {
   ai_providers_create: boolean
   ai_providers_edit: boolean
   ai_providers_delete: boolean
+  ai_providers_execute: boolean
 }
 
 interface Role {
@@ -132,7 +133,7 @@ const PERMISSION_GROUPS: {
   { label: 'Settings',       keys: ['settings_manage'] },
   { label: 'Observability',  keys: ['observability_view', 'observability_create', 'observability_edit', 'observability_delete'] },
   { label: 'Error Tracking', keys: ['error_tracking_view', 'error_tracking_create', 'error_tracking_edit', 'error_tracking_delete'] },
-  { label: 'AI Providers',   keys: ['ai_providers_view', 'ai_providers_create', 'ai_providers_edit', 'ai_providers_delete'] },
+  { label: 'AI Providers',   keys: ['ai_providers_view', 'ai_providers_create', 'ai_providers_edit', 'ai_providers_delete', 'ai_providers_execute'] },
 ]
 
 const ALL_OFF: RolePermissions = {
@@ -151,6 +152,7 @@ const ALL_OFF: RolePermissions = {
   observability_view: false, observability_create: false, observability_edit: false, observability_delete: false,
   error_tracking_view: false, error_tracking_create: false, error_tracking_edit: false, error_tracking_delete: false,
   ai_providers_view: false, ai_providers_create: false, ai_providers_edit: false, ai_providers_delete: false,
+  ai_providers_execute: false,
 }
 
 const BUILTIN_ROLES: Role[] = [
@@ -178,6 +180,7 @@ const BUILTIN_ROLES: Role[] = [
       observability_view: true,
       error_tracking_view: true, error_tracking_create: true, error_tracking_edit: true, error_tracking_delete: true,
       ai_providers_view: true, ai_providers_create: true, ai_providers_edit: true, ai_providers_delete: true,
+      ai_providers_execute: true,
     },
   },
   {
@@ -196,6 +199,7 @@ const BUILTIN_ROLES: Role[] = [
       observability_view: true,
       error_tracking_view: true, error_tracking_create: true, error_tracking_edit: true,
       ai_providers_view: true, ai_providers_create: true, ai_providers_edit: true,
+      ai_providers_execute: true,
     },
   },
   {

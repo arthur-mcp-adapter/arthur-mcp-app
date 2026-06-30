@@ -18,18 +18,27 @@ export class TypeOrmAiProviderRepository implements IAiProviderRepository {
       apiKey: e.apiKey,
       baseUrl: e.baseUrl,
       isActive: e.isActive,
+      isDefault: e.isDefault,
+      lastTestStatus: e.lastTestStatus as AiProviderRecord['lastTestStatus'],
+      lastTestedAt: e.lastTestedAt,
+      lastTestError: e.lastTestError,
       createdAt: e.createdAt,
       updatedAt: e.updatedAt,
     };
   }
 
   async findAll(): Promise<AiProviderRecord[]> {
-    const rows = await this.repo.find({ order: { createdAt: 'DESC' } });
+    const rows = await this.repo.find({ order: { isDefault: 'DESC', createdAt: 'DESC' } });
     return rows.map((e) => this.toRecord(e));
   }
 
   async findById(id: string): Promise<AiProviderRecord | null> {
     const e = await this.repo.findOne({ where: { id } });
+    return e ? this.toRecord(e) : null;
+  }
+
+  async findDefault(): Promise<AiProviderRecord | null> {
+    const e = await this.repo.findOne({ where: { isDefault: true, isActive: true } });
     return e ? this.toRecord(e) : null;
   }
 
@@ -45,6 +54,11 @@ export class TypeOrmAiProviderRepository implements IAiProviderRepository {
     Object.assign(e, data);
     const saved = await this.repo.save(e);
     return this.toRecord(saved);
+  }
+
+  async clearDefaultExcept(id?: string): Promise<void> {
+    const rows = await this.repo.find({ where: { isDefault: true } });
+    await Promise.all(rows.filter((row) => row.id !== id).map((row) => this.repo.save({ ...row, isDefault: false })));
   }
 
   async delete(id: string): Promise<boolean> {

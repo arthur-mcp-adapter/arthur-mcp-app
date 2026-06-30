@@ -164,6 +164,7 @@
     "postmanParseError": "Erro ao analisar a coleção Postman.",
     "createError": "Erro ao criar servidor.",
     "createTemplateError": "Algo deu errado ao criar o servidor.",
+    "aiGenerationFailed": "Falha ao gerar melhorias com IA.",
     "unknownError": "Erro desconhecido.",
     "linkExpired": "Este link é inválido ou expirou."
   },
@@ -173,6 +174,15 @@
     "duplicated": "\"{{name}}\" criado com sucesso.",
     "duplicateFailed": "Não foi possível duplicar o servidor.",
     "importedSuccess": "{{name}} importado com sucesso"
+  },
+  "ai": {
+    "improveTitle": "Melhorar ferramentas com IA",
+    "improveHint": "Use um provedor configurado para refinar nomes, descrições e dicas de schema de saída antes da criação.",
+    "provider": "Provedor de IA",
+    "default": "padrão",
+    "improveAction": "Melhorar",
+    "improving": "Melhorando…",
+    "connectProvider": "Conectar provedor"
   },
   "source": {
     "chooseSource": "Escolha sua fonte de dados",
@@ -296,7 +306,32 @@
     "anyClientAuthHint": " Inclua o cabeçalho auth: <sua-chave-de-api> em cada requisição.",
     "requiresKey": "Este servidor requer uma chave de API. Contate a pessoa que compartilhou este link para obter sua chave pessoal.",
     "poweredBy": "Powered by MCP Convert · Esta página é acessível publicamente através do link de compartilhamento.",
-    "copyLabel": "Copiar {{label}}"
+    "copyLabel": "Copiar {{label}}",
+    "resourcesAvailable": "{{count}} recursos",
+    "promptsAvailable": "{{count}} prompts",
+    "referenceTitle": "Referência do servidor MCP",
+    "referenceDescription": "Documentação pública e somente leitura deste servidor MCP, incluindo ferramentas, recursos, prompts, descrições e schemas de saída.",
+    "version": "Versão",
+    "status": "Status",
+    "notSpecified": "Não informado",
+    "toolsTitle": "Ferramentas ({{count}})",
+    "resourcesTitle": "Recursos ({{count}})",
+    "promptsTitle": "Prompts ({{count}})",
+    "noTools": "Nenhuma ferramenta é exposta por este servidor.",
+    "noResources": "Nenhum recurso é exposto por este servidor.",
+    "noPrompts": "Nenhum prompt é exposto por este servidor.",
+    "parameters": "Parâmetros",
+    "noParameters": "Esta ferramenta não possui parâmetros.",
+    "required": "Obrigatório",
+    "optional": "Opcional",
+    "acceptedValues": "Valores aceitos: {{values}}",
+    "outputSchema": "Schema de saída",
+    "noOutputSchema": "Nenhum schema de saída declarado.",
+    "comments": "Notas",
+    "uri": "URI",
+    "arguments": "Argumentos",
+    "noArguments": "Sem argumentos.",
+    "argumentsCount": "{{count}} argumentos"
   },
   "upload": {
     "dragHint": "Arraste seu arquivo Swagger / OpenAPI aqui",

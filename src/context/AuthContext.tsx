@@ -45,6 +45,7 @@ export enum Permission {
   AiProvidersCreate = 'ai_providers_create',
   AiProvidersEdit = 'ai_providers_edit',
   AiProvidersDelete = 'ai_providers_delete',
+  AiProvidersExecute = 'ai_providers_execute',
   ObservabilityView = 'observability_view',
   ObservabilityCreate = 'observability_create',
   ObservabilityEdit = 'observability_edit',
@@ -98,6 +99,7 @@ export interface UserPermissions {
   ai_providers_create: boolean
   ai_providers_edit: boolean
   ai_providers_delete: boolean
+  ai_providers_execute: boolean
   observability_view: boolean
   observability_create: boolean
   observability_edit: boolean

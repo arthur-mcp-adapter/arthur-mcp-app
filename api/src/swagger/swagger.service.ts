@@ -11,12 +11,14 @@ import { testConnection, introspectSchema, executeWithRef } from '../dynamic-mcp
 import { buildRequest } from '../dynamic-mcp/request-builder';
 import { applyAuth } from '../dynamic-mcp/auth-provider';
 import { executeRequest } from '../dynamic-mcp/http-client';
-import { PROJECT_REPO } from '../database/database.tokens';
+import { PROJECT_REPO, PROMPT_REPO } from '../database/database.tokens';
 import { ISwaggerProjectRepository, McpApiKeyEntry, SwaggerProjectRecord } from './swagger-project.repository';
 import { parsePostmanCollection } from './postman-parser';
 import { SwaggerApiKeysService } from './swagger-api-keys.service';
 import { SwaggerImportService } from './swagger-import.service';
 import { JwtSecretService } from '../settings/jwt-secret.service';
+import { ErrorTrackingService } from '../error-tracking/error-tracking.service';
+import type { IPromptRepository } from '../prompts/prompt.repository';
 
 const SPEC_PATHS = [
   '/openapi.json', '/openapi.yaml', '/openapi.yml',
@@ -26,16 +28,94 @@ const SPEC_PATHS = [
   '/docs/api.json', '/api/openapi.json', '/api/swagger.json',
 ];
 
+interface ShareToolDoc {
+  name: string;
+  description?: string;
+  parameters: ShareToolParameterDoc[];
+  outputSchema?: Record<string, unknown>;
+  comments?: Array<{ text: string; author: string; createdAt: Date }>;
+}
+
+interface ShareToolParameterDoc {
+  name: string;
+  type?: string;
+  description?: string;
+  required: boolean;
+  enum?: unknown[];
+}
+
+interface ShareResourceDoc {
+  id: string;
+  name: string;
+  uri: string;
+  description?: string;
+  mimeType?: string;
+  outputSchema?: Record<string, unknown>;
+}
+
+interface SharePromptDoc {
+  promptId: string;
+  name?: string;
+  description?: string;
+  arguments: string[];
+  content?: string;
+}
+
+export interface ShareProjectInfo {
+  name: string;
+  mcpUrl: string;
+  hasKey: boolean;
+  description?: string;
+  version?: string;
+  status: string;
+  toolCount: number;
+  resourceCount: number;
+  promptCount: number;
+  tools: ShareToolDoc[];
+  resources: ShareResourceDoc[];
+  prompts: SharePromptDoc[];
+}
+
+function promptArguments(content?: string): string[] {
+  if (!content) return [];
+  return [...new Set([...content.matchAll(/\{\{(\w+)\}\}/g)].map((m) => m[1]))];
+}
+
+function publicToolDescription(description?: string): string | undefined {
+  const cleaned = description
+    ?.replace(/\s*\[(GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS)(?:\s+[^\]]+)?\]\s*/gi, ' ')
+    .replace(/\s{2,}/g, ' ')
+    .trim();
+  return cleaned || undefined;
+}
+
+function publicToolParameters(inputSchema?: Record<string, any>): ShareToolParameterDoc[] {
+  const properties = inputSchema?.properties && typeof inputSchema.properties === 'object'
+    ? inputSchema.properties as Record<string, Record<string, unknown>>
+    : {};
+  const required = new Set(Array.isArray(inputSchema?.required) ? inputSchema.required.map(String) : []);
+
+  return Object.entries(properties).map(([name, schema]) => ({
+    name,
+    type: typeof schema?.type === 'string' ? schema.type : undefined,
+    description: typeof schema?.description === 'string' ? schema.description : undefined,
+    required: required.has(name),
+    enum: Array.isArray(schema?.enum) ? schema.enum : undefined,
+  }));
+}
+
 @Injectable()
 export class SwaggerService {
   private readonly logger = new Logger(SwaggerService.name);
 
   constructor(
     @Inject(PROJECT_REPO) private readonly projectRepo: ISwaggerProjectRepository,
+    @Inject(PROMPT_REPO) private readonly promptRepo: IPromptRepository,
     private readonly dynamicMcp: DynamicMcpService,
     private readonly imports: SwaggerImportService,
     private readonly apiKeys: SwaggerApiKeysService,
     private readonly jwtSecretService: JwtSecretService,
+    private readonly errorTracking: ErrorTrackingService,
   ) {}
 
   private parseContent(content: string, filename: string): Record<string, any> {
@@ -572,7 +652,7 @@ export class SwaggerService {
 
   async getProjectForShare(
     token: string,
-  ): Promise<{ name: string; mcpUrl: string; hasKey: boolean; description?: string; toolCount: number }> {
+  ): Promise<ShareProjectInfo> {
     let payload: any;
     try {
       payload = jwt.verify(token, await this.jwtSecretService.getSecret());
@@ -582,13 +662,57 @@ export class SwaggerService {
 
     const server = await this.projectRepo.findById(payload.serverId);
     if (!server) throw new NotFoundException('Project not found.');
+    const dbQueries = server.dbQueries ?? [];
+    const dbQueryById = new Map(dbQueries.map((query) => [query.id, query]));
+
+    const prompts = await Promise.all((server.prompts ?? []).filter((ref) => ref.enabled !== false).map(async (ref) => {
+      const prompt = ref.promptId ? await this.promptRepo.findById(ref.promptId) : null;
+      return {
+        promptId: ref.promptId,
+        name: prompt?.name,
+        description: prompt?.description,
+        arguments: promptArguments(prompt?.content),
+        content: prompt?.content,
+      };
+    }));
+
+    const tools: ShareToolDoc[] = (server.tools ?? []).filter((tool) => tool.enabled !== false).map((tool) => ({
+      name: tool.name,
+      description: publicToolDescription(tool.description),
+      parameters: publicToolParameters(tool.inputSchema as Record<string, any> | undefined),
+      outputSchema: tool.outputSchema,
+      comments: tool.comments?.map((comment) => ({
+        text: comment.text,
+        author: comment.author,
+        createdAt: comment.createdAt,
+      })),
+    }));
+
+    const resources: ShareResourceDoc[] = (server.resources ?? []).filter((resource) => resource.enabled !== false).map((resource) => {
+      const dbQuery = resource.queryRef?.dbQueryId ? dbQueryById.get(resource.queryRef.dbQueryId) : undefined;
+      return {
+        id: resource.id,
+        name: resource.name,
+        uri: resource.uri,
+        description: resource.description,
+        mimeType: resource.mimeType,
+        outputSchema: dbQuery?.outputSchema,
+      };
+    });
 
     return {
       name: server.name,
       description: server.description,
+      version: server.version,
+      status: server.status,
       mcpUrl: `/api/mcp/project/${server._id}`,
       hasKey: (server.mcpApiKeys?.length ?? 0) > 0 || !!server.mcpApiKey,
-      toolCount: server.tools?.length ?? 0,
+      toolCount: tools.length,
+      resourceCount: resources.length,
+      promptCount: prompts.length,
+      tools,
+      resources,
+      prompts,
     };
   }
 
@@ -622,6 +746,11 @@ export class SwaggerService {
       const result = await testConnection(sourceType, cfg);
       return result;
     } catch (err: any) {
+      this.errorTracking.captureBackendError({
+        error: err,
+        source: 'http_request',
+        tags: { server_id: id, source_type: sourceType, operation: 'test_db_connection' },
+      });
       return { ok: false, error: err?.message ?? 'Connection failed' };
     }
   }
@@ -651,6 +780,11 @@ export class SwaggerService {
       const result = await executeWithRef(executionRef, args, cfg);
       return { result };
     } catch (err: any) {
+      this.errorTracking.captureBackendError({
+        error: err,
+        source: 'http_request',
+        tags: { server_id: id, operation: 'test_db_query' },
+      });
       return { result: null, error: err?.message ?? 'Query failed' };
     }
   }
@@ -709,6 +843,11 @@ export class SwaggerService {
       const result = await executeDbQuery(query, args, cfg);
       return { result };
     } catch (err: any) {
+      this.errorTracking.captureBackendError({
+        error: err,
+        source: 'http_request',
+        tags: { server_id: id, query_id: queryId, operation: 'run_db_query' },
+      });
       return { result: null, error: err?.message ?? 'Query failed' };
     }
   }
@@ -728,6 +867,11 @@ export class SwaggerService {
       const result = await executeDbQuery(query, args, cfg);
       return { result };
     } catch (err: any) {
+      this.errorTracking.captureBackendError({
+        error: err,
+        source: 'http_request',
+        tags: { server_id: id, query_id: query.id, operation: 'run_query_inline' },
+      });
       return { result: null, error: err?.message ?? 'Query failed' };
     }
   }

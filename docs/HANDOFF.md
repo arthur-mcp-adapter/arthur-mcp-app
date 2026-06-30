@@ -14,6 +14,34 @@ Frontend duplication optimization is progressing through a phased extraction pla
 
 ## Latest Changes
 
+- Expanded and privacy-scoped the public `/share/:token` MCP documentation page without removing the existing setup flow:
+  - `GET /api/share/:token` now returns only MCP-facing reference data for exposed items: server metadata, MCP URL, auth-required flag, counts, tools, public tool parameters, resources, resolved prompts, descriptions, prompt arguments/content, resource URIs, MIME types, and output schemas.
+  - The public share payload intentionally omits credentials and private origin details such as MCP API key values, upstream auth secrets, OAuth client secrets, connection credentials, DSNs, secret values, raw input schemas, endpoint methods/paths, HTTP method markers in descriptions, operations, API base URLs, source/data-source types, source tags, prompt tags, internal enabled/disabled flags, resource implementation type, and runtime settings.
+  - The frontend share page keeps the existing MCP URL, QR code, and Claude Desktop/Cursor/generic setup instructions, and adds an MCP reference section with expandable Tools, Resources, and Prompts.
+  - Added English and Portuguese `servers.share.*` locale copy for the new reference sections.
+  - Documented the Public MCP Share Page flow and noted that generating links still uses `servers_share`, while viewing a signed share token remains public.
+- Expanded backend Error Tracking coverage so an active provider receives request/application errors across the backend:
+  - `McpExceptionFilter` now reports HTTP and MCP exceptions before preserving existing response shaping.
+  - `SpaFilter` now reports API/MCP 404s it handles, while still ignoring normal React Router fallbacks.
+  - `main.ts` registers process-level `unhandledRejection` and `uncaughtException` reporting.
+  - `DynamicMcpService` now reports MCP tool, chain, resource, prompt, validation, configuration, and upstream HTTP error paths that return `isError`/error content instead of throwing.
+  - `AiProvidersService` and `SwaggerService` now report provider/database test failures that are normalized into `{ ok: false }` or `{ error }` responses.
+  - Error tracking capture remains a no-op when no provider is active and avoids raw request bodies, auth headers, cookies, API keys, DSNs, and secret values.
+- Polished the New AI Provider configuration step: the "Use as the default provider" switch now appears before the connection-test action in a responsive action row with cleaner spacing and no extra outlined surface.
+- Completed missing AI Provider locale keys left by the interrupted implementation, including draft provider name, model helper text, API-key secret labels, optional key label, and replace-key label in English and Portuguese.
+- Added the current frontend-only AI Provider limit: once any provider exists, `/ai-providers` disables the new-provider action and `/ai-providers/new` shows a limited-state message linking to the existing provider. No backend or persistence ownership model was changed.
+- Fixed `POST /api/ai-providers/test-config` so upstream provider failures (for example invalid OpenAI keys, quota/rate-limit responses, or missing referenced secrets) return a normalized `{ ok: false, message, latencyMs: 0 }` draft-test result instead of escaping as a 500.
+- Repaired the interrupted AI Providers frontend adjustments:
+  - `SecretAutocomplete` now correctly destructures and forwards its optional `disabled` prop.
+  - The frontend `AiProvider` type now includes the backend public `apiKeySet` field used by the detail page.
+  - The AI provider card test fixture now matches the expanded public provider contract.
+- Expanded AI Providers from credential CRUD into an adoption accelerator:
+  - Providers now support `isDefault`, `lastTestStatus`, `lastTestedAt`, and `lastTestError` across TypeORM and Mongo persistence.
+  - Added `POST /api/ai-providers/:id/default`, `POST /api/ai-providers/:id/test`, and `POST /api/ai-providers/generate-tools`.
+  - Added `AiProviderExecutorService` for provider-specific HTTP execution across OpenAI-compatible providers, Anthropic, Google/Gemini, Azure OpenAI, and Ollama.
+  - Added `ai_providers_execute` across backend/frontend permission contracts, built-in/fallback role presets, profile role editing, locale labels, and flow documentation.
+  - Updated the AI Provider UI to show default/test status, set a default provider, test connections, include Google/Cohere/Azure OpenAI/Ollama provider choices, and allow Ollama without an API key.
+  - Added an AI-assisted REST server creation control in the Tools overview step. It sends endpoint metadata to the selected/default provider and applies improved tool names/descriptions/output schema hints to the created server after import.
 - Repaired the AI Providers CRUD surface: the list, card, create wizard, and detail page now load the common i18n namespace where they use `common:*` keys, active/inactive labels are translated, and list snackbar messages from `useListPageLogic` are translated through the `aiProviders` namespace.
 - Verified AI Provider permissions across backend `RolePermissions`, backend built-in role presets, frontend `Permission`/`UserPermissions`, frontend fallback presets, route navigation, and UI action gates; Error Tracking permission verification remains pending.
 - Restored shared `common:terms.*` locale coverage by adding the missing `operation` term in English and Portuguese, keeping `tool` and `endpoint` available for server detail dialogs that use `common:terms.tool` and `common:terms.endpoint`.
@@ -262,6 +290,24 @@ Frontend duplication optimization is progressing through a phased extraction pla
 
 ## Validation
 
+- `npm run type-check` passed after expanding the public Share page reference UI.
+- `npm run build --prefix api` passed after expanding the public share payload.
+- `npm test --prefix api -- swagger.service --runInBand` passed with 1 suite and 7 tests, including share payload coverage that checks prompt resolution and credential omission.
+- Locale JSON parse check passed for `src/locales/en/servers.json` and `src/locales/pt-BR/servers.json`.
+- `npm run build --prefix api` passed after expanding backend Error Tracking capture coverage.
+- `npm test --prefix api -- mcp-exception.filter spa.filter ai-providers swagger.service --runInBand` passed with 4 suites and 23 tests.
+- `npm run type-check` passed after polishing the New AI Provider configuration action row.
+- AI Provider locale key check passed for the direct `aiProviders` namespace usages in the list, create, detail, and card UI.
+- `npm run type-check` passed after completing missing AI Provider locale keys.
+- `npm run type-check` passed after adding the frontend-only single AI Provider limit.
+- AI provider locale JSON parsed successfully after adding the single-provider-limit copy in English and Portuguese.
+- `npm test --prefix api -- ai-providers --runInBand` passed with 1 suite and 8 tests after normalizing draft provider test failures.
+- `npm run build --prefix api` passed after normalizing draft provider test failures.
+- `npm run type-check` passed after repairing the interrupted AI Providers frontend adjustments.
+- `npm run build --prefix api` passed while verifying the AI Providers backend still compiles.
+- `npm test --prefix api -- ai-providers --runInBand` passed with 1 suite and 7 tests.
+- `npm test -- src/features/feature-cards.test.tsx` passed with 1 file and 13 tests.
+- `npm test -- src/features/feature-cards.test.tsx --runInBand` was attempted but not run because Vitest does not support Jest's `--runInBand` option.
 - `npm run type-check` passed after repairing AI Provider UI/i18n handling.
 - `npm test -- src/features/feature-cards.test.tsx` passed with 1 file and 13 tests after touching `AiProviderCard`.
 - `npx tsc -p api/tsconfig.json --noEmit` passed while verifying the AI Providers backend module and permissions wiring.

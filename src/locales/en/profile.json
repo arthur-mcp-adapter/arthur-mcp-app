@@ -168,7 +168,8 @@
     "ai_providers_view": "View AI providers",
     "ai_providers_create": "Add AI providers",
     "ai_providers_edit": "Edit AI providers",
-    "ai_providers_delete": "Delete AI providers"
+    "ai_providers_delete": "Delete AI providers",
+    "ai_providers_execute": "Use AI providers for generation and tests"
   },
   "builtinRoles": {
     "admin": "Full access to everything.",

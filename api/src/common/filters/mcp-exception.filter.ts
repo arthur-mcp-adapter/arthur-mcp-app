@@ -6,6 +6,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { Response, Request } from 'express';
+import { ErrorTrackingService } from '../../error-tracking/error-tracking.service';
 
 const RPC_CODES = {
   validation: -32602,
@@ -32,17 +33,27 @@ function mapErrorCode(err: unknown): { code: number; reason: string } {
 
 @Catch()
 export class McpExceptionFilter implements ExceptionFilter {
+  constructor(private readonly errorTracking: ErrorTrackingService) {}
+
   catch(err: unknown, host: ArgumentsHost): void {
     const ctx = host.switchToHttp();
     const res = ctx.getResponse<Response>();
     const req = ctx.getRequest<Request>();
+    const isMcp = req.path.startsWith('/mcp');
+    const status = err instanceof HttpException ? err.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
+
+    this.errorTracking.captureBackendError({
+      error: err,
+      source: isMcp ? 'mcp_request' : 'http_request',
+      request: req,
+      statusCode: status,
+    });
 
     // @rekog/mcp-nest handles its own responses; skip if already sent
     if (res.headersSent) return;
 
     // Non-MCP routes return standard HTTP
-    if (!req.path.startsWith('/mcp')) {
-      const status = err instanceof HttpException ? err.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
+    if (!isMcp) {
       const message =
         err instanceof HttpException
           ? ((err.getResponse() as any)?.message ?? err.message)
