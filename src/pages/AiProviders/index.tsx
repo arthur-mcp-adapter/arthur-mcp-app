@@ -19,7 +19,7 @@ import { AiProviderCard, type AiProvider } from '../../features/aiProviders'
 import { useListPageLogic } from '../../hooks/useListPageLogic'
 
 export default function AiProviders() {
-  const { t } = useTranslation('aiProviders')
+  const { t } = useTranslation(['aiProviders', 'common'])
   const navigate = useNavigate()
   const { can } = useAuth()
 
@@ -125,7 +125,7 @@ export default function AiProviders() {
 
       <AppSnackbar
         open={state.snack !== null}
-        message={state.snack?.message ?? ''}
+        message={state.snack ? t(`aiProviders:${state.snack.message}`) : ''}
         severity={state.snack?.severity ?? 'success'}
         onClose={() => handlers.setSnack(null)}
       />

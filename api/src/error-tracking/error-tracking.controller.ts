@@ -1,4 +1,5 @@
 import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, UseGuards } from '@nestjs/common'
+import { SimulateErrorDto } from './dto/simulate-error.dto'
 import { JwtAuthGuard } from '../auth/jwt.guard'
 import { PermissionsGuard } from '../common/guards/permissions.guard'
 import { RequirePermission } from '../common/decorators/require-permission.decorator'
@@ -53,5 +54,11 @@ export class ErrorTrackingController {
   @RequirePermission('error_tracking_edit')
   testConnection(@Param('id') id: string) {
     return this.errorTrackingService.testConnection(id)
+  }
+
+  @Post(':id/simulate-error')
+  @RequirePermission('error_tracking_edit')
+  simulateError(@Param('id') id: string, @Body() dto: SimulateErrorDto) {
+    return this.errorTrackingService.simulateError(id, dto)
   }
 }

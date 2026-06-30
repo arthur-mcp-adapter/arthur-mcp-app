@@ -5,12 +5,11 @@
   "help": {
     "title": "Settings",
     "intro": "Global configuration for the entire Arthur MCP Adapter server. Changes saved here apply to all projects and all users — only administrators can access this page.",
-    "sections": "This page includes server, security, request header, e-mail, and terminology settings.",
+    "sections": "This page includes server, security, request header, e-mail, and observability settings.",
     "sectionServer": "Server — the public URL of this instance and the default HTTP timeout for upstream API calls.",
     "sectionSecurity": "Security — JWT signing secret rotation for sessions, bearer tokens, and share links.",
     "sectionHeaders": "Global request headers — headers injected into outbound requests made by servers.",
     "sectionEmail": "E-mail (SMTP) — credentials used to send password-reset emails.",
-    "sectionTerminology": "Terminology — optional labels used across the interface.",
     "sectionObservability": "Observability — environment variables that control logging, metrics, tracing, and OpenTelemetry settings.",
     "saveReminder": "Always click Save settings at the bottom after making changes. Navigating away without saving will discard your edits."
   },
@@ -19,7 +18,6 @@
     "security": "Security",
     "headers": "Headers",
     "email": "E-mail",
-    "terminology": "Terminology",
     "observability": "Observability"
   },
   "server": {
@@ -78,20 +76,6 @@
     "fromLabel": "Sender email (\"From:\")",
     "fromPlaceholder": "noreply@company.com",
     "fromError": "Invalid email format"
-  },
-  "terminology": {
-    "title": "Terminology",
-    "helpTitle": "Terminology customization",
-    "helpBody": "Override the default labels used throughout the interface. Leave a field blank to keep the default term.",
-    "serverLabel": "Server term",
-    "toolLabel": "Tool term",
-    "resourceLabel": "Resource term",
-    "promptLabel": "Prompt term",
-    "chainLabel": "Chain term",
-    "secretLabel": "Secret term",
-    "save": "Save terminology",
-    "saveSuccess": "Terminology saved.",
-    "saveError": "Failed to save terminology."
   },
   "saveSettings": "Save settings",
   "saving": "Saving…",

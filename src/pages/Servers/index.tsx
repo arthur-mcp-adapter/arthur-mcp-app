@@ -22,7 +22,7 @@ import { useAuth, Permission } from '../../context/AuthContext'
 import { HelpButton } from '../../components'
 import { ConfirmDialog } from '../../components'
 import { AppSnackbar } from '../../components'
-import { ProjectCard } from '../../features/server'
+import { ProjectCard } from '../../features/server/ProjectCard'
 import { useListPageLogic } from '../../hooks/useListPageLogic'
 import type { HealthEntry, HealthSummaryEntry, Project } from '../../features/server/types'
 

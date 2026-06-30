@@ -12,7 +12,8 @@ This file should be updated when task state changes. It does not replace issues 
 ## In Progress
 
 - [ ] Audit permission coverage for newly added feature domains and integrations:
-  - [ ] Verify frontend permissions for AI providers and error tracking are present in backend `RolePermissions` and backend built-in role presets.
+  - [x] Verify frontend permissions for AI providers are present in backend `RolePermissions`, backend built-in role presets, frontend fallback presets, and AI Provider UI gates.
+  - [ ] Verify frontend permissions for error tracking are present in backend `RolePermissions` and backend built-in role presets.
   - [x] Verify observability permissions are present in backend `RolePermissions` and backend/frontend role presets; `/observability` uses `observability_view` only for the runtime dashboard.
   - [ ] Verify every new page/tab/action added during frontend expansion has an explicit permission decision and matching backend/frontend enforcement.
 - [ ] Apply frontend code duplication optimization plan (`docs/FRONTEND_OPTIMIZATION_PLAN.md`):
@@ -96,6 +97,10 @@ This file should be updated when task state changes. It does not replace issues 
 - [x] Replaced the main hardcoded resource dialog, tool template section, tool dialog, and OAuth client panel copy with `serverDetail`/`common` i18n keys, and repaired the related locale namespaces.
 - [x] Added an observability-ready backend layer with public health/readiness/liveness endpoints, structured logs, Prometheus metrics, optional OpenTelemetry tracing, correlation IDs, MCP technical metrics, Render defaults, and local Prometheus/Grafana/Tempo helper files.
 - [x] Reworked the Observability UI from provider CRUD into a runtime observability dashboard aligned with `/health`, `/ready`, `/live`, `/metrics`, structured logs, OpenTelemetry env vars, and the local Prometheus/Grafana/Tempo stack.
+- [x] Added Claude Code `frontend-test-engineer` specialist for frontend Vitest, React Testing Library, routing, permission, i18n, form, hook, and API client tests.
+- [x] Fixed `ServerDetail` contextual sidebar tab labels so they refresh when the active frontend language changes.
+- [x] Restored shared `common:terms.*` locale coverage so server detail dialogs no longer render fallback keys such as `terms.endpoint`.
+- [x] Repaired the AI Providers CRUD surface by aligning common namespace usage, active/inactive labels, list snackbar translation, and frontend/backend validation checks.
 
 ## Decisions
 

@@ -27,7 +27,9 @@
     "createProvider": "Connect Sentry",
     "saveChanges": "Save changes",
     "deleteProvider": "Delete integration",
-    "openDashboard": "Open dashboard"
+    "openDashboard": "Open dashboard",
+    "simulateError": "Send Test Event",
+    "simulatingError": "Sending…"
   },
   "label": {
     "name": "Name",
@@ -57,7 +59,8 @@
     "dsnRequired": "Find your DSN in Sentry under Settings → Projects → Client Keys.",
     "dsnProtected": "Credential is encrypted and cannot be retrieved after saving.",
     "environmentOptional": "Filter events by environment. Leave empty to capture all.",
-    "deleteWarning": "This will permanently remove the Sentry integration configuration."
+    "deleteWarning": "This will permanently remove the Sentry integration configuration.",
+    "simulateError": "Sends a test exception to Sentry to verify the integration is working."
   },
   "empty": {
     "noProviders": "No Sentry integrations yet. Click Connect Sentry to add one.",
@@ -78,7 +81,9 @@
   "toast": {
     "saved": "Sentry integration created.",
     "updated": "Integration updated.",
-    "deleted": "Integration deleted."
+    "deleted": "Integration deleted.",
+    "simulateErrorSuccess": "Test event sent to Sentry.",
+    "simulateErrorFailed": "Failed to send test event."
   },
   "tab": {
     "overview": "Overview",

@@ -14,6 +14,12 @@ Frontend duplication optimization is progressing through a phased extraction pla
 
 ## Latest Changes
 
+- Repaired the AI Providers CRUD surface: the list, card, create wizard, and detail page now load the common i18n namespace where they use `common:*` keys, active/inactive labels are translated, and list snackbar messages from `useListPageLogic` are translated through the `aiProviders` namespace.
+- Verified AI Provider permissions across backend `RolePermissions`, backend built-in role presets, frontend `Permission`/`UserPermissions`, frontend fallback presets, route navigation, and UI action gates; Error Tracking permission verification remains pending.
+- Restored shared `common:terms.*` locale coverage by adding the missing `operation` term in English and Portuguese, keeping `tool` and `endpoint` available for server detail dialogs that use `common:terms.tool` and `common:terms.endpoint`.
+- Fixed `ServerDetail` contextual sidebar tab labels so `serverDetail` translations are re-registered in `ServerNavContext` after a frontend language change.
+- Added Claude Code `frontend-test-engineer` specialist for frontend Vitest and React Testing Library coverage across pages, feature components, hooks, API client behavior, routing, permissions, i18n, forms, and user-visible flows.
+- Registered `frontend-test-engineer` in the Claude Code agent README and shared `AGENTS.md` specialist list.
 - Reworked the Settings page to use the contextual tab navigation pattern used by server/detail pages. Settings now has Server, Security, Headers, E-mail, and Terminology tabs, with primary save actions aligned in the same footer position; Terminology still uses its dedicated terminology save flow behind that matching action.
 - Added a configurable JWT signing secret to Settings. The value is stored as sensitive Settings data, safe reads expose only `jwtSecretSet`, and auth/OAuth/MCP bearer token/share-link signing and verification use the saved value with fallback to `JWT_SECRET`.
 - Added a Settings Security section for rotating the JWT secret, including validation and copy warning that existing signed sessions, OAuth/MCP tokens, and share links may be invalidated.
@@ -148,6 +154,7 @@ Frontend duplication optimization is progressing through a phased extraction pla
 
 - `AGENTS.md`
 - `.claude/agents/README.md`
+- `.claude/agents/frontend-test-engineer.md`
 - `.claude/agents/backend-test-engineer.md`
 - `.claude/agents/compliance-counsel.md`
 - `.claude/agents/developer-advocate.md`
@@ -255,6 +262,12 @@ Frontend duplication optimization is progressing through a phased extraction pla
 
 ## Validation
 
+- `npm run type-check` passed after repairing AI Provider UI/i18n handling.
+- `npm test -- src/features/feature-cards.test.tsx` passed with 1 file and 13 tests after touching `AiProviderCard`.
+- `npx tsc -p api/tsconfig.json --noEmit` passed while verifying the AI Providers backend module and permissions wiring.
+- `npm run type-check` passed after restoring shared `common:terms.*` locale coverage.
+- Focused Node locale check passed for `common:terms.endpoint` and `common:terms.tool` in English and Portuguese.
+- `npm run type-check` passed after fixing `ServerDetail` contextual sidebar tab translation refresh.
 - `npm run type-check` passed after aligning the Terminology tab save action with the other Settings tabs.
 - `npm run type-check` passed after converting Settings to contextual tabs.
 - `node -e "for (const f of ['src/locales/en/settings.json','src/locales/pt-BR/settings.json']) { JSON.parse(require('fs').readFileSync(f,'utf8')); console.log(f + ' ok') }"` passed after adding Settings tab copy.

@@ -19,15 +19,13 @@ import {
   IconClock,
   IconShieldLock,
   IconAdjustments,
-  IconLetterCase,
 } from '@tabler/icons-react'
 import { useTranslation } from 'react-i18next'
 import api from '../../api'
 import { useAuth, Permission } from '../../context/AuthContext'
-import { useTerminology } from '../../context/TerminologyContext'
 import { useDetailPageNav } from '../../hooks/useDetailPageNav'
 import { AppSnackbar, HelpButton } from '../../components'
-import { GlobalRequestHeadersPanel, TerminologyPanel, type HeaderEntry } from '../../features/settings'
+import { GlobalRequestHeadersPanel, type HeaderEntry } from '../../features/settings'
 import { ObservabilityEnvironmentPanel } from '../../features/observability'
 
 interface SettingsData {
@@ -40,15 +38,9 @@ interface SettingsData {
   smtpPassSet: boolean
   jwtSecretSet: boolean
   globalRequestHeaders?: { name: string; value: string }[]
-  termServer?: string
-  termTool?: string
-  termResource?: string
-  termPrompt?: string
-  termChain?: string
-  termSecret?: string
 }
 
-type SettingsTab = 'server' | 'security' | 'headers' | 'email' | 'terminology' | 'observability'
+type SettingsTab = 'server' | 'security' | 'headers' | 'email' | 'observability'
 
 function emailValid(v: string) {
   return !v || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)
@@ -60,7 +52,6 @@ function portValid(v: number) {
 
 export default function Settings() {
   const { can, loading: authLoading } = useAuth()
-  const { reload: reloadTerminology } = useTerminology()
   const { t } = useTranslation('settings')
   const [data, setData] = useState<SettingsData | null>(null)
   const [loading, setLoading] = useState(true)
@@ -86,15 +77,6 @@ export default function Settings() {
   const [jwtSecret, setJwtSecret] = useState('')
   const [globalHeaders, setGlobalHeaders] = useState<HeaderEntry[]>([])
 
-  // Terminology state
-  const [termServer, setTermServer] = useState('')
-  const [termTool, setTermTool] = useState('')
-  const [termResource, setTermResource] = useState('')
-  const [termPrompt, setTermPrompt] = useState('')
-  const [termChain, setTermChain] = useState('')
-  const [termSecret, setTermSecret] = useState('')
-  const [savingTerms, setSavingTerms] = useState(false)
-
   const addGlobalHeader = () =>
     setGlobalHeaders((prev) => [...prev, { id: Math.random().toString(36).slice(2), name: '', value: '' }])
   const removeGlobalHeader = (id: string) =>
@@ -115,12 +97,6 @@ export default function Settings() {
         setSmtpUser(r.data.smtpUser || '')
         setSmtpFrom(r.data.smtpFrom || '')
         setGlobalHeaders((r.data.globalRequestHeaders ?? []).map((h) => ({ id: Math.random().toString(36).slice(2), ...h })))
-        setTermServer(r.data.termServer || '')
-        setTermTool(r.data.termTool || '')
-        setTermResource(r.data.termResource || '')
-        setTermPrompt(r.data.termPrompt || '')
-        setTermChain(r.data.termChain || '')
-        setTermSecret(r.data.termSecret || '')
         setOrig({
           serverBaseUrl: r.data.serverBaseUrl || '',
           defaultTimeoutMs: r.data.defaultTimeoutMs || 30000,
@@ -202,26 +178,6 @@ export default function Settings() {
     }
   }
 
-  const handleSaveTerminology = async () => {
-    setSavingTerms(true)
-    try {
-      await api.patch('/settings', {
-        termServer: termServer.trim() || null,
-        termTool: termTool.trim() || null,
-        termResource: termResource.trim() || null,
-        termPrompt: termPrompt.trim() || null,
-        termChain: termChain.trim() || null,
-        termSecret: termSecret.trim() || null,
-      })
-      reloadTerminology()
-      showSnack(t('terminology.saveSuccess'), 'success')
-    } catch {
-      showSnack(t('terminology.saveError'), 'error')
-    } finally {
-      setSavingTerms(false)
-    }
-  }
-
   useDetailPageNav<SettingsTab>(() => {
     if (authLoading || !can(Permission.SettingsManage)) return null
     return {
@@ -233,7 +189,6 @@ export default function Settings() {
         { label: t('tab.security'), icon: <IconShieldLock size={17} />, idx: 'security' },
         { label: t('tab.headers'), icon: <IconAdjustments size={17} />, idx: 'headers' },
         { label: t('tab.email'), icon: <IconMail size={17} />, idx: 'email' },
-        { label: t('tab.terminology'), icon: <IconLetterCase size={17} />, idx: 'terminology' },
         { label: t('tab.observability'), icon: <IconActivity size={17} />, idx: 'observability' },
       ],
       tab,
@@ -268,20 +223,6 @@ export default function Settings() {
     </Box>
   )
 
-  const saveTerminologyButton = (
-    <Box display="flex" justifyContent="flex-end" mt={1} mb={3}>
-      <Button
-        variant="contained"
-        size="small"
-        onClick={handleSaveTerminology}
-        disabled={savingTerms}
-        startIcon={savingTerms ? <CircularProgress size={14} color="inherit" /> : <IconDeviceFloppy size={18} />}
-      >
-        {savingTerms ? t('saving') : t('saveSettings')}
-      </Button>
-    </Box>
-  )
-
   return (
     <Box>
       <Box display="flex" alignItems="center" gap={1} mb={0.5}>
@@ -298,7 +239,6 @@ export default function Settings() {
             <Box component="li"><Typography variant="body2">{t('help.sectionSecurity')}</Typography></Box>
             <Box component="li"><Typography variant="body2">{t('help.sectionHeaders')}</Typography></Box>
             <Box component="li"><Typography variant="body2">{t('help.sectionEmail')}</Typography></Box>
-            <Box component="li"><Typography variant="body2">{t('help.sectionTerminology')}</Typography></Box>
           </Box>
           <Typography variant="body2">
             {t('help.saveReminder')}
@@ -463,26 +403,6 @@ export default function Settings() {
 
       {tab === 'observability' && (
         <ObservabilityEnvironmentPanel />
-      )}
-
-      {tab === 'terminology' && (
-        <>
-          <TerminologyPanel
-            termServer={termServer}
-            termTool={termTool}
-            termResource={termResource}
-            termPrompt={termPrompt}
-            termChain={termChain}
-            termSecret={termSecret}
-            onTermServerChange={setTermServer}
-            onTermToolChange={setTermTool}
-            onTermResourceChange={setTermResource}
-            onTermPromptChange={setTermPrompt}
-            onTermChainChange={setTermChain}
-            onTermSecretChange={setTermSecret}
-          />
-          {saveTerminologyButton}
-        </>
       )}
 
       <AppSnackbar

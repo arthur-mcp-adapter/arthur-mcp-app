@@ -113,7 +113,10 @@
     "Users & Roles": "Users & Roles",
     "Audit & Logs": "Audit & Logs",
     "Templates": "Templates",
-    "Settings": "Settings"
+    "Settings": "Settings",
+    "Observability": "Observability",
+    "Error Tracking": "Error Tracking",
+    "AI Providers": "AI Providers"
   },
   "permissions": {
     "servers_view": "View servers and their configuration",
@@ -153,7 +156,19 @@
     "audit_view": "View the activity audit log",
     "audit_export": "Export audit logs to CSV",
     "templates_use": "Use API templates to create pre-configured servers",
-    "settings_manage": "Access and modify system settings (SMTP, base URL)"
+    "settings_manage": "Access and modify system settings (SMTP, base URL)",
+    "observability_view": "View observability dashboard and metrics",
+    "observability_create": "Add observability providers",
+    "observability_edit": "Edit observability provider settings",
+    "observability_delete": "Remove observability providers",
+    "error_tracking_view": "View error tracking configuration",
+    "error_tracking_create": "Connect error tracking providers (e.g. Sentry)",
+    "error_tracking_edit": "Update error tracking settings",
+    "error_tracking_delete": "Disconnect error tracking providers",
+    "ai_providers_view": "View AI providers",
+    "ai_providers_create": "Add AI providers",
+    "ai_providers_edit": "Edit AI providers",
+    "ai_providers_delete": "Delete AI providers"
   },
   "builtinRoles": {
     "admin": "Full access to everything.",

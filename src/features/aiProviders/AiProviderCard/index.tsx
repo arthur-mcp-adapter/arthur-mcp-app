@@ -20,7 +20,7 @@ export function AiProviderCard({ provider, onEdit, onDelete }: {
   onEdit: (provider: AiProvider) => void
   onDelete: (provider: AiProvider) => void
 }) {
-  const { t } = useTranslation('aiProviders')
+  const { t } = useTranslation(['aiProviders', 'common'])
   const { can } = useAuth()
 
   const color = PROVIDER_COLORS[provider.provider] ?? '#7c3aed'

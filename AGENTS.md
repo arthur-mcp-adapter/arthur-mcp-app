@@ -134,6 +134,7 @@ Known specialists:
 - `devops-expert`: CI/CD, GitHub Actions, deploy automation, infrastructure scripts, monitoring, logging, and operational best practices.
 - `docker-compose-expert`: Docker Compose environments, networks, volumes, service dependencies, environment variables, and healthchecks.
 - `docker-expert`: Dockerfiles, multi-stage builds, minimal images, container security, and production container best practices.
+- `frontend-test-engineer`: frontend Vitest and React Testing Library tests for React pages, feature components, hooks, API client behavior, routing, permissions, i18n, forms, and user-visible flows.
 - `gof-expert`: Gang of Four design pattern selection, naming, refactoring, and misuse review.
 - `nestjs-expert`: NestJS backend modules, controllers, services, DTOs, guards, interceptors, persistence, authentication, and Jest tests.
 - `oss-scout`: open source tool/library discovery, maturity review, comparisons, and project health research.

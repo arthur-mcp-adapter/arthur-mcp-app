@@ -189,7 +189,6 @@
     "chainInput": "Chain input",
     "stepOutput": "Step output",
     "stepNumber": "Step {{step}}",
-    "dynamic": "Dynamic",
     "contentStats": "{{chars}} chars · {{lines}} lines",
     "uri": "URI",
     "mimeType": "MIME Type",
@@ -305,8 +304,8 @@
     "noHooks": "No hooks configured. Add a hook to inject headers, append query params, or log every call.",
     "noInputConstraints": "No constraints defined. Add rules to validate or block specific parameter values.",
     "noOutputFilters": "No output filters defined. Add rules to hide sensitive data from AI responses.",
-    "noToolRestrictions": "No tool restrictions defined. Add rules to block, limit, or gate specific tools."
-    ,"noFixedHeaders": "No fixed headers yet. Add one to send it with every request."
+    "noToolRestrictions": "No tool restrictions defined. Add rules to block, limit, or gate specific tools.",
+    "noFixedHeaders": "No fixed headers yet. Add one to send it with every request."
   },
   "confirm": {
     "revokeKey": "Revoke \"{{name}}\"?",
@@ -348,8 +347,8 @@
     "executionFailed": "Execution failed",
     "queryDeleted": "Operation was deleted — cannot execute.",
     "introspectFailed": "Introspection failed. Check your connection settings.",
-    "connectionFailed": "Connection failed"
-    ,"chainNameRequired": "Name is required.",
+    "connectionFailed": "Connection failed",
+    "chainNameRequired": "Name is required.",
     "chainStepRequired": "Add at least one step.",
     "resourceNameRequired": "Name is required.",
     "resourceUriRequired": "URI is required.",
@@ -459,8 +458,8 @@
     "addHook": "Add hook",
     "addRestriction": "Add restriction",
     "addFilter": "Add filter",
-    "addConstraint": "Add constraint"
-    ,"createResourceFromEndpoint": "Create resource from endpoint"
+    "addConstraint": "Add constraint",
+    "createResourceFromEndpoint": "Create resource from endpoint"
   },
   "tooltip": {
     "updateFromSpec": "Upload a new version of the spec to add or update tools",
@@ -518,7 +517,19 @@
     "timeMs": "Time (ms)",
     "errorCol": "Error",
     "mcp": "MCP",
-    "direct": "Direct"
+    "direct": "Direct",
+    "refresh": "Refresh",
+    "noLogs": "No calls recorded yet.",
+    "callHistory": "Call history",
+    "records": "{{count}} records",
+    "requestPayload": "Request payload",
+    "responsePayload": "Response payload",
+    "noPayload": "No payload",
+    "prev": "← Previous",
+    "next": "Next →",
+    "of": "{{from}}–{{to}} of {{total}}",
+    "expand": "Expand row",
+    "retention": "Logs are kept for 7 days in memory and are not persisted across restarts."
   },
   "help": {
     "tools": {
@@ -643,5 +654,52 @@
       "toolRestrictionsDesc": "Restrict which tools can be called under certain conditions — by user role, time of day, rate limits, or any custom rule."
     },
     "empty": "No guard rails configured yet. Input constraints, output filters, and tool restrictions will be managed here."
+  },
+  "auth": {
+    "title": "API Credentials",
+    "helpTitle": "API Authentication",
+    "helpIntro": "The credentials Arthur automatically attaches to every outgoing HTTP request when calling the upstream API on behalf of an AI tool call. The AI never sees or handles these credentials — Arthur injects them invisibly.",
+    "helpChoose": "Choose the mode that matches your API's requirements:",
+    "helpNone": "None: Public API — no credentials are attached. Use for unauthenticated endpoints.",
+    "helpBearer": "Bearer Token: Adds the header Authorization: Bearer <token>. Most modern REST APIs and OAuth2 resource servers use this.",
+    "helpApiKey": "API Key: Adds the key as a custom header (e.g. X-API-Key) or as a query parameter. Check your API's documentation for the exact field name.",
+    "helpBasic": "Basic Auth: Adds Authorization: Basic <base64(username:password)>. Used by some legacy APIs and services like Jira or Confluence.",
+    "helpOAuth": "OAuth2 Client Credentials: Arthur fetches a Bearer token automatically using your client ID and secret, and renews it before it expires. Use for machine-to-machine integrations where no user is involved.",
+    "helpCustom": "Custom Headers: Add any arbitrary HTTP headers. Useful for APIs with non-standard authentication schemes or when you need to pass multiple headers.",
+    "helpSecurity": "Important security note: credentials are stored encrypted in the database. Use tokens and keys with the minimum required scope — if a credential is exposed, a limited-scope key reduces the blast radius.",
+    "helpSeparation": "These credentials are completely separate from the MCP Authentication key (which protects the MCP endpoint). One controls who can call Arthur; the other controls how Arthur calls your API.",
+    "typeLabel": "Authentication type",
+    "typeNone": "None (public API)",
+    "typeBearer": "Bearer Token",
+    "typeApiKey": "API Key",
+    "typeBasic": "Basic Auth (username/password)",
+    "typeOAuth": "OAuth2 Client Credentials",
+    "typeCustom": "Custom headers",
+    "noneHint": "The API is public and does not require authentication. No header will be added.",
+    "bearerSentAs": "Sent as: Authorization: Bearer <token>",
+    "bearerTokenLabel": "Bearer Token",
+    "apiKeyParamName": "Parameter name",
+    "apiKeyValue": "Value",
+    "apiKeySendAs": "Send as",
+    "apiKeySendHeader": "Header HTTP",
+    "apiKeySendQuery": "Query param",
+    "apiKeySentAsHeader": "Sent as header",
+    "apiKeySentAsQuery": "Added to URL",
+    "basicUsername": "Username",
+    "basicPassword": "Password",
+    "basicSentAs": "Sent as: Authorization: Basic <base64(username:password)>",
+    "oauthTokenUrl": "Token URL (token endpoint)",
+    "oauthTokenUrlPlaceholder": "https://auth.example.com/oauth/token",
+    "oauthClientId": "Client ID",
+    "oauthClientSecret": "Client Secret",
+    "oauthScope": "Scope (optional)",
+    "oauthScopePlaceholder": "read write",
+    "oauthHint": "Uses client_credentials. Token is fetched automatically and renewed when it expires.",
+    "customHint": "Add any HTTP header to the request (e.g. X-Tenant-Id, X-Auth-Token).",
+    "customHeaderLabel": "Header",
+    "customHeaderPlaceholder": "X-Custom-Header",
+    "customValueLabel": "Value",
+    "addHeader": "Add header",
+    "storedWarning": "Credentials are stored in the database. Use tokens with minimum required scope."
   }
 }

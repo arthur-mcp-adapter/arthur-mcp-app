@@ -23,6 +23,8 @@
     "search": "Buscar",
     "filter": "Filtrar",
     "clear": "Limpar",
+    "show": "Mostrar",
+    "hide": "Ocultar",
     "loading": "Carregando…",
     "saving": "Salvando…",
     "saved": "Salvo",
@@ -51,7 +53,8 @@
     "updatedAt": "Atualizado em",
     "type": "Tipo",
     "value": "Valor",
-    "optional": "opcional"
+    "optional": "opcional",
+    "inactive": "Inativo"
   },
   "error": {
     "generic": "Algo deu errado. Tente novamente.",
@@ -67,6 +70,7 @@
     "endpoint": "Endpoint",
     "prompt": "Prompt",
     "chain": "Chain",
-    "secret": "Segredo"
+    "secret": "Segredo",
+    "operation": "Operação"
   }
 }

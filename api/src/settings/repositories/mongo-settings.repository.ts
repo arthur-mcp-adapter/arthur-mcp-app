@@ -23,12 +23,6 @@ export class MongoSettingsRepository implements ISettingsRepository {
       jwtSecret: obj.jwtSecret ?? '',
       globalRequestHeaders: obj.globalRequestHeaders ?? [],
       observabilityEnvironment: obj.observabilityEnvironment ?? {},
-      termServer: obj.termServer ?? undefined,
-      termTool: obj.termTool ?? undefined,
-      termResource: obj.termResource ?? undefined,
-      termPrompt: obj.termPrompt ?? undefined,
-      termChain: obj.termChain ?? undefined,
-      termSecret: obj.termSecret ?? undefined,
     };
   }
 

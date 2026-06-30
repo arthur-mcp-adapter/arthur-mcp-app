@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 
 vi.mock('../../api', () => ({
@@ -12,18 +12,30 @@ vi.mock('../../api', () => ({
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
-    t: (key: string) => ({
+    t: (key: string, vars?: Record<string, unknown>) => ({
       'common:action.delete': 'Delete',
+      'common:action.duplicate': 'Duplicate',
       'common:action.reload': 'Reload',
+      'common:status.error': 'Error',
       'servers:action.browseTemplates': 'Browse templates',
       'servers:action.createFirst': 'Create first server',
       'servers:action.newServer': 'New server',
+      'servers:confirm.deleteMessage': `Delete ${vars?.name ?? 'server'}?`,
+      'servers:confirm.deleteTitle': 'Delete server',
       'servers:empty.noMatch': 'No matching servers',
       'servers:empty.noServers': 'No servers yet',
+      'servers:error.loadFailed': 'Could not load servers',
       'servers:heading.title': 'Servers',
       'servers:label.all': 'All',
       'servers:label.tags': 'Tags',
+      'servers:label.toolCount': `${vars?.count ?? 0} tools`,
       'servers:placeholder.search': 'Search',
+      'servers:status.active': 'Active',
+      'servers:status.noActivity': 'No activity',
+      'servers:status.paused': 'Paused',
+      'servers:status.pausedByManager': 'Paused by manager',
+      'servers:toast.duplicated': `Duplicated ${vars?.name ?? ''}`,
+      'servers:toast.duplicateFailed': 'Could not duplicate server',
     }[key] ?? key),
   }),
 }));
@@ -88,5 +100,100 @@ describe('Servers page', () => {
     await waitFor(() => {
       expect(screen.getByText('No servers yet')).toBeInTheDocument();
     });
+  });
+
+  it('filters projects by search and tags', async () => {
+    (api.get as ReturnType<typeof vi.fn>)
+      .mockResolvedValueOnce({
+        data: [
+          {
+            _id: 'p1', name: 'Billing API', description: 'Money flows',
+            baseUrl: 'https://billing.example.com', status: 'active', tools: [], tags: ['finance'], isPaused: false,
+          },
+          {
+            _id: 'p2', name: 'Support API', description: 'Tickets',
+            baseUrl: 'https://support.example.com', status: 'error', tools: [], tags: ['support'], isPaused: true,
+          },
+        ],
+      })
+      .mockResolvedValueOnce({ data: [{ projectId: 'p1', totalCalls: 0, errorRatePct: 0 }] });
+
+    renderServers();
+    expect(await screen.findByText('Billing API')).toBeInTheDocument();
+    expect(screen.getByText('Support API')).toBeInTheDocument();
+
+    fireEvent.change(screen.getByPlaceholderText('Search'), { target: { value: 'billing' } });
+    expect(screen.getByText('Billing API')).toBeInTheDocument();
+    expect(screen.queryByText('Support API')).not.toBeInTheDocument();
+
+    fireEvent.change(screen.getByPlaceholderText('Search'), { target: { value: '' } });
+    fireEvent.click(screen.getAllByText('support')[0]);
+    expect(screen.queryByText('Billing API')).not.toBeInTheDocument();
+    expect(screen.getByText('Support API')).toBeInTheDocument();
+
+    fireEvent.click(screen.getAllByText('support')[0]);
+    expect(screen.getByText('Billing API')).toBeInTheDocument();
+  });
+
+  it('duplicates a server and shows snackbar feedback', async () => {
+    (api.get as ReturnType<typeof vi.fn>)
+      .mockResolvedValueOnce({
+        data: [{
+          _id: 'p1', name: 'Billing API', baseUrl: 'https://billing.example.com',
+          status: 'active', tools: [], tags: [], isPaused: false,
+        }],
+      })
+      .mockResolvedValueOnce({ data: [] });
+    (api.post as ReturnType<typeof vi.fn>).mockResolvedValue({
+      data: {
+        _id: 'p2', name: 'Billing API Copy', baseUrl: 'https://billing.example.com',
+        status: 'active', tools: [], tags: [], isPaused: false,
+      },
+    });
+
+    renderServers();
+    expect(await screen.findByText('Billing API')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByLabelText('Duplicate'));
+
+    await waitFor(() => {
+      expect(api.post).toHaveBeenCalledWith('/swagger/servers/p1/duplicate');
+      expect(screen.getByText('Billing API Copy')).toBeInTheDocument();
+      expect(screen.getByText('Duplicated Billing API Copy')).toBeInTheDocument();
+    });
+  });
+
+  it('opens delete confirmation and deletes the selected server', async () => {
+    (api.get as ReturnType<typeof vi.fn>)
+      .mockResolvedValueOnce({
+        data: [{
+          _id: 'p1', name: 'Billing API', baseUrl: 'https://billing.example.com',
+          status: 'active', tools: [], tags: [], isPaused: false,
+        }],
+      })
+      .mockResolvedValueOnce({ data: [] });
+    (api.delete as ReturnType<typeof vi.fn>).mockResolvedValue({});
+
+    renderServers();
+    expect(await screen.findByText('Billing API')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByLabelText('Delete'));
+    expect(screen.getByText('Delete server')).toBeInTheDocument();
+    expect(screen.getByText('Delete Billing API?')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Delete' }));
+    await waitFor(() => expect(api.delete).toHaveBeenCalledWith('/swagger/servers/p1'));
+    await waitFor(() => expect(screen.queryByText('Billing API')).not.toBeInTheDocument());
+  });
+
+  it('shows load errors and reload action', async () => {
+    const reload = vi.fn();
+    Object.defineProperty(window, 'location', { configurable: true, value: { ...window.location, reload } });
+    (api.get as ReturnType<typeof vi.fn>).mockRejectedValue(new Error('offline'));
+
+    renderServers();
+    expect(await screen.findByText('Could not load servers')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Reload' }));
+    expect(reload).toHaveBeenCalled();
   });
 });

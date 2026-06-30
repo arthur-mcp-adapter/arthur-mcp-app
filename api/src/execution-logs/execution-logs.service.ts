@@ -13,6 +13,8 @@ export interface LogEntry {
   responseTimeMs: number;
   isError: boolean;
   errorMessage?: string;
+  requestPayload?: unknown;
+  responsePayload?: unknown;
   createdAt: Date;
 }
 
@@ -25,6 +27,8 @@ export interface LogExecutionDto {
   responseTimeMs?: number;
   isError?: boolean;
   errorMessage?: string;
+  requestPayload?: unknown;
+  responsePayload?: unknown;
 }
 
 @Injectable()
@@ -43,6 +47,8 @@ export class ExecutionLogsService {
       responseTimeMs: dto.responseTimeMs ?? 0,
       isError: dto.isError ?? false,
       errorMessage: dto.errorMessage,
+      requestPayload: dto.requestPayload,
+      responsePayload: dto.responsePayload,
       createdAt: new Date(),
     };
     this.cache.set(`${dto.serverId}:${id}`, entry);

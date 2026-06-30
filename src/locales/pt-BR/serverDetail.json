@@ -189,7 +189,6 @@
     "chainInput": "Entrada da cadeia",
     "stepOutput": "Saída da etapa",
     "stepNumber": "Etapa {{step}}",
-    "dynamic": "Dinâmico",
     "contentStats": "{{chars}} caracteres · {{lines}} linhas",
     "uri": "URI",
     "mimeType": "Tipo MIME",
@@ -305,8 +304,8 @@
     "noHooks": "Nenhum hook configurado. Adicione um hook para injetar cabeçalhos, anexar parâmetros de query ou registrar cada chamada.",
     "noInputConstraints": "Nenhuma restrição definida. Adicione regras para validar ou bloquear valores específicos de parâmetros.",
     "noOutputFilters": "Nenhum filtro de saída definido. Adicione regras para ocultar dados sensíveis das respostas da IA.",
-    "noToolRestrictions": "Nenhuma restrição de ferramenta definida. Adicione regras para bloquear, limitar ou proteger ferramentas específicas."
-    ,"noFixedHeaders": "Ainda não há cabeçalhos fixos. Adicione um para enviá-lo em toda requisição."
+    "noToolRestrictions": "Nenhuma restrição de ferramenta definida. Adicione regras para bloquear, limitar ou proteger ferramentas específicas.",
+    "noFixedHeaders": "Ainda não há cabeçalhos fixos. Adicione um para enviá-lo em toda requisição."
   },
   "confirm": {
     "revokeKey": "Revogar \"{{name}}\"?",
@@ -518,7 +517,19 @@
     "timeMs": "Tempo (ms)",
     "errorCol": "Erro",
     "mcp": "MCP",
-    "direct": "Direto"
+    "direct": "Direto",
+    "refresh": "Atualizar",
+    "noLogs": "Nenhuma chamada registrada ainda.",
+    "callHistory": "Histórico de chamadas",
+    "records": "{{count}} registros",
+    "requestPayload": "Payload da requisição",
+    "responsePayload": "Payload da resposta",
+    "noPayload": "Sem payload",
+    "prev": "← Anterior",
+    "next": "Próximo →",
+    "of": "{{from}}–{{to}} de {{total}}",
+    "expand": "Expandir linha",
+    "retention": "Logs são mantidos por 7 dias em memória e não persistem entre reinicializações."
   },
   "help": {
     "tools": {
@@ -643,5 +654,52 @@
       "toolRestrictionsDesc": "Restrinja quais ferramentas podem ser chamadas em determinadas condições — por papel do usuário, horário, limites de taxa ou qualquer regra personalizada."
     },
     "empty": "Nenhum guard rail configurado ainda. Restrições de entrada, filtros de saída e restrições de ferramentas serão gerenciados aqui."
+  },
+  "auth": {
+    "title": "Credenciais da API",
+    "helpTitle": "Autenticação da API",
+    "helpIntro": "As credenciais que o Arthur anexa automaticamente a cada requisição HTTP de saída ao chamar a API upstream em nome de uma ferramenta de IA. A IA nunca vê ou manipula essas credenciais — o Arthur as injeta de forma invisível.",
+    "helpChoose": "Escolha o modo que corresponde aos requisitos da sua API:",
+    "helpNone": "Nenhum: API pública — nenhuma credencial é anexada. Use para endpoints não autenticados.",
+    "helpBearer": "Bearer Token: Adiciona o cabeçalho Authorization: Bearer <token>. A maioria das APIs REST modernas e servidores OAuth2 usa isso.",
+    "helpApiKey": "API Key: Adiciona a chave como um cabeçalho customizado (ex: X-API-Key) ou como parâmetro de query. Verifique a documentação da sua API.",
+    "helpBasic": "Basic Auth: Adiciona Authorization: Basic <base64(usuário:senha)>. Usado por algumas APIs legadas como Jira ou Confluence.",
+    "helpOAuth": "OAuth2 Client Credentials: O Arthur busca um Bearer token automaticamente usando seu client ID e secret, e o renova antes de expirar. Use para integrações máquina-a-máquina.",
+    "helpCustom": "Cabeçalhos personalizados: Adicione quaisquer cabeçalhos HTTP. Útil para APIs com esquemas de autenticação não convencionais.",
+    "helpSecurity": "Nota de segurança: as credenciais são armazenadas criptografadas no banco. Use tokens com o escopo mínimo necessário.",
+    "helpSeparation": "Essas credenciais são completamente separadas da chave de autenticação MCP. Uma controla quem pode chamar o Arthur; a outra controla como o Arthur chama sua API.",
+    "typeLabel": "Tipo de autenticação",
+    "typeNone": "Nenhum (API pública)",
+    "typeBearer": "Bearer Token",
+    "typeApiKey": "API Key",
+    "typeBasic": "Basic Auth (usuário/senha)",
+    "typeOAuth": "OAuth2 Client Credentials",
+    "typeCustom": "Cabeçalhos personalizados",
+    "noneHint": "A API é pública e não requer autenticação. Nenhum cabeçalho será adicionado.",
+    "bearerSentAs": "Enviado como: Authorization: Bearer <token>",
+    "bearerTokenLabel": "Bearer Token",
+    "apiKeyParamName": "Nome do parâmetro",
+    "apiKeyValue": "Valor",
+    "apiKeySendAs": "Enviar como",
+    "apiKeySendHeader": "Cabeçalho HTTP",
+    "apiKeySendQuery": "Parâmetro de query",
+    "apiKeySentAsHeader": "Enviado como cabeçalho",
+    "apiKeySentAsQuery": "Adicionado à URL",
+    "basicUsername": "Usuário",
+    "basicPassword": "Senha",
+    "basicSentAs": "Enviado como: Authorization: Basic <base64(usuário:senha)>",
+    "oauthTokenUrl": "URL do token (token endpoint)",
+    "oauthTokenUrlPlaceholder": "https://auth.exemplo.com/oauth/token",
+    "oauthClientId": "Client ID",
+    "oauthClientSecret": "Client Secret",
+    "oauthScope": "Escopo (opcional)",
+    "oauthScopePlaceholder": "read write",
+    "oauthHint": "Usa client_credentials. O token é obtido automaticamente e renovado quando expira.",
+    "customHint": "Adicione qualquer cabeçalho HTTP à requisição (ex: X-Tenant-Id, X-Auth-Token).",
+    "customHeaderLabel": "Cabeçalho",
+    "customHeaderPlaceholder": "X-Cabeçalho-Customizado",
+    "customValueLabel": "Valor",
+    "addHeader": "Adicionar cabeçalho",
+    "storedWarning": "Credenciais são armazenadas no banco. Use tokens com escopo mínimo necessário."
   }
 }

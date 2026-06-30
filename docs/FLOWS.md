@@ -39,38 +39,32 @@ Risk to preserve:
 - Do not reintroduce secret values into list/detail metadata responses.
 - Do not rely on frontend checks alone; backend permission guards are authoritative.
 
-## Language and Terminology
+## Language / i18n
 
-Goal: let users view the app in a supported language and customize core MCP domain labels without changing code.
+Goal: let users view the app in a supported language (English or Brazilian Portuguese).
 
 Entry points:
 
-- Global language control in the app shell.
-- `/settings` terminology section.
-
-Backend behavior:
-
-- `GET /api/settings` returns optional terminology override fields: `termServer`, `termTool`, `termResource`, `termPrompt`, `termChain`, and `termSecret`.
-- Settings persistence stores the same fields in both SQLite and MongoDB models.
-- `PATCH /api/settings` accepts `null` or empty-equivalent terminology values to return that term to the locale default.
+- Global language selector in the app shell / user menu.
 
 Frontend behavior:
 
 - `src/i18n.ts` initializes i18next with `en` and `pt-BR` resources.
 - Language detection checks `localStorage.lang` first, then the browser navigator language, and falls back to English.
 - Translation resources are grouped by namespace under `src/locales/<locale>/`.
-- `TerminologyProvider` loads saved terminology after a token is present.
-- `useTerm()` returns a saved terminology override when present, otherwise the active locale default from `common.terms`.
-- Saving terminology in Settings reloads the terminology context so labels can update without a full page reload.
-- Settings uses the same contextual tab navigation pattern as server/detail pages. The tabs are Server, Security, Headers, E-mail, and Terminology; each tab places its primary save action in the same footer position, while Terminology still calls its dedicated terminology save flow.
-- The Settings page includes a Security section for configuring the JWT signing secret. Saving it requires `settings_manage`; safe settings reads expose only `jwtSecretSet`, never the secret value. The backend falls back to `JWT_SECRET` from the process environment when no database value is saved.
-- Rotating the JWT secret invalidates existing signed sessions, OAuth/MCP bearer tokens, and share links because token verification immediately uses the saved value.
+- All user-facing strings must use `t()` from `useTranslation`; do not hardcode English on pages that already import a namespace.
+- The `serverDetail` namespace covers the full server detail page including the `auth` sub-key for `AuthConfigPanel` strings.
+
+Settings page behavior:
+
+- Settings uses contextual tab navigation: Server, Security, Headers, and E-mail tabs.
+- The Security section configures the JWT signing secret. Saving requires `settings_manage`; GET only returns `jwtSecretSet`, never the value.
+- Rotating the JWT secret invalidates existing sessions, OAuth/MCP bearer tokens, and share links.
 
 Risk to preserve:
 
 - Do not hardcode new user-facing strings on pages that already use i18n.
 - Keep translation keys in English even when locale values are translated.
-- Keep configurable terms limited to domain labels; do not use terminology overrides for complete sentences.
 
 ## Observability Runtime
 
@@ -83,33 +77,28 @@ Entry points:
 Permissions:
 
 - `observability_view`: can view the Observability runtime page.
-- `settings_manage`: can save the persisted environment-control draft shown on the Observability page. Operators without this permission can still view and copy the values.
+- `settings_manage`: can save the persisted environment-control draft shown on the Observability page.
 
 Backend behavior:
 
 - `GET /health`, `GET /ready`, `GET /live`, and `GET /metrics` are public operational endpoints outside the `/api` prefix.
-- The operational endpoints do not mutate user data and are intended for infrastructure probes and Prometheus scraping.
 - Logs are emitted to stdout/stderr as structured JSON when `ENABLE_STRUCTURED_LOGS=true`.
 - Metrics include Node.js defaults, HTTP request metrics, and MCP-specific metrics for tools, resources, prompts, and external HTTP.
-- Tracing is optional and controlled by `ENABLE_TRACING`, `OTEL_EXPORTER_TYPE`, and `OTEL_EXPORTER_OTLP_ENDPOINT`.
 
 Frontend behavior:
 
-- The Observability page checks `/health`, `/ready`, `/live`, and `/metrics` directly from the browser instead of calling provider CRUD APIs.
-- The page summarizes a small Prometheus sample, including HTTP request/error counts, MCP tool counters, external HTTP counters, memory, event loop lag, and uptime when present.
-- The page lets operators customize an environment variable draft that matches the backend observability implementation. Boolean variables use switches, enum-like variables use selects, and free-form variables use text inputs. These controls are persisted in the global Settings singleton as `observabilityEnvironment` and can be copied as `.env` lines; they do not mutate the already-running backend process.
-- The page lists the local Prometheus/Grafana/Tempo stack command that matches the backend observability implementation.
-- Legacy provider creation/detail routes under `/observability/new` and `/observability/:id` redirect back to `/observability`.
+- The page checks `/health`, `/ready`, `/live`, and `/metrics` directly from the browser.
+- The page lets operators customize an environment variable draft stored in `settings.observabilityEnvironment`.
+- Legacy provider routes under `/observability/new` and `/observability/:id` redirect to `/observability`.
 
 Risk to preserve:
 
-- Do not reintroduce provider-management UI unless matching backend endpoints and permission decisions exist.
-- Do not require authentication for the operational probe endpoints themselves; the UI page is permission-gated, but infrastructure probes stay public.
-- Keep the page focused on technical observability. Do not add AI insight, automatic log analysis, or Grafana Cloud coupling here.
+- Do not require authentication for operational probe endpoints.
+- Keep the page focused on technical observability.
 
 ## REST Server Templates
 
-Goal: let users create a preconfigured REST server from a template while preserving source-type filtering and source-specific behavior.
+Goal: let users create a preconfigured REST server from a template while preserving source-type filtering.
 
 Entry points:
 
@@ -119,44 +108,35 @@ Backend behavior:
 
 - `POST /api/swagger/servers` accepts optional `tags` when creating an empty server.
 - Template-created servers must include `source:rest` in `tags`.
-- Source-aware backend logic reads the first `source:<type>` tag and falls back to `rest` when no source tag is present.
 
 Frontend behavior:
 
 - `src/data/api-templates.ts` exports `SERVER_TEMPLATE_SOURCE_TAG` as `source:rest`.
-- `src/pages/Templates.tsx` sends `tags: [SERVER_TEMPLATE_SOURCE_TAG]` when creating a server from any API template.
 - Tools from the template are added after the tagged server is created.
 
 Risk to preserve:
 
-- Do not create API-template servers without `source:rest`; they should appear and behave as REST API servers immediately.
-- Do not use non-REST source tags for entries in `API_TEMPLATES`.
+- Do not create API-template servers without `source:rest`.
 
 ## Page-Based Entity Creation
 
-Goal: make primary creation flows feel consistent with server creation instead of mixing modals, drawers, and pages for similar tasks.
+Goal: make primary creation flows consistent with server creation.
 
 Entry points:
 
-- `/servers/new`
-- `/prompts/new`
-- `/secrets/new`
+- `/servers/new`, `/prompts/new`, `/secrets/new`, `/ai-providers/new`
 
 Frontend behavior:
 
-- List pages remain browse/manage surfaces.
+- List pages are browse/manage surfaces.
 - Primary create buttons navigate to a dedicated `new` route.
 - New entity pages use a stepper and a final review step.
-- Server source cards support single-click to select and double-click to select and continue to the Details step.
-- Prompt creation uses Details, Content, and Review steps, then navigates to `/prompts/:id`.
-- Secret creation uses Details, Value, and Review steps, then navigates to `/secrets/:id`.
-- Server creation remains the most complex flow and continues to use source-specific steps.
+- Server creation remains the most complex flow with source-specific steps.
 
 Risk to preserve:
 
 - Do not reintroduce modal/drawer creation for primary entities when a dedicated `new` route exists.
-- Keep sensitive secret values masked in review and out of metadata responses.
-- Keep creation routes permission-gated with the same permissions used by the list actions.
+- Keep sensitive values (secret vault values, AI provider API keys) masked in review and absent from metadata responses.
 
 ## Data Source Operations
 
@@ -164,19 +144,194 @@ Goal: make data-source backed servers feel operation-first instead of query-spec
 
 Entry points:
 
-- `/servers/:id`, for database, NoSQL, and other source-backed servers.
+- `/servers/:id` for database, NoSQL, and other source-backed servers.
 
 Frontend behavior:
 
 - The server-detail navigation shows `Operations` for data-source backed servers.
-- The Operations tab is the place to create source operations before exposing them as MCP tools.
-- Tool creation refers to selecting an operation, not selecting a query.
-- Source-specific editors may still use precise labels such as `SQL Query`, Mongo operation type, Redis command, GraphQL operation, or gRPC method.
-- Operations carry an input schema derived from their input parameters and may define an output schema before being exposed through MCP.
-- Operation input parameters behave like GET query parameters: callers provide values, and the operation can use them as variables in the source-specific execution definition.
-- In the operation editor, input parameters appear before the source-specific query, command, document, or request body so users define the contract before the execution logic.
-- Tool creation copies the selected operation's input/output schemas when available.
+- The Operations tab is where source operations are created before being exposed as MCP tools.
+- Operation input parameters behave like GET query parameters: callers provide values used as variables in the execution definition.
 
 Compatibility note:
 
 - Backend routes and storage may still use `queries` and `DbQuery` until the operation-first backend migration is complete.
+
+## AI Providers
+
+Goal: let authorized users configure external AI model integrations (OpenAI, Anthropic, Ollama, etc.) with secure API key storage.
+
+Entry points:
+
+- `/ai-providers`
+- `/ai-providers/new`
+- `/ai-providers/:id`
+
+Permissions:
+
+- `ai_providers_view`: can list and view AI provider metadata.
+- `ai_providers_create`: can create providers.
+- `ai_providers_edit`: can update provider settings.
+- `ai_providers_delete`: can delete providers.
+
+Backend behavior:
+
+- `GET /api/ai-providers` and `GET /api/ai-providers/:id` return metadata only — `apiKey` is always stripped from responses.
+- `POST /api/ai-providers` accepts `name`, `provider`, `model`, `apiKey` (required), `baseUrl` (optional), `description` (optional), `isActive` (default true).
+- `PATCH /api/ai-providers/:id` accepts any subset of the above fields. The `apiKey` field is write-only and not returned.
+- `DELETE /api/ai-providers/:id` hard-deletes the record.
+- `provider` must be one of the known enum values: `openai`, `anthropic`, `ollama`, `groq`, `cohere`, `azure-openai`, `google`, `mistral`, `custom`.
+- All endpoints require `JwtAuthGuard` + `PermissionsGuard`.
+- Repository pattern with `AI_PROVIDER_REPO` injection token; TypeORM and MongoDB implementations.
+
+Frontend behavior:
+
+- List page shows name, provider type, model, active/inactive chip, and creation date. API key is never displayed.
+- Detail page shows the same metadata with an edit form. API key field is write-only: filled in on creation, shown as masked placeholder on edit.
+- Provider and model dropdowns are grouped by provider family.
+
+Risk to preserve:
+
+- Never return `apiKey` in any GET response.
+- Never log `apiKey` at any log level.
+- `isActive: false` providers are stored but should not be selected for active AI workflows.
+
+## Chains
+
+Goal: let users define multi-step tool sequences (chains) within a server and expose them as single MCP tools.
+
+Entry points:
+
+- `/servers/:id` → Chains tab
+
+Permissions:
+
+- Chains are part of the server; access follows server permissions (`servers_view`, `servers_edit_settings`, `servers_delete`).
+
+Backend behavior:
+
+- Chains are stored as JSON in `SwaggerProjectEntity.chains` (TypeORM) and `SwaggerProjectSchema.chains` (MongoDB).
+- `GET /api/swagger/servers/:id` includes the full `chains` array.
+- `POST /api/swagger/servers/:id/chains` creates a chain.
+- `PATCH /api/swagger/servers/:id/chains/:chainId` updates a chain.
+- `DELETE /api/swagger/servers/:id/chains/:chainId` deletes a chain.
+- Each chain has: `id` (uuid), `name`, `description`, `steps[]`, `inputSchema`, `outputMapping`.
+- Each step references a `toolName` and maps input fields using `inputSource` (literal, chain_input, or prior step output).
+
+Frontend behavior:
+
+- The Chains tab in ServerDetail lists existing chains and opens a `ChainDialog` for create/edit.
+- `ChainDialog` uses `StepBuilder` to configure individual steps inline.
+- Each step selects a tool from the server's tool list and maps its inputs.
+- Chains are visible to the MCP client as regular tools once created.
+
+Risk to preserve:
+
+- Chain execution in `dynamic-mcp.service.ts` must resolve step outputs sequentially; do not parallelize steps.
+- Chain step input sources must be validated server-side before execution.
+
+## Execution Logs
+
+Goal: let authorized users trace every MCP and direct tool call with timing, status, and payload details.
+
+Entry points:
+
+- `/servers/:id` → Logs tab
+
+Permissions:
+
+- `servers_view`: required to access the server detail page where logs are shown.
+
+Backend behavior:
+
+- `ExecutionLogsService` stores entries in an in-memory node-cache with a 7-day TTL.
+- Each `LogEntry` includes: `id`, `serverId`, `serverName`, `toolName`, `source` (mcp|direct), `statusCode`, `responseTimeMs`, `isError`, `errorMessage?`, `requestPayload?`, `responsePayload?`, `createdAt`.
+- `requestPayload` is the effective args object passed to the tool after tenant parameter injection.
+- `responsePayload` is the parsed HTTP response body (falls back to raw string when body is not valid JSON).
+- `GET /api/execution-logs/:serverId` returns paginated log entries for a server.
+- `GET /api/execution-logs/:serverId/stats` returns aggregate stats.
+- Logs are cleared when a server is deleted.
+
+Frontend behavior:
+
+- The Logs tab shows a table with columns: tool, source, status, time (ms), error flag, and timestamp.
+- Expanding a row reveals `requestPayload` and `responsePayload` as formatted JSON.
+- Stats section shows total calls, error rate, and avg response time.
+
+Risk to preserve:
+
+- Payloads may contain sensitive data; do not log them at a level that persists beyond the in-memory store.
+- The in-memory store is not replicated across instances; do not assume log completeness in a multi-instance deployment.
+
+## Roles and Permissions
+
+Goal: let admin users control access to every feature area through named roles with granular per-feature permission flags.
+
+Entry points:
+
+- `/profile` (role editor for admin)
+- `AuthContext` (permission checks across all pages)
+
+Backend behavior:
+
+- `RolePermissions` interface in `role.repository.ts` defines all boolean permission keys. Adding a new feature area requires adding keys here.
+- `permissions.ts` defines `ALL_PERMISSIONS_OFF` (all false) and `BUILTIN_ROLE_PERMISSIONS` for `developer`, `editor`, and `viewer` preset roles.
+- `PermissionsGuard` reads `@RequirePermission('key')` from the route handler and rejects with 403 when the authenticated user's role lacks that key.
+- JWT payload includes `role`; the role's permission set is fetched from the DB on each guarded request.
+- `admin` is a hardcoded super-role that always passes all permission checks.
+
+Frontend behavior:
+
+- `AuthContext` exposes `UserPermissions` and `usePermission(key)` hook.
+- Pages and action buttons check permissions before rendering or enabling actions.
+- The Profile page renders `PERMISSION_GROUPS` as a matrix editor for custom roles.
+- Builtin roles (`admin`, `developer`, `editor`, `viewer`) are rendered as read-only presets in the role selector.
+
+Permission groups and their keys (as of this writing):
+
+| Group | Keys |
+|---|---|
+| Servers | `servers_view` `servers_create` `servers_edit_settings` `servers_delete` `servers_toggle_active` `servers_share` |
+| Tools | `tools_view` `tools_create` `tools_edit` `tools_delete` `tools_test` `endpoints_create` |
+| Resources | `resources_view` `resources_create` `resources_edit` `resources_delete` |
+| Prompts | `prompts_view` `prompts_create` `prompts_edit` `prompts_delete` |
+| Secrets | `secrets_view_names` `secrets_reveal_values` `secrets_create` `secrets_edit` `secrets_delete` |
+| API Keys | `api_keys_view` `api_keys_create` `api_keys_delete` |
+| Users & Roles | `users_view` `users_invite` `users_edit` `users_delete` `roles_view` `roles_manage` |
+| Audit & Logs | `audit_view` `audit_export` |
+| Templates | `templates_use` |
+| Settings | `settings_manage` |
+| Observability | `observability_view` `observability_create` `observability_edit` `observability_delete` |
+| Error Tracking | `error_tracking_view` `error_tracking_create` `error_tracking_edit` `error_tracking_delete` |
+| AI Providers | `ai_providers_view` `ai_providers_create` `ai_providers_edit` `ai_providers_delete` |
+
+Risk to preserve:
+
+- Adding a new permission key requires changes in: `role.repository.ts`, `permissions.ts` (ALL_PERMISSIONS_OFF + builtin presets), `Profile/index.tsx` (RolePermissions type + PERMISSION_GROUPS + ALL_OFF + BUILTIN_ROLES), and both locale files (`en/profile.json`, `pt-BR/profile.json`).
+- Do not rely on frontend permission checks as the sole gate; backend `@RequirePermission` is authoritative.
+
+## MCP Tool Execution (dynamic-mcp)
+
+Goal: translate an MCP client tool call into an HTTP request to the upstream API, with authentication, tenant param injection, logging, and error tracking.
+
+Entry points:
+
+- Any MCP client connected via `/mcp/:apiKey` SSE or Streamable HTTP.
+
+Flow:
+
+1. MCP client sends `tools/call` with `toolName` and `args`.
+2. `DynamicMcpService` resolves the server by `apiKey` and checks `isActive`.
+3. Tenant parameters are injected into `args` (`injectTenantParams`).
+4. `buildRequest(effectiveArgs, tool.endpointRef, globalHeaders)` constructs the HTTP request.
+5. `applyAuth(req, auth)` injects auth credentials (bearer, api-key, basic, oauth2-client, custom).
+6. `executeObservedRequest(req)` executes and records metrics/tracing.
+7. On success: response is mapped with `mapResponse(httpRes)` → MCP content array.
+8. `executionLogs.log(...)` records `requestPayload: effectiveArgs` and `responsePayload: tryParseJson(httpRes.body)`.
+9. On error: `errorTrackingService.record(...)` and `executionLogs.log({ isError: true })`.
+10. If the tool is part of a chain, chain orchestration sequentially calls each step using prior step outputs as inputs.
+
+Risk to preserve:
+
+- `effectiveArgs` (post-injection) must be used for both the HTTP request and the `requestPayload` log, not the raw `args`.
+- OAuth2 tokens are cached and renewed transparently; do not expose them in logs.
+- Error responses from the upstream API are mapped to MCP `isError: true` content, not thrown as exceptions.

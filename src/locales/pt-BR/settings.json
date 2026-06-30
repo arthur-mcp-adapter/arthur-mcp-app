@@ -5,12 +5,11 @@
   "help": {
     "title": "Configurações",
     "intro": "Configuração global para todo o servidor Arthur MCP Adapter. As alterações salvas aqui se aplicam a todos os projetos e usuários — apenas administradores podem acessar esta página.",
-    "sections": "Esta página inclui configurações de servidor, segurança, cabeçalhos de requisição, e-mail e terminologia.",
+    "sections": "Esta página inclui configurações de servidor, segurança, cabeçalhos de requisição, e-mail e observabilidade.",
     "sectionServer": "Servidor — a URL pública desta instância e o timeout HTTP padrão para chamadas de API.",
     "sectionSecurity": "Segurança — rotação do segredo de assinatura JWT para sessões, tokens bearer e links de compartilhamento.",
     "sectionHeaders": "Cabeçalhos globais de requisição — cabeçalhos injetados nas chamadas de saída feitas pelos servidores.",
     "sectionEmail": "E-mail (SMTP) — credenciais usadas para enviar e-mails de redefinição de senha.",
-    "sectionTerminology": "Terminologia — rótulos opcionais usados na interface.",
     "sectionObservability": "Observabilidade — variáveis de ambiente que controlam logs, métricas, tracing e configurações OpenTelemetry.",
     "saveReminder": "Sempre clique em Salvar configurações ao final após fazer alterações. Navegar para outra página sem salvar descartará suas edições."
   },
@@ -19,7 +18,6 @@
     "security": "Segurança",
     "headers": "Cabeçalhos",
     "email": "E-mail",
-    "terminology": "Terminologia",
     "observability": "Observabilidade"
   },
   "server": {
@@ -78,20 +76,6 @@
     "fromLabel": "E-mail remetente (\"De:\")",
     "fromPlaceholder": "noreply@empresa.com",
     "fromError": "Formato de e-mail inválido"
-  },
-  "terminology": {
-    "title": "Terminologia",
-    "helpTitle": "Personalização de terminologia",
-    "helpBody": "Substitua os rótulos padrão usados em toda a interface. Deixe um campo em branco para manter o termo padrão.",
-    "serverLabel": "Termo para servidor",
-    "toolLabel": "Termo para ferramenta",
-    "resourceLabel": "Termo para recurso",
-    "promptLabel": "Termo para prompt",
-    "chainLabel": "Termo para chain",
-    "secretLabel": "Termo para segredo",
-    "save": "Salvar terminologia",
-    "saveSuccess": "Terminologia salva.",
-    "saveError": "Falha ao salvar terminologia."
   },
   "saveSettings": "Salvar configurações",
   "saving": "Salvando…",

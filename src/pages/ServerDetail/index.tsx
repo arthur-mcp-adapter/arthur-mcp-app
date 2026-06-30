@@ -206,7 +206,7 @@ export default function ServerDetail() {
         { label: t('tab.tools'), icon: <IconTool size={17} />, idx: 2, badge: project.tools.length },
         { label: t('tab.resources'), icon: <IconDatabase size={17} />, idx: 3, badge: (project.resources ?? []).length },
         { label: t('tab.prompts'), icon: <IconBulb size={17} />, idx: 4, badge: (project.prompts ?? []).length },
-        { label: t('tab.chains'), icon: <IconArrowsShuffle size={17} />, idx: 5, badge: (project.chains ?? []).length, disabled: true },
+        { label: t('tab.chains'), icon: <IconArrowsShuffle size={17} />, idx: 5, badge: (project.chains ?? []).length },
         { label: t('tab.settings'), icon: <IconAdjustments size={17} />, idx: 6 },
         { label: t('tab.activity'), icon: <IconChartBar size={17} />, idx: 7 },
         { label: t('tab.aiView'), icon: <IconBook size={17} />, idx: 8 },
@@ -216,7 +216,7 @@ export default function ServerDetail() {
       tab,
       onTabChange: (next: number) => setTab(next),
     }
-  }, [project, tab])
+  }, [project, tab, t])
 
   const saveProjectInfo = async (field: 'name' | 'description', value: string) => {
     await api.patch(`/swagger/servers/${id}/info`, { [field]: value })

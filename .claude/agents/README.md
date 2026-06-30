@@ -21,6 +21,7 @@ This directory contains specialist agent definitions for Claude Code. Keep this 
 | `devops-expert` | `.claude/agents/devops-expert.md` | Creating or reviewing CI/CD, GitHub Actions, deploy automation, infrastructure scripts, monitoring, logging, or operational workflows. |
 | `docker-compose-expert` | `.claude/agents/docker-compose-expert.md` | Writing, reviewing, or debugging Docker Compose files, service dependencies, networks, volumes, environment variables, and healthchecks. |
 | `docker-expert` | `.claude/agents/docker-expert.md` | Writing, reviewing, or debugging Dockerfiles, multi-stage builds, image size, container security, and production image practices. |
+| `frontend-test-engineer` | `.claude/agents/frontend-test-engineer.md` | Writing, reviewing, debugging, and improving frontend tests for React pages, feature components, hooks, API client behavior, routing, permissions, i18n, forms, and user-visible flows with Vitest and React Testing Library. |
 | `gof-expert` | `.claude/agents/gof-expert.md` | Choosing, reviewing, naming, or refactoring toward Gang of Four design patterns without over-engineering. |
 | `nestjs-expert` | `.claude/agents/nestjs-expert.md` | Creating, reviewing, or refactoring NestJS modules, controllers, services, DTOs, guards, interceptors, persistence, authentication, and tests. |
 | `oss-scout` | `.claude/agents/opensource-expert.md` | Researching, comparing, or choosing open source libraries, frameworks, and tools using current project health signals. |
@@ -41,6 +42,7 @@ This directory contains specialist agent definitions for Claude Code. Keep this 
 
 - Product scope, backlog, or acceptance criteria: `product-owner`.
 - Backend unit, integration, guard, repository, DTO, or e2e tests: `backend-test-engineer`.
+- Frontend component, page, hook, API client, permission, routing, i18n, or form tests: `frontend-test-engineer`.
 - Software licenses, dependency obligations, attribution, or compliance risk: `compliance-counsel`.
 - Developer adoption, demos, examples, quickstarts, launch content, or DX feedback: `developer-advocate`.
 - React/TypeScript frontend implementation, Feature-Driven Architecture, Atomic Design, barrel exports, hooks, forms, routes, state, or API integration: `react-frontend-engineer`.

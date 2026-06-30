@@ -20,6 +20,7 @@ import { PromptsModule } from './prompts/prompts.module';
 import { SecretsModule } from './secrets/secrets.module';
 import { RolesModule } from './roles/roles.module';
 import { ErrorTrackingModule } from './error-tracking/error-tracking.module';
+import { AiProvidersModule } from './ai-providers/ai-providers.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { ErrorTrackingModule } from './error-tracking/error-tracking.module';
     SecretsModule,
     RolesModule,
     ErrorTrackingModule,
+    AiProvidersModule,
   ],
   providers: [
     { provide: APP_FILTER, useClass: McpExceptionFilter },

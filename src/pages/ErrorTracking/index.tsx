@@ -10,7 +10,9 @@ import {
   IconButton,
   InputAdornment,
   Link,
+  MenuItem,
   Paper,
+  Select,
   Snackbar,
   Switch,
   TextField,
@@ -22,6 +24,7 @@ import {
   IconDeviceFloppy,
   IconEye,
   IconEyeOff,
+  IconFlask,
   IconPlugConnected,
   IconTrash,
 } from '@tabler/icons-react'
@@ -78,6 +81,10 @@ export default function ErrorTracking() {
   const [revealing, setRevealing] = useState(false)
   const [disconnecting, setDisconnecting] = useState(false)
   const [snack, setSnack] = useState<{ msg: string; severity: 'success' | 'error' } | null>(null)
+
+  const [simulateMessage, setSimulateMessage] = useState('')
+  const [simulateLevel, setSimulateLevel] = useState('error')
+  const [simulating, setSimulating] = useState(false)
 
   useEffect(() => {
     api.get<ErrorTrackingProvider[]>('/error-tracking-providers')
@@ -190,6 +197,26 @@ export default function ErrorTracking() {
       setSnack({ msg: t('error.deleteFailed'), severity: 'error' })
     } finally {
       setDisconnecting(false)
+    }
+  }
+
+  const handleSimulateError = async () => {
+    if (!provider) return
+    setSimulating(true)
+    try {
+      const { data } = await api.post<{ ok: boolean; eventId?: string; error?: string }>(
+        `/error-tracking-providers/${provider.id}/simulate-error`,
+        { message: simulateMessage.trim() || undefined, level: simulateLevel },
+      )
+      if (data.ok) {
+        setSnack({ msg: t('toast.simulateErrorSuccess'), severity: 'success' })
+      } else {
+        setSnack({ msg: data.error ?? t('toast.simulateErrorFailed'), severity: 'error' })
+      }
+    } catch {
+      setSnack({ msg: t('toast.simulateErrorFailed'), severity: 'error' })
+    } finally {
+      setSimulating(false)
     }
   }
 
@@ -397,6 +424,56 @@ export default function ErrorTracking() {
             {saving ? 'Saving…' : isConnected ? t('action.saveChanges') : 'Connect Sentry'}
           </Button>
         </Box>
+      )}
+
+      {/* Simulate error */}
+      {isConnected && canEdit && (
+        <Paper variant="outlined" sx={{ p: 3, mb: 3 }}>
+          <Box display="flex" alignItems="center" gap={1} mb={2}>
+            <Box sx={{ color: 'text.secondary', display: 'flex' }}><IconFlask size={18} /></Box>
+            <Typography variant="subtitle1" fontWeight={700}>{t('action.simulateError')}</Typography>
+          </Box>
+          <Typography variant="body2" color="text.secondary" mb={2}>
+            {t('hint.simulateError')}
+          </Typography>
+          <Grid container spacing={2} alignItems="flex-start">
+            <Grid item xs={12} sm>
+              <TextField
+                size="small" fullWidth
+                label="Error message"
+                placeholder="Test error from Arthur MCP Adapter"
+                value={simulateMessage}
+                onChange={(e) => setSimulateMessage(e.target.value)}
+                disabled={simulating}
+              />
+            </Grid>
+            <Grid item xs={12} sm="auto">
+              <Select
+                size="small"
+                value={simulateLevel}
+                onChange={(e) => setSimulateLevel(e.target.value)}
+                disabled={simulating}
+                sx={{ minWidth: 120 }}
+              >
+                <MenuItem value="error">Error</MenuItem>
+                <MenuItem value="warning">Warning</MenuItem>
+                <MenuItem value="info">Info</MenuItem>
+                <MenuItem value="debug">Debug</MenuItem>
+              </Select>
+            </Grid>
+            <Grid item xs={12} sm="auto">
+              <Button
+                variant="outlined" size="small"
+                onClick={handleSimulateError}
+                disabled={simulating}
+                startIcon={simulating ? <CircularProgress size={14} color="inherit" /> : <IconFlask size={16} />}
+                sx={{ height: 40 }}
+              >
+                {simulating ? t('action.simulatingError') : t('action.simulateError')}
+              </Button>
+            </Grid>
+          </Grid>
+        </Paper>
       )}
 
       {/* Danger zone */}

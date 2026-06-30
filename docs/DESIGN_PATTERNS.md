@@ -49,32 +49,44 @@ Examples:
 
 - Tokens: `api/src/database/database.tokens.ts`
 - Contracts: `api/src/users/user.repository.ts`, `api/src/swagger/swagger-project.repository.ts`
-- Implementations: `repositories/mongo-*.repository.ts` and `repositories/sqlite-*.repository.ts`
+- Implementations: `repositories/mongo-*.repository.ts` and `repositories/typeorm-*.repository.ts`
 
 Rules:
 
-- Add or change fields in this order: entity/schema, repository contract, Mongo repository, SQLite repository, service usage, docs.
+- Add or change fields in this order: entity/schema, repository contract, Mongo repository, TypeORM repository, service usage, docs.
 - Keep repository return records stable across persistence backends.
-- Map SQLite `id` and Mongo `_id` consistently at repository boundaries.
+- Map TypeORM `id` and Mongo `_id` consistently at repository boundaries.
 - Keep JSON serialization/deserialization inside repository implementations, not services.
 - Use separate read models for security-sensitive records when different use cases need different field visibility. For example, `SecretRecord` includes `value` for internal resolution, while API-facing list/read flows return metadata without `value`.
 - Preserve server source tags as regular `tags` entries using the `source:<type>` format.
 
-### Dual Persistence Strategy
+### Multi-Persistence Strategy
 
-Pattern: `DatabaseModule.forRoot()` selects MongoDB or SQLite based on `DATABASE`.
+Pattern: `DatabaseModule.forRoot()` selects the persistence backend based on the `DATABASE` env var.
+
+Supported values:
+
+| `DATABASE` | Driver | Notes |
+|---|---|---|
+| `sqlite` (default) | TypeORM + better-sqlite3 | Local file, zero setup, `synchronize: true` |
+| `mysql` | TypeORM + mysql2 | MySQL 8+ / MariaDB 10.6+, `DB_SYNC=true` required for schema sync |
+| `postgres` / `postgresql` | TypeORM + pg | PostgreSQL 14+, `DB_SYNC=true` required for schema sync |
+| `mongodb` | Mongoose | Separate Mongoose schema path, no TypeORM |
 
 Examples:
 
 - MongoDB path uses `MongooseModule.forRootAsync()` and `MongooseModule.forFeature()`.
-- SQLite path uses `TypeOrmModule.forRoot()` and `TypeOrmModule.forFeature()`.
+- TypeORM path (SQLite/MySQL/PostgreSQL) uses `TypeOrmModule.forRoot()` and `TypeOrmModule.forFeature()`. The driver is selected by `buildTypeOrmOptions()` inside `DatabaseModule`.
 
 Rules:
 
-- Any domain entity must support both persistence paths unless the feature is intentionally backend-specific.
+- Any domain entity must support all persistence paths unless the feature is intentionally backend-specific.
 - Keep TypeORM entities and Mongoose schemas semantically aligned.
 - Document differences in `docs/ENTITIES.md`.
 - Avoid leaking database-specific types outside repositories.
+- TypeORM repositories are driver-agnostic and prefixed `typeorm-*`. They work identically with SQLite, MySQL, and PostgreSQL.
+- `DB_SYNC=true` is dangerous in production for MySQL and PostgreSQL — TypeORM may drop columns on schema divergence. Use migrations in production; rely on `DB_SYNC` only in development.
+- Connection variables for MySQL/PostgreSQL: `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`, `DB_SSL`.
 
 ### Guard and Decorator Authorization
 

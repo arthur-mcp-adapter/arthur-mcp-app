@@ -39,8 +39,7 @@ export class MetricsService implements OnModuleInit {
     @Inject(PROMETHEUS_REGISTRY) private readonly registry: Registry,
     private readonly configService: ConfigService,
   ) {
-    this.enabled = this.configService.get<string>('ENABLE_METRICS', process.env.ENABLE_METRICS ?? 'true') !== 'false'
-      && this.configService.get<string>('ENABLE_OBSERVABILITY', process.env.ENABLE_OBSERVABILITY ?? 'true') !== 'false';
+    this.enabled = this.configService.get<string>('ENABLE_METRICS', process.env.ENABLE_METRICS ?? 'true') !== 'false';
     this.serviceName = this.configService.get<string>('SERVICE_NAME', process.env.SERVICE_NAME ?? 'arthur-mcp-adapter');
     this.environment = this.configService.get<string>('NODE_ENV', process.env.NODE_ENV ?? 'development');
     this.version = this.configService.get<string>('SERVICE_VERSION', process.env.SERVICE_VERSION ?? '1.0.0');

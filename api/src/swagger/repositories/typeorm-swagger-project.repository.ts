@@ -5,7 +5,7 @@ import { SwaggerProjectEntity } from '../swagger-project.entity';
 import { ISwaggerProjectRepository, SwaggerProjectRecord } from '../swagger-project.repository';
 
 @Injectable()
-export class SqliteSwaggerProjectRepository implements ISwaggerProjectRepository {
+export class TypeOrmSwaggerProjectRepository implements ISwaggerProjectRepository {
   constructor(
     @InjectRepository(SwaggerProjectEntity) private readonly repo: Repository<SwaggerProjectEntity>,
   ) {}

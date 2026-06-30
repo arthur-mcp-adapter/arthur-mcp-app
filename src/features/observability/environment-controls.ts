@@ -8,16 +8,10 @@ export interface EnvironmentControl {
 }
 
 export const ENVIRONMENT_CONTROLS: EnvironmentControl[] = [
-  { name: 'ENABLE_OBSERVABILITY', defaultValue: 'true', kind: 'boolean' },
-  { name: 'ENABLE_STRUCTURED_LOGS', defaultValue: 'true', kind: 'boolean' },
   { name: 'ENABLE_METRICS', defaultValue: 'true', kind: 'boolean' },
-  { name: 'ENABLE_TRACING', defaultValue: 'false', kind: 'boolean' },
-  { name: 'LOG_LEVEL', defaultValue: 'info', kind: 'select', options: ['error', 'warn', 'info', 'debug', 'verbose'] },
   { name: 'SERVICE_NAME', defaultValue: 'arthur-mcp-adapter', kind: 'text' },
   { name: 'SERVICE_VERSION', defaultValue: '1.0.0', kind: 'text' },
   { name: 'PROMETHEUS_METRICS_PATH', defaultValue: '/metrics', kind: 'text' },
-  { name: 'OTEL_EXPORTER_TYPE', defaultValue: 'console', kind: 'select', options: ['console', 'otlp'] },
-  { name: 'OTEL_EXPORTER_OTLP_ENDPOINT', defaultValue: '', kind: 'text' },
 ]
 
 export function defaultEnvironmentValues(): Record<string, string> {

@@ -24,6 +24,10 @@ import type { IPromptRepository, PromptRecord } from '../prompts/prompt.reposito
 import type { ISecretRepository } from '../secrets/secret.repository';
 import type { ISettingsRepository } from '../settings/settings.repository';
 
+function tryParseJson(body: string): unknown {
+  try { return JSON.parse(body); } catch { return body; }
+}
+
 interface TenantParamDef {
   name: string;
   type: 'string' | 'integer' | 'number' | 'boolean' | 'uuid' | 'hash';
@@ -370,7 +374,7 @@ export class DynamicMcpService {
             const ctx = Array.isArray(parsed) ? { items: parsed } : parsed;
             const html = compileAndRender(tool.outputTemplate, ctx);
             const durationMs = Date.now() - t0;
-            this.executionLogs.log({ serverId, serverName: name, toolName, source: 'mcp', statusCode: httpRes.status, responseTimeMs: durationMs, isError: false });
+            this.executionLogs.log({ serverId, serverName: name, toolName, source: 'mcp', statusCode: httpRes.status, responseTimeMs: durationMs, isError: false, requestPayload: effectiveArgs });
             this.recordToolMetric(toolName, durationMs, 'ok', 'mcp', false);
             return { content: [{ type: 'text' as const, text: html }] };
           } catch (tplErr: any) {
@@ -380,7 +384,7 @@ export class DynamicMcpService {
 
         const result = mapResponse(httpRes);
         const durationMs = Date.now() - t0;
-        this.executionLogs.log({ serverId, serverName: name, toolName, source: 'mcp', statusCode: httpRes.status, responseTimeMs: durationMs, isError: result.isError ?? false });
+        this.executionLogs.log({ serverId, serverName: name, toolName, source: 'mcp', statusCode: httpRes.status, responseTimeMs: durationMs, isError: result.isError ?? false, requestPayload: effectiveArgs, responsePayload: tryParseJson(httpRes.body) });
         this.recordToolMetric(toolName, durationMs, result.isError ? 'error' : 'ok', 'mcp', result.isError);
 
         // If the tool declares an outputSchema, also populate structuredContent

@@ -93,6 +93,18 @@ interface RolePermissions {
   audit_export: boolean
   templates_use: boolean
   settings_manage: boolean
+  observability_view: boolean
+  observability_create: boolean
+  observability_edit: boolean
+  observability_delete: boolean
+  error_tracking_view: boolean
+  error_tracking_create: boolean
+  error_tracking_edit: boolean
+  error_tracking_delete: boolean
+  ai_providers_view: boolean
+  ai_providers_create: boolean
+  ai_providers_edit: boolean
+  ai_providers_delete: boolean
 }
 
 interface Role {
@@ -117,7 +129,10 @@ const PERMISSION_GROUPS: {
   { label: 'Users & Roles', keys: ['users_view', 'users_invite', 'users_edit', 'users_delete', 'roles_view', 'roles_manage'] },
   { label: 'Audit & Logs', keys: ['audit_view', 'audit_export'] },
   { label: 'Templates',    keys: ['templates_use'] },
-  { label: 'Settings',     keys: ['settings_manage'] },
+  { label: 'Settings',       keys: ['settings_manage'] },
+  { label: 'Observability',  keys: ['observability_view', 'observability_create', 'observability_edit', 'observability_delete'] },
+  { label: 'Error Tracking', keys: ['error_tracking_view', 'error_tracking_create', 'error_tracking_edit', 'error_tracking_delete'] },
+  { label: 'AI Providers',   keys: ['ai_providers_view', 'ai_providers_create', 'ai_providers_edit', 'ai_providers_delete'] },
 ]
 
 const ALL_OFF: RolePermissions = {
@@ -133,6 +148,9 @@ const ALL_OFF: RolePermissions = {
   audit_view: false, audit_export: false,
   templates_use: false,
   settings_manage: false,
+  observability_view: false, observability_create: false, observability_edit: false, observability_delete: false,
+  error_tracking_view: false, error_tracking_create: false, error_tracking_edit: false, error_tracking_delete: false,
+  ai_providers_view: false, ai_providers_create: false, ai_providers_edit: false, ai_providers_delete: false,
 }
 
 const BUILTIN_ROLES: Role[] = [
@@ -157,6 +175,9 @@ const BUILTIN_ROLES: Role[] = [
       api_keys_view: true, api_keys_create: true, api_keys_delete: false,
       users_view: true, roles_view: true,
       audit_view: true, templates_use: true,
+      observability_view: true,
+      error_tracking_view: true, error_tracking_create: true, error_tracking_edit: true, error_tracking_delete: true,
+      ai_providers_view: true, ai_providers_create: true, ai_providers_edit: true, ai_providers_delete: true,
     },
   },
   {
@@ -172,6 +193,9 @@ const BUILTIN_ROLES: Role[] = [
       secrets_view_names: true,
       users_view: true,
       templates_use: true,
+      observability_view: true,
+      error_tracking_view: true, error_tracking_create: true, error_tracking_edit: true,
+      ai_providers_view: true, ai_providers_create: true, ai_providers_edit: true,
     },
   },
   {
@@ -184,6 +208,9 @@ const BUILTIN_ROLES: Role[] = [
       tools_view: true, resources_view: true, prompts_view: true,
       users_view: true, roles_view: true,
       audit_view: true,
+      observability_view: true,
+      error_tracking_view: true,
+      ai_providers_view: true,
     },
   },
 ]

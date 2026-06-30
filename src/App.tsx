@@ -1,8 +1,7 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 import { ServerNavProvider } from './context/ServerNavContext'
-import { TerminologyProvider } from './context/TerminologyContext'
-import { Layout } from './components'
+import { Layout } from './components/templates'
 import Login from './pages/Login'
 import ForgotPassword from './pages/ForgotPassword'
 import ResetPassword from './pages/ResetPassword'
@@ -43,7 +42,6 @@ function RequireSetup({ children }: { children: React.ReactNode }) {
 export default function App() {
   return (
     <AuthProvider>
-    <TerminologyProvider>
     <ServerNavProvider>
     <BrowserRouter>
       <Routes>
@@ -96,7 +94,6 @@ export default function App() {
       </Routes>
     </BrowserRouter>
     </ServerNavProvider>
-    </TerminologyProvider>
     </AuthProvider>
   )
 }

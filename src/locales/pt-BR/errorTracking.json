@@ -27,7 +27,9 @@
     "createProvider": "Conectar Sentry",
     "saveChanges": "Salvar alterações",
     "deleteProvider": "Excluir integração",
-    "openDashboard": "Abrir dashboard"
+    "openDashboard": "Abrir dashboard",
+    "simulateError": "Enviar Evento de Teste",
+    "simulatingError": "Enviando…"
   },
   "label": {
     "name": "Nome",
@@ -57,7 +59,8 @@
     "dsnRequired": "Encontre o DSN no Sentry em Configurações → Projetos → Chaves do Cliente.",
     "dsnProtected": "A credencial é criptografada e não pode ser recuperada após salvar.",
     "environmentOptional": "Filtre eventos por ambiente. Deixe vazio para capturar todos.",
-    "deleteWarning": "Isso removerá permanentemente a configuração da integração com o Sentry."
+    "deleteWarning": "Isso removerá permanentemente a configuração da integração com o Sentry.",
+    "simulateError": "Envia uma exceção de teste ao Sentry para verificar se a integração está funcionando."
   },
   "empty": {
     "noProviders": "Nenhuma integração com o Sentry ainda. Clique em Conectar Sentry para adicionar.",
@@ -78,7 +81,9 @@
   "toast": {
     "saved": "Integração com o Sentry criada.",
     "updated": "Integração atualizada.",
-    "deleted": "Integração excluída."
+    "deleted": "Integração excluída.",
+    "simulateErrorSuccess": "Evento de teste enviado ao Sentry.",
+    "simulateErrorFailed": "Falha ao enviar evento de teste."
   },
   "tab": {
     "overview": "Visão geral",

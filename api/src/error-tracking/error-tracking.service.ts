@@ -130,6 +130,34 @@ export class ErrorTrackingService {
     await this.reinitialize()
   }
 
+  async simulateError(
+    id: string,
+    dto?: { message?: string; level?: string },
+  ): Promise<{ ok: boolean; eventId?: string; error?: string }> {
+    const record = await this.repo.findById(id)
+    if (!record) throw new NotFoundException(`Error tracking provider ${id} not found`)
+    if (!this.activeRecord || this.activeRecord.id !== record.id) {
+      return { ok: false, error: 'Provider is not active. Activate it before sending a test event.' }
+    }
+    try {
+      const message = dto?.message?.trim() || 'Test error from Arthur MCP Adapter'
+      const testError = new Error(message)
+      testError.name = 'SentryTestError'
+      const level = (dto?.level as Sentry.SeverityLevel | undefined) ?? 'error'
+      const eventId = Sentry.withScope((scope) => {
+        scope.setLevel(level)
+        scope.setTag('simulated', 'true')
+        return Sentry.captureException(testError)
+      })
+      await Sentry.flush(3000)
+      this.logger.log(`Sentry test event sent for provider "${record.name}" — eventId: ${eventId}`)
+      return { ok: true, eventId }
+    } catch (err: any) {
+      this.logger.warn(`Sentry simulate error failed: ${err}`)
+      return { ok: false, error: err?.message ?? String(err) }
+    }
+  }
+
   async testConnection(id: string): Promise<{ ok: boolean; latencyMs: number; error?: string }> {
     const record = await this.repo.findById(id)
     if (!record) throw new NotFoundException(`Error tracking provider ${id} not found`)

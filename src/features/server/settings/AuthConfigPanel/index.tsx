@@ -4,26 +4,19 @@ import {
   InputLabel, MenuItem, Paper, Select, TextField, Typography,
 } from '@mui/material'
 import { IconKey, IconPlus, IconTrash } from '@tabler/icons-react'
+import { useTranslation } from 'react-i18next'
 import api from '../../../../api'
 import { HelpButton } from '../../../../components'
 import { SaveIndicator } from '../../../../components'
 import { SecretAutocomplete, useSecrets } from '../../../secrets'
 import type { AuthConfig, AuthType, SaveStatus } from '../../types'
 
-const AUTH_TYPE_LABELS: Record<AuthType, string> = {
-  none: 'None (public API)',
-  bearer: 'Bearer Token',
-  'api-key': 'API Key',
-  basic: 'Basic Auth (username/password)',
-  'oauth2-client': 'OAuth2 Client Credentials',
-  custom: 'Custom headers',
-}
-
 export function AuthConfigPanel({ projectId, initialAuth, onChange }: {
   projectId: string
   initialAuth?: AuthConfig
   onChange: (auth: AuthConfig) => void
 }) {
+  const { t } = useTranslation('serverDetail')
   const [authType, setAuthType] = useState<AuthType>((initialAuth?.type as AuthType) ?? 'none')
   const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle')
   const [saveError, setSaveError] = useState('')
@@ -71,6 +64,15 @@ export function AuthConfigPanel({ projectId, initialAuth, onChange }: {
     }, delay)
   }, [projectId, onChange])
 
+  const AUTH_TYPE_LABELS: Record<AuthType, string> = {
+    none: t('auth.typeNone'),
+    bearer: t('auth.typeBearer'),
+    'api-key': t('auth.typeApiKey'),
+    basic: t('auth.typeBasic'),
+    'oauth2-client': t('auth.typeOAuth'),
+    custom: t('auth.typeCustom'),
+  }
+
   const handleAuthTypeChange = (newType: AuthType) => {
     setAuthType(newType)
     let payload: AuthConfig
@@ -112,37 +114,22 @@ export function AuthConfigPanel({ projectId, initialAuth, onChange }: {
       <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
         <Box display="flex" alignItems="center" gap={1}>
           <IconKey size={18} />
-          <Typography variant="subtitle2" fontWeight={700}>API Credentials</Typography>
+          <Typography variant="subtitle2" fontWeight={700}>{t('auth.title')}</Typography>
           {authType !== 'none' && (
             <Chip label={AUTH_TYPE_LABELS[authType]} size="small" color="primary" sx={{ fontSize: '0.7rem', height: 20 }} />
           )}
-          <HelpButton title="API Authentication">
-            <Typography variant="body2" gutterBottom>
-              The credentials Arthur automatically attaches to every <strong>outgoing HTTP request</strong> when calling the upstream API on behalf of an AI tool call. The AI never sees or handles these credentials — Arthur injects them invisibly.
-            </Typography>
-            <Typography variant="body2" gutterBottom>
-              <strong>Choose the mode that matches your API's requirements:</strong>
-            </Typography>
+          <HelpButton title={t('auth.helpTitle')}>
+            <Typography variant="body2" gutterBottom>{t('auth.helpIntro')}</Typography>
+            <Typography variant="body2" gutterBottom><strong>{t('auth.helpChoose')}</strong></Typography>
             <Box component="ul" sx={{ mt: 0, mb: 1, pl: 2.5 }}>
-              {([
-                ['None', 'Public API — no credentials are attached. Use for unauthenticated endpoints.'],
-                ['Bearer Token', 'Adds the header Authorization: Bearer <token>. Most modern REST APIs and OAuth2 resource servers use this.'],
-                ['API Key', 'Adds the key as a custom header (e.g. X-API-Key) or as a query parameter. Check your API\'s documentation for the exact field name.'],
-                ['Basic Auth', 'Adds Authorization: Basic <base64(username:password)>. Used by some legacy APIs and services like Jira or Confluence.'],
-                ['OAuth2 Client Credentials', 'Arthur fetches a Bearer token automatically using your client ID and secret, and renews it before it expires. Use for machine-to-machine integrations where no user is involved.'],
-                ['Custom Headers', 'Add any arbitrary HTTP headers. Useful for APIs with non-standard authentication schemes or when you need to pass multiple headers (e.g. X-Tenant-Id + X-Auth-Token).'],
-              ] as [string,string][]).map(([label, desc]) => (
-                <Box component="li" key={label} sx={{ mb: 0.5 }}>
-                  <Typography variant="body2"><strong>{label}:</strong> {desc}</Typography>
+              {(['helpNone', 'helpBearer', 'helpApiKey', 'helpBasic', 'helpOAuth', 'helpCustom'] as const).map((key) => (
+                <Box component="li" key={key} sx={{ mb: 0.5 }}>
+                  <Typography variant="body2">{t(`auth.${key}`)}</Typography>
                 </Box>
               ))}
             </Box>
-            <Typography variant="body2" gutterBottom>
-              <strong>Important security note:</strong> credentials are stored encrypted in the database. Use tokens and keys with the <em>minimum required scope</em> — if a credential is exposed, a limited-scope key reduces the blast radius.
-            </Typography>
-            <Typography variant="body2">
-              These credentials are completely separate from the <strong>MCP Authentication key</strong> (which protects the MCP endpoint). One controls who can call Arthur; the other controls how Arthur calls your API.
-            </Typography>
+            <Typography variant="body2" gutterBottom>{t('auth.helpSecurity')}</Typography>
+            <Typography variant="body2">{t('auth.helpSeparation')}</Typography>
           </HelpButton>
         </Box>
         <SaveIndicator status={saveStatus} error={saveError} />
@@ -150,14 +137,14 @@ export function AuthConfigPanel({ projectId, initialAuth, onChange }: {
 
       {/* Type selector */}
       <FormControl size="small" fullWidth sx={{ mb: 2 }}>
-        <InputLabel>Authentication type</InputLabel>
+        <InputLabel>{t('auth.typeLabel')}</InputLabel>
         <Select
           value={authType}
-          label="Authentication type"
+          label={t('auth.typeLabel')}
           onChange={(e) => handleAuthTypeChange(e.target.value as AuthType)}
         >
-          {(Object.keys(AUTH_TYPE_LABELS) as AuthType[]).map((t) => (
-            <MenuItem key={t} value={t}>{AUTH_TYPE_LABELS[t]}</MenuItem>
+          {(Object.keys(AUTH_TYPE_LABELS) as AuthType[]).map((type) => (
+            <MenuItem key={type} value={type}>{AUTH_TYPE_LABELS[type]}</MenuItem>
           ))}
         </Select>
       </FormControl>
@@ -165,16 +152,14 @@ export function AuthConfigPanel({ projectId, initialAuth, onChange }: {
       {/* Dynamic fields */}
       {authType === 'none' && (
         <Typography variant="body2" color="text.secondary" fontSize="0.82rem">
-          The API is public and does not require authentication. No header will be added.
+          {t('auth.noneHint')}
         </Typography>
       )}
 
       {authType === 'bearer' && (
         <Box display="flex" flexDirection="column" gap={1.5}>
-          {secretInput(token, (v) => { setToken(v); scheduleSave({ type: 'bearer', token: v }) }, 'Bearer Token')}
-          <Typography variant="caption" color="text.secondary">
-            Sent as: <code>Authorization: Bearer {'<token>'}</code>
-          </Typography>
+          {secretInput(token, (v) => { setToken(v); scheduleSave({ type: 'bearer', token: v }) }, t('auth.bearerTokenLabel'))}
+          <Typography variant="caption" color="text.secondary">{t('auth.bearerSentAs')}</Typography>
         </Box>
       )}
 
@@ -182,86 +167,80 @@ export function AuthConfigPanel({ projectId, initialAuth, onChange }: {
         <Box display="flex" flexDirection="column" gap={1.5}>
           <Grid container spacing={1.5}>
             <Grid item xs={12} sm={5}>
-              <TextField size="small" fullWidth label="Parameter name" placeholder="X-Api-Key"
+              <TextField size="small" fullWidth label={t('auth.apiKeyParamName')} placeholder="X-Api-Key"
                 value={keyName}
                 onChange={(e) => { setKeyName(e.target.value); scheduleSave({ type: 'api-key', name: e.target.value, value: keyValue, in: keyIn }) }}
               />
             </Grid>
             <Grid item xs={12} sm={7}>
-              {secretInput(keyValue, (v) => { setKeyValue(v); scheduleSave({ type: 'api-key', name: keyName, value: v, in: keyIn }) }, 'Value')}
+              {secretInput(keyValue, (v) => { setKeyValue(v); scheduleSave({ type: 'api-key', name: keyName, value: v, in: keyIn }) }, t('auth.apiKeyValue'))}
             </Grid>
           </Grid>
           <FormControl size="small" fullWidth>
-            <InputLabel>Send as</InputLabel>
-            <Select value={keyIn} label="Send as"
+            <InputLabel>{t('auth.apiKeySendAs')}</InputLabel>
+            <Select value={keyIn} label={t('auth.apiKeySendAs')}
               onChange={(e) => { const v = e.target.value as 'header' | 'query'; setKeyIn(v); scheduleSave({ type: 'api-key', name: keyName, value: keyValue, in: v }, 0) }}>
-              <MenuItem value="header">Header HTTP</MenuItem>
-              <MenuItem value="query">Query param (?{keyName || 'key'}=…)</MenuItem>
+              <MenuItem value="header">{t('auth.apiKeySendHeader')}</MenuItem>
+              <MenuItem value="query">{t('auth.apiKeySendQuery')} (?{keyName || 'key'}=…)</MenuItem>
             </Select>
           </FormControl>
           <Typography variant="caption" color="text.secondary">
             {keyIn === 'header'
-              ? `Sent as: ${keyName || '<name>'}: <value>`
-              : `Added to URL: ?${keyName || '<name>'}=<value>`}
+              ? `${t('auth.apiKeySentAsHeader')}: ${keyName || '<name>'}: <value>`
+              : `${t('auth.apiKeySentAsQuery')}: ?${keyName || '<name>'}=<value>`}
           </Typography>
         </Box>
       )}
 
       {authType === 'basic' && (
         <Box display="flex" flexDirection="column" gap={1.5}>
-          <TextField size="small" fullWidth label="Username"
+          <TextField size="small" fullWidth label={t('auth.basicUsername')}
             value={basicUser}
             onChange={(e) => { setBasicUser(e.target.value); scheduleSave({ type: 'basic', username: e.target.value, password: basicPass }) }}
           />
-          {secretInput(basicPass, (v) => { setBasicPass(v); scheduleSave({ type: 'basic', username: basicUser, password: v }) }, 'Password')}
-          <Typography variant="caption" color="text.secondary">
-            Sent as: <code>Authorization: Basic {'<base64(username:password)>'}</code>
-          </Typography>
+          {secretInput(basicPass, (v) => { setBasicPass(v); scheduleSave({ type: 'basic', username: basicUser, password: v }) }, t('auth.basicPassword'))}
+          <Typography variant="caption" color="text.secondary">{t('auth.basicSentAs')}</Typography>
         </Box>
       )}
 
       {authType === 'oauth2-client' && (
         <Box display="flex" flexDirection="column" gap={1.5}>
-          <TextField size="small" fullWidth label="Token URL (token endpoint)"
-            placeholder="https://auth.example.com/oauth/token"
+          <TextField size="small" fullWidth label={t('auth.oauthTokenUrl')}
+            placeholder={t('auth.oauthTokenUrlPlaceholder')}
             value={oauthTokenUrl}
             onChange={(e) => { setOauthTokenUrl(e.target.value); scheduleSave({ type: 'oauth2-client', tokenUrl: e.target.value, clientId: oauthClientId, clientSecret: oauthClientSecret, scope: oauthScope || undefined }) }}
           />
           <Grid container spacing={1.5}>
             <Grid item xs={12} sm={6}>
-              <TextField size="small" fullWidth label="Client ID"
+              <TextField size="small" fullWidth label={t('auth.oauthClientId')}
                 value={oauthClientId}
                 onChange={(e) => { setOauthClientId(e.target.value); scheduleSave({ type: 'oauth2-client', tokenUrl: oauthTokenUrl, clientId: e.target.value, clientSecret: oauthClientSecret, scope: oauthScope || undefined }) }}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              {secretInput(oauthClientSecret, (v) => { setOauthClientSecret(v); scheduleSave({ type: 'oauth2-client', tokenUrl: oauthTokenUrl, clientId: oauthClientId, clientSecret: v, scope: oauthScope || undefined }) }, 'Client Secret')}
+              {secretInput(oauthClientSecret, (v) => { setOauthClientSecret(v); scheduleSave({ type: 'oauth2-client', tokenUrl: oauthTokenUrl, clientId: oauthClientId, clientSecret: v, scope: oauthScope || undefined }) }, t('auth.oauthClientSecret'))}
             </Grid>
           </Grid>
-          <TextField size="small" fullWidth label="Scope (optional)" placeholder="read write"
+          <TextField size="small" fullWidth label={t('auth.oauthScope')} placeholder={t('auth.oauthScopePlaceholder')}
             value={oauthScope}
             onChange={(e) => { setOauthScope(e.target.value); scheduleSave({ type: 'oauth2-client', tokenUrl: oauthTokenUrl, clientId: oauthClientId, clientSecret: oauthClientSecret, scope: e.target.value || undefined }) }}
           />
-          <Typography variant="caption" color="text.secondary">
-            Uses <strong>client_credentials</strong>. Token is fetched automatically and renewed when it expires.
-          </Typography>
+          <Typography variant="caption" color="text.secondary">{t('auth.oauthHint')}</Typography>
         </Box>
       )}
 
       {authType === 'custom' && (
         <Box display="flex" flexDirection="column" gap={1}>
-          <Typography variant="caption" color="text.secondary" mb={0.5}>
-            Add any HTTP header to the request (e.g. <code>X-Tenant-Id</code>, <code>X-Auth-Token</code>).
-          </Typography>
+          <Typography variant="caption" color="text.secondary" mb={0.5}>{t('auth.customHint')}</Typography>
           {customHeaders.map((h, i) => (
             <Box key={i} display="flex" gap={1} alignItems="flex-start">
-              <TextField size="small" label="Header" placeholder="X-Custom-Header" sx={{ flex: 1 }}
+              <TextField size="small" label={t('auth.customHeaderLabel')} placeholder={t('auth.customHeaderPlaceholder')} sx={{ flex: 1 }}
                 value={h.name} onChange={(e) => updateCustomHeader(i, 'name', e.target.value)} />
               <Box sx={{ flex: 2 }}>
                 <SecretAutocomplete
                   value={h.value}
                   onChange={(v) => updateCustomHeader(i, 'value', v)}
-                  label="Value"
+                  label={t('auth.customValueLabel')}
                   secrets={secrets}
                   loadingSecrets={loadingSecrets}
                 />
@@ -273,14 +252,14 @@ export function AuthConfigPanel({ projectId, initialAuth, onChange }: {
             </Box>
           ))}
           <Button size="small" startIcon={<IconPlus size={18} />} onClick={addCustomHeader} sx={{ alignSelf: 'flex-start', mt: 0.5 }}>
-            Add header
+            {t('auth.addHeader')}
           </Button>
         </Box>
       )}
 
       {authType !== 'none' && (
         <Alert severity="warning" sx={{ mt: 2, py: 0.5, fontSize: '0.78rem' }}>
-          Credentials are stored in the database. Use tokens with minimum required scope.
+          {t('auth.storedWarning')}
         </Alert>
       )}
     </Paper>

@@ -29,12 +29,6 @@ export class Settings {
   @Prop({ type: Object, default: {} })
   observabilityEnvironment?: Record<string, string>;
 
-  @Prop() termServer?: string;
-  @Prop() termTool?: string;
-  @Prop() termResource?: string;
-  @Prop() termPrompt?: string;
-  @Prop() termChain?: string;
-  @Prop() termSecret?: string;
 }
 
 export const SettingsSchema = SchemaFactory.createForClass(Settings);

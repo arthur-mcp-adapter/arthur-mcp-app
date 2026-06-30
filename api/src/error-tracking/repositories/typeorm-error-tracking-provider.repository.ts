@@ -5,7 +5,7 @@ import { ErrorTrackingProviderEntity } from '../error-tracking-provider.entity';
 import { IErrorTrackingProviderRepository, ErrorTrackingProviderRecord } from '../error-tracking-provider.repository';
 
 @Injectable()
-export class SqliteErrorTrackingProviderRepository implements IErrorTrackingProviderRepository {
+export class TypeOrmErrorTrackingProviderRepository implements IErrorTrackingProviderRepository {
   constructor(
     @InjectRepository(ErrorTrackingProviderEntity)
     private readonly repo: Repository<ErrorTrackingProviderEntity>,
@@ -61,6 +61,9 @@ export class SqliteErrorTrackingProviderRepository implements IErrorTrackingProv
   }
 
   async deactivateAll(): Promise<void> {
-    await this.repo.update({}, { isActive: false });
+    await this.repo.createQueryBuilder()
+      .update()
+      .set({ isActive: false })
+      .execute();
   }
 }

@@ -5,7 +5,7 @@ import { PromptEntity } from '../prompt.entity';
 import { IPromptRepository, PromptRecord } from '../prompt.repository';
 
 @Injectable()
-export class SqlitePromptRepository implements IPromptRepository {
+export class TypeOrmPromptRepository implements IPromptRepository {
   constructor(
     @InjectRepository(PromptEntity) private readonly repo: Repository<PromptEntity>,
   ) {}

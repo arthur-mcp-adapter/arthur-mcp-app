@@ -118,6 +118,8 @@ function SettingsTab({ provider, onUpdated }: { provider: ErrorTrackingProvider;
   const [testResult, setTestResult] = useState<TestConnectionResult | null>(null)
   const testTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
+  const [simulating, setSimulating] = useState(false)
+
   // Reveal DSN
   const [revealing, setRevealing] = useState(false)
 
@@ -180,6 +182,18 @@ function SettingsTab({ provider, onUpdated }: { provider: ErrorTrackingProvider;
       setSnack({ msg: t('error.saveFailed'), severity: 'error' })
     } finally {
       setSaving(false)
+    }
+  }
+
+  const handleSimulateError = async () => {
+    setSimulating(true)
+    try {
+      await api.post(`/error-tracking-providers/${provider.id}/simulate-error`)
+      setSnack({ msg: t('toast.simulateErrorSuccess'), severity: 'success' })
+    } catch {
+      setSnack({ msg: t('toast.simulateErrorFailed'), severity: 'error' })
+    } finally {
+      setSimulating(false)
     }
   }
 
@@ -319,6 +333,25 @@ function SettingsTab({ provider, onUpdated }: { provider: ErrorTrackingProvider;
           </Box>
         )}
       </Paper>
+
+      {canEdit && (
+        <Paper variant="outlined" sx={{ p: 2, mb: 2 }}>
+          <Typography fontWeight={600} fontSize="0.875rem" mb={0.5}>{t('action.simulateError')}</Typography>
+          <Box display="flex" alignItems="center" justifyContent="space-between" gap={2}>
+            <Typography variant="body2" color="text.secondary">{t('hint.simulateError')}</Typography>
+            <Button
+              size="small"
+              variant="outlined"
+              onClick={handleSimulateError}
+              disabled={simulating}
+              startIcon={simulating ? <CircularProgress size={14} color="inherit" /> : <IconBug size={16} />}
+              sx={{ flexShrink: 0 }}
+            >
+              {simulating ? t('action.simulatingError') : t('action.simulateError')}
+            </Button>
+          </Box>
+        </Paper>
+      )}
 
       {can(Permission.ErrorTrackingDelete) && (
         <Paper variant="outlined" sx={{ p: 2, borderColor: 'error.light' }}>

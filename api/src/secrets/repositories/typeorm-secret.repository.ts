@@ -5,7 +5,7 @@ import { SecretEntity } from '../secret.entity';
 import { ISecretRepository, SecretRecord } from '../secret.repository';
 
 @Injectable()
-export class SqliteSecretRepository implements ISecretRepository {
+export class TypeOrmSecretRepository implements ISecretRepository {
   constructor(
     @InjectRepository(SecretEntity)
     private readonly repo: Repository<SecretEntity>,

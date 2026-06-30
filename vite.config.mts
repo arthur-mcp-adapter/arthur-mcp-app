@@ -24,5 +24,15 @@ export default defineConfig({
     setupFiles: ['./src/setupTests.ts'],
     css: false,
     exclude: ['api/**', 'node_modules/**', '.claude/**'],
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'json-summary', 'html'],
+      thresholds: {
+        statements: 80,
+        branches: 80,
+        functions: 80,
+        lines: 80,
+      },
+    },
   },
 })

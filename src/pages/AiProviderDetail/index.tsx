@@ -44,7 +44,7 @@ const PROVIDER_COLORS: Record<string, string> = {
 // ─── Tab 0 — Overview ─────────────────────────────────────────────────────────
 
 function OverviewTab({ provider }: { provider: AiProvider }) {
-  const { t } = useTranslation('aiProviders')
+  const { t } = useTranslation(['aiProviders', 'common'])
   const color = PROVIDER_COLORS[provider.provider] ?? '#7c3aed'
 
   return (
@@ -84,7 +84,7 @@ function OverviewTab({ provider }: { provider: AiProvider }) {
         <Box display="flex" justifyContent="space-between">
           <Typography variant="body2" color="text.secondary">{t('label.isActive')}</Typography>
           <Chip
-            label={provider.isActive ? 'Active' : 'Inactive'}
+            label={provider.isActive ? t('common:status.active') : t('common:label.inactive')}
             size="small"
             color={provider.isActive ? 'success' : 'default'}
             sx={{ height: 20, fontSize: '0.7rem' }}
@@ -108,7 +108,7 @@ function OverviewTab({ provider }: { provider: AiProvider }) {
 // ─── Tab 1 — Settings ────────────────────────────────────────────────────────
 
 function SettingsTab({ provider, onUpdated }: { provider: AiProvider; onUpdated: (p: AiProvider) => void }) {
-  const { t } = useTranslation('aiProviders')
+  const { t } = useTranslation(['aiProviders', 'common'])
   const navigate = useNavigate()
   const { can } = useAuth()
   const [editName, setEditName] = useState(provider.name)

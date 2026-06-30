@@ -5,7 +5,7 @@ import { SettingsEntity } from '../settings.entity';
 import { ISettingsRepository, SettingsRecord } from '../settings.repository';
 
 @Injectable()
-export class SqliteSettingsRepository implements ISettingsRepository {
+export class TypeOrmSettingsRepository implements ISettingsRepository {
   constructor(@InjectRepository(SettingsEntity) private readonly repo: Repository<SettingsEntity>) {}
 
   private toRecord(e: SettingsEntity): SettingsRecord {
@@ -22,12 +22,6 @@ export class SqliteSettingsRepository implements ISettingsRepository {
       jwtSecret: e.jwtSecret ?? '',
       globalRequestHeaders: e.globalRequestHeaders ?? [],
       observabilityEnvironment: e.observabilityEnvironment ?? {},
-      termServer: e.termServer ?? undefined,
-      termTool: e.termTool ?? undefined,
-      termResource: e.termResource ?? undefined,
-      termPrompt: e.termPrompt ?? undefined,
-      termChain: e.termChain ?? undefined,
-      termSecret: e.termSecret ?? undefined,
     };
   }
 

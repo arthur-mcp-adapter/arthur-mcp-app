@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { ElementType, ReactNode } from 'react'
-import { useNavigate } from 'react-router-dom'
 import {
   Alert,
   Box,
@@ -18,19 +17,15 @@ import {
 import {
   IconActivity,
   IconAdjustments,
-  IconBulb,
   IconChartHistogram,
   IconCheck,
   IconClipboard,
   IconClock,
   IconDatabase,
-  IconFileText,
   IconGauge,
-  IconNetwork,
   IconRefresh,
   IconRoute,
   IconServer,
-  IconTerminal2,
   IconX,
 } from '@tabler/icons-react'
 import { useTranslation } from 'react-i18next'
@@ -77,19 +72,10 @@ const ENDPOINTS: Array<Pick<EndpointCheck, 'path' | 'labelKey'>> = [
 ]
 
 const SIGNALS = [
-  { icon: IconFileText, key: 'logs', color: 'info.main' },
   { icon: IconChartHistogram, key: 'metrics', color: 'success.main' },
-  { icon: IconRoute, key: 'traces', color: 'primary.main' },
   { icon: IconActivity, key: 'correlation', color: 'warning.main' },
 ] as const
 
-const LOCAL_STACK_ROWS = [
-  ['Prometheus', 'http://localhost:9090'],
-  ['Grafana', 'http://localhost:3001'],
-  ['Tempo', 'http://localhost:3200'],
-] as const
-
-const LOCAL_STACK_COMMAND = 'docker compose -f observability/docker-compose.yml up'
 
 function metricSum(metrics: string, name: string): number {
   return metrics
@@ -221,7 +207,6 @@ function CopyButton({ value, label }: { value: string; label: string }) {
 
 export function TechnicalObservabilityPanel() {
   const { t } = useTranslation(['observability', 'common'])
-  const navigate = useNavigate()
   const [checks, setChecks] = useState<EndpointCheck[]>(
     ENDPOINTS.map((endpoint) => ({ ...endpoint, status: 'checking' })),
   )
@@ -371,92 +356,7 @@ export function TechnicalObservabilityPanel() {
           </Paper>
         </Grid>
 
-        <Grid item xs={12}>
-          <Paper variant="outlined" sx={{ p: 2 }}>
-            <SectionTitle icon={IconBulb} title={t('observability:howToUse.title')} />
-            <Grid container spacing={1.5}>
-              {([
-                {
-                  icon: IconAdjustments,
-                  color: 'primary.main',
-                  titleKey: 'observability:howToUse.step1Title',
-                  descKey: 'observability:howToUse.step1Desc',
-                  action: (
-                    <Button size="small" variant="outlined" onClick={() => navigate('/settings')}>
-                      {t('observability:howToUse.step1Action')}
-                    </Button>
-                  ),
-                },
-                {
-                  icon: IconTerminal2,
-                  color: 'success.main',
-                  titleKey: 'observability:howToUse.step2Title',
-                  descKey: 'observability:howToUse.step2Desc',
-                  action: (
-                    <CopyButton value={LOCAL_STACK_COMMAND} label={t('common:action.copy')} />
-                  ),
-                },
-                {
-                  icon: IconActivity,
-                  color: 'info.main',
-                  titleKey: 'observability:howToUse.step3Title',
-                  descKey: 'observability:howToUse.step3Desc',
-                  action: null,
-                },
-                {
-                  icon: IconNetwork,
-                  color: 'warning.main',
-                  titleKey: 'observability:howToUse.step4Title',
-                  descKey: 'observability:howToUse.step4Desc',
-                  action: null,
-                },
-              ] as const).map(({ icon: Icon, color, titleKey, descKey, action }, idx) => (
-                <Grid item xs={12} sm={6} lg={3} key={titleKey}>
-                  <Box
-                    sx={{
-                      border: '1px solid',
-                      borderColor: 'divider',
-                      borderRadius: 1,
-                      p: 1.5,
-                      height: '100%',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: 1,
-                    }}
-                  >
-                    <Box display="flex" alignItems="center" gap={1}>
-                      <Box
-                        sx={{
-                          width: 22,
-                          height: 22,
-                          borderRadius: '50%',
-                          bgcolor: 'action.selected',
-                          color: 'text.secondary',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          fontSize: '0.7rem',
-                          fontWeight: 700,
-                          flexShrink: 0,
-                        }}
-                      >
-                        {idx + 1}
-                      </Box>
-                      <Box sx={{ color, display: 'flex' }}><Icon size={16} /></Box>
-                      <Typography fontWeight={700} fontSize="0.82rem">{t(titleKey)}</Typography>
-                    </Box>
-                    <Typography fontSize="0.75rem" color="text.secondary" flexGrow={1}>
-                      {t(descKey)}
-                    </Typography>
-                    {action && <Box>{action}</Box>}
-                  </Box>
-                </Grid>
-              ))}
-            </Grid>
-          </Paper>
-        </Grid>
-
-        <Grid item xs={12} lg={6}>
+        <Grid item xs={12} lg={7}>
           <Paper variant="outlined" sx={{ p: 2, height: '100%' }}>
             <SectionTitle
               icon={IconAdjustments}
@@ -491,36 +391,6 @@ export function TechnicalObservabilityPanel() {
           </Paper>
         </Grid>
 
-        <Grid item xs={12} lg={6}>
-          <Paper variant="outlined" sx={{ p: 2, height: '100%' }}>
-            <SectionTitle
-              icon={IconDatabase}
-              title={t('observability:section.localStack')}
-              action={<CopyButton value={LOCAL_STACK_COMMAND} label={t('common:action.copy')} />}
-            />
-            <Box
-              sx={{
-                border: '1px solid',
-                borderColor: 'divider',
-                borderRadius: 1,
-                px: 1.25,
-                py: 1,
-                mb: 1.25,
-                bgcolor: 'action.hover',
-              }}
-            >
-              <Typography fontFamily="monospace" fontSize="0.78rem">{LOCAL_STACK_COMMAND}</Typography>
-            </Box>
-            <Stack divider={<Divider flexItem />} spacing={0}>
-              {LOCAL_STACK_ROWS.map(([name, url]) => (
-                <Box key={name} display="flex" alignItems="center" gap={1} py={0.85}>
-                  <Typography fontWeight={700} fontSize="0.8rem" sx={{ flexGrow: 1 }}>{name}</Typography>
-                  <Typography fontFamily="monospace" fontSize="0.75rem" color="text.secondary">{url}</Typography>
-                </Box>
-              ))}
-            </Stack>
-          </Paper>
-        </Grid>
       </Grid>
     </Box>
   )

@@ -32,6 +32,7 @@ export interface ToolComment {
 }
 
 export interface GeneratedTool {
+  id?: string
   name: string
   description?: string
   inputSchema: JsonSchema
@@ -228,6 +229,8 @@ export interface ExecLog {
   responseTimeMs: number
   isError: boolean
   errorMessage?: string
+  requestPayload?: unknown
+  responsePayload?: unknown
   createdAt: string
 }
 

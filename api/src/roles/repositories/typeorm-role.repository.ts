@@ -5,7 +5,7 @@ import { RoleEntity } from '../role.entity';
 import { IRoleRepository, RoleRecord } from '../role.repository';
 
 @Injectable()
-export class SqliteRoleRepository implements IRoleRepository {
+export class TypeOrmRoleRepository implements IRoleRepository {
   constructor(
     @InjectRepository(RoleEntity)
     private readonly repo: Repository<RoleEntity>,

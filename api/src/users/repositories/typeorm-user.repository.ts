@@ -5,7 +5,7 @@ import { UserEntity } from '../user.entity';
 import { IUserRepository, UserRecord } from '../user.repository';
 
 @Injectable()
-export class SqliteUserRepository implements IUserRepository {
+export class TypeOrmUserRepository implements IUserRepository {
   constructor(@InjectRepository(UserEntity) private readonly repo: Repository<UserEntity>) {}
 
   private toRecord(e: UserEntity): UserRecord {

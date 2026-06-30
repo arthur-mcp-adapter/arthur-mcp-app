@@ -5,7 +5,7 @@ import { PasswordResetEntity } from '../password-reset.entity';
 import { IPasswordResetRepository, PasswordResetRecord } from '../password-reset.repository';
 
 @Injectable()
-export class SqlitePasswordResetRepository implements IPasswordResetRepository {
+export class TypeOrmPasswordResetRepository implements IPasswordResetRepository {
   constructor(
     @InjectRepository(PasswordResetEntity) private readonly repo: Repository<PasswordResetEntity>,
   ) {}

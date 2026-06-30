@@ -23,6 +23,8 @@
     "search": "Search",
     "filter": "Filter",
     "clear": "Clear",
+    "show": "Show",
+    "hide": "Hide",
     "loading": "Loading…",
     "saving": "Saving…",
     "saved": "Saved",
@@ -51,7 +53,8 @@
     "updatedAt": "Updated",
     "type": "Type",
     "value": "Value",
-    "optional": "optional"
+    "optional": "optional",
+    "inactive": "Inactive"
   },
   "error": {
     "generic": "Something went wrong. Please try again.",
@@ -67,6 +70,7 @@
     "endpoint": "Endpoint",
     "prompt": "Prompt",
     "chain": "Chain",
-    "secret": "Secret"
+    "secret": "Secret",
+    "operation": "Operation"
   }
 }

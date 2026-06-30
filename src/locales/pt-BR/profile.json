@@ -113,7 +113,10 @@
     "Users & Roles": "Usuários e Papéis",
     "Audit & Logs": "Auditoria e Logs",
     "Templates": "Templates",
-    "Settings": "Configurações"
+    "Settings": "Configurações",
+    "Observability": "Observabilidade",
+    "Error Tracking": "Monitoramento de erros",
+    "AI Providers": "Provedores de IA"
   },
   "permissions": {
     "servers_view": "Visualizar servidores e sua configuração",
@@ -153,7 +156,19 @@
     "audit_view": "Visualizar o log de auditoria de atividades",
     "audit_export": "Exportar logs de auditoria para CSV",
     "templates_use": "Usar templates de API para criar servidores pré-configurados",
-    "settings_manage": "Acessar e modificar configurações do sistema (SMTP, URL base)"
+    "settings_manage": "Acessar e modificar configurações do sistema (SMTP, URL base)",
+    "observability_view": "Visualizar dashboard de observabilidade e métricas",
+    "observability_create": "Adicionar provedores de observabilidade",
+    "observability_edit": "Editar configurações de provedores de observabilidade",
+    "observability_delete": "Remover provedores de observabilidade",
+    "error_tracking_view": "Visualizar configuração de monitoramento de erros",
+    "error_tracking_create": "Conectar provedores de monitoramento de erros (ex: Sentry)",
+    "error_tracking_edit": "Atualizar configurações de monitoramento de erros",
+    "error_tracking_delete": "Desconectar provedores de monitoramento de erros",
+    "ai_providers_view": "Visualizar provedores de IA",
+    "ai_providers_create": "Criar provedores de IA",
+    "ai_providers_edit": "Editar provedores de IA",
+    "ai_providers_delete": "Excluir provedores de IA"
   },
   "builtinRoles": {
     "admin": "Acesso completo a tudo.",
