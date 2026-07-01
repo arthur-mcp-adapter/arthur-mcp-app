@@ -9,15 +9,17 @@ import {
 import * as bcrypt from 'bcryptjs';
 import { USER_REPO } from '../database/database.tokens';
 import { IUserRepository, UserRecord } from './user.repository';
+import { config } from '../config/configuration';
 
 @Injectable()
 export class UsersService implements OnApplicationBootstrap {
   constructor(@Inject(USER_REPO) private readonly userRepo: IUserRepository) {}
 
   async onApplicationBootstrap(): Promise<void> {
-    const exists = await this.userRepo.findByUsername('admin');
+    const username = config.dashboardUser;
+    const exists = await this.userRepo.findByUsername(username);
     if (!exists) {
-      await this.create('admin', 'admin', 'admin@mcp-transform.io', 'admin');
+      await this.create(username, config.dashboardPassword, config.dashboardEmail, 'admin');
     }
   }
 

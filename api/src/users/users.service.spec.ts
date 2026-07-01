@@ -181,4 +181,47 @@ describe('UsersService', () => {
       expect(mockUserRepo.delete).toHaveBeenCalledWith('user123');
     });
   });
+
+  describe('onApplicationBootstrap', () => {
+    const originalUser = process.env.DASHBOARD_USER;
+    const originalPassword = process.env.DASHBOARD_PASSWORD;
+    const originalEmail = process.env.DASHBOARD_EMAIL;
+
+    afterEach(() => {
+      process.env.DASHBOARD_USER = originalUser;
+      process.env.DASHBOARD_PASSWORD = originalPassword;
+      process.env.DASHBOARD_EMAIL = originalEmail;
+    });
+
+    it('seeds the initial admin using DASHBOARD_USER/DASHBOARD_PASSWORD/DASHBOARD_EMAIL instead of hardcoded values', async () => {
+      process.env.DASHBOARD_USER = 'owner';
+      process.env.DASHBOARD_PASSWORD = 'super-secret';
+      process.env.DASHBOARD_EMAIL = 'owner@example.com';
+      (bcrypt.hash as jest.Mock).mockResolvedValue('hashed-secret');
+      mockUserRepo.findByUsername.mockResolvedValue(null);
+      mockUserRepo.create.mockResolvedValue(makeUserRecord({ username: 'owner' }));
+
+      await service.onApplicationBootstrap();
+
+      expect(mockUserRepo.findByUsername).toHaveBeenCalledWith('owner');
+      expect(bcrypt.hash).toHaveBeenCalledWith('super-secret', 10);
+      expect(mockUserRepo.create).toHaveBeenCalledWith(expect.objectContaining({
+        username: 'owner',
+        email: 'owner@example.com',
+        password: 'hashed-secret',
+        role: 'admin',
+      }));
+    });
+
+    it('does not reseed when the configured admin username already exists', async () => {
+      process.env.DASHBOARD_USER = 'owner';
+      process.env.DASHBOARD_PASSWORD = 'super-secret';
+      process.env.DASHBOARD_EMAIL = 'owner@example.com';
+      mockUserRepo.findByUsername.mockResolvedValue(makeUserRecord({ username: 'owner' }));
+
+      await service.onApplicationBootstrap();
+
+      expect(mockUserRepo.create).not.toHaveBeenCalled();
+    });
+  });
 });

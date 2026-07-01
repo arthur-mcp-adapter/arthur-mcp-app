@@ -14,6 +14,9 @@ export const config = {
   get dashboardPassword(): string {
     return process.env.DASHBOARD_PASSWORD ?? 'admin';
   },
+  get dashboardEmail(): string {
+    return process.env.DASHBOARD_EMAIL ?? 'admin@arthurmcp.io';
+  },
   get jwtSecret(): string {
     return process.env.JWT_SECRET ?? 'change-me-in-production-secret';
   },

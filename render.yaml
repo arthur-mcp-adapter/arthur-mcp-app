@@ -11,13 +11,13 @@ services:
       - key: NODE_ENV
         value: production
       - key: ENABLE_OBSERVABILITY
-        value: false
+        value: true
       - key: ENABLE_STRUCTURED_LOGS
-        value: false
+        value: true
       - key: ENABLE_METRICS
-        value: false
+        value: true
       - key: ENABLE_TRACING
-        value: false
+        value: true
       - key: LOG_LEVEL
         value: info
       - key: SERVICE_NAME
@@ -28,10 +28,16 @@ services:
         value: /metrics
 
       # ── Database ─────────────────────────────────────────────────────────────
+      #- key: DATABASE
+      #- key: DATABASE
+      #  value: sqlite
+      #- key: SQLITE_PATH
+      #  value: /app/data/database.sqlite
       - key: DATABASE
-        value: sqlite
+        sync: false   # set in the Render dashboard
       - key: SQLITE_PATH
-        value: /app/data/database.sqlite
+        sync: false   # set in the Render dashboard
+      
 
       # To use MongoDB Atlas instead, replace the values above with:
       # - key: DATABASE
@@ -41,7 +47,9 @@ services:
 
       # ── Credenciais ──────────────────────────────────────────────────────────
       - key: DASHBOARD_USER
-        value: admin
+        sync: false   # set in the Render dashboard
+      - key: DASHBOARD_EMAIL
+        sync: false   # set in the Render dashboard
       - key: DASHBOARD_PASSWORD
         sync: false   # set in the Render dashboard
 

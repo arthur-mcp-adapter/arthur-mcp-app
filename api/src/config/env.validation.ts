@@ -19,6 +19,7 @@ const envSchema = z
     DB_SYNC: z.enum(['true', 'false']).optional(),
     DASHBOARD_USER: z.string().min(1).default('admin'),
     DASHBOARD_PASSWORD: z.string().min(1).default('admin123'),
+    DASHBOARD_EMAIL: z.string().email().default('admin@arthurmcp.io'),
     JWT_SECRET: z
       .string()
       .min(16, 'JWT_SECRET must be at least 16 characters')
