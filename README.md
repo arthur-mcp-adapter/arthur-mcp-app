@@ -62,7 +62,7 @@ Arthur MCP is designed for that layer.
 
 ### Public MCP Swagger Pages
 
-<img width="1865" height="878" alt="image" src="https://github.com/user-attachments/assets/c9d99b97-d1a3-44e9-8ef0-0197ecec1a8c" />
+<img width="1865" height="878" alt="image" src="https://github.com/user-attachments/assets/7198cf26-3e3c-458e-9dfc-6ab5aefbe717" />
 <img width="1865" height="878" alt="image" src="https://github.com/user-attachments/assets/33167175-5681-40c2-8133-701b39b86a2c" />
 
 
