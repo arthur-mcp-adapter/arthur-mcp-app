@@ -5,6 +5,7 @@ import {
   SOURCE_DISPLAY,
   SQL_SOURCES,
   type SourceType,
+  getProjectIcon,
   getSourceType,
   isBlankSource,
   isDbSource,
@@ -48,5 +49,19 @@ describe('source type helpers', () => {
         color: expect.stringMatching(/^#/),
       }))
     }
+  })
+
+  it('uses the matching template icon when the project has a template tag', () => {
+    expect(getProjectIcon({ tags: ['source:rest', 'template:The Movie Database'] })).toEqual({
+      label: 'The Movie Database',
+      emoji: '🎬',
+      color: '#01B4E4',
+    })
+  })
+
+  it('falls back to the generic source icon when there is no matching template', () => {
+    expect(getProjectIcon({ tags: ['source:graphql'] })).toEqual(SOURCE_DISPLAY.graphql)
+    expect(getProjectIcon({ tags: ['template:Unknown Template'] })).toEqual(SOURCE_DISPLAY.rest)
+    expect(getProjectIcon({})).toEqual(SOURCE_DISPLAY.rest)
   })
 })

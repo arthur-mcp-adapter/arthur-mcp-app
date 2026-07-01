@@ -13,49 +13,18 @@ import {
 } from '@tabler/icons-react'
 import { Permission, useAuth } from '../../../context/AuthContext'
 import { BaseListCard, type BaseListCardAction } from '../../../components'
-import type { HealthEntry, Project } from '../types'
+import { getProjectIcon } from '../../../utils/sourceType'
+import type { Project } from '../types'
 
-function TrafficLight({ health, isPaused }: { health?: HealthEntry; isPaused?: boolean }) {
-  const { t } = useTranslation('servers')
-
-  if (isPaused) {
-    return (
-      <Tooltip title={t('status.pausedByManager')}>
-        <Box sx={{ width: 11, height: 11, borderRadius: '50%', bgcolor: 'text.disabled', flexShrink: 0, border: '1.5px solid', borderColor: 'text.secondary' }} />
-      </Tooltip>
-    )
-  }
-
-  if (!health || health.totalCalls === 0) {
-    return (
-      <Tooltip title={t('status.noActivity')}>
-        <Box sx={{ width: 11, height: 11, borderRadius: '50%', bgcolor: 'action.disabledBackground', flexShrink: 0, border: '1.5px solid', borderColor: 'action.disabled' }} />
-      </Tooltip>
-    )
-  }
-
-  const color = health.errorRatePct === 0 ? 'success.main' : health.errorRatePct < 20 ? 'warning.main' : 'error.main'
-  const border = health.errorRatePct === 0 ? 'success.dark' : health.errorRatePct < 20 ? 'warning.dark' : 'error.dark'
-  const label = health.errorRatePct === 0
-    ? t('status.requestsSucceeded', { count: health.totalCalls })
-    : t('status.errorRate', { rate: health.errorRatePct, count: health.totalCalls })
-
-  return (
-    <Tooltip title={label}>
-      <Box sx={{ width: 11, height: 11, borderRadius: '50%', bgcolor: color, flexShrink: 0, border: '1.5px solid', borderColor: border }} />
-    </Tooltip>
-  )
-}
-
-export function ProjectCard({ p, health, onDelete, onDuplicate }: {
+export function ProjectCard({ p, onDelete, onDuplicate }: {
   p: Project
-  health?: HealthEntry
   onDelete: (id: string) => void
   onDuplicate: (id: string) => void
 }) {
   const navigate = useNavigate()
   const { can } = useAuth()
   const { t } = useTranslation('servers')
+  const source = getProjectIcon(p)
 
   const actions: BaseListCardAction[] = []
   if (can(Permission.ServersCreate)) {
@@ -76,7 +45,25 @@ export function ProjectCard({ p, health, onDelete, onDuplicate }: {
 
   return (
     <BaseListCard
-      icon={<TrafficLight health={health} isPaused={p.isPaused} />}
+      icon={
+        <Tooltip title={source.label}>
+          <Box sx={{
+            width: 38,
+            height: 38,
+            borderRadius: 1.5,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '1.2rem',
+            lineHeight: 1,
+            flexShrink: 0,
+            bgcolor: `${source.color}18`,
+            border: `1.5px solid ${source.color}35`,
+          }}>
+            {source.emoji}
+          </Box>
+        </Tooltip>
+      }
       title={p.name}
       description={p.description}
       onClick={() => navigate(`/servers/${p._id}`)}

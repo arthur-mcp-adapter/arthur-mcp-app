@@ -10,7 +10,7 @@ import SecretAutocomplete, { useSecrets } from './secrets/SecretAutocomplete'
 import { SecretCard } from './secrets'
 import { ProjectCard } from './server/ProjectCard'
 import { Permission } from '../context/AuthContext'
-import type { HealthEntry, Project } from './server/types'
+import type { Project } from './server/types'
 
 const authState = vi.hoisted(() => ({
   allowed: new Set<string>(),
@@ -261,7 +261,7 @@ describe('feature cards', () => {
     expect(screen.queryByText('real-secret')).not.toBeInTheDocument()
   })
 
-  it('renders project cards with navigation, health, tags, and actions', async () => {
+  it('renders project cards with navigation, tags, and actions', async () => {
     const user = userEvent.setup()
     const onDelete = vi.fn()
     const onDuplicate = vi.fn()
@@ -278,7 +278,6 @@ describe('feature cards', () => {
           tags: ['source:rest'],
           tools: [{ name: 'list', description: '', inputSchema: {}, endpointRef: {} as never }],
         }}
-        health={healthFixture()}
         onDelete={onDelete}
         onDuplicate={onDuplicate}
       />,
@@ -331,7 +330,6 @@ describe('feature cards', () => {
           tools: undefined as never,
           isPaused: false,
         })}
-        health={healthFixture({ projectId: 'error', errorRatePct: 40 })}
         onDelete={vi.fn()}
         onDuplicate={vi.fn()}
       />,
@@ -472,13 +470,5 @@ const projectFixture = (overrides: Partial<Project> = {}): Project => ({
   isPaused: false,
   createdAt: '2025-01-01',
   updatedAt: '2025-01-02',
-  ...overrides,
-})
-
-const healthFixture = (overrides: Partial<HealthEntry> = {}): HealthEntry => ({
-  projectId: 'project-1',
-  totalCalls: 10,
-  errorRatePct: 0,
-  isPaused: false,
   ...overrides,
 })

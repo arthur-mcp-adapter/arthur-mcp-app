@@ -24,7 +24,7 @@ import { ConfirmDialog } from '../../components'
 import { AppSnackbar } from '../../components'
 import { ProjectCard } from '../../features/server/ProjectCard'
 import { useListPageLogic } from '../../hooks/useListPageLogic'
-import type { HealthEntry, HealthSummaryEntry, Project } from '../../features/server/types'
+import type { Project } from '../../features/server/types'
 
 // ─── Skeleton grid ────────────────────────────────────────────────────────────
 
@@ -43,7 +43,6 @@ function ProjectsSkeleton() {
 // ─── Main page ────────────────────────────────────────────────────────────────
 
 export default function Servers() {
-  const [health, setHealth] = useState<Map<string, HealthEntry>>(new Map())
   const [error, setError] = useState<string | null>(null)
   const [tagFilter, setTagFilter] = useState('')
   const navigate = useNavigate()
@@ -54,16 +53,8 @@ export default function Servers() {
     loadItems: async () => {
       setError(null)
       try {
-        const [projectsRes, healthRes] = await Promise.all([
-          api.get<Project[]>('/swagger/servers'),
-          api.get<HealthSummaryEntry[]>('/dashboard/health-summary').catch(() => ({ data: [] as HealthSummaryEntry[] })),
-        ])
-        const map = new Map<string, HealthEntry>()
-        for (const h of healthRes.data) {
-          map.set(h.projectId, { projectId: h.projectId, errorRatePct: h.errorRatePct, totalCalls: h.totalCalls, isPaused: h.isPaused })
-        }
-        setHealth(map)
-        return projectsRes.data
+        const { data } = await api.get<Project[]>('/swagger/servers')
+        return data
       } catch (err: any) {
         if (err?.response?.status === 403) setError('forbidden')
         else setError(t('servers:error.loadFailed'))
@@ -193,7 +184,7 @@ export default function Servers() {
         <Grid container spacing={2}>
           {filtered.map((p) => (
             <Grid item xs={12} sm={6} md={4} key={p._id}>
-              <ProjectCard p={p} health={health.get(p._id)} onDelete={handleDeleteProject} onDuplicate={handleDuplicate} />
+              <ProjectCard p={p} onDelete={handleDeleteProject} onDuplicate={handleDuplicate} />
             </Grid>
           ))}
         </Grid>

@@ -115,8 +115,7 @@ describe('Servers page', () => {
             baseUrl: 'https://support.example.com', status: 'error', tools: [], tags: ['support'], isPaused: true,
           },
         ],
-      })
-      .mockResolvedValueOnce({ data: [{ projectId: 'p1', totalCalls: 0, errorRatePct: 0 }] });
+      });
 
     renderServers();
     expect(await screen.findByText('Billing API')).toBeInTheDocument();
@@ -142,8 +141,7 @@ describe('Servers page', () => {
           _id: 'p1', name: 'Billing API', baseUrl: 'https://billing.example.com',
           status: 'active', tools: [], tags: [], isPaused: false,
         }],
-      })
-      .mockResolvedValueOnce({ data: [] });
+      });
     (api.post as ReturnType<typeof vi.fn>).mockResolvedValue({
       data: {
         _id: 'p2', name: 'Billing API Copy', baseUrl: 'https://billing.example.com',
@@ -170,8 +168,7 @@ describe('Servers page', () => {
           _id: 'p1', name: 'Billing API', baseUrl: 'https://billing.example.com',
           status: 'active', tools: [], tags: [], isPaused: false,
         }],
-      })
-      .mockResolvedValueOnce({ data: [] });
+      });
     (api.delete as ReturnType<typeof vi.fn>).mockResolvedValue({});
 
     renderServers();

@@ -92,7 +92,7 @@ import { useTranslation } from 'react-i18next'
 import { useColorMode } from '../../theme/ColorModeContext'
 import { useAuth, Permission } from '../../context/AuthContext'
 import { useDetailPageNav } from '../../hooks/useDetailPageNav'
-import { getSourceType } from '../../utils/sourceType'
+import { getProjectIcon, getSourceType } from '../../utils/sourceType'
 import api from '../../api'
 import { backendUrl } from '../../config/urls'
 import { ConfirmDialog, HelpButton } from '../../components'
@@ -197,10 +197,11 @@ export default function ServerDetail() {
 
   useDetailPageNav(() => {
     if (!project) return null
+    const source = getProjectIcon(project)
     return {
       name: project.name,
-      sourceEmoji: '🖧',
-      sourceColor: '#5D87FF',
+      sourceEmoji: source.emoji,
+      sourceColor: source.color,
       backLabel: t('nav.backToServers'),
       backPath: '/',
       navItems: [
@@ -209,7 +210,7 @@ export default function ServerDetail() {
         { label: t('tab.tools'), icon: <IconTool size={17} />, idx: 2, badge: project.tools.length },
         { label: t('tab.resources'), icon: <IconDatabase size={17} />, idx: 3, badge: (project.resources ?? []).length },
         { label: t('tab.prompts'), icon: <IconBulb size={17} />, idx: 4, badge: (project.prompts ?? []).length },
-        { label: t('tab.chains'), icon: <IconArrowsShuffle size={17} />, idx: 5, badge: (project.chains ?? []).length },
+        { label: `${t('tab.chains')} (WIP)`, icon: <IconArrowsShuffle size={17} />, idx: 5, badge: (project.chains ?? []).length, disabled: true },
         { label: t('tab.settings'), icon: <IconAdjustments size={17} />, idx: 6 },
         { label: t('tab.activity'), icon: <IconChartBar size={17} />, idx: 7 },
         { label: t('tab.aiView'), icon: <IconBook size={17} />, idx: 8 },
@@ -266,6 +267,8 @@ export default function ServerDetail() {
     return acc
   }, {})
 
+  const source = getProjectIcon(project)
+
   const availableMethods = Object.keys(methodCounts)
   const visibleTools = (project.tools ?? []).filter((t) => {
     const matchSearch = !toolSearch
@@ -281,8 +284,29 @@ export default function ServerDetail() {
       <Paper variant="outlined" sx={{ p: 2.5, mb: 2.5, borderRadius: '10px' }}>
         <Box display="flex" justifyContent="space-between" alignItems="flex-start" flexWrap="wrap" gap={2}>
           <Box minWidth={0} flexGrow={1}>
-            <InlineEdit value={project.name} onSave={(v) => saveProjectInfo('name', v)}
-              readOnly={!can(Permission.ServersEditSettings)} placeholder={t('placeholder.serverName')} fontSize="1.375rem" fontWeight={700} />
+            <Box display="flex" alignItems="center" gap={1.25}>
+              <Tooltip title={source.label}>
+                <Box sx={{
+                  width: 38,
+                  height: 38,
+                  borderRadius: 1.5,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '1.2rem',
+                  lineHeight: 1,
+                  flexShrink: 0,
+                  bgcolor: `${source.color}18`,
+                  border: `1.5px solid ${source.color}35`,
+                }}>
+                  {source.emoji}
+                </Box>
+              </Tooltip>
+              <Box minWidth={0} flexGrow={1}>
+                <InlineEdit value={project.name} onSave={(v) => saveProjectInfo('name', v)}
+                  readOnly={!can(Permission.ServersEditSettings)} placeholder={t('placeholder.serverName')} fontSize="1.375rem" fontWeight={700} />
+              </Box>
+            </Box>
             <Box mt={0.5}>
               <InlineEdit value={project.description ?? ''} onSave={(v) => saveProjectInfo('description', v)}
                 readOnly={!can(Permission.ServersEditSettings)} multiline placeholder={t('placeholder.addDescription')} emptyLabel={t('placeholder.addDescription')}

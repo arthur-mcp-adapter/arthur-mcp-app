@@ -58,6 +58,7 @@ type NavItem = {
   path: string
   permission?: keyof UserPermissions
   adminOnly?: boolean
+  wip?: boolean
 }
 
 type NavSection = {
@@ -78,7 +79,7 @@ const NAV_SECTIONS: NavSection[] = [
       { titleKey: 'nav.servers', icon: IconFolder, path: '/', permission: 'servers_view' },
       { titleKey: 'nav.prompts', icon: IconMessage2, path: '/prompts', permission: 'prompts_view' },
       { titleKey: 'nav.secrets', icon: IconLock, path: '/secrets', permission: 'secrets_view_names' },
-      { titleKey: 'nav.aiProviders', icon: IconRobot, path: '/ai-providers', permission: 'ai_providers_view' },
+      { titleKey: 'nav.aiProviders', icon: IconRobot, path: '/ai-providers', permission: 'ai_providers_view', wip: true },
     ],
   },
   {
@@ -287,7 +288,8 @@ function SidebarContent() {
                   <ListItem key={item.path} disablePadding sx={{ px: 1.5, py: '1px' }}>
                     <ListItemButton
                       selected={selected}
-                      onClick={() => navigate(item.path)}
+                      disabled={item.wip}
+                      onClick={() => !item.wip && navigate(item.path)}
                       sx={{
                         borderRadius: '8px', minHeight: 38, px: 1.5,
                         '&.Mui-selected': {
@@ -302,7 +304,7 @@ function SidebarContent() {
                         <Icon stroke={selected ? 2 : 1.5} size="1.1rem" />
                       </ListItemIcon>
                       <ListItemText
-                        primary={t(item.titleKey)}
+                        primary={item.wip ? `${t(item.titleKey)} (WIP)` : t(item.titleKey)}
                         primaryTypographyProps={{
                           fontSize: '0.8375rem',
                           fontWeight: selected ? 600 : 400,

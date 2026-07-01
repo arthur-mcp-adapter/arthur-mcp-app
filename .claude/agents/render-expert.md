@@ -25,7 +25,7 @@ services:
     runtime: node
     region: ohio
     plan: starter
-    buildCommand: npm ci && npm run build
+    buildCommand: npm install && npm run build
     startCommand: node dist/main.js
     healthCheckPath: /health
     envVars:
@@ -92,7 +92,7 @@ services:
     region: ohio
     plan: starter
     rootDir: .
-    buildCommand: npm ci && npm run build
+    buildCommand: npm install && npm run build
     startCommand: node dist/main.js
     healthCheckPath: /health
     envVars:

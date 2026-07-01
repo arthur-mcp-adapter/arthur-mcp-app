@@ -175,7 +175,7 @@ function UseTemplateDialog({
         name: serverName.trim(),
         baseUrl: template.baseUrl,
         description: template.description,
-        tags: [SERVER_TEMPLATE_SOURCE_TAG],
+        tags: [SERVER_TEMPLATE_SOURCE_TAG, `template:${template.name}`],
       })
 
       // 2. Set auth credentials
