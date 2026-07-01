@@ -4,6 +4,19 @@ Arthur MCP is an open, self-hostable control plane for building and operating Mo
 
 It helps teams turn existing systems into AI-ready MCP endpoints without hiding the underlying contracts. Import an API, shape the exposed tools, protect credentials, manage prompts and resources, monitor execution, and publish clean MCP Swagger-style documentation for clients.
 
+<img width="1907" height="876" alt="image" src="https://github.com/user-attachments/assets/6ebdcf66-dc80-4247-ab55-96af70985e34" />
+<img width="1907" height="876" alt="image" src="https://github.com/user-attachments/assets/a62e1321-e045-455e-9dff-30e7dde46ddb" />
+<img width="1907" height="876" alt="image" src="https://github.com/user-attachments/assets/a795298a-3865-4c00-9a9e-ad2acab2486b" />
+<img width="1907" height="876" alt="image" src="https://github.com/user-attachments/assets/2d3dd978-f9a4-4477-9603-d1661823d043" />
+<img width="1907" height="876" alt="image" src="https://github.com/user-attachments/assets/003a93f0-3675-477f-b282-701a2280c581" />
+<img width="1907" height="876" alt="image" src="https://github.com/user-attachments/assets/e0c1fb2f-8db4-4b2b-b2d6-f029dba57806" />
+<img width="1907" height="876" alt="image" src="https://github.com/user-attachments/assets/cfb88a26-2cc2-4dea-b282-c1a44ddae155" />
+<img width="1907" height="876" alt="image" src="https://github.com/user-attachments/assets/098344f6-7aa3-4009-a9f8-0bcbe8ced734" />
+<img width="1907" height="876" alt="image" src="https://github.com/user-attachments/assets/4fc7e5ba-526e-4df4-ada3-ba74b601aac4" />
+<img width="1907" height="876" alt="image" src="https://github.com/user-attachments/assets/f5fe3245-3933-4ffc-93c8-2804f721d7d4" />
+
+
+
 ## Why Arthur MCP
 
 AI clients are most useful when they can safely act on real systems. The hard part is not just generating a tool schema. The hard part is the operational layer around it: auth, secrets, rate limits, logs, prompts, docs, public setup links, testing, and a workflow that lets humans review what an AI client can access.
