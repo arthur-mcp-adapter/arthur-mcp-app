@@ -14,6 +14,11 @@ Frontend duplication optimization is progressing through a phased extraction pla
 
 ## Latest Changes
 
+- Corrected the Vercel specialist guidance so future deployment debugging uses the actual repository shape:
+  - The React/Vite frontend deploys from the repository root, not `client/`.
+  - Vercel Project Settings should use Root Directory `.` or blank, Framework Preset `Vite`, Install Command `npm install` unless a root lockfile exists, Build Command `npm run build`, and Output Directory `dist`.
+  - `VITE_API_URL` must point to the deployed backend with the `/api` suffix.
+  - If Vercel logs show commit `36f7941` or Vite 5.x, the deploy is building an old repository/branch state; redeploy the current `main`/`develop` commit that contains `4532752 fix vercel deploy` or confirm the connected Git repository and production branch.
 - Added Vercel frontend deployment support from the repository root:
   - Added root `vercel.json` for the Vite build, `dist` output, SPA fallback rewrites, security headers, and immutable asset caching.
   - Added `src/config/urls.ts` so the frontend can use `VITE_API_URL` for backend API, MCP, Share page simulator, and OAuth token URLs while keeping `/api` as the local-development fallback.

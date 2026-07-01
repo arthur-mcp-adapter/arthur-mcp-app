@@ -119,6 +119,7 @@ This file should be updated when task state changes. It does not replace issues 
 - [x] Rewrote `README.md` in English with product positioning, setup, architecture, observability, deployment, contribution, and license guidance.
 - [x] Changed generated MCP Swagger share links to permanent slug-only URLs (`/mcp-swagger/:shareSlug`, no token), with `GET /api/share/by-slug/:slug` as the new public lookup and legacy token-based links (`/mcp-swagger/:slug/:token`, `/share/:slug/:token`, `/share/:token`) still supported.
 - [x] Added root-level Vercel frontend configuration and `VITE_API_URL` support so the React app can deploy from the repository root while targeting an external backend.
+- [x] Corrected the Vercel specialist guidance to stop recommending a non-existent `client/` root and to diagnose old-commit/old-Vite deploy logs as a repository or production-branch mismatch.
 
 ## Decisions
 
