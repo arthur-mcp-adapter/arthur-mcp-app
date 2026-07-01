@@ -4,10 +4,6 @@ Arthur MCP is an open, self-hostable control plane for building and operating Mo
 
 It helps teams turn existing systems into AI-ready MCP endpoints without hiding the underlying contracts. Import an API, shape the exposed tools, protect credentials, manage prompts and resources, monitor execution, and publish clean MCP Swagger-style documentation for clients.
 
-
-
-
-
 ## Why Arthur MCP
 
 AI clients are most useful when they can safely act on real systems. The hard part is not just generating a tool schema. The hard part is the operational layer around it: auth, secrets, rate limits, logs, prompts, docs, public setup links, testing, and a workflow that lets humans review what an AI client can access.
@@ -69,8 +65,6 @@ Arthur MCP is designed for that layer.
 - Generate permanent public documentation links.
 - Prefer documentation URLs like:
 - Share a documentation of your MCP Server tools, resources and prompts.
-
-```
 
 ### Observability
 
