@@ -7,7 +7,6 @@ services:
     rootDir: .
     dockerfilePath: ./Dockerfile
     healthCheckPath: /health
-    initialDelaySeconds: 30
     envVars:
       - key: NODE_ENV
         value: production
