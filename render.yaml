@@ -11,13 +11,13 @@ services:
       - key: NODE_ENV
         value: production
       - key: ENABLE_OBSERVABILITY
-        value: true
+        value: false
       - key: ENABLE_STRUCTURED_LOGS
-        sync: true
+        value: false
       - key: ENABLE_METRICS
-        sync: true
+        value: false
       - key: ENABLE_TRACING
-        sync: true
+        value: false
       - key: LOG_LEVEL
         value: info
       - key: SERVICE_NAME
