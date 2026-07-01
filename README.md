@@ -10,7 +10,7 @@ AI clients are most useful when they can safely act on real systems. The hard pa
 
 Arthur MCP is designed for that layer.
 
-- Convert OpenAPI, Swagger, Postman, REST templates, and data-source operations into MCP tools.
+- Convert any data-source operations into MCP tools.
 - Manage MCP servers with settings, auth, keys, OAuth clients, response limits, rate limits, and maintenance controls.
 - Publish public MCP Swagger documentation pages through permanent, slug-based links.
 - Use readable slugs for public docs and MCP runtime URLs while preserving UUID compatibility.
@@ -35,7 +35,9 @@ Every MCP server wraps one data source — a REST API today, with GraphQL, gRPC,
 
 ### REST API Template Gallery
 
-> 📸 _Add a screenshot: the Templates gallery (`Browse templates` from the Servers page)._
+<img width="1865" height="878" alt="image" src="https://github.com/user-attachments/assets/532b6513-a6b4-4284-bd99-6273bdf8a26d" />
+<img width="1865" height="878" alt="image" src="https://github.com/user-attachments/assets/a76469a0-58cc-4518-9480-f9c4584e248c" />
+
 
 Skip the blank-page problem. Arthur MCP ships with **69 ready-to-use REST API templates** across AI, Business, Communication, Data, Database, Development, E-commerce, Music & Media, and Testing — GitHub, Stripe, Slack, Notion, HubSpot, OpenAI, Anthropic, Shopify, Twilio, Supabase, and dozens more.
 
@@ -46,7 +48,9 @@ Skip the blank-page problem. Arthur MCP ships with **69 ready-to-use REST API te
 
 ### Dynamic Tools
 
-> 📸 _Add a screenshot: the Tools tab of a server with a few generated tools._
+<img width="1865" height="878" alt="image" src="https://github.com/user-attachments/assets/f7eb6ea8-663c-4d80-9f76-67c9e69098f5" />
+<img width="1865" height="878" alt="image" src="https://github.com/user-attachments/assets/3d6af8cf-c978-4df0-b562-68ca62475edd" />
+
 
 Turn REST endpoints into MCP tools an AI client can call.
 
@@ -58,7 +62,9 @@ Turn REST endpoints into MCP tools an AI client can call.
 
 ### Chains (WIP)
 
-> 📸 _Add a screenshot: the Chains tab with a chain open._
+<img width="1865" height="878" alt="image" src="https://github.com/user-attachments/assets/a5894e0e-4e75-4494-8765-fe3ac98f92c2" />
+<img width="1865" height="878" alt="image" src="https://github.com/user-attachments/assets/7a2f0f57-b9bf-40cb-9fd4-9a133aac5a36" />
+
 
 Compose several tools into a single multi-step MCP tool — useful when a task always requires the same sequence of calls (look up a customer, then list their invoices, for example).
 
@@ -68,7 +74,9 @@ Compose several tools into a single multi-step MCP tool — useful when a task a
 
 ### Resources
 
-> 📸 _Add a screenshot: the Resources tab of a server._
+<img width="1865" height="878" alt="image" src="https://github.com/user-attachments/assets/0a6e879b-0dc2-4d7a-b99a-1336cb5a81d2" />
+<img width="1865" height="878" alt="image" src="https://github.com/user-attachments/assets/e9006edd-297f-464a-a31b-39127d2fd9ed" />
+
 
 Resources are the "read" half of MCP — data or documents an AI client can pull into context without calling an action.
 
@@ -79,7 +87,9 @@ Resources are the "read" half of MCP — data or documents an AI client can pull
 
 ### Prompts
 
-> 📸 _Add a screenshot: the Prompts tab of a server, and the global Prompts library page._
+<img width="1865" height="878" alt="image" src="https://github.com/user-attachments/assets/c5486cad-c817-416c-8596-93a58ad213d2" />
+<img width="1865" height="878" alt="image" src="https://github.com/user-attachments/assets/265decf2-0924-459c-9de1-c20c0a28cbb9" />
+
 
 Prompts are reusable instruction templates exposed to MCP clients, so an AI assistant can pull a vetted prompt instead of everyone re-writing the same instructions by hand.
 
@@ -91,7 +101,9 @@ Prompts are reusable instruction templates exposed to MCP clients, so an AI assi
 
 ### Secrets And Authentication
 
-> 📸 _Add a screenshot: the Secrets vault page._
+<img width="1865" height="878" alt="image" src="https://github.com/user-attachments/assets/511664ba-d909-421c-84be-95ab5c8b5c9e" />
+<img width="1865" height="878" alt="image" src="https://github.com/user-attachments/assets/67d52388-d8aa-4d49-ac57-f23d9f2c6976" />
+
 
 - Store secret values separately from metadata, so credentials never render in list views.
 - Use secrets in upstream auth configuration and reference them by name (`{{secret:NAME}}`) instead of pasting raw values into a server.
@@ -101,7 +113,11 @@ Prompts are reusable instruction templates exposed to MCP clients, so an AI assi
 
 ### Roles & Permissions
 
-> 📸 _Add a screenshot: the Users & Roles section of the Profile page._
+<img width="1865" height="878" alt="image" src="https://github.com/user-attachments/assets/e5106af9-34a8-411e-8a0f-91b4cb61d93e" />
+<img width="1865" height="878" alt="image" src="https://github.com/user-attachments/assets/c6af9f52-b478-4988-a5c7-c01b45616f97" />
+<img width="1865" height="878" alt="image" src="https://github.com/user-attachments/assets/b9f79479-d633-4e44-9fe7-e8e2fa29dc32" />
+<img width="1865" height="878" alt="image" src="https://github.com/user-attachments/assets/84f92346-483a-4298-9e9b-4108abf3ace9" />
+
 
 Every action in Arthur MCP is gated behind an explicit permission, checked on the backend (authoritative) and mirrored on the frontend (so the UI never shows an action that will just fail afterward).
 
@@ -112,7 +128,12 @@ Every action in Arthur MCP is gated behind an explicit permission, checked on th
 
 ### Settings
 
-> 📸 _Add a screenshot: the Settings page._
+<img width="1865" height="878" alt="image" src="https://github.com/user-attachments/assets/9127ed25-44e6-40bc-888b-c1b12213eba5" />
+<img width="1865" height="878" alt="image" src="https://github.com/user-attachments/assets/d4ff231e-2ca8-4c86-9902-a1846e8429d0" />
+<img width="1865" height="878" alt="image" src="https://github.com/user-attachments/assets/bf0c2389-fa98-4a4c-b0b2-35c755db1360" />
+<img width="1865" height="878" alt="image" src="https://github.com/user-attachments/assets/7c446350-0c3d-43f0-ac14-aa6d19faf7d3" />
+<img width="1865" height="878" alt="image" src="https://github.com/user-attachments/assets/8dcf0666-a4a5-42b7-a2af-3cfe71e4be49" />
+
 
 A dedicated space for the instance-wide configuration that keeps a self-hosted deployment secure and correctly wired, gated behind its own `settings_manage` permission.
 
@@ -122,9 +143,11 @@ A dedicated space for the instance-wide configuration that keeps a self-hosted d
 - **Email** — configure SMTP so the platform can send transactional email (invites, notifications).
 - **Observability** — a live, read-only view of the active observability configuration (structured logs, metrics, tracing) so you can confirm what's enabled without checking environment variables directly.
 
-### AI Providers & AI-Assisted Tooling
+### AI Providers & AI-Assisted Tooling (WIP)
 
-> 📸 _Add a screenshot: the AI Providers page._
+<img width="1865" height="878" alt="image" src="https://github.com/user-attachments/assets/137eb969-7167-42c7-a11c-fdfb1963b630" />
+<img width="1865" height="878" alt="image" src="https://github.com/user-attachments/assets/13ee6fbc-c836-4530-814c-df698f7daa39" />
+
 
 Connect the LLM providers you already use and put them to work inside Arthur itself, not just as the consumer of your MCP servers.
 
@@ -164,7 +187,9 @@ Runtime observability includes:
 
 ### Audit Logs
 
-> 📸 _Add a screenshot: the Audit Logs page._
+<img width="1865" height="878" alt="image" src="https://github.com/user-attachments/assets/50390f13-45ef-4d33-be7f-3db886620f19" />
+<img width="1865" height="878" alt="image" src="https://github.com/user-attachments/assets/f5db6032-fa35-4e8d-9654-c2c250f03c47" />
+
 
 An accountability trail for everything that changes in the instance, gated behind `audit_view` (with `audit_export` for pulling the history out).
 
@@ -174,7 +199,9 @@ An accountability trail for everything that changes in the instance, gated behin
 
 ### Error Tracking
 
-> 📸 _Add a screenshot: the Error Tracking page._
+<img width="1865" height="878" alt="image" src="https://github.com/user-attachments/assets/0e528d88-8173-4e02-bfa3-be7d2e6d8701" />
+<img width="1865" height="878" alt="image" src="https://github.com/user-attachments/assets/b5fe34f1-2449-4c2f-9b85-d0d2409ad00f" />
+
 
 Wires the backend into the error-monitoring provider your team already uses, instead of leaving failures to only show up in raw server logs.
 
@@ -187,19 +214,25 @@ Wires the backend into the error-monitoring provider your team already uses, ins
 
 Arthur MCP ships with English and Portuguese (pt-BR) translations out of the box, and lets you rename the core vocabulary (Server, Tool, Resource, and more) to match your team's own language, without touching the underlying API contracts.
 
-### Harness (In Progress)
+### Harness
 
-> 📸 _Add a screenshot: the Harness tab of a server._
+<img width="1865" height="878" alt="image" src="https://github.com/user-attachments/assets/42d88b39-6026-4b8f-8529-75a59a800595" />
+<img width="1865" height="878" alt="image" src="https://github.com/user-attachments/assets/e239cc9c-d519-417a-b8bd-d8cf709661d9" />
 
-Harness is where you'll tune how Arthur behaves when a tool call to your upstream API is slow or unreliable. The configuration UI and persistence already exist and are wired to real endpoints (`GET`/`PATCH /swagger/servers/:id/harness/...`); what's still landing is the runtime enforcement inside tool execution itself. It's listed here, honestly labeled, so you know exactly what to expect today.
+
+Harness is where you'll tune how Arthur behaves when a tool call to your upstream API is slow or unreliable. The configuration UI and persistence already exist and are wired to real endpoints what's still landing is the runtime enforcement inside tool execution itself. It's listed here, honestly labeled, so you know exactly what to expect today.
 
 - **Timeout Settings** — per-tool or server-wide timeout limits so a slow upstream API can't stall the AI's response indefinitely.
 - **Retry Policy** — how many times a failed call should be retried, with which backoff strategy, and for which HTTP error codes.
 - **Execution Hooks** — custom logic that runs before and after a tool call, to inject headers, transform inputs, log results, or trigger side effects without touching the upstream API itself.
 
-### Guard Rails (In Progress)
+### Guard Rails
 
-> 📸 _Add a screenshot: the Guard Rails tab of a server._
+<img width="1865" height="878" alt="image" src="https://github.com/user-attachments/assets/a4e992cf-567f-4ece-ae8b-22b37cb6d0cd" />
+<img width="1865" height="878" alt="image" src="https://github.com/user-attachments/assets/1fc31ad4-745a-416c-ae76-4163a566f3a9" />
+<img width="1865" height="878" alt="image" src="https://github.com/user-attachments/assets/c7d7c4a4-bc99-4efe-873d-7d26a7a0928b" />
+<img width="1865" height="878" alt="image" src="https://github.com/user-attachments/assets/9be51963-e4cd-4ebd-a013-9ab84b873c28" />
+
 
 Guard Rails is the safety layer that constrains what the AI is allowed to send and receive through a server's tools. Like Harness, the configuration screens and persistence are live today; the enforcement path inside tool execution is still being connected, so treat this as a preview of where the safety model is headed rather than an active control yet.
 
