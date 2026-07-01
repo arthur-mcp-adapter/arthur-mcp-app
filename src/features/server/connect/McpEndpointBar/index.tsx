@@ -12,6 +12,7 @@ import { useTranslation } from 'react-i18next'
 import { useAuth, Permission } from '../../../../context/AuthContext'
 import api from '../../../../api'
 import { HelpButton } from '../../../../components'
+import { backendUrl } from '../../../../config/urls'
 
 export function McpEndpointBar({ projectId, hasKeys, shareSlug, onShareSlugChange }: {
   projectId: string
@@ -31,7 +32,7 @@ export function McpEndpointBar({ projectId, hasKeys, shareSlug, onShareSlugChang
   const [slugSaved, setSlugSaved] = useState(false)
   const qrCanvasRef = useRef<HTMLCanvasElement>(null)
   const endpointIdentifier = shareSlug?.trim() || projectId
-  const url = `${window.location.origin}/api/mcp/server/${endpointIdentifier}`
+  const url = backendUrl(`/api/mcp/server/${endpointIdentifier}`)
   const { can } = useAuth()
 
   useEffect(() => {

@@ -14,6 +14,11 @@ Frontend duplication optimization is progressing through a phased extraction pla
 
 ## Latest Changes
 
+- Added Vercel frontend deployment support from the repository root:
+  - Added root `vercel.json` for the Vite build, `dist` output, SPA fallback rewrites, security headers, and immutable asset caching.
+  - Added `src/config/urls.ts` so the frontend can use `VITE_API_URL` for backend API, MCP, Share page simulator, and OAuth token URLs while keeping `/api` as the local-development fallback.
+  - Updated `src/api.ts`, public `SharePage`, `McpEndpointBar`, and `ServerDetail` OAuth URL generation to use the configured backend origin when deployed separately from the NestJS API.
+  - Documented that Vercel Project Settings must use Root Directory `.` or blank, not `client`, because this repository does not contain a `client/` folder.
 - Rewrote `README.md` in English as a polished project landing document:
   - Added product positioning for Arthur MCP as an open, self-hostable MCP control plane.
   - Documented core features, architecture, quick start, Docker, observability, Render deployment, security model, contribution workflow, and project status.
@@ -335,6 +340,8 @@ Frontend duplication optimization is progressing through a phased extraction pla
 
 ## Validation
 
+- `npm run type-check` passed after adding Vercel URL configuration and `VITE_API_URL` support.
+- `npm run build` passed after adding root `vercel.json`; Vite reported non-failing warnings about the large `@tabler/icons-react` barrel and chunk size.
 - Not run for the README rewrite because it only changed documentation.
 - `npm test --prefix api -- swagger.service --runInBand` passed with 1 suite and 12 tests after changing generated public documentation links to `/mcp-swagger/:serverSlug/:token`.
 - `npx tsc -p api/tsconfig.json --noEmit` passed after the `/mcp-swagger` route/link change.

@@ -16,6 +16,7 @@ import LockOpenIcon from '@mui/icons-material/LockOpen'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import axios from 'axios'
 import { QRCodeSVG } from 'qrcode.react'
+import { apiUrl, backendUrl } from '../../config/urls'
 
 interface ShareTool {
   name: string
@@ -99,7 +100,7 @@ function oauthTokenUrl(mcpUrl: string) {
 
 function absoluteUrl(path: string) {
   if (/^https?:\/\//i.test(path)) return path
-  return `${window.location.origin}${path.startsWith('/') ? path : `/${path}`}`
+  return backendUrl(path)
 }
 
 function shellSingleQuote(value: string) {
@@ -307,7 +308,7 @@ function SimulatorPanel({
         if (authMode === 'oauthClientCredentials') headers.Authorization = `Bearer ${authKey.trim().replace(/^Bearer\s+/i, '')}`
         else headers.auth = authKey.trim()
       }
-      const { data } = await axios.post(normalizeMcpUrl(mcpUrl), payload, { headers })
+      const { data } = await axios.post(backendUrl(normalizeMcpUrl(mcpUrl)), payload, { headers })
       const result = formatMcpResult(data)
       setResponse(result.text)
       setResponseIsError(result.isError)
@@ -570,7 +571,7 @@ function AuthorizeDialog({
         client_id: clientId.trim(),
         client_secret: clientSecret,
       })
-      const { data } = await axios.post<{ access_token?: string }>(oauthTokenUrl(mcpUrl), body, {
+      const { data } = await axios.post<{ access_token?: string }>(backendUrl(oauthTokenUrl(mcpUrl)), body, {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       })
       if (!data.access_token) throw new Error(t('share.oauthTokenMissing'))
@@ -678,7 +679,7 @@ export default function SharePage() {
   const [authorizeOpen, setAuthorizeOpen] = useState(false)
 
   useEffect(() => {
-    const url = token ? `/api/share/${token}` : slug ? `/api/share/by-slug/${slug}` : null
+    const url = token ? apiUrl(`/share/${token}`) : slug ? apiUrl(`/share/by-slug/${slug}`) : null
     if (!url) return
     axios.get<ShareInfo>(url)
       .then(r => setInfo(r.data))
@@ -699,7 +700,7 @@ export default function SharePage() {
     </ThemeProvider>
   )
 
-  const fullUrl = `${window.location.origin}${info.mcpUrl}`
+  const fullUrl = backendUrl(info.mcpUrl)
   const canAuthorize = info.hasKey || !!info.hasOAuthClient
   const isAuthorized = authKey.trim().length > 0
 

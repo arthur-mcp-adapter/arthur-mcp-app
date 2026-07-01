@@ -289,6 +289,30 @@ http://prometheus:9090
 
 ## Deployment
 
+### Vercel
+
+Vercel should deploy only the React/Vite frontend from the repository root.
+
+Use these project settings:
+
+```text
+Root Directory: .
+Framework Preset: Vite
+Install Command: npm install
+Build Command: npm run build
+Output Directory: dist
+```
+
+Do not set Root Directory to `client`; this repository does not have a `client/` folder.
+
+Set the backend API URL as an environment variable in Vercel:
+
+```text
+VITE_API_URL=https://your-backend.example.com/api
+```
+
+The frontend uses `VITE_API_URL` for authenticated API calls, MCP simulator requests, OAuth token exchange, and displayed backend MCP endpoints. If `VITE_API_URL` is not set, it falls back to `/api`, which is useful for local development with the Vite proxy.
+
 ### Render
 
 This repository includes `render.yaml`.

@@ -94,6 +94,7 @@ import { useAuth, Permission } from '../../context/AuthContext'
 import { useDetailPageNav } from '../../hooks/useDetailPageNav'
 import { getSourceType } from '../../utils/sourceType'
 import api from '../../api'
+import { backendUrl } from '../../config/urls'
 import { ConfirmDialog, HelpButton } from '../../components'
 import { McpDocsContent } from '../McpDocs'
 import {
@@ -337,7 +338,7 @@ export default function ServerDetail() {
             projectId={id!}
             initialClientId={project.oauthClientId}
             initialClientSecret={project.oauthClientSecret}
-            serverBase={window.location.origin}
+            serverBase={backendUrl('')}
             onChange={(cid, csec) => setProject((prev) => prev ? { ...prev, oauthClientId: cid ?? undefined, oauthClientSecret: csec ?? undefined } : prev)}
           />
         </>
