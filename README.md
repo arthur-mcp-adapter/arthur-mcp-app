@@ -4,9 +4,12 @@ Arthur MCP is an open, self-hostable control plane for building and operating Mo
 
 It helps teams turn existing systems into AI-ready MCP endpoints without hiding the underlying contracts. Import an API, shape the exposed tools, protect credentials, manage prompts and resources, monitor execution, and publish clean MCP Swagger-style documentation for clients.
 
-<img width="1871" height="878" alt="image" src="https://github.com/user-attachments/assets/4e6ff326-9eb9-44b7-accc-2d43cc8a7020" />
-<img width="1871" height="878" alt="image" src="https://github.com/user-attachments/assets/0b8f1002-f48b-4b49-802f-ae72aa0d787b" />
+Light Mode
+<img width="1867" height="878" alt="image" src="https://github.com/user-attachments/assets/a4fefc67-9dcc-4334-97b5-a87cf7662e4b" />
 <img width="1867" height="878" alt="image" src="https://github.com/user-attachments/assets/709216fa-e5fa-42cb-9e80-3126a02b748e" />
+<img width="1867" height="878" alt="image" src="https://github.com/user-attachments/assets/70f5ab48-f349-43cd-8f5d-aaf9cb01e815" />
+<img width="1867" height="878" alt="image" src="https://github.com/user-attachments/assets/0287e800-4e7d-45a6-a02e-26f57afb244d" />
+<img width="1867" height="878" alt="image" src="https://github.com/user-attachments/assets/bd24bf74-f3f0-465d-a235-67c2f4aa60a7" />
 
 
 
