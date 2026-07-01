@@ -44,7 +44,7 @@ You are a Vercel expert focused on fast deployments, correct configurations, and
 **Build and output**
 - `outputDirectory`: point to where the framework generates assets (`dist/`, `out/`, `.next/`)
 - `buildCommand`: customize if the default does not work (`npm run build:prod`)
-- `installCommand`: `npm ci` for reproducible builds
+- `installCommand`: use `npm ci` when a lockfile exists; otherwise use `npm install`
 - `nodeVersion`: pin to `20.x` for consistency
 
 **Preview Deployments**
@@ -71,11 +71,14 @@ You are a Vercel expert focused on fast deployments, correct configurations, and
 ## For this project
 
 The project has a React (Vite) frontend and a NestJS backend. On Vercel:
-- **Deploy only the frontend** (`client/`) — Vercel does not handle stateful NestJS well
-- Configure `Root Directory: client` in the Vercel project
+- **Deploy only the frontend from the repository root** — Vercel does not handle this stateful NestJS backend well
+- Configure `Root Directory: .` or leave it blank; do not use `client` because this repository has no `client/` folder
+- `Framework Preset: Vite`
+- `Install Command: npm install` unless a root `package-lock.json` is committed, then prefer `npm ci`
 - `Build Command: npm run build`
 - `Output Directory: dist`
-- `VITE_API_URL` pointing to the backend on Render/Railway
+- `VITE_API_URL` must point to the deployed backend on Render/Railway/etc. Include the `/api` suffix, for example `https://your-backend.example.com/api`
+- If Vercel logs show an old commit or an old Vite version, verify the connected Git repository and production branch before changing build settings. This project has used `develop` for active work while Vercel production may build `main`.
 
 ## How you work
 

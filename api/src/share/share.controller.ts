@@ -6,6 +6,11 @@ import { SwaggerService } from '../swagger/swagger.service';
 export class ShareController {
   constructor(private readonly swaggerService: SwaggerService) {}
 
+  @Get('by-slug/:slug')
+  getShareInfoBySlug(@Param('slug') slug: string) {
+    return this.swaggerService.getProjectForShareBySlug(slug);
+  }
+
   @Get(':token')
   getShareInfo(@Param('token') token: string) {
     return this.swaggerService.getProjectForShare(token);

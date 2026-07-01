@@ -18,6 +18,7 @@ export class MongoSwaggerProjectRepository implements ISwaggerProjectRepository 
       baseUrl: obj.baseUrl,
       description: obj.description,
       version: obj.version,
+      shareSlug: obj.shareSlug,
       rawSpec: includeRawSpec ? obj.rawSpec : undefined,
       tools: obj.tools ?? [],
       auth: obj.auth ?? { type: 'none' },
@@ -37,6 +38,9 @@ export class MongoSwaggerProjectRepository implements ISwaggerProjectRepository 
       availabilityWindow: obj.availabilityWindow ?? { enabled: false, timezone: 'UTC', schedule: [] },
       alertConfig: obj.alertConfig ?? { enabled: false, errorThresholdPct: 20, notifyEmail: '' },
       tenantConfig: obj.tenantConfig ?? { enabled: false, params: [] },
+      responseConfig: obj.responseConfig ?? { enabled: false },
+      connectionConfig: obj.connectionConfig,
+      dbQueries: obj.dbQueries ?? [],
       createdAt: obj.createdAt,
       updatedAt: obj.updatedAt,
     };
@@ -49,6 +53,15 @@ export class MongoSwaggerProjectRepository implements ISwaggerProjectRepository 
     } catch {
       return null;
     }
+  }
+
+  async findByIdOrShareSlug(identifier: string): Promise<SwaggerProjectRecord | null> {
+    return (await this.findById(identifier))
+      ?? this.toRecordOrNull(await this.model.findOne({ shareSlug: identifier }).exec());
+  }
+
+  private toRecordOrNull(doc: SwaggerProjectDocument | null): SwaggerProjectRecord | null {
+    return doc ? this.toRecord(doc, true) : null;
   }
 
   async findAll(filter?: { tags?: string[] }): Promise<SwaggerProjectRecord[]> {

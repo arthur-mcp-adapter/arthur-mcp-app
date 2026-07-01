@@ -1,0 +1,454 @@
+# Handoff
+
+Update this file at the end of each work session. The goal is to let Codex or Claude Code resume the project without relying on external memory.
+
+## Last Agent
+
+Codex
+
+## Current State
+
+The shared context protocol now includes Claude Code specialist agents, backend entity documentation, backend/frontend design patterns, flow documentation, and a documentation gate. Recent Claude Code work added frontend i18n and configurable terminology. REST server templates now create tagged REST servers by sending `source:rest` during server creation. Prompt and secret creation now use dedicated page-based stepper flows. Server source cards now support double-click to select and continue. A Portuguese integration modeling document was added by explicit user request. Phase 1 of the operation-first migration renamed generic data-source execution UI from Queries to Operations. Data-source operations now support input/output schemas for MCP exposure, with input parameters presented before source-specific query/command editors. A `system-tutor` Claude Code specialist now owns tutorials, section guides, onboarding paths, and product education. A `compliance-counsel` specialist now owns software licensing, dependency obligations, attribution, distribution risk, and compliance/legal notes. A `developer-advocate` specialist now owns developer adoption materials, demos, examples, DX reviews, and community feedback loops. A `react-frontend-engineer` specialist now owns React/TypeScript frontend implementation. A `backend-test-engineer` specialist now owns backend Jest, NestJS, repository, guard, DTO, and API/e2e tests. A `gof-expert` specialist now owns Gang of Four design pattern guidance, and a `solid-expert` specialist now owns SOLID responsibility, interface, dependency direction, and maintainability reviews. Backend coverage now has an 80% global gate for focused testable units. `ServerDetail` refactoring is continuing by extracting focused server feature modules without replacing the current Operations implementation.
+
+Frontend duplication optimization is progressing through a phased extraction plan. Phases 1-7 are complete: `BaseListCard`, `useListPageLogic`, `useCopyToClipboard`, `BaseDialogLayout`, `useDetailPageNav`, shared feature types, and `useAsyncFeedback` are in place, with the most repetitive drawer, detail-nav, snackbar, and page-local entity shapes now centralized. Frontend specialists are now explicitly prepared to use Feature-Driven Architecture, Atomic Design, and controlled barrel exports. `docs/FRONTEND_ARCHITECTURE_PLAN.md` defines the incremental migration plan; its first implementation slice is complete with feature/shared `index.tsx` barrels and Atomic Design component folders.
+
+## Latest Changes
+
+- Corrected the Vercel specialist guidance so future deployment debugging uses the actual repository shape:
+  - The React/Vite frontend deploys from the repository root, not `client/`.
+  - Vercel Project Settings should use Root Directory `.` or blank, Framework Preset `Vite`, Install Command `npm install` unless a root lockfile exists, Build Command `npm run build`, and Output Directory `dist`.
+  - `VITE_API_URL` must point to the deployed backend with the `/api` suffix.
+  - If Vercel logs show commit `36f7941` or Vite 5.x, the deploy is building an old repository/branch state; redeploy the current `main`/`develop` commit that contains `4532752 fix vercel deploy` or confirm the connected Git repository and production branch.
+- Added Vercel frontend deployment support from the repository root:
+  - Added root `vercel.json` for the Vite build, `dist` output, SPA fallback rewrites, security headers, and immutable asset caching.
+  - Added `src/config/urls.ts` so the frontend can use `VITE_API_URL` for backend API, MCP, Share page simulator, and OAuth token URLs while keeping `/api` as the local-development fallback.
+  - Updated `src/api.ts`, public `SharePage`, `McpEndpointBar`, and `ServerDetail` OAuth URL generation to use the configured backend origin when deployed separately from the NestJS API.
+  - Documented that Vercel Project Settings must use Root Directory `.` or blank, not `client`, because this repository does not contain a `client/` folder.
+- Rewrote `README.md` in English as a polished project landing document:
+  - Added product positioning for Arthur MCP as an open, self-hostable MCP control plane.
+  - Documented core features, architecture, quick start, Docker, observability, Render deployment, security model, contribution workflow, and project status.
+  - Documented the current permanent `/mcp-swagger/:serverSlug` public documentation model with legacy signed-route compatibility.
+  - Added license guidance that preserves the intended commercial hosting/resale restriction while noting that this is not plain OSI-approved MIT.
+- Continued the frontend i18n remediation from `docs/FRONTEND_I18N_HARDCODED_AUDIT_2026-07-01.md` by replacing additional hardcoded copy in server modules and `ErrorTracking`-related UI dependencies.
+- Added missing locale keys introduced by the i18n refactor in `serverDetail` and `errorTracking` for both English and Portuguese, including new connect/share slug copy, prompt empty-search text, status/action/help labels, and confirmation/error states.
+- Reworked `NewServer` connection/auth sections to use i18n keys for GraphQL, gRPC, SQL/NoSQL/cloud connection blocks, auth forms, and import tab labels, with new `servers.newServer.*` locale sections in EN/PT-BR.
+- Removed brittle prompt empty-state string manipulation in `PromptsTab` and replaced it with direct locale-driven rendering.
+- Ran frontend validation with `npm run type-check` after the i18n changes (passed).
+
+- Added `docs/FRONTEND_I18N_HARDCODED_AUDIT_2026-07-01.md` with a frontend hardcoded-term i18n audit, including scan methodology, quantified scope, hotspot ranking, representative findings by module, and prioritized remediation order.
+- Changed generated MCP Swagger share links to be permanent slug-only URLs instead of slug+token:
+  - `POST /api/swagger/servers/:id/share-link` now returns `/mcp-swagger/:shareSlug` with no token; the response no longer includes a `token` field.
+  - Added public `GET /api/share/by-slug/:slug` which resolves the server directly via `findByIdOrShareSlug` (the same lookup already used by the MCP runtime endpoint) with no signature or expiry check. The share slug is now the access boundary — editing the slug is the only way to revoke a previously shared link.
+  - The frontend route `/mcp-swagger/:token` (single segment) was repurposed to `/mcp-swagger/:slug` for this permanent format. `/mcp-swagger/:slug/:token`, `/share/:slug/:token`, and `/share/:token` remain as legacy routes so links generated before this change keep working via the existing signed-JWT `GET /api/share/:token` endpoint.
+  - `SwaggerService.generateShareToken` was removed (no longer called); `getProjectForShare`/`getProjectForShareBySlug` now share a `buildShareInfo` helper to avoid duplicating the public payload mapping.
+  - Updated the Connect tab copy: the share slug helper text no longer shows a trailing token placeholder, and the share drawer/slug-saved messages now describe the permanent, slug-revocable model instead of a 30-day expiry.
+- Added automatic unique share slug generation for MCP servers:
+  - New empty, OpenAPI, Postman, and duplicated servers now persist a unique `shareSlug` derived from the server name.
+  - Existing servers without `shareSlug` receive and persist one the first time a share link is generated.
+  - Manual slug editing through `PATCH /api/swagger/servers/:id/share-slug` remains supported, normalizes input, and rejects slugs already used by another server.
+  - `POST /api/swagger/servers/:id/share-link` now returns the resolved `shareSlug` so the Server Detail Connect panel can sync automatically generated slugs.
+  - The MCP runtime endpoint now resolves `/api/mcp/server/:shareSlug` when a slug exists, while `/api/mcp/server/:serverId` remains valid for backward compatibility.
+  - Server Detail shows the slug-based MCP connection URL when `shareSlug` exists and falls back to the UUID URL otherwise.
+  - The public Share page payload now returns `mcpUrl` with `/api/mcp/server/:shareSlug` when the server has a slug, so copied setup/simulator URLs use the slug identifier.
+  - OAuth client credential exchange resolves slug-based `/oauth/server/:shareSlug/token` URLs and signs bearer tokens with the canonical server id.
+  - Generated public documentation links now use `/mcp-swagger/:serverSlug/:token`; `/share/:serverSlug/:token` and `/share/:token` remain legacy frontend routes.
+- Updated generated public MCP Swagger links to look more like documentation URLs:
+  - `POST /api/swagger/servers/:id/share-link` now returns `/mcp-swagger/:serverSlug/:token` using a human-readable slug derived from the server name.
+  - The signed token remains the access boundary and still contains only server id and share type; the slug is cosmetic and not trusted.
+  - Legacy `/share/:serverSlug/:token` and `/share/:token` frontend routes remain supported.
+- Added a Swagger-like simulator to the public `/share/:token` page:
+  - Visitors can run exposed Tools, Resources, and Prompts from the share page using MCP JSON-RPC methods `tools/call`, `resources/read`, and `prompts/get`.
+  - When the shared server requires MCP auth or has OAuth Client configured, the page uses a Swagger UI-style global Authorize button and dialog. It sends `auth` for MCP API keys, or exchanges OAuth client credentials through `/oauth/server/:serverId/token` with `grant_type=client_credentials` before sending `Authorization: Bearer`.
+  - Tool simulations coerce number, integer, boolean, object, and array inputs before sending the request payload; Resources and Prompts use their URI/name contracts.
+  - Simulator panels show the exact request payload, copy-ready curl command, and formatted response/error output while preserving the existing public contract and setup documentation.
+  - No backend payload fields, route permissions, login requirements, or share-token semantics were changed; simulator execution follows the existing MCP endpoint and key guard behavior.
+- Fixed the OAuth Client setup panel URLs to use the backend's actual `/oauth/server/:serverId/authorize` and `/oauth/server/:serverId/token` routes instead of the broken `/oauth/project/:id` paths.
+- The `/share` setup section now uses distinct colors for Claude Desktop, Cursor, and generic MCP client setup rows.
+- Reworked the public `/share/:token` page layout to feel closer to Swagger UI while preserving all existing public information:
+  - The page now uses a dark product bar, server info header, version/status chips, and tool/resource/prompt/auth chips.
+  - The MCP URL and QR code are grouped in a copy-ready endpoint band with a green MCP badge, similar to Swagger's server/operation affordances.
+  - Tools, Resources, Prompts, and setup instructions now render as colored expandable operation rows, including parameters, notes, URIs, MIME types, prompt arguments/content, setup snippets, and output schemas where available.
+  - No payload fields, permissions, authentication behavior, or share-token semantics were changed.
+- Expanded and privacy-scoped the public `/share/:token` MCP documentation page without removing the existing setup flow:
+  - `GET /api/share/:token` now returns only MCP-facing reference data for exposed items: server metadata, MCP URL, auth-required flag, counts, tools, public tool parameters, resources, resolved prompts, descriptions, prompt arguments/content, resource URIs, MIME types, and output schemas.
+  - The public share payload intentionally omits credentials and private origin details such as MCP API key values, upstream auth secrets, OAuth client secrets, connection credentials, DSNs, secret values, raw input schemas, endpoint methods/paths, HTTP method markers in descriptions, operations, API base URLs, source/data-source types, source tags, prompt tags, internal enabled/disabled flags, resource implementation type, and runtime settings.
+  - The frontend share page keeps the existing MCP URL, QR code, and Claude Desktop/Cursor/generic setup instructions, and adds an MCP reference section with expandable Tools, Resources, and Prompts.
+  - Added English and Portuguese `servers.share.*` locale copy for the new reference sections.
+  - Documented the Public MCP Share Page flow and noted that generating links still uses `servers_share`, while viewing a signed share token remains public.
+- Expanded backend Error Tracking coverage so an active provider receives request/application errors across the backend:
+  - `McpExceptionFilter` now reports HTTP and MCP exceptions before preserving existing response shaping.
+  - `SpaFilter` now reports API/MCP 404s it handles, while still ignoring normal React Router fallbacks.
+  - `main.ts` registers process-level `unhandledRejection` and `uncaughtException` reporting.
+  - `DynamicMcpService` now reports MCP tool, chain, resource, prompt, validation, configuration, and upstream HTTP error paths that return `isError`/error content instead of throwing.
+  - `AiProvidersService` and `SwaggerService` now report provider/database test failures that are normalized into `{ ok: false }` or `{ error }` responses.
+  - Error tracking capture remains a no-op when no provider is active and avoids raw request bodies, auth headers, cookies, API keys, DSNs, and secret values.
+- Polished the New AI Provider configuration step: the "Use as the default provider" switch now appears before the connection-test action in a responsive action row with cleaner spacing and no extra outlined surface.
+- Completed missing AI Provider locale keys left by the interrupted implementation, including draft provider name, model helper text, API-key secret labels, optional key label, and replace-key label in English and Portuguese.
+- Added the current frontend-only AI Provider limit: once any provider exists, `/ai-providers` disables the new-provider action and `/ai-providers/new` shows a limited-state message linking to the existing provider. No backend or persistence ownership model was changed.
+- Fixed `POST /api/ai-providers/test-config` so upstream provider failures (for example invalid OpenAI keys, quota/rate-limit responses, or missing referenced secrets) return a normalized `{ ok: false, message, latencyMs: 0 }` draft-test result instead of escaping as a 500.
+- Repaired the interrupted AI Providers frontend adjustments:
+  - `SecretAutocomplete` now correctly destructures and forwards its optional `disabled` prop.
+  - The frontend `AiProvider` type now includes the backend public `apiKeySet` field used by the detail page.
+  - The AI provider card test fixture now matches the expanded public provider contract.
+- Expanded AI Providers from credential CRUD into an adoption accelerator:
+  - Providers now support `isDefault`, `lastTestStatus`, `lastTestedAt`, and `lastTestError` across TypeORM and Mongo persistence.
+  - Added `POST /api/ai-providers/:id/default`, `POST /api/ai-providers/:id/test`, and `POST /api/ai-providers/generate-tools`.
+  - Added `AiProviderExecutorService` for provider-specific HTTP execution across OpenAI-compatible providers, Anthropic, Google/Gemini, Azure OpenAI, and Ollama.
+  - Added `ai_providers_execute` across backend/frontend permission contracts, built-in/fallback role presets, profile role editing, locale labels, and flow documentation.
+  - Updated the AI Provider UI to show default/test status, set a default provider, test connections, include Google/Cohere/Azure OpenAI/Ollama provider choices, and allow Ollama without an API key.
+  - Added an AI-assisted REST server creation control in the Tools overview step. It sends endpoint metadata to the selected/default provider and applies improved tool names/descriptions/output schema hints to the created server after import.
+- Repaired the AI Providers CRUD surface: the list, card, create wizard, and detail page now load the common i18n namespace where they use `common:*` keys, active/inactive labels are translated, and list snackbar messages from `useListPageLogic` are translated through the `aiProviders` namespace.
+- Verified AI Provider permissions across backend `RolePermissions`, backend built-in role presets, frontend `Permission`/`UserPermissions`, frontend fallback presets, route navigation, and UI action gates; Error Tracking permission verification remains pending.
+- Restored shared `common:terms.*` locale coverage by adding the missing `operation` term in English and Portuguese, keeping `tool` and `endpoint` available for server detail dialogs that use `common:terms.tool` and `common:terms.endpoint`.
+- Fixed `ServerDetail` contextual sidebar tab labels so `serverDetail` translations are re-registered in `ServerNavContext` after a frontend language change.
+- Added Claude Code `frontend-test-engineer` specialist for frontend Vitest and React Testing Library coverage across pages, feature components, hooks, API client behavior, routing, permissions, i18n, forms, and user-visible flows.
+- Registered `frontend-test-engineer` in the Claude Code agent README and shared `AGENTS.md` specialist list.
+- Reworked the Settings page to use the contextual tab navigation pattern used by server/detail pages. Settings now has Server, Security, Headers, E-mail, and Terminology tabs, with primary save actions aligned in the same footer position; Terminology still uses its dedicated terminology save flow behind that matching action.
+- Added a configurable JWT signing secret to Settings. The value is stored as sensitive Settings data, safe reads expose only `jwtSecretSet`, and auth/OAuth/MCP bearer token/share-link signing and verification use the saved value with fallback to `JWT_SECRET`.
+- Added a Settings Security section for rotating the JWT secret, including validation and copy warning that existing signed sessions, OAuth/MCP tokens, and share links may be invalidated.
+- Persisted the Observability runtime page environment controls in the global Settings singleton as `observabilityEnvironment`, with SQLite/Mongo repository support and `/api/settings` load/save wiring from the frontend.
+- Protected `PATCH /api/settings` with `settings_manage`; Observability users with only `observability_view` can view/copy persisted controls but cannot save them.
+- Updated the Observability runtime page environment controls from read-only rows into editable controls: booleans use switches, `LOG_LEVEL` and `OTEL_EXPORTER_TYPE` use selects, text values use inputs, and the persisted draft can be copied or reset without mutating backend process environment variables.
+- Reworked `/observability` from provider CRUD into a runtime observability dashboard that checks `/health`, `/ready`, `/live`, and `/metrics`, summarizes Prometheus metrics, shows emitted signal types, lists env controls, and includes the local Prometheus/Grafana/Tempo command.
+- Redirected legacy `/observability/new` and `/observability/:id` routes back to `/observability` because provider CRUD is not implemented in the backend observability layer.
+- Updated the Vite dev proxy so `/ready`, `/live`, and `/metrics` are forwarded to the backend alongside `/health`.
+- Added `observability_view/create/edit/delete` to the backend `RolePermissions` contract and built-in role defaults, while the current UI only uses `observability_view`.
+- Updated frontend fallback role presets so observability defaults are view-only for developer/editor roles.
+- Added `docs/FLOWS.md` coverage for the Observability Runtime flow and documented that probe endpoints stay public while the app page is permission-gated.
+- Resolved the root frontend `npm audit` findings by upgrading the Vite toolchain to `vite@8.1.0`, `vitest@4.1.9`, and `@vitejs/plugin-react@6.0.3`, plus adding a `dompurify@3.4.11` override for Monaco's transitive sanitizer dependency.
+- Renamed the Vite/Vitest config to `vite.config.mts` and updated `tsconfig.node.json` so the ESM-only Vite React plugin loads cleanly.
+- Excluded `.claude/**` from Vitest discovery so local Claude Code worktrees do not get picked up by broad test patterns.
+- Added `api/src/observability/` as the reusable backend observability layer for public `/health`, `/ready`, `/live`, and `/metrics` endpoints, structured JSON logs, request/correlation IDs, Prometheus metrics, and optional OpenTelemetry tracing.
+- Switched Nest bootstrap to `AppLoggerService`, initialized OpenTelemetry when enabled, excluded `/ready`, `/live`, and `/metrics` from the `/api` prefix, and bound the server to `0.0.0.0` using `process.env.PORT`.
+- Added HTTP request logging middleware, correlation ID middleware, HTTP metrics/tracing interceptors, and MCP-specific metrics/traces for tool calls, resource reads, prompt calls, and external HTTP requests.
+- Added local observability helpers under `observability/`: Prometheus config, Docker Compose for Prometheus/Grafana/Tempo, a Grafana dashboard JSON, and usage docs.
+- Updated `render.yaml`, `docker-compose.yml`, `nginx.conf`, `api/.env.example`, `README.md`, `AGENTS.md`, and `docs/DESIGN_PATTERNS.md` for the observability behavior and Render-ready defaults.
+- Added focused backend tests for health endpoints, metrics endpoint rendering, correlation ID generation/reuse, HTTP request logs, HTTP/MCP metrics, and tracing enabled/disabled behavior.
+- Internationalized chain and prompt test hardcoded UI strings in the server detail feature modules (`ChainsTab`, `ChainDialog`, `StepBuilder`, and `PromptTestPanel`) by switching visible copy, labels, tooltips, placeholders, empty/error text, and confirm dialog strings to `serverDetail`/`common` locale keys.
+- Continued the server module i18n sweep in `ResourcesTab`, `DynamicResourceDialog`, and the connect/auth panels, moving the first visible resource and credential chrome strings to locale keys while validation remains in progress.
+- Completed another i18n pass across `DynamicResourceDialog`, `ToolOutputTemplateSection`, `ToolDialog`, and `OAuthClientPanel`, replacing their main visible labels/actions/errors with `serverDetail`/`common` keys and fixing broken locale references in `ResourcesTab`.
+- Repaired `serverDetail` locale drift by adding missing resource/tool-dialog keys and removing duplicate/overlapping `confirm`/`error`/`tooltip` blocks that were overriding values in the Portuguese namespace.
+- Internationalized shared `CodePreviewTabs` labels (`Code` / `Preview`) via `common.action` keys to eliminate repeated hardcoded tab copy.
+- Added new i18n keys for chain-specific UI content in both English and Portuguese locale files (`serverDetail.json`) and shared action labels in `common.json`.
+- Added a project-wide permission gate to `AGENTS.md`: every new page, tab, endpoint, integration, credential surface, settings panel, or user action must explicitly reuse an existing permission or add a new permission end-to-end.
+- Reinforced permission alignment rules in `docs/DESIGN_PATTERNS.md` for backend guards/decorators, frontend `can(Permission.X)` gates, role presets, tests, and documentation.
+- Updated Claude Code agent guidance (`README`, `software-engineer`, `react-frontend-engineer`, `backend-test-engineer`, `software-architect`, `nestjs-expert`, `ui-expert`, `ux-analyst`, and `product-owner`) so feature work includes permission decisions before implementation is considered complete.
+- Added a roadmap audit item to verify permission coverage for newly added feature domains such as AI providers, observability, and error tracking.
+- Internationalized remaining hardcoded instructional copy in `SetupWizard` by replacing list item text with `auth` namespace keys in both English and Portuguese locales.
+- Internationalized the `Upload` page help modal body by moving all visible instructional text to new `servers.upload.help.*` locale keys in both English and Portuguese.
+- Internationalized `SaveIndicator` status/fallback messages by switching to `common` namespace keys and adding shared `saved`/`saveFailed` translations.
+- Internationalized additional Server Detail panels by moving visible Settings, Harness, and Guard Rails UI copy to the `serverDetail` locale namespace in English and Portuguese.
+- Updated Server Detail settings panels for pause/maintenance/availability, rate limit, alerts, and multi-tenant parameters to use `useTranslation('serverDetail')`.
+- Updated Harness panels for retry policy, timeout settings, and execution hooks to use translated labels, actions, empty states, and help copy.
+- Updated Guard Rails panels for input constraints, output filtering, and tool restrictions to use translated labels, actions, empty states, and help copy.
+- Added `docs/FRONTEND_MODULARIZATION_PLAN.md` with a phased execution plan for modularizing the frontend by domain, using `src/features/server/` as the first reference slice.
+- Added `src/components/BaseDialogLayout.tsx` and reused it in `FromEndpointPickerDialog` and `ReimportSpecDialog` to remove repeated right-drawer shell markup.
+- Added `src/hooks/useDetailPageNav.ts` and refactored `PromptDetail`, `SecretDetail`, `ServerDetail`, and `Profile` to reuse the contextual sidebar navigation sync.
+- Consolidated page-local prompt/secret/project entity interfaces in `PromptDetail` and `SecretDetail` by importing the existing shared feature types.
+- Added `src/hooks/useAsyncFeedback.ts` and reused it in `Profile` to reduce repeated snackbar state and async feedback handling.
+- Added `AGENTS.md` with project context, commands, and the agent protocol.
+- Added `docs/ROADMAP.md` with macro status, decisions, and open questions.
+- Added `docs/HANDOFF.md` as the handoff file between sessions.
+- Converted the shared context files to English.
+- Added `.claude/agents/README.md` as the Claude Code agent index.
+- Updated `AGENTS.md` with the Claude Code specialist list and routing guidance.
+- Added `docs/ENTITIES.md` documenting backend entities, persistence fields, and repository contracts.
+- Translated existing Portuguese backend comments/log/error text found while documenting entities.
+- Added a documentation gate requiring every code or configuration change to update affected documentation in the same work session.
+- Added `docs/DESIGN_PATTERNS.md` documenting backend and frontend design patterns.
+- Updated `AGENTS.md` and `docs/ROADMAP.md` to reference the design pattern document.
+- Aligned `SwaggerProject` Mongo persistence with the repository contract by adding `connectionConfig` and `dbQueries`.
+- Split secret metadata from secret value reveal at the service/API/UI boundary.
+- Added permission guards to secrets endpoints.
+- Centralized backend built-in permission presets and frontend fallback permission presets.
+- Added Swagger DTO contracts and extracted import/API-key responsibilities into focused services.
+- Added `docs/FLOWS.md` with the Secrets Vault flow.
+- Documented frontend i18n, supported locale resources, language detection, and configurable terminology settings.
+- Recorded `tool-instructor` and `naming-expert` as Claude Code specialists in the shared agent index.
+- Updated REST API templates so every template-created server receives the `source:rest` tag.
+- Added `NewPrompt` and `NewSecret` pages so primary creation follows the same page/stepper pattern as `NewServer`.
+- Added double-click behavior to source cards in `NewServer`: single-click selects, double-click selects and advances to Details.
+- Added Claude Code `software-engineer` and `software-architect` specialists and updated the shared agent indexes.
+- Added `docs/INTEGRATION_MODEL.pt-BR.md`, documenting how APIs, protocols, relational databases, NoSQL/document stores, and cloud/analytics integrations should be modeled.
+- Renamed the generic data-source backed UI language in `ServerDetail` from Queries to Operations while preserving legacy `DbQuery` storage and `/queries` API routes.
+- Added `inputSchema` and `outputSchema` to operation/`DbQuery` contracts; operation Tools inherit those schemas when created.
+- Operation input parameters can now be added manually in the UI and are treated as GET-like inputs that become variables and generate the operation `inputSchema`.
+- Moved the operation input parameters section before SQL/query/command editors and replaced the table-style editor with compact parameter rows.
+- Added Claude Code `system-tutor` specialist and registered it in the shared agent indexes.
+- Added Claude Code `compliance-counsel` specialist and registered it in the shared agent indexes.
+- Added Claude Code `developer-advocate` specialist and registered it in the shared agent indexes.
+- Added Claude Code `react-frontend-engineer` specialist and registered it in the shared agent indexes.
+- Added Claude Code `backend-test-engineer` specialist and registered it in the shared agent indexes.
+- Added Claude Code `gof-expert` specialist and registered it in the shared agent indexes.
+- Added Claude Code `solid-expert` specialist and registered it in the shared agent indexes.
+- Updated frontend Claude Code specialists to use Feature-Driven Architecture, Atomic Design, and controlled barrel exports.
+- Documented Feature-Driven Architecture, Atomic Design, and barrel export frontend conventions in `docs/DESIGN_PATTERNS.md`.
+- Added `docs/FRONTEND_ARCHITECTURE_PLAN.md` with phases, ownership rules, acceptance criteria, validation guidance, and a recommended first slice for frontend architecture migration.
+- Added explicit `index.tsx` barrels for shared components and current feature modules.
+- Organized shared components into `src/components/atoms/`, `src/components/organisms/`, and `src/components/templates/`, with each component in a `ComponentName/index.tsx` folder.
+- Moved current feature React components into `ComponentName/index.tsx` folders.
+- Moved route pages into `src/pages/PageName/index.tsx` folders and colocated `Login`/`Servers` page tests.
+- Moved `SecretAutocomplete` from shared components into `src/features/secrets/` because it is domain-specific secret UI.
+- Rewired current page and feature imports to consume public barrels instead of deep component/feature paths.
+- Added backend Jest coverage for audit logs, settings, dashboard, prompts, Swagger API keys, email, OAuth, MCP API key guard, project state guard, rate limit guard, schema conversion, parameter building, and tool generation.
+- Configured `api/package.json` coverage collection and global thresholds: 80% statements, 70% branches, 80% functions, and 80% lines.
+- Found Claude Code worktree at `.claude/worktrees/agent-ab0722d25387f1c7f`. It compiles and contains a broad `ServerDetail` split, but it is based on an older state and does not include the current Operations/`DbQuery` UI, so do not copy it wholesale into the main worktree.
+- Extracted shared `SaveIndicator` and `RateLimitPanel` from `ServerDetail` into focused frontend modules.
+- Reviewed the frontend modularity problem with `react-frontend-engineer`, `software-engineer`, and `software-architect` guidance. `ServerDetail.tsx` remains the primary SOLID violation and should continue to be decomposed by route feature area.
+- Extracted `BaseUrlPanel` from `ServerDetail.tsx` into `src/features/server/settings/BaseUrlPanel.tsx`, keeping the route page as the caller and preserving existing API behavior.
+- Inspected Claude Code worktree `.claude/worktrees/agent-ab0722d25387f1c7f`; it contains a broad server feature split but should still be reused selectively because the main tree has newer Operations/i18n work.
+- Reused the worktree's project-controls extraction pattern and moved `ProjectControlsPanel` from inline `ServerDetail.tsx` code into `src/features/server/settings/ProjectControlsPanel.tsx`.
+- Extracted the Connect tab from `ServerDetail.tsx` into `src/features/server/connect/McpEndpointBar.tsx`, `ApiKeysPanel.tsx`, and `OAuthClientPanel.tsx`, preserving the current `serverDetail` i18n usage instead of copying the older hardcoded worktree versions.
+- Extracted the Activity log panel from `ServerDetail.tsx` into `src/features/server/activity/ProjectLogs.tsx`, with `ExecLog` moved to shared server feature types.
+- Started the API endpoint extraction by moving `FromEndpointPickerDialog` into `src/features/server/api-endpoints/FromEndpointPickerDialog.tsx` and adding shared server constants/types needed by that module.
+- Extracted `ToolCommentsSection` from `ServerDetail.tsx` into `src/features/server/api-endpoints/ToolCommentsSection.tsx`.
+- Extracted `buildCurl`, `buildMcpCurl`, and `inferSchema` from `ServerDetail.tsx` into `src/features/server/api-endpoints/curl-utils.ts`.
+- Extracted `EndpointAccordion` from `ServerDetail.tsx` into `src/features/server/api-endpoints/EndpointAccordion.tsx`, preserving the main tree's i18n copy instead of using the older hardcoded worktree text.
+- Extracted shared schema field rendering into `src/features/server/api-endpoints/FieldInput.tsx`; `ServerDetail` still imports it for the remaining `ToolAccordion` path.
+- Extracted the remaining settings-only inline panels from `ServerDetail.tsx` into `src/features/server/settings/AlertConfigPanel.tsx` and `src/features/server/settings/TenantConfigPanel.tsx`.
+- Rewired `ServerDetail.tsx` to consume settings, activity, API endpoint, resources, prompts, and chains modules through imports; the page no longer defines inline subcomponents and now acts primarily as route orchestration.
+- Extracted `PromptCard`, `TagInput`, and prompt types into `src/features/prompts/`, then removed the unused inline prompt drawer implementation from `src/pages/Prompts.tsx` and reused the shared tag input in `src/pages/NewPrompt.tsx`.
+- Extracted `SecretCard` and secret types into `src/features/secrets/`, then removed the unused inline secret drawer implementation from `src/pages/Secrets.tsx`.
+- Extracted `GlobalRequestHeadersPanel` and `TerminologyPanel` into `src/features/settings/`, keeping save logic in `src/pages/Settings.tsx` while reducing page-owned JSX.
+- Extracted the `Servers` list card into `src/features/server/ProjectCard.tsx`, moved health-summary types into shared server feature types, and left `src/pages/Servers.tsx` as list orchestration plus filters/dialog state.
+- Aligned `ServerDetail` with `PromptDetail` and `SecretDetail` by moving its back navigation and tab switching into `ServerNavContext`, removing the duplicated inline back button and top tab bar from the page content.
+- Switched `Profile` to the same contextual sidebar navigation pattern, so profile sections now use the sidebar menu instead of inline tabs and the contextual back action returns to the main menu.
+
+## Latest Architecture Slice
+
+- Moved shared UI into Atomic Design folders:
+  - `src/components/atoms/`
+  - `src/components/organisms/`
+  - `src/components/templates/`
+- Added shared component `index.tsx` barrels:
+  - `src/components/index.tsx`
+  - `src/components/atoms/index.tsx`
+  - `src/components/organisms/index.tsx`
+  - `src/components/templates/index.tsx`
+- Added feature `index.tsx` barrels for `server`, `prompts`, `secrets`, and `settings`, including server subfeatures.
+- Moved `SecretAutocomplete` into `src/features/secrets/SecretAutocomplete/index.tsx`.
+- Moved route pages into `src/pages/<PageName>/index.tsx`.
+- Moved page tests into their page folders:
+  - `src/pages/Login/Login.test.tsx`
+  - `src/pages/Servers/Servers.test.tsx`
+- Rewired existing imports away from deep component paths and toward public barrels.
+
+## Files Changed In This Session
+
+- `AGENTS.md`
+- `.claude/agents/README.md`
+- `.claude/agents/frontend-test-engineer.md`
+- `.claude/agents/backend-test-engineer.md`
+- `.claude/agents/compliance-counsel.md`
+- `.claude/agents/developer-advocate.md`
+- `.claude/agents/gof-expert.md`
+- `.claude/agents/react-frontend-engineer.md`
+- `.claude/agents/software-architect.md`
+- `.claude/agents/software-engineer.md`
+- `.claude/agents/solid-expert.md`
+- `.claude/agents/system-tutor.md`
+- `.claude/agents/ui-expert.md`
+- `.claude/agents/ux-analyst.md`
+- `api/package.json`
+- `api/src/audit-logs/audit-logs.controller.spec.ts`
+- `api/src/audit-logs/audit-logs.service.spec.ts`
+- `api/src/auth/auth.service.ts`
+- `api/src/dashboard/dashboard.controller.spec.ts`
+- `api/src/dashboard/dashboard.service.spec.ts`
+- `api/src/dynamic-mcp/dynamic-mcp.service.ts`
+- `api/src/dynamic-mcp/mcp-api-key.guard.spec.ts`
+- `api/src/dynamic-mcp/openapi-parser.ts`
+- `api/src/dynamic-mcp/param-builder.extra.spec.ts`
+- `api/src/dynamic-mcp/param-builder.ts`
+- `api/src/dynamic-mcp/project-state.guard.spec.ts`
+- `api/src/dynamic-mcp/rate-limit.guard.spec.ts`
+- `api/src/dynamic-mcp/schema-converter.spec.ts`
+- `api/src/dynamic-mcp/tool-generator.spec.ts`
+- `api/src/dynamic-mcp/types.ts`
+- `api/src/email/email.service.spec.ts`
+- `api/src/oauth/oauth.service.spec.ts`
+- `api/src/prompts/prompts.controller.spec.ts`
+- `api/src/prompts/prompts.service.spec.ts`
+- `api/src/common/guards/permissions.guard.ts`
+- `api/src/roles/permissions.ts`
+- `api/src/roles/roles.service.ts`
+- `api/src/secrets/secret.repository.ts`
+- `api/src/secrets/secrets.controller.ts`
+- `api/src/secrets/secrets.service.ts`
+- `api/src/secrets/secrets.service.spec.ts`
+- `api/src/settings/settings.schema.ts`
+- `api/src/settings/settings.entity.ts`
+- `api/src/settings/settings.repository.ts`
+- `api/src/settings/repositories/mongo-settings.repository.ts`
+- `api/src/settings/repositories/sqlite-settings.repository.ts`
+- `api/src/settings/settings.controller.spec.ts`
+- `api/src/settings/settings.service.spec.ts`
+- `api/src/swagger/dto/swagger.dto.ts`
+- `api/src/swagger/swagger-api-keys.service.ts`
+- `api/src/swagger/swagger-api-keys.service.spec.ts`
+- `api/src/swagger/swagger-import.service.ts`
+- `api/src/swagger/swagger-project.schema.ts`
+- `api/src/swagger/swagger.controller.ts`
+- `api/src/swagger/swagger.module.ts`
+- `api/src/swagger/swagger.service.spec.ts`
+- `api/src/swagger/swagger.service.ts`
+- `src/data/api-templates.ts`
+- `src/components/SaveIndicator.tsx`
+- `src/features/server/settings/RateLimitPanel.tsx`
+- `src/features/server/settings/BaseUrlPanel.tsx`
+- `src/features/server/settings/ProjectControlsPanel.tsx`
+- `src/features/server/connect/McpEndpointBar.tsx`
+- `src/features/server/connect/ApiKeysPanel.tsx`
+- `src/features/server/connect/OAuthClientPanel.tsx`
+- `src/features/server/activity/ProjectLogs.tsx`
+- `src/features/server/ProjectCard.tsx`
+- `src/context/ServerNavContext.tsx`
+- `src/locales/en/profile.json`
+- `src/locales/pt-BR/profile.json`
+- `src/features/server/api-endpoints/FromEndpointPickerDialog.tsx`
+- `src/features/server/api-endpoints/ToolCommentsSection.tsx`
+- `src/features/server/api-endpoints/curl-utils.ts`
+- `src/features/server/api-endpoints/EndpointAccordion.tsx`
+- `src/features/server/api-endpoints/FieldInput.tsx`
+- `src/features/server/constants.ts`
+- `src/features/server/types.ts`
+- `src/components/SecretAutocomplete.tsx`
+- `src/context/AuthContext.tsx`
+- `src/context/TerminologyContext.tsx`
+- `src/context/permissionPresets.ts`
+- `src/i18n.ts`
+- `src/locales/`
+- `src/locales/en/prompts.json`
+- `src/locales/en/secrets.json`
+- `src/locales/pt-BR/prompts.json`
+- `src/locales/pt-BR/secrets.json`
+- `src/pages/NewPrompt.tsx`
+- `src/pages/NewSecret.tsx`
+- `src/pages/NewServer.tsx`
+- `src/pages/ServerDetail.tsx`
+- `src/pages/Profile.tsx`
+- `src/locales/en/serverDetail.json`
+- `src/locales/pt-BR/serverDetail.json`
+- `src/pages/SecretDetail.tsx`
+- `src/pages/Secrets.tsx`
+- `src/pages/Settings.tsx`
+- `src/pages/Templates.tsx`
+- `src/App.tsx`
+- `src/pages/Prompts.tsx`
+- `docs/DESIGN_PATTERNS.md`
+- `docs/FRONTEND_ARCHITECTURE_PLAN.md`
+- `docs/ENTITIES.md`
+- `docs/FLOWS.md`
+- `docs/INTEGRATION_MODEL.pt-BR.md`
+- `docs/ROADMAP.md`
+- `docs/HANDOFF.md`
+
+## Validation
+
+- `npm run type-check` passed after adding Vercel URL configuration and `VITE_API_URL` support.
+- `npm run build` passed after adding root `vercel.json`; Vite reported non-failing warnings about the large `@tabler/icons-react` barrel and chunk size.
+- Not run for the README rewrite because it only changed documentation.
+- `npm test --prefix api -- swagger.service --runInBand` passed with 1 suite and 12 tests after changing generated public documentation links to `/mcp-swagger/:serverSlug/:token`.
+- `npx tsc -p api/tsconfig.json --noEmit` passed after the `/mcp-swagger` route/link change.
+- `npm run type-check` passed after adding `/mcp-swagger` frontend routes.
+- `npm test --prefix api -- swagger.service oauth.service mcp-api-key.guard --runInBand` passed with 3 suites and 27 tests after making the public Share page MCP URL prefer `shareSlug` and enabling slug-based OAuth token exchange.
+- `npx tsc -p api/tsconfig.json --noEmit` passed after the Share/OAuth slug changes.
+- `npm run type-check` passed after adding `shareSlug` to the public Share page frontend type.
+- `npm test --prefix api -- mcp-api-key.guard rate-limit.guard project-state.guard swagger.service --runInBand` passed with 4 suites and 24 tests after adding redundant MCP endpoint slug resolution.
+- `npx tsc -p api/tsconfig.json --noEmit` passed after adding repository id-or-slug lookup and MCP guard/service changes.
+- `npm run type-check` passed after switching the Server Detail MCP URL display to prefer `shareSlug`.
+- `npm test --prefix api -- swagger.service --runInBand` passed with 1 suite and 12 tests after adding automatic share slug generation and uniqueness coverage.
+- `npm run type-check` passed after syncing the Server Detail Connect panel with generated share slugs.
+- `npm run type-check` passed after expanding the public Share page reference UI.
+- `npm run build --prefix api` passed after expanding the public share payload.
+- `npm test --prefix api -- swagger.service --runInBand` passed with 1 suite and 7 tests, including share payload coverage that checks prompt resolution and credential omission.
+- Locale JSON parse check passed for `src/locales/en/servers.json` and `src/locales/pt-BR/servers.json`.
+- `npm run build --prefix api` passed after expanding backend Error Tracking capture coverage.
+- `npm test --prefix api -- mcp-exception.filter spa.filter ai-providers swagger.service --runInBand` passed with 4 suites and 23 tests.
+- `npm run type-check` passed after polishing the New AI Provider configuration action row.
+- AI Provider locale key check passed for the direct `aiProviders` namespace usages in the list, create, detail, and card UI.
+- `npm run type-check` passed after completing missing AI Provider locale keys.
+- `npm run type-check` passed after adding the frontend-only single AI Provider limit.
+- AI provider locale JSON parsed successfully after adding the single-provider-limit copy in English and Portuguese.
+- `npm test --prefix api -- ai-providers --runInBand` passed with 1 suite and 8 tests after normalizing draft provider test failures.
+- `npm run build --prefix api` passed after normalizing draft provider test failures.
+- `npm run type-check` passed after repairing the interrupted AI Providers frontend adjustments.
+- `npm run build --prefix api` passed while verifying the AI Providers backend still compiles.
+- `npm test --prefix api -- ai-providers --runInBand` passed with 1 suite and 7 tests.
+- `npm test -- src/features/feature-cards.test.tsx` passed with 1 file and 13 tests.
+- `npm test -- src/features/feature-cards.test.tsx --runInBand` was attempted but not run because Vitest does not support Jest's `--runInBand` option.
+- `npm run type-check` passed after repairing AI Provider UI/i18n handling.
+- `npm test -- src/features/feature-cards.test.tsx` passed with 1 file and 13 tests after touching `AiProviderCard`.
+- `npx tsc -p api/tsconfig.json --noEmit` passed while verifying the AI Providers backend module and permissions wiring.
+- `npm run type-check` passed after restoring shared `common:terms.*` locale coverage.
+- Focused Node locale check passed for `common:terms.endpoint` and `common:terms.tool` in English and Portuguese.
+- `npm run type-check` passed after fixing `ServerDetail` contextual sidebar tab translation refresh.
+- `npm run type-check` passed after aligning the Terminology tab save action with the other Settings tabs.
+- `npm run type-check` passed after converting Settings to contextual tabs.
+- `node -e "for (const f of ['src/locales/en/settings.json','src/locales/pt-BR/settings.json']) { JSON.parse(require('fs').readFileSync(f,'utf8')); console.log(f + ' ok') }"` passed after adding Settings tab copy.
+- `npx tsc -p api/tsconfig.json --noEmit` passed after adding database-backed JWT secret resolution.
+- `npm run type-check` passed after adding the Settings Security section.
+- `npm test --prefix api -- settings auth.service oauth.service mcp-api-key.guard swagger.service` passed with 6 suites and 39 tests.
+- `node -e "for (const f of ['src/locales/en/settings.json','src/locales/pt-BR/settings.json']) { JSON.parse(require('fs').readFileSync(f,'utf8')); console.log(f + ' ok') }"` passed.
+- `npx tsc -p api/tsconfig.json --noEmit` passed after persisting Observability environment controls in Settings.
+- `npm test --prefix api -- settings` passed with 2 suites and 7 tests.
+- `npm run type-check` passed after wiring the Observability UI to `/api/settings`.
+- `node -e "for (const f of ['src/locales/en/common.json','src/locales/pt-BR/common.json','src/locales/en/observability.json','src/locales/pt-BR/observability.json']) { JSON.parse(require('fs').readFileSync(f,'utf8')); console.log(f + ' ok') }"` passed.
+- `npm run type-check` passed after making the Observability environment controls editable in the frontend.
+- `node -e "JSON.parse(require('fs').readFileSync('src/locales/en/common.json','utf8')); JSON.parse(require('fs').readFileSync('src/locales/pt-BR/common.json','utf8')); console.log('common locale JSON ok')"` passed.
+- `npm run type-check` passed after reworking the Observability UI.
+- `npx tsc -p api/tsconfig.json --noEmit` passed after adding observability permissions to the backend role contract.
+- `npm test --prefix api -- roles.service.spec.ts permissions.guard.spec.ts` passed with 2 suites and 15 tests.
+- `npm run build` passed after the Observability UI change; it still reports non-failing warnings about the large `@tabler/icons-react` barrel and chunk size.
+- `node -e "JSON.parse(require('fs').readFileSync('src/locales/en/observability.json','utf8')); JSON.parse(require('fs').readFileSync('src/locales/pt-BR/observability.json','utf8')); console.log('observability locale JSON ok')"` passed.
+- `npm audit` passed with 0 vulnerabilities after the frontend dependency updates.
+- `npm run type-check` passed after the Vite/Vitest upgrade and `vite.config.mts` rename.
+- `npm test -- Login.test.tsx Servers.test.tsx` passed with 2 files and 11 tests after excluding `.claude/**` from Vitest discovery.
+- `npm run build` passed with Vite 8; it reported non-failing warnings about the large `@tabler/icons-react` barrel and chunk size.
+- `npx tsc -p api/tsconfig.json --noEmit` passed after adding the observability module and MCP metrics/tracing hooks.
+- `npm test --prefix api -- observability` passed with 5 suites and 14 tests.
+- `node -e "JSON.parse(require('fs').readFileSync('observability/grafana-dashboard.json','utf8')); console.log('grafana dashboard JSON ok')"` passed.
+- `node -e "const yaml=require('js-yaml'); for (const f of ['render.yaml','docker-compose.yml','observability/prometheus.yml','observability/docker-compose.yml']) { yaml.load(require('fs').readFileSync(f,'utf8')); console.log(f + ' yaml ok') }"` passed.
+- `docker compose -f observability/docker-compose.yml config` passed.
+- Not run for the permission-gate documentation/agent guidance update because no application code changed.
+- `npm run type-check` passed after replacing hardcoded Setup Wizard, Upload help, and SaveIndicator copy with i18n keys.
+- `npm run type-check` passed after the latest `DynamicResourceDialog`, `ToolOutputTemplateSection`, `ToolDialog`, and `OAuthClientPanel` i18n changes.
+- `node -e "JSON.parse(require('fs').readFileSync('src/locales/en/serverDetail.json','utf8')); JSON.parse(require('fs').readFileSync('src/locales/pt-BR/serverDetail.json','utf8')); console.log('serverDetail locale JSON ok')"` passed after repairing the server detail locale files.
+- `node -e "JSON.parse(require('fs').readFileSync('src/locales/en/serverDetail.json','utf8')); JSON.parse(require('fs').readFileSync('src/locales/pt-BR/serverDetail.json','utf8')); console.log('serverDetail locale JSON ok')"` passed.
+- `npm run type-check` passed after internationalizing additional Server Detail panels.
+- `npx tsc -p api/tsconfig.json --noEmit` passed.
+- `npm run type-check` passed.
+- `npm run type-check` passed after extracting `SaveIndicator` and `RateLimitPanel`.
+- `npm run type-check` passed after extracting `BaseUrlPanel`.
+- `npm run type-check` passed after extracting `ProjectControlsPanel`.
+- `npm run type-check` passed after extracting the Connect tab panels.
+- `npm run type-check` passed after extracting the Activity log panel.
+- `npm run type-check` passed after extracting `FromEndpointPickerDialog`.
+- `npm run type-check` passed after extracting `ToolCommentsSection`.
+- `npm run type-check` passed after extracting API endpoint curl/schema helpers.
+- `npm run type-check` passed after extracting `EndpointAccordion` and `FieldInput`.
+- `npm run type-check` passed after extracting the remaining settings panels and repairing the final `ServerDetail` imports.
+- `npm run type-check` passed after modularizing `Prompts`, `Secrets`, and the first `Settings` panels.
+- `npm run type-check` passed after extracting the `Servers` project card into `src/features/server/ProjectCard.tsx`.
+- `npm run type-check` passed after switching `ServerDetail` to contextual sidebar navigation.
+- `npm run type-check` passed after switching `Profile` to contextual sidebar navigation.
+- `npm run type-check` passed after converting feature/shared component barrels to `index.tsx`, moving React components into `ComponentName/index.tsx` folders, moving `SecretAutocomplete` into the `secrets` feature, and rewiring imports.
+- `npm run type-check` passed after moving route pages into `PageName/index.tsx` folders.
+- `npm test -- Login.test.tsx Servers.test.tsx` passed after moving page tests into page folders and updating their mocks/imports.
+- `npm test --prefix api -- secrets.service.spec.ts swagger.service.spec.ts permissions.guard.spec.ts` passed.
+- `npm run test:cov --prefix api -- --runInBand` passed with 83.85% statements, 71.72% branches, 87.34% functions, and 85.35% lines.
+- `npm run build --prefix api` could not complete because the local system hit the file watcher limit (`ENOSPC`), so backend validation used direct `tsc --noEmit` instead.
+- Not run for the `gof-expert` and `solid-expert` agent documentation change because no application code changed.
+- Not run for the frontend specialist architecture guidance update because only agent and documentation files changed.
+- Not run for `docs/FRONTEND_ARCHITECTURE_PLAN.md` because it is a documentation-only planning change.
+
+## Recommended Next Step
+
+Deploy to a Render free instance and verify `/health`, `/ready`, `/live`, `/metrics`, structured logs, and cold-start behavior, then continue `docs/FRONTEND_ARCHITECTURE_PLAN.md` with Phase 2.
+
+## Points Of Attention
+
+- Do not overwrite existing uncommitted changes.
+- There are local changes in several frontend screens, `api/src/secrets/secrets.controller.ts`, `package-lock.json`, and `api/database.sqlite`.
+- There are untracked Claude Code agent files in `.claude/agents/`, untracked i18n/terminology files, plus untracked `src/pages/PromptDetail.tsx` and `src/pages/SecretDetail.tsx`.
+- Locale files under `src/locales/pt-BR/` intentionally contain Portuguese translations; project docs, comments, identifiers, and translation keys should remain English.

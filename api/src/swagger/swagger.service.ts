@@ -6,15 +6,21 @@ import * as jwt from 'jsonwebtoken';
 import { parseSpec } from '../dynamic-mcp/openapi-parser';
 import { generateTools } from '../dynamic-mcp/tool-generator';
 import { DynamicMcpService } from '../dynamic-mcp/dynamic-mcp.service';
-import type { AuthConfig, EndpointRef, McpResource, ToolChain, ToolComment } from '../dynamic-mcp/types';
+import type { AuthConfig, DbConnectionConfig, DbQuery, EndpointRef, ExecutionRef, McpResource, ToolChain, ToolComment } from '../dynamic-mcp/types';
+import { testConnection, introspectSchema, executeWithRef } from '../dynamic-mcp/adapters/index';
 import { buildRequest } from '../dynamic-mcp/request-builder';
 import { applyAuth } from '../dynamic-mcp/auth-provider';
 import { executeRequest } from '../dynamic-mcp/http-client';
-import { PROJECT_REPO } from '../database/database.tokens';
+import { PROJECT_REPO, PROMPT_REPO } from '../database/database.tokens';
 import { ISwaggerProjectRepository, McpApiKeyEntry, SwaggerProjectRecord } from './swagger-project.repository';
 import { parsePostmanCollection } from './postman-parser';
+import { SwaggerApiKeysService } from './swagger-api-keys.service';
+import { SwaggerImportService } from './swagger-import.service';
+import { JwtSecretService } from '../settings/jwt-secret.service';
+import { ErrorTrackingService } from '../error-tracking/error-tracking.service';
+import type { IPromptRepository } from '../prompts/prompt.repository';
+import { baseShareSlug, normalizeShareSlug, uniqueShareSlug } from './share-slug.util';
 
-const SHARE_SECRET = process.env.JWT_SECRET ?? 'mcp-share-secret';
 const SPEC_PATHS = [
   '/openapi.json', '/openapi.yaml', '/openapi.yml',
   '/swagger.json', '/swagger.yaml',
@@ -23,13 +29,96 @@ const SPEC_PATHS = [
   '/docs/api.json', '/api/openapi.json', '/api/swagger.json',
 ];
 
+interface ShareToolDoc {
+  name: string;
+  description?: string;
+  parameters: ShareToolParameterDoc[];
+  outputSchema?: Record<string, unknown>;
+  comments?: Array<{ text: string; author: string; createdAt: Date }>;
+}
+
+interface ShareToolParameterDoc {
+  name: string;
+  type?: string;
+  description?: string;
+  required: boolean;
+  enum?: unknown[];
+}
+
+interface ShareResourceDoc {
+  id: string;
+  name: string;
+  uri: string;
+  description?: string;
+  mimeType?: string;
+  outputSchema?: Record<string, unknown>;
+}
+
+interface SharePromptDoc {
+  promptId: string;
+  name?: string;
+  description?: string;
+  arguments: string[];
+  content?: string;
+}
+
+export interface ShareProjectInfo {
+  name: string;
+  mcpUrl: string;
+  shareSlug?: string | null;
+  hasKey: boolean;
+  hasOAuthClient: boolean;
+  description?: string;
+  version?: string;
+  status: string;
+  toolCount: number;
+  resourceCount: number;
+  promptCount: number;
+  tools: ShareToolDoc[];
+  resources: ShareResourceDoc[];
+  prompts: SharePromptDoc[];
+}
+
+function promptArguments(content?: string): string[] {
+  if (!content) return [];
+  return [...new Set([...content.matchAll(/\{\{(\w+)\}\}/g)].map((m) => m[1]))];
+}
+
+function publicToolDescription(description?: string): string | undefined {
+  const cleaned = description
+    ?.replace(/\s*\[(GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS)(?:\s+[^\]]+)?\]\s*/gi, ' ')
+    .replace(/\s{2,}/g, ' ')
+    .trim();
+  return cleaned || undefined;
+}
+
+function publicToolParameters(inputSchema?: Record<string, any>): ShareToolParameterDoc[] {
+  const properties = inputSchema?.properties && typeof inputSchema.properties === 'object'
+    ? inputSchema.properties as Record<string, Record<string, unknown>>
+    : {};
+  const required = new Set(Array.isArray(inputSchema?.required) ? inputSchema.required.map(String) : []);
+
+  return Object.entries(properties).map(([name, schema]) => ({
+    name,
+    type: typeof schema?.type === 'string' ? schema.type : undefined,
+    description: typeof schema?.description === 'string' ? schema.description : undefined,
+    required: required.has(name),
+    enum: Array.isArray(schema?.enum) ? schema.enum : undefined,
+  }));
+}
+
 @Injectable()
 export class SwaggerService {
   private readonly logger = new Logger(SwaggerService.name);
 
   constructor(
     @Inject(PROJECT_REPO) private readonly projectRepo: ISwaggerProjectRepository,
+    @Inject(PROMPT_REPO) private readonly promptRepo: IPromptRepository,
     private readonly dynamicMcp: DynamicMcpService,
+    private readonly imports: SwaggerImportService,
+    private readonly apiKeys: SwaggerApiKeysService,
+    private readonly jwtSecretService: JwtSecretService,
+    private readonly errorTracking: ErrorTrackingService,
   ) {}
 
   private parseContent(content: string, filename: string): Record<string, any> {
@@ -69,32 +158,7 @@ export class SwaggerService {
     totalTools: number;
     tools: Array<{ name: string; description?: string; method: string; path: string }>;
   }> {
-    const rawSpec = this.parseContent(content, filename);
-    this.validateSpec(rawSpec);
-
-    let normalizedSpec: Awaited<ReturnType<typeof parseSpec>>;
-    try {
-      normalizedSpec = await parseSpec(rawSpec);
-    } catch (err: any) {
-      throw new BadRequestException(`Error processing the spec:${err?.message ?? err}`);
-    }
-
-    const baseUrl = baseUrlOverride?.trim() || normalizedSpec.servers[0]?.url || 'http://localhost';
-    const tools = generateTools(normalizedSpec, baseUrl);
-
-    return {
-      name: normalizedSpec.info.title,
-      version: normalizedSpec.info.version,
-      description: normalizedSpec.info.description,
-      resolvedBaseUrl: baseUrl,
-      totalTools: tools.length,
-      tools: tools.map((t) => ({
-        name: t.name,
-        description: t.description,
-        method: t.endpointRef.method,
-        path: t.endpointRef.path,
-      })),
-    };
+    return this.imports.previewSpec(content, filename, baseUrlOverride);
   }
 
   async create(
@@ -103,41 +167,7 @@ export class SwaggerService {
     baseUrlOverride?: string,
     auth?: AuthConfig,
   ): Promise<SwaggerProjectRecord> {
-    const rawSpec = this.parseContent(content, filename);
-    this.validateSpec(rawSpec);
-
-    let normalizedSpec: Awaited<ReturnType<typeof parseSpec>>;
-    try {
-      normalizedSpec = await parseSpec(rawSpec);
-    } catch (err: any) {
-      throw new BadRequestException(`Error processing the spec:${err?.message ?? err}`);
-    }
-
-    const baseUrl = baseUrlOverride?.trim() || normalizedSpec.servers[0]?.url || 'http://localhost';
-    const tools = generateTools(normalizedSpec, baseUrl);
-
-    this.logger.log(`Projeto "${normalizedSpec.info.title}" importado: ${tools.length} tools geradas`);
-
-    return this.projectRepo.create({
-      name: normalizedSpec.info.title ?? filename.replace(/\.(ya?ml|json)$/i, ''),
-      baseUrl,
-      description: normalizedSpec.info.description,
-      version: normalizedSpec.info.version,
-      rawSpec,
-      tools,
-      auth: auth ?? { type: 'none' },
-      status: 'active',
-      mcpApiKeys: [],
-      resources: [],
-      prompts: [],
-      chains: [],
-      tags: [],
-      rateLimit: { enabled: false, requestsPerMinute: 60 },
-      isPaused: false,
-      maintenanceMode: { enabled: false, message: '' },
-      availabilityWindow: { enabled: false, timezone: 'UTC', schedule: [] },
-      alertConfig: { enabled: false, errorThresholdPct: 20, notifyEmail: '' },
-    });
+    return this.imports.create(content, filename, baseUrlOverride, auth);
   }
 
   findAll(tags?: string[]): Promise<SwaggerProjectRecord[]> {
@@ -162,14 +192,27 @@ export class SwaggerService {
     return server;
   }
 
+  async updateResponseConfig(
+    id: string,
+    dto: { enabled: boolean; maxResponseLen?: number; maxDepth?: number; arraySlice?: number; errorTruncateLen?: number },
+  ): Promise<SwaggerProjectRecord> {
+    const server = await this.projectRepo.update(id, { responseConfig: dto } as any);
+    if (!server) throw new NotFoundException('Project not found.');
+    this.dynamicMcp.invalidate(id);
+    return server;
+  }
+
   async duplicate(id: string): Promise<SwaggerProjectRecord> {
     const source = await this.projectRepo.findById(id);
     if (!source) throw new NotFoundException('Project not found.');
 
     const { _id, createdAt, updatedAt, mcpApiKey, mcpApiKeys, ...rest } = source;
+    const name = `${source.name} (copy)`;
+    const shareSlug = uniqueShareSlug(name, await this.projectRepo.findAll(), id);
     return this.projectRepo.create({
       ...rest,
-      name: `${source.name} (copy)`,
+      name,
+      shareSlug,
       mcpApiKeys: [],
     });
   }
@@ -187,42 +230,19 @@ export class SwaggerService {
   }
 
   async generateApiKey(id: string): Promise<{ mcpApiKey: string }> {
-    const key = crypto.randomBytes(32).toString('hex');
-    const server = await this.projectRepo.update(id, { mcpApiKey: key });
-    if (!server) throw new NotFoundException('Project not found.');
-    return { mcpApiKey: key };
+    return this.apiKeys.generateLegacyKey(id);
   }
 
   async revokeApiKey(id: string): Promise<void> {
-    const server = await this.projectRepo.update(id, { mcpApiKey: null });
-    if (!server) throw new NotFoundException('Project not found.');
+    return this.apiKeys.revokeLegacyKey(id);
   }
 
   async addApiKey(id: string, name: string): Promise<McpApiKeyEntry> {
-    const server = await this.projectRepo.findById(id);
-    if (!server) throw new NotFoundException('Project not found.');
-
-    const entry: McpApiKeyEntry = {
-      id: crypto.randomUUID(),
-      name: name.trim(),
-      key: crypto.randomBytes(32).toString('hex'),
-      createdAt: new Date(),
-    };
-
-    server.mcpApiKeys.push(entry);
-    await this.projectRepo.save(server);
-    return entry;
+    return this.apiKeys.addKey(id, name);
   }
 
   async removeApiKey(id: string, keyId: string): Promise<void> {
-    const server = await this.projectRepo.findById(id);
-    if (!server) throw new NotFoundException('Project not found.');
-
-    const idx = server.mcpApiKeys.findIndex((k) => k.id === keyId);
-    if (idx === -1) throw new NotFoundException('Key not found.');
-
-    server.mcpApiKeys.splice(idx, 1);
-    await this.projectRepo.save(server);
+    return this.apiKeys.removeKey(id, keyId);
   }
 
   async reimportSpec(
@@ -231,49 +251,15 @@ export class SwaggerService {
     filename: string,
     baseUrlOverride?: string,
   ): Promise<{ added: number; updated: number; baseUrl: string }> {
-    const server = await this.projectRepo.findById(id);
-    if (!server) throw new NotFoundException('Project not found.');
-
-    const rawSpec = this.parseContent(content, filename);
-    this.validateSpec(rawSpec);
-
-    let normalizedSpec: Awaited<ReturnType<typeof parseSpec>>;
-    try {
-      normalizedSpec = await parseSpec(rawSpec);
-    } catch (err: any) {
-      throw new BadRequestException(`Error processing the spec:${err?.message ?? err}`);
-    }
-
-    const baseUrl = baseUrlOverride?.trim() || normalizedSpec.servers[0]?.url || server.baseUrl;
-    const newTools = generateTools(normalizedSpec, baseUrl);
-
-    let added = 0;
-    let updated = 0;
-
-    for (const newTool of newTools) {
-      const existingIdx = server.tools.findIndex((t) => t.name === newTool.name);
-      if (existingIdx === -1) {
-        server.tools.push(newTool);
-        added++;
-      } else {
-        (server.tools[existingIdx] as any).inputSchema = newTool.inputSchema;
-        (server.tools[existingIdx] as any).endpointRef = newTool.endpointRef;
-        updated++;
-      }
-    }
-
-    server.rawSpec = rawSpec;
-    server.baseUrl = baseUrl;
-    await this.projectRepo.save(server);
-    this.dynamicMcp.invalidate(id);
-
-    this.logger.log(`Re-import "${server.name}": +${added} adicionadas, ${updated} atualizadas`);
-    return { added, updated, baseUrl };
+    return this.imports.reimportSpec(id, content, filename, baseUrlOverride);
   }
 
-  async createEmpty(dto: { name: string; description?: string; baseUrl: string }): Promise<SwaggerProjectRecord> {
+  async createEmpty(dto: { name: string; description?: string; baseUrl: string; tags?: string[] }): Promise<SwaggerProjectRecord> {
+    const name = dto.name.trim();
+    const shareSlug = uniqueShareSlug(name, await this.projectRepo.findAll());
     return this.projectRepo.create({
-      name: dto.name.trim(),
+      name,
+      shareSlug,
       description: dto.description?.trim() || undefined,
       baseUrl: dto.baseUrl.trim(),
       tools: [],
@@ -283,7 +269,7 @@ export class SwaggerService {
       resources: [],
       prompts: [],
       chains: [],
-      tags: [],
+      tags: (dto.tags ?? []).map((t) => t.trim()).filter(Boolean),
       rateLimit: { enabled: false, requestsPerMinute: 60 },
       isPaused: false,
       maintenanceMode: { enabled: false, message: '' },
@@ -300,6 +286,24 @@ export class SwaggerService {
       oauthClientId: dto.oauthClientId,
       oauthClientSecret: dto.oauthClientSecret,
     });
+    if (!server) throw new NotFoundException('Project not found.');
+    return server;
+  }
+
+  async updateShareSlug(id: string, value: string): Promise<SwaggerProjectRecord> {
+    const normalized = normalizeShareSlug(value);
+    if (normalized.length < 3 || normalized.length > 80) {
+      throw new BadRequestException('Share slug must be between 3 and 80 characters.');
+    }
+    if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(normalized)) {
+      throw new BadRequestException('Share slug may contain only lowercase letters, numbers, and hyphens.');
+    }
+
+    const allServers = await this.projectRepo.findAll();
+    const conflict = allServers.find((server) => server._id !== id && server.shareSlug === normalized);
+    if (conflict) throw new BadRequestException('Share slug is already used by another server.');
+
+    const server = await this.projectRepo.update(id, { shareSlug: normalized });
     if (!server) throw new NotFoundException('Project not found.');
     return server;
   }
@@ -648,95 +652,18 @@ export class SwaggerService {
   }
 
   async discoverSpec(baseUrl: string): Promise<{ found: boolean; specUrl?: string; paths: { url: string; status: number }[] }> {
-    const base = baseUrl.replace(/\/$/, '');
-    const results: { url: string; status: number }[] = [];
-
-    for (const path of SPEC_PATHS) {
-      const url = `${base}${path}`;
-      try {
-        const res = await axios.get(url, { timeout: 5000, validateStatus: () => true });
-        results.push({ url, status: res.status });
-        if (res.status === 200) {
-          const data = res.data;
-          const isSpec =
-            (typeof data === 'object' && (data.openapi || data.swagger)) ||
-            (typeof data === 'string' && (data.includes('openapi:') || data.includes('swagger:')));
-          if (isSpec) return { found: true, specUrl: url, paths: results };
-        }
-      } catch {
-        results.push({ url, status: 0 });
-      }
-    }
-    return { found: false, paths: results };
+    return this.imports.discoverSpec(baseUrl);
   }
 
   async testConnection(
     baseUrl: string,
     auth?: AuthConfig,
   ): Promise<{ success: boolean; statusCode?: number; message: string; responseTimeMs: number }> {
-    const t0 = Date.now();
-    const headers: Record<string, string> = {};
-
-    if (auth) {
-      if (auth.type === 'bearer') headers['Authorization'] = `Bearer ${auth.token}`;
-      else if (auth.type === 'api-key' && auth.in === 'header') headers[auth.name] = auth.value;
-      else if (auth.type === 'basic') {
-        const encoded = Buffer.from(`${auth.username}:${auth.password}`).toString('base64');
-        headers['Authorization'] = `Basic ${encoded}`;
-      }
-    }
-
-    try {
-      const res = await axios.get(baseUrl.replace(/\/$/, ''), { headers, timeout: 8000, validateStatus: () => true });
-      const ms = Date.now() - t0;
-      const ok = res.status >= 200 && res.status < 500;
-      return {
-        success: ok,
-        statusCode: res.status,
-        responseTimeMs: ms,
-        message: ok
-          ? `Connected successfully — server responded with ${res.status} in ${ms}ms.`
-          : `Server returned ${res.status}. Check your base URL and credentials.`,
-      };
-    } catch (err: any) {
-      return {
-        success: false,
-        responseTimeMs: Date.now() - t0,
-        message: `Could not reach the server: ${err?.message ?? 'Unknown error'}. Check the URL and that the API is accessible from this machine.`,
-      };
-    }
+    return this.imports.testConnection(baseUrl, auth);
   }
 
   async fromPostman(content: string, baseUrlOverride?: string): Promise<SwaggerProjectRecord> {
-    let openApiSpec: Record<string, any>;
-    try {
-      openApiSpec = parsePostmanCollection(content);
-    } catch (err: any) {
-      throw new BadRequestException(err?.message ?? 'Failed to parse Postman collection.');
-    }
-
-    const base = baseUrlOverride?.trim() || openApiSpec.servers?.[0]?.url || 'http://localhost';
-    const normalizedSpec = await parseSpec(openApiSpec);
-    const tools = generateTools(normalizedSpec, base);
-
-    return this.projectRepo.create({
-      name: openApiSpec.info.title ?? 'Imported from Postman',
-      baseUrl: base,
-      description: openApiSpec.info.description,
-      tools,
-      auth: { type: 'none' },
-      status: 'active',
-      mcpApiKeys: [],
-      resources: [],
-      prompts: [],
-      chains: [],
-      tags: [],
-      rateLimit: { enabled: false, requestsPerMinute: 60 },
-      isPaused: false,
-      maintenanceMode: { enabled: false, message: '' },
-      availabilityWindow: { enabled: false, timezone: 'UTC', schedule: [] },
-      alertConfig: { enabled: false, errorThresholdPct: 20, notifyEmail: '' },
-    });
+    return this.imports.fromPostman(content, baseUrlOverride);
   }
 
   async previewPostman(
@@ -748,23 +675,7 @@ export class SwaggerService {
     totalTools: number;
     tools: Array<{ name: string; description?: string; method: string; path: string }>;
   }> {
-    let openApiSpec: Record<string, any>;
-    try {
-      openApiSpec = parsePostmanCollection(content);
-    } catch (err: any) {
-      throw new BadRequestException(err?.message ?? 'Failed to parse Postman collection.');
-    }
-
-    const base = baseUrlOverride?.trim() || openApiSpec.servers?.[0]?.url || 'http://localhost';
-    const normalizedSpec = await parseSpec(openApiSpec);
-    const tools = generateTools(normalizedSpec, base);
-
-    return {
-      name: openApiSpec.info.title ?? 'Postman Collection',
-      resolvedBaseUrl: base,
-      totalTools: tools.length,
-      tools: tools.map((t) => ({ name: t.name, description: t.description, method: t.endpointRef.method, path: t.endpointRef.path })),
-    };
+    return this.imports.previewPostman(content, baseUrlOverride);
   }
 
   async getHealthSummary(): Promise<{ serverId: string; errorRatePct: number; lastCallAt?: Date; totalCalls: number }[]> {
@@ -772,29 +683,94 @@ export class SwaggerService {
     return ids.map((id) => ({ serverId: id, errorRatePct: 0, totalCalls: 0 }));
   }
 
-  generateShareToken(serverId: string): string {
-    return jwt.sign({ serverId, type: 'share' }, SHARE_SECRET, { expiresIn: '30d' });
+  async generateShareLink(serverId: string): Promise<{ url: string; shareSlug: string }> {
+    let server = await this.projectRepo.findById(serverId);
+    if (!server) throw new NotFoundException('Project not found.');
+    if (!server.shareSlug) {
+      const generated = uniqueShareSlug(server.name, await this.projectRepo.findAll(), serverId);
+      server = await this.projectRepo.update(serverId, { shareSlug: generated }) ?? { ...server, shareSlug: generated };
+    }
+    const slug = server.shareSlug || baseShareSlug(server.name);
+    return { url: `/mcp-swagger/${slug}`, shareSlug: slug };
   }
 
+  /** Legacy: verifies a previously issued share token. Kept so links generated before the permanent slug link existed keep working. */
   async getProjectForShare(
     token: string,
-  ): Promise<{ name: string; mcpUrl: string; hasKey: boolean; description?: string; toolCount: number }> {
+  ): Promise<ShareProjectInfo> {
     let payload: any;
     try {
-      payload = jwt.verify(token, SHARE_SECRET);
+      payload = jwt.verify(token, await this.jwtSecretService.getSecret());
     } catch {
       throw new BadRequestException('Invalid or expired share link.');
     }
 
     const server = await this.projectRepo.findById(payload.serverId);
     if (!server) throw new NotFoundException('Project not found.');
+    return this.buildShareInfo(server);
+  }
+
+  /** Permanent public lookup by share slug — the current share-link format. Access is revoked by changing the slug. */
+  async getProjectForShareBySlug(slug: string): Promise<ShareProjectInfo> {
+    const server = await this.projectRepo.findByIdOrShareSlug(slug);
+    if (!server) throw new NotFoundException('Project not found.');
+    return this.buildShareInfo(server);
+  }
+
+  private async buildShareInfo(server: SwaggerProjectRecord): Promise<ShareProjectInfo> {
+    const dbQueries = server.dbQueries ?? [];
+    const dbQueryById = new Map(dbQueries.map((query) => [query.id, query]));
+
+    const prompts = await Promise.all((server.prompts ?? []).filter((ref) => ref.enabled !== false).map(async (ref) => {
+      const prompt = ref.promptId ? await this.promptRepo.findById(ref.promptId) : null;
+      return {
+        promptId: ref.promptId,
+        name: prompt?.name,
+        description: prompt?.description,
+        arguments: promptArguments(prompt?.content),
+        content: prompt?.content,
+      };
+    }));
+
+    const tools: ShareToolDoc[] = (server.tools ?? []).filter((tool) => tool.enabled !== false).map((tool) => ({
+      name: tool.name,
+      description: publicToolDescription(tool.description),
+      parameters: publicToolParameters(tool.inputSchema as Record<string, any> | undefined),
+      outputSchema: tool.outputSchema,
+      comments: tool.comments?.map((comment) => ({
+        text: comment.text,
+        author: comment.author,
+        createdAt: comment.createdAt,
+      })),
+    }));
+
+    const resources: ShareResourceDoc[] = (server.resources ?? []).filter((resource) => resource.enabled !== false).map((resource) => {
+      const dbQuery = resource.queryRef?.dbQueryId ? dbQueryById.get(resource.queryRef.dbQueryId) : undefined;
+      return {
+        id: resource.id,
+        name: resource.name,
+        uri: resource.uri,
+        description: resource.description,
+        mimeType: resource.mimeType,
+        outputSchema: dbQuery?.outputSchema,
+      };
+    });
 
     return {
       name: server.name,
       description: server.description,
-      mcpUrl: `/api/mcp/project/${server._id}`,
+      version: server.version,
+      status: server.status,
+      shareSlug: server.shareSlug ?? null,
+      mcpUrl: `/api/mcp/server/${server.shareSlug || server._id}`,
       hasKey: (server.mcpApiKeys?.length ?? 0) > 0 || !!server.mcpApiKey,
-      toolCount: server.tools?.length ?? 0,
+      hasOAuthClient: !!server.oauthClientId,
+      toolCount: tools.length,
+      resourceCount: resources.length,
+      promptCount: prompts.length,
+      tools,
+      resources,
+      prompts,
     };
   }
 
@@ -809,5 +785,152 @@ export class SwaggerService {
     httpReq = await applyAuth(httpReq, server.auth);
     const res = await executeRequest(httpReq);
     return { status: res.status, body: res.body, contentType: res.contentType };
+  }
+
+  async updateConnectionConfig(id: string, cfg: DbConnectionConfig): Promise<void> {
+    const server = await this.projectRepo.findById(id);
+    if (!server) throw new NotFoundException('Server not found.');
+    await this.projectRepo.update(id, { connectionConfig: cfg } as any);
+    this.dynamicMcp.invalidate(id);
+  }
+
+  async testDbConnection(id: string): Promise<{ ok: boolean; latencyMs?: number; error?: string }> {
+    const server = await this.projectRepo.findById(id);
+    if (!server) throw new NotFoundException('Server not found.');
+    const cfg = (server as any).connectionConfig as DbConnectionConfig | undefined;
+    if (!cfg) return { ok: false, error: 'No connection config found. Save connection details first.' };
+    const sourceType = (server.tags ?? []).find((t) => t.startsWith('source:'))?.slice(7) ?? 'rest';
+    try {
+      const result = await testConnection(sourceType, cfg);
+      return result;
+    } catch (err: any) {
+      this.errorTracking.captureBackendError({
+        error: err,
+        source: 'http_request',
+        tags: { server_id: id, source_type: sourceType, operation: 'test_db_connection' },
+      });
+      return { ok: false, error: err?.message ?? 'Connection failed' };
+    }
+  }
+
+  async introspectDbSchema(id: string): Promise<{
+    tables?: Array<{ name: string; columns: Array<{ name: string; type: string; nullable: boolean }> }>;
+    collections?: string[];
+  }> {
+    const server = await this.projectRepo.findById(id);
+    if (!server) throw new NotFoundException('Server not found.');
+    const cfg = (server as any).connectionConfig as DbConnectionConfig | undefined;
+    if (!cfg) throw new BadRequestException('No connection config found. Save connection details first.');
+    const sourceType = (server.tags ?? []).find((t) => t.startsWith('source:'))?.slice(7) ?? 'rest';
+    return introspectSchema(sourceType, cfg);
+  }
+
+  async testDbQuery(
+    id: string,
+    executionRef: ExecutionRef,
+    args: Record<string, unknown>,
+  ): Promise<{ result: unknown; error?: string }> {
+    const server = await this.projectRepo.findById(id);
+    if (!server) throw new NotFoundException('Server not found.');
+    const cfg = (server as any).connectionConfig as DbConnectionConfig | undefined;
+    if (!cfg) throw new BadRequestException('No connection config found.');
+    try {
+      const result = await executeWithRef(executionRef, args, cfg);
+      return { result };
+    } catch (err: any) {
+      this.errorTracking.captureBackendError({
+        error: err,
+        source: 'http_request',
+        tags: { server_id: id, operation: 'test_db_query' },
+      });
+      return { result: null, error: err?.message ?? 'Query failed' };
+    }
+  }
+
+  // ── DbQuery CRUD ────────────────────────────────────────────────────────────
+
+  async listDbQueries(id: string): Promise<DbQuery[]> {
+    const server = await this.projectRepo.findById(id);
+    if (!server) throw new NotFoundException('Server not found.');
+    return server.dbQueries ?? [];
+  }
+
+  async addDbQuery(id: string, dto: Omit<DbQuery, 'id'>): Promise<DbQuery> {
+    const server = await this.projectRepo.findById(id);
+    if (!server) throw new NotFoundException('Server not found.');
+    const query: DbQuery = { ...dto, id: crypto.randomUUID() };
+    const updated = await this.projectRepo.update(id, { dbQueries: [...(server.dbQueries ?? []), query] });
+    if (!updated) throw new NotFoundException('Server not found.');
+    this.dynamicMcp.invalidate(id);
+    return query;
+  }
+
+  async updateDbQuery(id: string, queryId: string, dto: Partial<Omit<DbQuery, 'id'>>): Promise<DbQuery> {
+    const server = await this.projectRepo.findById(id);
+    if (!server) throw new NotFoundException('Server not found.');
+    const queries = server.dbQueries ?? [];
+    const idx = queries.findIndex((q) => q.id === queryId);
+    if (idx === -1) throw new NotFoundException('Query not found.');
+    queries[idx] = { ...queries[idx], ...dto };
+    await this.projectRepo.update(id, { dbQueries: queries });
+    this.dynamicMcp.invalidate(id);
+    return queries[idx];
+  }
+
+  async deleteDbQuery(id: string, queryId: string): Promise<void> {
+    const server = await this.projectRepo.findById(id);
+    if (!server) throw new NotFoundException('Server not found.');
+    const queries = (server.dbQueries ?? []).filter((q) => q.id !== queryId);
+    await this.projectRepo.update(id, { dbQueries: queries });
+    this.dynamicMcp.invalidate(id);
+  }
+
+  async runDbQuery(
+    id: string,
+    queryId: string,
+    args: Record<string, unknown>,
+  ): Promise<{ result: unknown; error?: string }> {
+    const server = await this.projectRepo.findById(id);
+    if (!server) throw new NotFoundException('Server not found.');
+    const query = (server.dbQueries ?? []).find((q) => q.id === queryId);
+    if (!query) throw new NotFoundException('Query not found.');
+    const cfg = server.connectionConfig;
+    if (!cfg) throw new BadRequestException('No connection config found.');
+    try {
+      const { executeDbQuery } = await import('../dynamic-mcp/adapters/index');
+      const result = await executeDbQuery(query, args, cfg);
+      return { result };
+    } catch (err: any) {
+      this.errorTracking.captureBackendError({
+        error: err,
+        source: 'http_request',
+        tags: { server_id: id, query_id: queryId, operation: 'run_db_query' },
+      });
+      return { result: null, error: err?.message ?? 'Query failed' };
+    }
+  }
+
+  /** Run an inline (unsaved) DbQuery definition — used to test while creating. */
+  async runQueryInline(
+    id: string,
+    query: DbQuery,
+    args: Record<string, unknown>,
+  ): Promise<{ result: unknown; error?: string }> {
+    const server = await this.projectRepo.findById(id);
+    if (!server) throw new NotFoundException('Server not found.');
+    const cfg = server.connectionConfig;
+    if (!cfg) throw new BadRequestException('No connection config found. Save connection details in the Connection tab first.');
+    try {
+      const { executeDbQuery } = await import('../dynamic-mcp/adapters/index');
+      const result = await executeDbQuery(query, args, cfg);
+      return { result };
+    } catch (err: any) {
+      this.errorTracking.captureBackendError({
+        error: err,
+        source: 'http_request',
+        tags: { server_id: id, query_id: query.id, operation: 'run_query_inline' },
+      });
+      return { result: null, error: err?.message ?? 'Query failed' };
+    }
   }
 }

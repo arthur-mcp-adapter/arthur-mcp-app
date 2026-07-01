@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import type { AuthConfig, EndpointRef, GeneratedTool, JsonSchema, McpPrompt, McpResource, ToolChain } from '../dynamic-mcp/types';
+import type { AuthConfig, DbConnectionConfig, DbQuery, EndpointRef, GeneratedTool, JsonSchema, McpPrompt, McpResource, ToolChain } from '../dynamic-mcp/types';
 
 export type SwaggerProjectDocument = SwaggerProject & Document;
 
@@ -26,6 +26,9 @@ export class SwaggerProject {
 
   @Prop()
   version?: string;
+
+  @Prop({ unique: true, sparse: true })
+  shareSlug?: string;
 
   @Prop({ type: Object })
   rawSpec: Record<string, any>;
@@ -90,6 +93,15 @@ export class SwaggerProject {
   /** Multi-tenant parameter injection */
   @Prop({ type: Object, default: { enabled: false, params: [] } })
   tenantConfig: { enabled: boolean; params: Array<{ name: string; type: 'string' | 'integer' | 'number' | 'boolean' | 'uuid' | 'hash'; description?: string }> };
+
+  @Prop({ type: Object, default: { enabled: false } })
+  responseConfig: { enabled: boolean; maxResponseLen?: number; maxDepth?: number; arraySlice?: number; errorTruncateLen?: number };
+
+  @Prop({ type: Object })
+  connectionConfig?: DbConnectionConfig;
+
+  @Prop({ type: [Object], default: [] })
+  dbQueries: DbQuery[];
 }
 
 export const SwaggerProjectSchema = SchemaFactory.createForClass(SwaggerProject);

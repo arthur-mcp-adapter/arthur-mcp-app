@@ -37,6 +37,8 @@ export interface ApiTemplate {
   tools: TemplateTool[]
 }
 
+export const SERVER_TEMPLATE_SOURCE_TAG = 'source:rest'
+
 // ─── Helper for concise param definitions ─────────────────────────────────────
 
 const p = {

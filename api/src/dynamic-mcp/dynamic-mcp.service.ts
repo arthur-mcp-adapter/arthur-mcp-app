@@ -12,14 +12,21 @@ import {
 import type { AuthConfig, ChainInputSource, GeneratedTool, JsonSchema, McpResource, ToolChain } from './types';
 import { buildRequest } from './request-builder';
 import { executeRequest } from './http-client';
-import { mapResponse, McpToolResult } from './response-mapper';
+import { mapResponse, McpToolResult, ResponseMapperConfig } from './response-mapper';
 import { applyAuth, resolveSecretRefs } from './auth-provider';
 import { ExecutionLogsService } from '../execution-logs/execution-logs.service';
+import { ErrorTrackingService } from '../error-tracking/error-tracking.service';
+import { MetricsService } from '../observability/metrics/metrics.service';
+import { TracingService } from '../observability/tracing/tracing.service';
 import { PROJECT_REPO, PROMPT_REPO, SECRET_REPO, SETTINGS_REPO } from '../database/database.tokens';
 import { ISwaggerProjectRepository } from '../swagger/swagger-project.repository';
 import type { IPromptRepository, PromptRecord } from '../prompts/prompt.repository';
 import type { ISecretRepository } from '../secrets/secret.repository';
 import type { ISettingsRepository } from '../settings/settings.repository';
+
+function tryParseJson(body: string): unknown {
+  try { return JSON.parse(body); } catch { return body; }
+}
 
 interface TenantParamDef {
   name: string;
@@ -39,6 +46,7 @@ interface CachedProject {
   secrets: Map<string, string>;
   tenantConfig: { enabled: boolean; params: TenantParamDef[] };
   globalRequestHeaders: Record<string, string>;
+  responseConfig: ResponseMapperConfig;
   expiresAt: number;
 }
 
@@ -98,18 +106,22 @@ export class DynamicMcpService {
     @Inject(SECRET_REPO) private readonly secretRepo: ISecretRepository,
     @Inject(SETTINGS_REPO) private readonly settingsRepo: ISettingsRepository,
     private readonly executionLogs: ExecutionLogsService,
+    private readonly errorTracking: ErrorTrackingService,
+    private readonly metrics: MetricsService,
+    private readonly tracing: TracingService,
   ) {}
 
   invalidate(serverId: string): void {
     this.projectCache.delete(serverId);
   }
 
-  private async getProjectData(serverId: string): Promise<CachedProject> {
-    const cached = this.projectCache.get(serverId);
-    if (cached && cached.expiresAt > Date.now()) return cached;
-
-    const server = await this.projectRepo.findById(serverId);
+  private async getProjectData(serverId: string): Promise<CachedProject & { serverId: string }> {
+    const server = await this.projectRepo.findByIdOrShareSlug(serverId);
     if (!server) throw new NotFoundException(`Server ${serverId} not found.`);
+
+    const canonicalServerId = server._id;
+    const cached = this.projectCache.get(canonicalServerId);
+    if (cached && cached.expiresAt > Date.now()) return { ...cached, serverId: canonicalServerId };
 
     const promptRefs = (server.prompts ?? []) as Array<{ promptId?: string; enabled?: boolean }>;
     const resolvedPrompts: PromptRecord[] = [];
@@ -138,10 +150,11 @@ export class DynamicMcpService {
       secrets: secretsMap,
       tenantConfig: (server as any).tenantConfig ?? { enabled: false, params: [] },
       globalRequestHeaders,
+      responseConfig: (server as any).responseConfig ?? { enabled: false },
       expiresAt: Date.now() + this.CACHE_TTL_MS,
     };
-    this.projectCache.set(serverId, entry);
-    return entry;
+    this.projectCache.set(canonicalServerId, entry);
+    return { ...entry, serverId: canonicalServerId };
   }
 
   private coerceTenantValue(value: string, type: TenantParamDef['type']): unknown {
@@ -172,7 +185,9 @@ export class DynamicMcpService {
   }
 
   async createMcpServer(serverId: string, queryParams: Record<string, string> = {}): Promise<Server> {
-    const { tools: allTools, chains: allChains, auth: rawAuth, name, version, resources, prompts, secrets, tenantConfig, globalRequestHeaders } = await this.getProjectData(serverId);
+    const project = await this.getProjectData(serverId);
+    const { tools: allTools, chains: allChains, auth: rawAuth, name, version, resources, prompts, secrets, tenantConfig, globalRequestHeaders, responseConfig } = project;
+    serverId = project.serverId;
     const auth = resolveSecretRefs(rawAuth, secrets);
 
     // Resolve endpointRef/inputSchema from source endpoint for linked tools/resources
@@ -285,25 +300,40 @@ export class DynamicMcpService {
       const chain = chainMap.get(toolName);
       if (chain) {
         try {
-          const result = await this.executeChain(chain, args, tools, auth, globalRequestHeaders);
-          this.executionLogs.log({ serverId, serverName: name, toolName, source: 'mcp', statusCode: result.isError ? 500 : 200, responseTimeMs: Date.now() - t0, isError: result.isError ?? false });
+          const result = await this.tracing.runInSpan('mcp.tool.call', {
+            'mcp.tool.name': toolName,
+            'mcp.transport': 'mcp',
+            'mcp.server.id': serverId,
+          }, () => this.executeChain(chain, args, tools, auth, globalRequestHeaders, serverId, name));
+          const durationMs = Date.now() - t0;
+          this.executionLogs.log({ serverId, serverName: name, toolName, source: 'mcp', statusCode: result.isError ? 500 : 200, responseTimeMs: durationMs, isError: result.isError ?? false });
+          this.recordToolMetric(toolName, durationMs, result.isError ? 'error' : 'ok', 'mcp', result.isError);
           return result;
         } catch (err: any) {
           this.logger.error(`Chain "${toolName}" error: ${err?.message}`);
-          this.executionLogs.log({ serverId, serverName: name, toolName, source: 'mcp', isError: true, statusCode: 500, errorMessage: err?.message, responseTimeMs: Date.now() - t0 });
+          const durationMs = Date.now() - t0;
+          this.executionLogs.log({ serverId, serverName: name, toolName, source: 'mcp', isError: true, statusCode: 500, errorMessage: err?.message, responseTimeMs: durationMs });
+          this.errorTracking.captureToolError({ serverId, serverName: name, toolName, error: err });
+          this.recordToolMetric(toolName, durationMs, 'error', 'mcp', true);
           return { content: [{ type: 'text' as const, text: `Chain error: ${err?.message ?? 'unknown'}` }], isError: true };
         }
       }
 
       if (!tool) {
         this.logger.warn(`Tool not found: "${toolName}" | available: [${[...toolMap.keys()].join(', ')}]`);
-        this.executionLogs.log({ serverId, serverName: name, toolName, source: 'mcp', isError: true, statusCode: 404, errorMessage: 'Tool not found', responseTimeMs: Date.now() - t0 });
+        const durationMs = Date.now() - t0;
+        this.executionLogs.log({ serverId, serverName: name, toolName, source: 'mcp', isError: true, statusCode: 404, errorMessage: 'Tool not found', responseTimeMs: durationMs });
+        this.captureMcpToolError(serverId, name, toolName, 'Tool not found', 'mcp', 404);
+        this.recordToolMetric(toolName, durationMs, 'not_found', 'mcp', true);
         return { content: [{ type: 'text' as const, text: `Unknown tool: ${toolName}` }], isError: true };
       }
 
       if (!tool.endpointRef) {
         this.logger.error(`Tool "${toolName}" has no endpointRef — data may be stale. Re-upload the spec.`);
-        this.executionLogs.log({ serverId, serverName: name, toolName, source: 'mcp', isError: true, statusCode: 500, errorMessage: 'endpointRef missing', responseTimeMs: Date.now() - t0 });
+        const durationMs = Date.now() - t0;
+        this.executionLogs.log({ serverId, serverName: name, toolName, source: 'mcp', isError: true, statusCode: 500, errorMessage: 'endpointRef missing', responseTimeMs: durationMs });
+        this.captureMcpToolError(serverId, name, toolName, 'endpointRef missing', 'mcp', 500);
+        this.recordToolMetric(toolName, durationMs, 'configuration_error', 'mcp', true);
         return { content: [{ type: 'text' as const, text: `Invalid internal configuration for "${toolName}". Re-upload the spec.` }], isError: true };
       }
 
@@ -311,7 +341,10 @@ export class DynamicMcpService {
       if (validationErrors.length > 0) {
         const msg = `Invalid arguments: ${validationErrors.join('; ')}`;
         this.logger.warn(`Tool "${toolName}" — ${msg}`);
-        this.executionLogs.log({ serverId, serverName: name, toolName, source: 'mcp', isError: true, statusCode: 400, errorMessage: msg, responseTimeMs: Date.now() - t0 });
+        const durationMs = Date.now() - t0;
+        this.executionLogs.log({ serverId, serverName: name, toolName, source: 'mcp', isError: true, statusCode: 400, errorMessage: msg, responseTimeMs: durationMs });
+        this.captureMcpToolError(serverId, name, toolName, msg, 'mcp', 400);
+        this.recordToolMetric(toolName, durationMs, 'validation_error', 'mcp', true);
         return { content: [{ type: 'text' as const, text: msg }], isError: true };
       }
 
@@ -322,18 +355,26 @@ export class DynamicMcpService {
           .map((def) => def.name);
         if (missingRequired.length > 0) {
           const msg = `Missing required tenant parameter`;
-          this.logger.warn(`Tool "${toolName}" — ${msg}`);
-          this.executionLogs.log({ serverId, serverName: name, toolName, source: 'mcp', isError: true, statusCode: 400, errorMessage: msg, responseTimeMs: Date.now() - t0 });
-          return { content: [{ type: 'text' as const, text: msg }], isError: true };
-        }
+              this.logger.warn(`Tool "${toolName}" — ${msg}`);
+              const durationMs = Date.now() - t0;
+              this.executionLogs.log({ serverId, serverName: name, toolName, source: 'mcp', isError: true, statusCode: 400, errorMessage: msg, responseTimeMs: durationMs });
+              this.captureMcpToolError(serverId, name, toolName, msg, 'mcp', 400);
+              this.recordToolMetric(toolName, durationMs, 'tenant_error', 'mcp', true);
+              return { content: [{ type: 'text' as const, text: msg }], isError: true };
+            }
       }
 
       try {
+        return await this.tracing.runInSpan('mcp.tool.call', {
+          'mcp.tool.name': toolName,
+          'mcp.transport': 'mcp',
+          'mcp.server.id': serverId,
+        }, async () => {
         const effectiveArgs = this.injectTenantParams(args, tool, tenantConfig, queryParams);
         let httpReq = buildRequest(effectiveArgs, tool.endpointRef, globalRequestHeaders);
         httpReq = await applyAuth(httpReq, auth);
         this.logger.log(`→ HTTP ${httpReq.method} ${httpReq.url}`);
-        const httpRes = await executeRequest(httpReq);
+        const httpRes = await this.executeObservedRequest(httpReq);
         this.logger.log(`← HTTP ${httpRes.status} ${httpRes.statusText}`);
         // If the tool has an HTML output template, render with Handlebars instead of raw JSON
         if (tool.outputTemplate && !httpRes.body.trim().startsWith('<')) {
@@ -341,15 +382,22 @@ export class DynamicMcpService {
             const parsed = JSON.parse(httpRes.body);
             const ctx = Array.isArray(parsed) ? { items: parsed } : parsed;
             const html = compileAndRender(tool.outputTemplate, ctx);
-            this.executionLogs.log({ serverId, serverName: name, toolName, source: 'mcp', statusCode: httpRes.status, responseTimeMs: Date.now() - t0, isError: false });
+            const durationMs = Date.now() - t0;
+            this.executionLogs.log({ serverId, serverName: name, toolName, source: 'mcp', statusCode: httpRes.status, responseTimeMs: durationMs, isError: false, requestPayload: effectiveArgs });
+            this.recordToolMetric(toolName, durationMs, 'ok', 'mcp', false);
             return { content: [{ type: 'text' as const, text: html }] };
           } catch (tplErr: any) {
             this.logger.warn(`Template render failed for "${toolName}": ${tplErr?.message}`);
           }
         }
 
-        const result = mapResponse(httpRes);
-        this.executionLogs.log({ serverId, serverName: name, toolName, source: 'mcp', statusCode: httpRes.status, responseTimeMs: Date.now() - t0, isError: result.isError ?? false });
+        const result = mapResponse(httpRes, responseConfig);
+        const durationMs = Date.now() - t0;
+        this.executionLogs.log({ serverId, serverName: name, toolName, source: 'mcp', statusCode: httpRes.status, responseTimeMs: durationMs, isError: result.isError ?? false, requestPayload: effectiveArgs, responsePayload: tryParseJson(httpRes.body) });
+        if (result.isError) {
+          this.captureMcpToolError(serverId, name, toolName, `HTTP ${httpRes.status}: ${httpRes.body.slice(0, 200)}`, 'mcp', httpRes.status);
+        }
+        this.recordToolMetric(toolName, durationMs, result.isError ? 'error' : 'ok', 'mcp', result.isError);
 
         // If the tool declares an outputSchema, also populate structuredContent
         if (tool.outputSchema && !result.isError) {
@@ -363,9 +411,13 @@ export class DynamicMcpService {
         }
 
         return result;
+        });
       } catch (err: any) {
         this.logger.error(`Erro ao executar "${toolName}": ${err?.message}`);
-        this.executionLogs.log({ serverId, serverName: name, toolName, source: 'mcp', isError: true, statusCode: 500, errorMessage: err?.message, responseTimeMs: Date.now() - t0 });
+        const durationMs = Date.now() - t0;
+        this.executionLogs.log({ serverId, serverName: name, toolName, source: 'mcp', isError: true, statusCode: 500, errorMessage: err?.message, responseTimeMs: durationMs });
+        this.errorTracking.captureToolError({ serverId, serverName: name, toolName, error: err });
+        this.recordToolMetric(toolName, durationMs, 'error', 'mcp', true);
         const errMsg = err?.message ?? 'unknown error';
         const errText = tool.errorConfig?.message
           ? tool.errorConfig.message.replace('{{error}}', errMsg)
@@ -386,24 +438,47 @@ export class DynamicMcpService {
     server.setRequestHandler(ReadResourceRequestSchema, async (req) => {
       const uri = req.params.uri;
       const raw = enabledResources.find((r) => r.uri === uri);
-      if (!raw) throw new Error(`Resource not found: ${uri}`);
+      if (!raw) {
+        this.metrics.recordMcpResource({ resourceName: uri, status: 'not_found', isError: true });
+        const error = new Error(`Resource not found: ${uri}`);
+        this.errorTracking.captureBackendError({
+          error,
+          source: 'mcp_request',
+          statusCode: 404,
+          tags: { mcp_server_id: serverId, mcp_resource_uri: uri },
+        });
+        throw error;
+      }
       const resource = resolveResourceRef(raw);
 
       if (resource.type !== 'dynamic' || !resource.endpointRef) {
+        this.metrics.recordMcpResource({ resourceName: resource.name ?? uri, status: 'ok' });
         return { contents: [{ uri, text: resource.content, ...(resource.mimeType ? { mimeType: resource.mimeType } : {}) }] };
       }
 
       try {
+        const rendered = await this.tracing.runInSpan('mcp.resource.read', {
+          'mcp.resource.name': resource.name ?? uri,
+          'mcp.server.id': serverId,
+        }, async () => {
         let httpReq = buildRequest(resource.inputDefaults ?? {}, resource.endpointRef, globalRequestHeaders);
         httpReq = await applyAuth(httpReq, auth);
-        const httpRes = await executeRequest(httpReq);
+        const httpRes = await this.executeObservedRequest(httpReq);
         if (httpRes.status >= 400) throw new Error(`HTTP ${httpRes.status}: ${httpRes.body.slice(0, 200)}`);
         const parsed = JSON.parse(httpRes.body);
-        const rendered = compileAndRender(resource.content, parsed);
+        return compileAndRender(resource.content, parsed);
+        });
+        this.metrics.recordMcpResource({ resourceName: resource.name ?? uri, status: 'ok' });
         return { contents: [{ uri, text: rendered, mimeType: resource.mimeType ?? 'text/html' }] };
       } catch (err: any) {
         const errorMsg = err?.message ?? 'unknown error';
         const msg = (resource.errorConfig?.message ?? 'Error loading resource: {{error}}').replace('{{error}}', errorMsg);
+        this.errorTracking.captureBackendError({
+          error: err,
+          source: 'mcp_request',
+          tags: { mcp_server_id: serverId, mcp_resource_name: resource.name ?? uri },
+        });
+        this.metrics.recordMcpResource({ resourceName: resource.name ?? uri, status: 'error', isError: true });
         return { contents: [{ uri, text: msg, mimeType: 'text/plain' }] };
       }
     });
@@ -422,13 +497,24 @@ export class DynamicMcpService {
     server.setRequestHandler(GetPromptRequestSchema, async (req) => {
       const { name, arguments: args = {} } = req.params as { name: string; arguments?: Record<string, string> };
       const prompt = prompts.find((p) => p.name === name);
-      if (!prompt) throw new Error(`Prompt not found: ${name}`);
+      if (!prompt) {
+        this.metrics.recordMcpPrompt({ promptName: name, status: 'not_found' });
+        const error = new Error(`Prompt not found: ${name}`);
+        this.errorTracking.captureBackendError({
+          error,
+          source: 'mcp_request',
+          statusCode: 404,
+          tags: { mcp_server_id: serverId, mcp_prompt_name: name },
+        });
+        throw error;
+      }
 
       const text = prompt.content.replace(
         /\{\{(\w+)\}\}/g,
         (_, key) => String((args as Record<string, string>)[key] ?? `{{${key}}}`),
       );
 
+      this.metrics.recordMcpPrompt({ promptName: name, status: 'ok' });
       return {
         messages: [{ role: 'user' as const, content: { type: 'text' as const, text } }],
       };
@@ -443,6 +529,8 @@ export class DynamicMcpService {
     tools: GeneratedTool[],
     auth: AuthConfig,
     globalRequestHeaders: Record<string, string> = {},
+    serverId = '',
+    serverName = '',
   ): Promise<McpToolResult> {
     const stepOutputs = new Map<string, unknown>();
 
@@ -457,6 +545,7 @@ export class DynamicMcpService {
     for (const step of chain.steps) {
       const tool = tools.find((t) => t.name === step.toolName);
       if (!tool) {
+        this.captureMcpToolError(serverId, serverName, step.toolName, `Chain step tool "${step.toolName}" not found`, 'chain', 404);
         return { content: [{ type: 'text' as const, text: `Chain step error: tool "${step.toolName}" not found` }], isError: true };
       }
 
@@ -468,9 +557,10 @@ export class DynamicMcpService {
       try {
         let httpReq = buildRequest(stepArgs, tool.endpointRef, globalRequestHeaders);
         httpReq = await applyAuth(httpReq, auth);
-        const httpRes = await executeRequest(httpReq);
+        const httpRes = await this.executeObservedRequest(httpReq);
 
         if (httpRes.status >= 400) {
+          this.captureMcpToolError(serverId, serverName, step.toolName, `Chain step HTTP ${httpRes.status}: ${httpRes.body.slice(0, 200)}`, 'chain', httpRes.status);
           return { content: [{ type: 'text' as const, text: `Chain step "${step.toolName}" failed: HTTP ${httpRes.status} — ${httpRes.body.slice(0, 200)}` }], isError: true };
         }
 
@@ -480,6 +570,7 @@ export class DynamicMcpService {
           stepOutputs.set(step.id, httpRes.body);
         }
       } catch (err: any) {
+        this.captureMcpToolError(serverId, serverName, step.toolName, err, 'chain', 500);
         return { content: [{ type: 'text' as const, text: `Chain step "${step.toolName}" error: ${err?.message}` }], isError: true };
       }
     }
@@ -495,7 +586,9 @@ export class DynamicMcpService {
     toolName: string,
     args: Record<string, unknown>,
   ): Promise<McpToolResult> {
-    const { tools: allTools, auth: rawAuth, name, secrets, globalRequestHeaders } = await this.getProjectData(serverId);
+    const project = await this.getProjectData(serverId);
+    const { tools: allTools, auth: rawAuth, name, secrets, globalRequestHeaders, responseConfig } = project;
+    serverId = project.serverId;
     const auth = resolveSecretRefs(rawAuth, secrets);
 
     const rawTool = allTools.find((t) => t.name === toolName);
@@ -508,28 +601,114 @@ export class DynamicMcpService {
 
     const t0 = Date.now();
 
-    const validationErrors = validateToolArgs(args, tool.inputSchema);
-    if (validationErrors.length > 0) {
-      const msg = `Invalid arguments: ${validationErrors.join('; ')}`;
-      this.executionLogs.log({ serverId, serverName: name, toolName, source: 'direct', isError: true, statusCode: 400, errorMessage: msg, responseTimeMs: 0 });
-      return { content: [{ type: 'text', text: msg }], isError: true };
-    }
+      const validationErrors = validateToolArgs(args, tool.inputSchema);
+      if (validationErrors.length > 0) {
+        const msg = `Invalid arguments: ${validationErrors.join('; ')}`;
+        this.executionLogs.log({ serverId, serverName: name, toolName, source: 'direct', isError: true, statusCode: 400, errorMessage: msg, responseTimeMs: 0 });
+        this.captureMcpToolError(serverId, name, toolName, msg, 'direct', 400);
+        this.recordToolMetric(toolName, 0, 'validation_error', 'direct', true);
+        return { content: [{ type: 'text', text: msg }], isError: true };
+      }
 
     try {
+      return await this.tracing.runInSpan('mcp.tool.call', {
+        'mcp.tool.name': toolName,
+        'mcp.transport': 'direct',
+        'mcp.server.id': serverId,
+      }, async () => {
       let httpReq = buildRequest(args, tool.endpointRef, globalRequestHeaders);
       httpReq = await applyAuth(httpReq, auth);
-      const httpRes = await executeRequest(httpReq);
-      const result = mapResponse(httpRes);
-      this.executionLogs.log({ serverId, serverName: name, toolName, source: 'direct', statusCode: httpRes.status, responseTimeMs: Date.now() - t0, isError: result.isError ?? false });
+      const httpRes = await this.executeObservedRequest(httpReq);
+      const result = mapResponse(httpRes, responseConfig);
+      const durationMs = Date.now() - t0;
+      this.executionLogs.log({ serverId, serverName: name, toolName, source: 'direct', statusCode: httpRes.status, responseTimeMs: durationMs, isError: result.isError ?? false });
+      if (result.isError) {
+        this.captureMcpToolError(serverId, name, toolName, `HTTP ${httpRes.status}: ${httpRes.body.slice(0, 200)}`, 'direct', httpRes.status);
+      }
+      this.recordToolMetric(toolName, durationMs, result.isError ? 'error' : 'ok', 'direct', result.isError);
       return result;
+      });
     } catch (err: any) {
       this.logger.error(`Erro ao executar ${toolName}: ${err?.message}`);
-      this.executionLogs.log({ serverId, serverName: name, toolName, source: 'direct', isError: true, statusCode: 500, errorMessage: err?.message, responseTimeMs: Date.now() - t0 });
+      const durationMs = Date.now() - t0;
+      this.executionLogs.log({ serverId, serverName: name, toolName, source: 'direct', isError: true, statusCode: 500, errorMessage: err?.message, responseTimeMs: durationMs });
+      this.errorTracking.captureToolError({ serverId, serverName: name, toolName, error: err });
+      this.recordToolMetric(toolName, durationMs, 'error', 'direct', true);
       const errorMsg = err?.message ?? 'unknown error';
       const msg = rawTool.errorConfig?.message
         ? rawTool.errorConfig.message.replace('{{error}}', errorMsg)
         : `Error: ${errorMsg}`;
       return { content: [{ type: 'text', text: msg }], isError: true };
+    }
+  }
+
+  private recordToolMetric(toolName: string, durationMs: number, status: string, transport: string, isError?: boolean): void {
+    this.metrics.recordMcpTool({
+      toolName,
+      durationSeconds: durationMs / 1000,
+      status,
+      transport,
+      isError,
+    });
+  }
+
+  private captureMcpToolError(
+    serverId: string,
+    serverName: string,
+    toolName: string,
+    error: Error | unknown,
+    transport: string,
+    statusCode: number,
+  ): void {
+    this.errorTracking.captureBackendError({
+      error: error instanceof Error ? error : new Error(String(error)),
+      source: 'mcp_tool',
+      statusCode,
+      tags: {
+        mcp_server_id: serverId || undefined,
+        mcp_server_name: serverName || undefined,
+        mcp_tool_name: toolName,
+        mcp_transport: transport,
+      },
+    });
+  }
+
+  private async executeObservedRequest(request: ReturnType<typeof buildRequest>) {
+    const start = process.hrtime.bigint();
+    const provider = this.providerFromUrl(request.url);
+    try {
+      const response = await this.tracing.runInSpan('mcp.external_http.request', {
+        'http.method': request.method,
+        'http.url': request.url,
+        'net.peer.name': provider,
+      }, () => executeRequest(request));
+      const durationSeconds = Number(process.hrtime.bigint() - start) / 1_000_000_000;
+      this.metrics.recordExternalHttp({
+        provider,
+        status: response.status >= 400 ? 'error' : 'ok',
+        statusCode: response.status,
+        durationSeconds,
+        isError: response.status >= 400,
+      });
+      return response;
+    } catch (error) {
+      const durationSeconds = Number(process.hrtime.bigint() - start) / 1_000_000_000;
+      this.metrics.recordExternalHttp({
+        provider,
+        status: 'error',
+        statusCode: 'network_error',
+        durationSeconds,
+        isError: true,
+      });
+      throw error;
+    }
+  }
+
+  private providerFromUrl(url: string): string {
+    try {
+      return new URL(url).hostname;
+    } catch {
+      return 'unknown';
     }
   }
 }

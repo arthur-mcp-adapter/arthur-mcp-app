@@ -29,6 +29,12 @@ export class SettingsEntity {
   @Column({ default: '' })
   smtpFrom: string;
 
+  @Column({ default: '' })
+  jwtSecret: string;
+
   @Column({ type: 'simple-json', nullable: true })
   globalRequestHeaders: { name: string; value: string }[] | null;
+
+  @Column({ type: 'simple-json', nullable: true })
+  observabilityEnvironment: Record<string, string> | null;
 }

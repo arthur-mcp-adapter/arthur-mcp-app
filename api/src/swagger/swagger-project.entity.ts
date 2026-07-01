@@ -17,6 +17,9 @@ export class SwaggerProjectEntity {
   @Column({ nullable: true })
   version?: string;
 
+  @Column({ nullable: true, unique: true })
+  shareSlug?: string;
+
   @Column('text', { nullable: true })
   rawSpec?: string;
 
@@ -73,6 +76,15 @@ export class SwaggerProjectEntity {
 
   @Column('text', { default: '{"enabled":false,"params":[]}' })
   tenantConfig: string;
+
+  @Column('text', { default: '{"enabled":false}' })
+  responseConfig: string;
+
+  @Column('text', { nullable: true })
+  connectionConfig?: string;
+
+  @Column('text', { default: '[]' })
+  dbQueries: string;
 
   @CreateDateColumn()
   createdAt: Date;

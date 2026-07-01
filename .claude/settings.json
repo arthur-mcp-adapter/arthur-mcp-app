@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/audit-new-file.sh",
+            "statusMessage": "Registering new file in audit registry..."
+          }
+        ]
+      }
+    ]
+  }
+}

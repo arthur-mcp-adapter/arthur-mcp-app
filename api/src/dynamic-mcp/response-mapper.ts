@@ -5,12 +5,28 @@ export interface McpToolResult {
   isError?: boolean;
 }
 
-const MAX_LEN = 100000;
+export interface ResponseMapperConfig {
+  enabled: boolean;
+  maxResponseLen?: number;
+  maxDepth?: number;
+  arraySlice?: number;
+  errorTruncateLen?: number;
+}
 
-export function mapResponse(response: HttpResponse): McpToolResult {
+const DEFAULT_MAX_LEN = 100000;
+const DEFAULT_MAX_DEPTH = 5;
+const DEFAULT_ARRAY_SLICE = 20;
+const DEFAULT_ERROR_TRUNCATE = 2000;
+
+export function mapResponse(response: HttpResponse, config?: ResponseMapperConfig): McpToolResult {
+  const limit = config?.enabled ?? false;
+
   if (response.status >= 400) {
+    const body = limit
+      ? truncate(response.body, config?.errorTruncateLen ?? DEFAULT_ERROR_TRUNCATE)
+      : response.body;
     return {
-      content: [{ type: 'text', text: `HTTP ${response.status} ${response.statusText}\n\n${truncate(response.body, 2000)}` }],
+      content: [{ type: 'text', text: `HTTP ${response.status} ${response.statusText}\n\n${body}` }],
       isError: true,
     };
   }
@@ -18,15 +34,27 @@ export function mapResponse(response: HttpResponse): McpToolResult {
   if (response.contentType.includes('application/json')) {
     try {
       const parsed = JSON.parse(response.body);
-      const text = smartTruncate(parsed);
+      const text = limit
+        ? smartTruncate(parsed, config?.maxResponseLen, config?.maxDepth, config?.arraySlice)
+        : JSON.stringify(parsed, null, 2);
       return { content: [{ type: 'text', text }] };
     } catch {
-      return { content: [{ type: 'text', text: truncate(response.body, MAX_LEN) }] };
+      return {
+        content: [{
+          type: 'text',
+          text: limit ? truncate(response.body, config?.maxResponseLen ?? DEFAULT_MAX_LEN) : response.body,
+        }],
+      };
     }
   }
 
   if (response.contentType.includes('text/') || response.contentType.includes('xml')) {
-    return { content: [{ type: 'text', text: truncate(response.body, MAX_LEN) }] };
+    return {
+      content: [{
+        type: 'text',
+        text: limit ? truncate(response.body, config?.maxResponseLen ?? DEFAULT_MAX_LEN) : response.body,
+      }],
+    };
   }
 
   return {
@@ -39,10 +67,13 @@ function truncate(text: string, max: number): string {
   return `${text.slice(0, max)}\n\n... [truncated], ${text.length - max} characters omitted]`;
 }
 
-function smartTruncate(data: unknown, maxLen = MAX_LEN, maxDepth = 5, arraySlice = 20): string {
-  const shrunk = shrinkData(data, maxDepth, arraySlice);
+function smartTruncate(data: unknown, maxLen?: number, maxDepth?: number, arraySlice?: number): string {
+  const depth = maxDepth ?? DEFAULT_MAX_DEPTH;
+  const slice = arraySlice ?? DEFAULT_ARRAY_SLICE;
+  const len = maxLen ?? DEFAULT_MAX_LEN;
+  const shrunk = shrinkData(data, depth, slice);
   const text = JSON.stringify(shrunk, null, 2);
-  return truncate(text, maxLen);
+  return truncate(text, len);
 }
 
 function shrinkData(data: unknown, depth: number, arraySlice: number): unknown {

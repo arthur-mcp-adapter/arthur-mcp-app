@@ -7,6 +7,8 @@ export interface SecretRecord {
   updatedAt: Date;
 }
 
+export type SecretMetadataRecord = Omit<SecretRecord, 'value'>;
+
 export interface ISecretRepository {
   findAll(): Promise<SecretRecord[]>;
   findById(id: string): Promise<SecretRecord | null>;

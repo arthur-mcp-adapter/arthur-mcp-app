@@ -13,6 +13,7 @@ import { UsersService } from '../users/users.service';
 import { PASSWORD_RESET_REPO } from '../database/database.tokens';
 import { IPasswordResetRepository } from './password-reset.repository';
 import { SettingsService } from '../settings/settings.service';
+import { JwtSecretService } from '../settings/jwt-secret.service';
 
 export interface JwtPayload {
   sub: string;
@@ -34,6 +35,7 @@ export class AuthService {
     private readonly users: UsersService,
     private readonly jwt: JwtService,
     private readonly settingsService: SettingsService,
+    private readonly jwtSecretService: JwtSecretService,
     @Inject(PASSWORD_RESET_REPO) private readonly resetRepo: IPasswordResetRepository,
   ) {}
 
@@ -45,9 +47,10 @@ export class AuthService {
     return { _id: user._id, username: user.username, role: user.role };
   }
 
-  login(user: AuthUser): { access_token: string } {
+  async login(user: AuthUser): Promise<{ access_token: string }> {
     const payload: JwtPayload = { sub: user._id, username: user.username, role: user.role };
-    return { access_token: this.jwt.sign(payload) };
+    const secret = await this.jwtSecretService.getSecret();
+    return { access_token: await this.jwt.signAsync(payload, { secret, expiresIn: '24h' }) };
   }
 
   async register(username: string, password: string, email: string): Promise<{ access_token: string }> {
@@ -84,12 +87,12 @@ export class AuthService {
         await transporter.sendMail({
           from: settings.smtpFrom || settings.smtpUser,
           to: email,
-          subject: 'Password reset — Arthur MCP Adapter',
+          subject: 'Password reset — Arthur MCP',
           text: `Click the link to reset your password (valid for 1 hour):\n\n${resetLink}`,
           html: `<p>Click the link to reset your password (valid for 1 hour):</p><p><a href="${resetLink}">${resetLink}</a></p>`,
         });
       } catch (err: any) {
-        this.logger.error(`Falha ao enviar e-mail de reset: ${err?.message}`);
+        this.logger.error(`Failed to send password reset email: ${err?.message}`);
       }
     } else {
       this.logger.warn(`SMTP not configured. Reset link for ${email}: ${resetLink}`);
@@ -99,7 +102,7 @@ export class AuthService {
   async resetPassword(token: string, newPassword: string): Promise<void> {
     const record = await this.resetRepo.findByToken(token);
     if (!record) throw new BadRequestException('Invalid or already used token.');
-    if (record.expiresAt < new Date()) throw new BadRequestException('Token expirado.');
+    if (record.expiresAt < new Date()) throw new BadRequestException('Token expired.');
 
     const user = await this.users.findById(record.userId);
     if (!user) throw new NotFoundException('User not found.');

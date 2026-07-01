@@ -1,9 +1,13 @@
 import { NotFoundException, ArgumentsHost } from '@nestjs/common';
 
-jest.mock('fs', () => ({ existsSync: jest.fn() }));
+jest.mock('fs', () => ({
+  ...jest.requireActual('fs'),
+  existsSync: jest.fn(),
+}));
 
 import { existsSync } from 'fs';
 import { SpaFilter } from './spa.filter';
+import type { ErrorTrackingService } from '../../error-tracking/error-tracking.service';
 
 const makeHost = (path: string) => {
   const res = {
@@ -23,10 +27,13 @@ const makeHost = (path: string) => {
 };
 
 describe('SpaFilter', () => {
+  const errorTracking: jest.Mocked<Pick<ErrorTrackingService, 'captureBackendError'>> = {
+    captureBackendError: jest.fn(),
+  };
   let filter: SpaFilter;
 
   beforeEach(() => {
-    filter = new SpaFilter();
+    filter = new SpaFilter(errorTracking as unknown as ErrorTrackingService);
     jest.clearAllMocks();
   });
 
@@ -37,6 +44,10 @@ describe('SpaFilter', () => {
     expect(res.status).toHaveBeenCalledWith(404);
     expect(res.json).toHaveBeenCalled();
     expect(res.sendFile).not.toHaveBeenCalled();
+    expect(errorTracking.captureBackendError).toHaveBeenCalledWith(expect.objectContaining({
+      source: 'http_request',
+      statusCode: 404,
+    }));
   });
 
   it('returns 404 JSON for /mcp paths', () => {
@@ -66,6 +77,7 @@ describe('SpaFilter', () => {
     filter.catch(new NotFoundException(), host);
     expect(res.sendFile).toHaveBeenCalled();
     expect(res.status).not.toHaveBeenCalled();
+    expect(errorTracking.captureBackendError).not.toHaveBeenCalled();
   });
 
   it('returns 404 JSON for unknown SPA routes when index.html is missing', () => {

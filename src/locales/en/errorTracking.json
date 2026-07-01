@@ -1,0 +1,137 @@
+{
+  "heading": {
+    "title": "Sentry",
+    "subtitle": "Connect Sentry to capture, group, and alert on application errors in real time."
+  },
+  "create": {
+    "title": "Connect Sentry",
+    "steps": {
+      "details": "Details",
+      "connection": "Connection"
+    },
+    "detailsTitle": "Name this integration",
+    "detailsHint": "Give a descriptive name so you can identify which Sentry project this entry represents.",
+    "connectionTitle": "Sentry connection settings",
+    "connectionHint": "Enter the DSN from your Sentry project settings. Credentials are stored encrypted."
+  },
+  "tool": {
+    "sentry": "Sentry",
+    "rollbar": "Rollbar",
+    "bugsnag": "Bugsnag",
+    "datadog_apm": "Datadog APM",
+    "newrelic_apm": "New Relic APM",
+    "custom": "Custom"
+  },
+  "action": {
+    "newProvider": "Connect Sentry",
+    "createProvider": "Connect Sentry",
+    "saveChanges": "Save changes",
+    "deleteProvider": "Delete integration",
+    "openDashboard": "Open dashboard",
+    "openSentry": "Open Sentry →",
+    "testConnection": "Test connection",
+    "testing": "Testing…",
+    "connectSentry": "Connect Sentry",
+    "disconnectSentry": "Disconnect Sentry",
+    "disconnect": "Disconnect",
+    "removing": "Removing…",
+    "revealSavedDsn": "Reveal saved DSN",
+    "simulateError": "Send Test Event",
+    "simulatingError": "Sending…"
+  },
+  "label": {
+    "name": "Name",
+    "description": "Description (optional)",
+    "tool": "Tool",
+    "dsn": "Sentry DSN",
+    "projectName": "Project name (optional)",
+    "environment": "Environment (optional)",
+    "isActive": "Active",
+    "general": "General",
+    "dangerZone": "Danger zone",
+    "created": "Created",
+    "lastUpdated": "Last updated",
+    "noDescription": "No description",
+    "noEnvironment": "All environments",
+    "updated": "Updated {{date}}"
+    ,"errorMessage": "Error message"
+  },
+  "placeholder": {
+    "searchProviders": "Search Sentry integrations…",
+    "name": "e.g. Sentry Production",
+    "description": "What this integration monitors…",
+    "dsn": "https://key@o0.ingest.sentry.io/0",
+    "keepDsn": "Leave empty to keep saved DSN",
+    "errorMessage": "Test error from Arthur MCP",
+    "projectName": "e.g. my-api",
+    "environment": "e.g. production"
+  },
+  "hint": {
+    "dsnRequired": "Find your DSN in Sentry under Settings → Projects → Client Keys.",
+    "dsnProtected": "Credential is encrypted and cannot be retrieved after saving.",
+    "environmentOptional": "Filter events by environment. Leave empty to capture all.",
+    "deleteWarning": "This will permanently remove the Sentry integration configuration.",
+    "simulateError": "Sends a test exception to Sentry to verify the integration is working."
+    ,"summary": "Sentry captures unhandled exceptions and tool execution errors from this platform, groups them by stack trace, and sends alerts when error rates spike."
+    ,"findDsnPath": "Find your DSN in Sentry under Settings → Projects → [your project] → Client Keys (DSN)."
+    ,"findClientKeys": "Find your DSN in Sentry under Settings → Projects → [your project] → Client Keys."
+    ,"revealHint": "The DSN is stored encrypted and never returned in API responses. Use the Reveal button to load it for editing."
+  },
+  "empty": {
+    "noProviders": "No Sentry integrations yet. Click Connect Sentry to add one.",
+    "noMatch": "No integrations match your search.",
+    "notFound": "Integration not found."
+  },
+  "confirm": {
+    "deleteTitle": "Delete \"{{name}}\"?",
+    "deleteMessage": "This Sentry integration configuration will be permanently removed.",
+    "disconnectTitle": "Disconnect Sentry?",
+    "disconnectMessage": "This will remove the DSN and stop forwarding errors. You can reconnect at any time."
+  },
+  "error": {
+    "saveFailed": "Failed to save.",
+    "loadFailed": "Failed to load integrations.",
+    "deleteFailed": "Failed to delete integration.",
+    "nameRequired": "Name is required.",
+    "dsnRequired": "Sentry DSN is required.",
+    "connectionTestFailed": "Connection test failed.",
+    "revealFailed": "Failed to reveal DSN."
+  },
+  "status": {
+    "connected": "Connected",
+    "notConfigured": "Not configured",
+    "ok": "OK",
+    "failed": "Failed",
+    "lastTested": "Last tested",
+    "connectedWithLatency": "Connected · {{latency}}ms",
+    "activeForwarding": "Active — forwarding error events to Sentry",
+    "inactivePaused": "Inactive — error forwarding paused"
+  },
+  "level": {
+    "error": "Error",
+    "warning": "Warning",
+    "info": "Info",
+    "debug": "Debug"
+  },
+  "help": {
+    "title": "Sentry Error Tracking",
+    "summary": "Sentry captures unhandled exceptions and tool execution errors from this platform, groups them by stack trace, and sends alerts when error rates spike.",
+    "findDsnPath": "Find your DSN in Sentry under Settings → Projects → [your project] → Client Keys (DSN).",
+    "findClientKeys": "Find your DSN in Sentry under Settings → Projects → [your project] → Client Keys.",
+    "revealHint": "The DSN is stored encrypted and never returned in API responses. Use the Reveal button to load it for editing."
+  },
+  "toast": {
+    "saved": "Sentry integration created.",
+    "updated": "Integration updated.",
+    "deleted": "Integration deleted.",
+    "simulateErrorSuccess": "Test event sent to Sentry.",
+    "simulateErrorFailed": "Failed to send test event."
+  },
+  "tab": {
+    "overview": "Overview",
+    "settings": "Settings"
+  },
+  "nav": {
+    "backLabel": "Sentry"
+  }
+}

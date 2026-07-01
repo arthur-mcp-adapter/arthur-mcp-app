@@ -1,0 +1,114 @@
+{
+  "heading": {
+    "title": "Prompts",
+    "subtitle": "Save and organize your prompt templates for reuse across projects.",
+    "templates": "Prompt Templates",
+    "templatesSubtitle": "Start from a ready-made prompt. Pick a template, customize the name, and it's added to your library instantly."
+  },
+  "create": {
+    "title": "New prompt",
+    "steps": {
+      "details": "Details",
+      "content": "Content",
+      "review": "Review"
+    },
+    "detailsTitle": "Name the prompt",
+    "detailsHint": "Give the prompt a clear name and optional tags so it is easy to find later.",
+    "contentTitle": "Write the prompt content",
+    "reviewTitle": "Review prompt",
+    "reviewHint": "Confirm the prompt before adding it to your shared library."
+  },
+  "action": {
+    "newPrompt": "New prompt",
+    "useTemplate": "Use template",
+    "createPrompt": "Create prompt",
+    "saveChanges": "Save changes",
+    "deletePrompt": "Delete prompt",
+    "backToPrompts": "Back to prompts",
+    "render": "Render"
+  },
+  "label": {
+    "name": "Name",
+    "description": "Description",
+    "content": "CONTENT",
+    "tags": "Tags",
+    "variables": "Variables",
+    "promptContent": "Prompt content",
+    "variableValues": "Variable values",
+    "contentPreview": "Content preview",
+    "general": "General",
+    "dangerZone": "Danger zone",
+    "detectedVariables": "Detected variables:",
+    "stringParameter": "String parameter",
+    "noTags": "No tags",
+    "noDescription": "No description",
+    "chars": "{{count}} chars",
+    "updatedDate": "Updated {{date}}",
+    "toolsCount_one": "{{count}} tool pre-configured",
+    "toolsCount_other": "{{count}} tools pre-configured",
+    "varsChip_one": "{{count}} var",
+    "varsChip_other": "{{count}} vars",
+    "server": "server"
+  },
+  "placeholder": {
+    "searchPrompts": "Search prompts…",
+    "searchTemplates": "Search templates…",
+    "promptName": "e.g. Summarize document",
+    "promptDescription": "What this prompt does…",
+    "promptNameField": "Prompt name",
+    "addTag": "Add tag and press Enter or \",\""
+  },
+  "hint": {
+    "variableSyntax": "Use {{open}}variable{{close}} for dynamic values",
+    "renameHint": "You can rename it later from the Prompts page",
+    "editAfterCreate": "You can edit the full content after creation from the Prompts page.",
+    "cannotUndo": "This action cannot be undone."
+  },
+  "empty": {
+    "noPrompts": "No prompts yet. Click <strong>New prompt</strong> to create your first one.",
+    "noMatch": "No prompts match your search.",
+    "noTemplatesMatch": "No templates match \"{{query}}\".",
+    "noVariables": "No variables detected. Use {{open}}variable_name{{close}} in the Editor tab.",
+    "notReferenced": "This prompt is not referenced by any server yet.",
+    "emptyPrompt": "Empty prompt"
+  },
+  "confirm": {
+    "deleteTitle": "Delete \"{{name}}\"?",
+    "deleteMessage": "This prompt will be permanently removed.",
+    "deleteCannotUndo": "This action cannot be undone."
+  },
+  "error": {
+    "saveFailed": "Failed to save.",
+    "loadFailed": "Failed to load prompts.",
+    "deleteFailed": "Failed to delete prompt.",
+    "createFailed": "Failed to create prompt.",
+    "copyFailed": "Could not copy.",
+    "nameRequired": "Name is required.",
+    "contentRequired": "Content is required."
+  },
+  "toast": {
+    "saved": "Prompt updated.",
+    "created": "Prompt created.",
+    "deleted": "Prompt deleted.",
+    "copied": "Copied!"
+  },
+  "tab": {
+    "editor": "Editor",
+    "variables": "Variables",
+    "preview": "Preview",
+    "usage": "Usage",
+    "settings": "Settings"
+  },
+  "drawer": {
+    "newPrompt": "New prompt",
+    "editPrompt": "Edit — {{name}}",
+    "promptContent": "Prompt content",
+    "collapse": "Collapse",
+    "expandEditor": "Expand editor"
+  },
+  "filter": {
+    "all": "All",
+    "copyContent": "Copy content",
+    "delete": "Delete"
+  }
+}

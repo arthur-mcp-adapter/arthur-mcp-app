@@ -1,0 +1,70 @@
+name: arthur-mcp-observability
+
+services:
+  prometheus:
+    image: prom/prometheus:v2.55.1
+    restart: unless-stopped
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --web.enable-lifecycle
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  grafana:
+    image: grafana/grafana:11.4.0
+    restart: unless-stopped
+    ports:
+      - "3001:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_USERS_DEFAULT_THEME: light
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana-dashboard.json:/var/lib/grafana/dashboards/arthur-mcp-observability.json:ro
+    depends_on:
+      - prometheus
+
+  tempo:
+    image: grafana/tempo:2.6.1
+    restart: unless-stopped
+    command:
+      - -config.file=/etc/tempo.yml
+    ports:
+      - "3200:3200"
+      - "4318:4318"
+    volumes:
+      - tempo_data:/tmp/tempo
+    configs:
+      - source: tempo_config
+        target: /etc/tempo.yml
+
+configs:
+  tempo_config:
+    content: |
+      server:
+        http_listen_port: 3200
+      distributor:
+        receivers:
+          otlp:
+            protocols:
+              http:
+                endpoint: 0.0.0.0:4318
+      storage:
+        trace:
+          backend: local
+          local:
+            path: /tmp/tempo/traces
+          wal:
+            path: /tmp/tempo/wal
+
+volumes:
+  prometheus_data:
+  grafana_data:
+  tempo_data:

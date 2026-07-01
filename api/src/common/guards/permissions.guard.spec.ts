@@ -17,6 +17,9 @@ const allOff = (): RolePermissions => ({
   users_view: false, users_invite: false, users_edit: false, users_delete: false,
   roles_view: false, roles_manage: false,
   audit_view: false, audit_export: false, templates_use: false, settings_manage: false, endpoints_create: false,
+  observability_view: false, observability_create: false, observability_edit: false, observability_delete: false,
+  error_tracking_view: false, error_tracking_create: false, error_tracking_edit: false, error_tracking_delete: false,
+  ai_providers_view: false, ai_providers_create: false, ai_providers_edit: false, ai_providers_delete: false, ai_providers_execute: false,
 });
 
 function makeContext(user: { userId: string; username: string; role: string } | undefined): ExecutionContext {

@@ -14,7 +14,7 @@ const HTTP_METHODS = ['get', 'post', 'put', 'patch', 'delete', 'head', 'options'
 
 /**
  * Accepts a pre-parsed object (JSON/YAML) or a URL/path string.
- * Usa swagger-parser para resolver todos os $ref antes de normalizar.
+ * Uses swagger-parser to resolve all $ref values before normalization.
  */
 export async function parseSpec(specInput: Record<string, unknown> | string): Promise<NormalizedSpec> {
   const api = await SwaggerParser.dereference(specInput as any);

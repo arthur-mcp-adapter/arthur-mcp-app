@@ -2,9 +2,9 @@ import * as crypto from 'crypto';
 import * as jwt from 'jsonwebtoken';
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
-import { config } from '../config/configuration';
 import { PROJECT_REPO } from '../database/database.tokens';
-import { ISwaggerProjectRepository } from '../swagger/swagger-project.repository';
+import { ISwaggerProjectRepository, SwaggerProjectRecord } from '../swagger/swagger-project.repository';
+import { JwtSecretService } from '../settings/jwt-secret.service';
 
 interface AuthCode {
   userId: string;
@@ -24,16 +24,18 @@ export class OAuthService {
   constructor(
     private readonly users: UsersService,
     @Inject(PROJECT_REPO) private readonly projectRepo: ISwaggerProjectRepository,
+    private readonly jwtSecretService: JwtSecretService,
   ) {}
 
-  async validateClient(serverId: string, clientId: string, clientSecret?: string): Promise<void> {
-    const server = await this.projectRepo.findById(serverId);
+  async validateClient(serverId: string, clientId: string, clientSecret?: string): Promise<SwaggerProjectRecord> {
+    const server = await this.projectRepo.findByIdOrShareSlug(serverId);
     if (!server) throw new UnauthorizedException('Server not found');
     if (!server.oauthClientId) throw new UnauthorizedException('OAuth not configured for this server');
     if (server.oauthClientId !== clientId) throw new UnauthorizedException('invalid_client');
     if (clientSecret !== undefined && server.oauthClientSecret !== clientSecret) {
       throw new UnauthorizedException('invalid_client');
     }
+    return server;
   }
 
   async validateUser(username: string, password: string) {
@@ -72,17 +74,25 @@ export class OAuthService {
     return entry;
   }
 
-  issueToken(userId: string, username: string, role: string, serverId: string): string {
+  async issueToken(userId: string, username: string, role: string, serverId: string): Promise<string> {
     return jwt.sign(
       { sub: userId, username, role, serverId },
-      config.jwtSecret,
+      await this.jwtSecretService.getSecret(),
       { expiresIn: '24h' },
     );
   }
 
-  verifyToken(token: string): { sub: string; username: string; role: string; serverId?: string } | null {
+  async issueClientCredentialsToken(clientId: string, serverId: string): Promise<string> {
+    return jwt.sign(
+      { sub: clientId, clientId, role: 'oauth-client', serverId },
+      await this.jwtSecretService.getSecret(),
+      { expiresIn: '24h' },
+    );
+  }
+
+  async verifyToken(token: string): Promise<{ sub: string; username: string; role: string; serverId?: string } | null> {
     try {
-      return jwt.verify(token, config.jwtSecret) as { sub: string; username: string; role: string; serverId?: string };
+      return jwt.verify(token, await this.jwtSecretService.getSecret()) as { sub: string; username: string; role: string; serverId?: string };
     } catch {
       return null;
     }

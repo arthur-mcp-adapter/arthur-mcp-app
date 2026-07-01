@@ -1,6 +1,7 @@
 # Node modules
 node_modules/
 client/node_modules/
+package-lock.json
 
 # Build output
 dist/
@@ -17,7 +18,6 @@ pnpm-debug.log*
 
 # Local env files
 .env
-.env.*
 
 # OS files
 .DS_Store

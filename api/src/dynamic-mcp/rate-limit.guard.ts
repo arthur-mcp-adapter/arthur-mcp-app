@@ -22,14 +22,15 @@ export class RateLimitGuard implements CanActivate {
     const res = context.switchToHttp().getResponse();
     const serverId: string = req.params['serverId'];
 
-    const server = await this.projectRepo.findById(serverId);
+    const server = await this.projectRepo.findByIdOrShareSlug(serverId);
     if (!server?.rateLimit?.enabled) return true;
 
     const { requestsPerMinute } = server.rateLimit;
     const windowMs = 60_000;
     const now = Date.now();
 
-    const prev = this.windows.get(serverId) ?? [];
+    const windowKey = server._id;
+    const prev = this.windows.get(windowKey) ?? [];
     const recent = prev.filter((t) => now - t < windowMs);
 
     const remaining = Math.max(0, requestsPerMinute - recent.length);
@@ -52,7 +53,7 @@ export class RateLimitGuard implements CanActivate {
     }
 
     recent.push(now);
-    this.windows.set(serverId, recent);
+    this.windows.set(windowKey, recent);
     return true;
   }
 }

@@ -1,0 +1,248 @@
+{
+  "$schema": "https://arthur-mcp-manifest/v1",
+  "version": "1.0.0",
+  "name": "Arthur MCP — Server Manifest",
+  "description": "Describes every capability, guard, configuration, and integration surface exposed by an Arthur MCP server instance.",
+  "transport": {
+    "protocol": "Streamable HTTP (MCP 2024-11-05) + SSE",
+    "format": "JSON-RPC 2.0",
+    "baseUrl": "{serverBaseUrl}/mcp/{serverToken}",
+    "healthCheck": "GET {serverBaseUrl}/mcp/{serverToken}/health",
+    "sharePageUrl": "{serverBaseUrl}/share/{shareToken}"
+  },
+  "mcpEndpoints": {
+    "description": "MCP-native JSON-RPC 2.0 methods served under the Streamable HTTP transport.",
+    "methods": [
+      {
+        "method": "initialize",
+        "direction": "client → server",
+        "description": "Capability handshake. Client declares its protocolVersion and capabilities; server responds with its own capabilities and serverInfo.",
+        "clientPayloadExample": {
+          "protocolVersion": "2024-11-05",
+          "clientInfo": { "name": "MyMCPClient", "version": "1.0" },
+          "capabilities": {}
+        },
+        "serverResponseShape": {
+          "protocolVersion": "2024-11-05",
+          "serverInfo": { "name": "string", "version": "string" },
+          "capabilities": {
+            "tools": {},
+            "resources": {},
+            "prompts": {}
+          }
+        }
+      },
+      {
+        "method": "tools/list",
+        "direction": "client → server",
+        "description": "Returns all enabled tools for the server, each with its JSON Schema for inputs.",
+        "responseShape": {
+          "tools": [
+            {
+              "name": "string",
+              "description": "string",
+              "inputSchema": { "$ref": "#/definitions/JsonSchema" }
+            }
+          ]
+        }
+      },
+      {
+        "method": "tools/call",
+        "direction": "client → server",
+        "description": "Execute a specific tool by name with typed arguments. Applies guard rails, harness settings, and response mapping.",
+        "requestShape": {
+          "name": "string (tool name)",
+          "arguments": { "key": "value" }
+        },
+        "responseShape": {
+          "content": [{ "type": "text", "text": "string" }],
+          "isError": "boolean (optional)"
+        }
+      },
+      {
+        "method": "resources/list",
+        "direction": "client → server",
+        "description": "Returns all enabled resources (static and dynamic) with their URI, name, and MIME type.",
+        "responseShape": {
+          "resources": [
+            {
+              "uri": "string",
+              "name": "string",
+              "description": "string (optional)",
+              "mimeType": "string (optional)"
+            }
+          ]
+        }
+      },
+      {
+        "method": "resources/read",
+        "direction": "client → server",
+        "description": "Reads a specific resource by URI. Executes db-query or HTTP endpoint if resource is dynamic.",
+        "requestShape": { "uri": "string" },
+        "responseShape": {
+          "contents": [{ "uri": "string", "mimeType": "string", "text": "string" }]
+        }
+      },
+      {
+        "method": "prompts/list",
+        "direction": "client → server",
+        "description": "Returns all enabled prompt templates for the server.",
+        "responseShape": {
+          "prompts": [
+            {
+              "name": "string",
+              "description": "string (optional)",
+              "arguments": [{ "name": "string", "description": "string", "required": "boolean" }]
+            }
+          ]
+        }
+      },
+      {
+        "method": "prompts/get",
+        "direction": "client → server",
+        "description": "Renders a specific prompt template with the supplied arguments.",
+        "requestShape": { "name": "string", "arguments": { "key": "value" } },
+        "responseShape": {
+          "description": "string (optional)",
+          "messages": [
+            { "role": "user | assistant", "content": { "type": "text", "text": "string" } }
+          ]
+        }
+      }
+    ]
+  },
+
+  "authentication": {
+    "description": "All auth is evaluated before tool/resource calls. Multiple mechanisms can coexist.",
+    "layers": [
+      {
+        "layer": "OAuth2 Client Credentials (MCP access token)",
+        "description": "Clients exchange clientId + clientSecret at the token endpoint to receive a short-lived JWT Bearer token. Used to authenticate at the MCP transport level.",
+        "tokenEndpoint": "POST {serverBaseUrl}/auth/token",
+        "tokenType": "Bearer (JWT)"
+      },
+      {
+        "layer": "MCP API Key (legacy + multi-key)",
+        "description": "Static API key(s) sent via Authorization: Bearer or a custom header. Supports a single legacy key or a named multi-key list stored per server.",
+        "headerFormat": "Authorization: Bearer <apiKey>",
+        "multiKeyStorageField": "apiKeys[]"
+      }
+    ],
+    "perToolAuthConfig": {
+      "description": "Each tool (executionRef) can carry its own upstream auth, overriding the server-level setting for that specific HTTP call.",
+      "types": [
+        { "type": "none", "description": "No upstream auth header injected." },
+        { "type": "bearer", "fields": ["token"] },
+        { "type": "api-key", "fields": ["name", "value", "in: header|query"] },
+        { "type": "basic", "fields": ["username", "password"] },
+        { "type": "oauth2-client", "fields": ["tokenUrl", "clientId", "clientSecret", "scope?"] },
+        { "type": "custom", "fields": ["headers: [{name, value}]"] }
+      ],
+      "secretInjection": "Any field value may use the pattern {{secret:NAME}} — the runtime resolves the secret from the server's secret store before the HTTP call is made."
+    }
+  },
+
+  "perServerSettings": {
+    "description": "All settings below are stored per server and can be updated via the Settings tab in the Server Detail page.",
+
+    "rateLimit": {
+      "fields": {
+        "enabled": "boolean",
+        "windowMs": "number — sliding window duration in ms",
+        "maxRequests": "number — max requests per window"
+      }
+    },
+    "availabilityWindow": {
+      "description": "Restricts when the server can be called. All times evaluated in the configured timezone.",
+      "fields": {
+        "enabled": "boolean",
+        "timezone": "string (IANA, e.g. America/Sao_Paulo)",
+        "days": "number[] — 0 (Sun) to 6 (Sat)",
+        "startHour": "number — 0–23",
+        "endHour": "number — 0–23"
+      }
+    }
+  },
+  "guardRails": {
+    "description": "Per-server filters applied at tool-call time. Evaluated after authentication and rate limiting, before and after tool execution.",
+
+    "inputConstraints": {
+      "description": "Rules applied to tool input arguments before execution.",
+      "constraintTypes": [
+        { "type": "required", "description": "Field must be present and non-empty." },
+        { "type": "block_value", "description": "Reject call if field contains a specific value." },
+        { "type": "max_length", "description": "Reject call if field length exceeds max." },
+        { "type": "allowed_values", "description": "Allow only a specific set of values for a field." },
+        { "type": "regex", "description": "Reject call if field does not match the regex pattern." }
+      ],
+    },
+    "outputFilters": {
+      "description": "Rules applied to tool output before returning to the MCP client.",
+      "filterTypes": [
+        { "type": "mask_field", "description": "Replace field value with '***' in the response." },
+        { "type": "remove_field", "description": "Remove the field entirely from the response." },
+        { "type": "redact_pattern", "description": "Replace regex-matched substrings in any text output with '[REDACTED]'." }
+      ],
+      "api": {
+        "get": "GET /swagger/servers/:id/guard-rails/output-filters",
+        "update": "PATCH /swagger/servers/:id/guard-rails/output-filters"
+      }
+    },
+    "toolRestrictions": {
+      "description": "Per-tool restrictions applied at call time.",
+      "restrictionTypes": [
+        { "type": "blocked", "description": "Tool cannot be called at all; returns an error." },
+        { "type": "max_calls_per_session", "description": "Limits how many times a tool can be called in a single MCP session." },
+        { "type": "require_confirmation", "description": "Tool call is held pending explicit confirmation (for human-in-the-loop flows)." }
+      ],
+    }
+  },
+  "tools": {
+    "description": "Tools are the primary callable units of an MCP server. Each tool has a name, description, JSON Schema for inputs, and an execution reference.",
+    "shape": {
+      "name": "string — unique tool identifier",
+      "description": "string — shown to MCP clients and LLMs",
+      "inputSchema": "JSON Schema (object) — validated before execution",
+      "outputSchema": "JSON Schema (optional) — documents the output shape",
+      "outputTemplate": "string (optional) — Handlebars HTML template for rendered output",
+      "errorConfig": { "message": "string — custom error message on failure" },
+      "executionRef": { "$ref": "#/executionReferenceTypes" }
+    }
+  },
+  "resources": {
+    "description": "MCP resources expose named data objects to clients. They can be static (inline content) or dynamic (fetched at read time).",
+    "shape": {
+      "id": "string",
+      "name": "string",
+      "uri": "string (static) or URI template (RFC 6570) for dynamic",
+      "description": "string (optional)",
+      "mimeType": "string (optional, e.g. application/json)",
+      "content": "string — inline content for static resources",
+    }
+  },
+  "prompts": {
+    "description": "MCP prompt templates pre-populate LLM conversations with structured, parameterized content.",
+    "promptDefinitionShape": {
+      "name": "string",
+      "description": "string",
+      "arguments": [{ "name": "string", "description": "string", "required": "boolean" }],
+      "messages": [{ "role": "user|assistant", "content": "string (Handlebars template)" }]
+    }
+  },
+  "chains": {
+    "description": "Tool chains compose multiple tools into a single callable MCP tool. Steps run sequentially; each step can reference literal values, chain-level inputs, or prior step outputs.",
+    "chainShape": {
+      "id": "string",
+      "name": "string — exposed as a tool name on tools/list",
+      "description": "string (optional)",
+      "inputSchema": "JSON Schema — the combined inputs accepted by the chain",
+    }
+  },
+  "caching": {
+    "description": "Each server's configuration (tools, resources, prompts, settings, guard rails, harness) is cached in memory for 60 seconds after first load (CachedProject). Cache is invalidated immediately on any setting update.",
+    "ttlMs": 60000
+  }
+}
+
+- I need to provide guardrails specifying what the AI ​​is prohibited from doing.
+- I need a section where I can pass the configuration settings for my AI agent; it will operate as an agent that isn't stored within the AI ​​system itself, but only in my application.

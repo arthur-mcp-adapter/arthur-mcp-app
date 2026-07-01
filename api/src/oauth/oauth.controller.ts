@@ -60,7 +60,7 @@ export class OAuthController {
       authorization_endpoint: `${base}/oauth/server/{serverId}/authorize`,
       token_endpoint: `${base}/oauth/server/{serverId}/token`,
       response_types_supported: ['code'],
-      grant_types_supported: ['authorization_code'],
+      grant_types_supported: ['authorization_code', 'client_credentials'],
       token_endpoint_auth_methods_supported: ['client_secret_post', 'none'],
     };
   }
@@ -99,7 +99,13 @@ export class OAuthController {
       return res.status(401).send(loginPage(serverId, clientId, redirectUri, state ?? '', 'Incorrect username or password.'));
     }
 
-    const code = this.oauthService.createCode(user._id, user.username, user.role, serverId, clientId, redirectUri, state ?? '');
+    let server;
+    try {
+      server = await this.oauthService.validateClient(serverId, clientId);
+    } catch {
+      return res.status(400).send('Invalid client_id or OAuth not configured for this server.');
+    }
+    const code = this.oauthService.createCode(user._id, user.username, user.role, server._id, clientId, redirectUri, state ?? '');
     const url = new URL(redirectUri);
     url.searchParams.set('code', code);
     if (state) url.searchParams.set('state', state);
@@ -119,14 +125,24 @@ export class OAuthController {
   ) {
     res.setHeader('Content-Type', 'application/json');
 
-    if (grantType !== 'authorization_code') {
+    if (grantType !== 'authorization_code' && grantType !== 'client_credentials') {
       return res.status(400).json({ error: 'unsupported_grant_type' });
     }
 
     try {
-      await this.oauthService.validateClient(serverId, clientId, clientSecret);
+      const server = await this.oauthService.validateClient(serverId, clientId, clientSecret);
+      serverId = server._id;
     } catch {
       return res.status(401).json({ error: 'invalid_client' });
+    }
+
+    if (grantType === 'client_credentials') {
+      const accessToken = await this.oauthService.issueClientCredentialsToken(clientId, serverId);
+      return res.json({
+        access_token: accessToken,
+        token_type: 'Bearer',
+        expires_in: 86400,
+      });
     }
 
     const entry = this.oauthService.consumeCode(code, serverId, clientId, redirectUri);
@@ -134,7 +150,7 @@ export class OAuthController {
       return res.status(400).json({ error: 'invalid_grant' });
     }
 
-    const accessToken = this.oauthService.issueToken(entry.userId, entry.username, entry.role, serverId);
+    const accessToken = await this.oauthService.issueToken(entry.userId, entry.username, entry.role, serverId);
     return res.json({
       access_token: accessToken,
       token_type: 'Bearer',

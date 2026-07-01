@@ -1,0 +1,63 @@
+{
+  "title": "Logs de Auditoria",
+  "refresh": "Atualizar",
+  "entries": "{{count}} entradas",
+  "noEntries": "Sem entradas",
+  "pagination": "{{from}}–{{to}} de {{total}}",
+  "noLogs": "Nenhum log de auditoria encontrado.",
+  "loadError": "Falha ao carregar logs.",
+  "loadFailed": "Falha ao carregar logs de auditoria.",
+  "retry": "Tentar novamente",
+  "accessRestricted": "Acesso restrito",
+  "accessRestrictedMsg": "Você não tem permissão para visualizar os logs de auditoria.",
+  "columns": {
+    "dateTime": "Data/Hora",
+    "user": "Usuário",
+    "action": "Ação",
+    "entity": "Entidade",
+    "item": "Item",
+    "showIp": "Mostrar coluna IP",
+    "hideIp": "Ocultar coluna IP"
+  },
+  "actions": {
+    "create": "Criado",
+    "update": "Atualizado",
+    "delete": "Excluído",
+    "generate_key": "Chave gerada",
+    "revoke_key": "Chave revogada",
+    "login": "Login"
+  },
+  "entities": {
+    "project": "Projeto",
+    "user": "Usuário",
+    "tool": "Ferramenta",
+    "settings": "Configurações",
+    "api-key": "Chave de API"
+  },
+  "help": {
+    "title": "Logs de Auditoria",
+    "intro": "O Log de Auditoria é um registro completo e à prova de adulteração de cada alteração administrativa feita neste servidor Arthur MCP. Destina-se ao monitoramento de segurança, auditoria de conformidade e depuração de comportamentos inesperados.",
+    "body": "Sempre que um usuário cria, modifica ou exclui um servidor, ferramenta, chave de API ou configuração do sistema, uma entrada é automaticamente registrada aqui. Eventos de login também são registrados. As entradas não podem ser editadas ou excluídas por nenhum usuário.",
+    "howToUse": "Como usar:",
+    "tipInvestigate": "Investigar uma alteração: Veja as colunas Data/Hora e Item para descobrir quando e o que foi alterado.",
+    "tipWho": "Descobrir quem fez algo: A coluna Usuário mostra qual conta realizou a ação.",
+    "tipSecurity": "Resposta a incidentes de segurança: A coluna IP mostra de onde veio a solicitação — útil para identificar acesso não autorizado.",
+    "tipCompliance": "Revisões de conformidade: Compartilhe o log com auditores para demonstrar que as alterações de configuração são rastreadas.",
+    "retention": "Os logs são armazenados em memória e retidos por 30 dias. Eles são redefinidos quando o servidor reinicia — exporte entradas importantes antes de realizar janelas de manutenção.",
+    "dateTimeHelp": "A data e hora exatas (no fuso horário local do seu navegador) em que a ação foi registrada pelo servidor. As entradas são listadas da mais recente para a mais antiga.",
+    "dateTimeDetail": "Se você estiver investigando um incidente, compare o timestamp com sua própria linha do tempo de atividade para determinar exatamente o que mudou e quando.",
+    "userHelp": "O nome de usuário da conta que realizou a ação. Esta é a conta que estava autenticada quando a solicitação foi feita.",
+    "userDetail": "Ações geradas pelo sistema podem aparecer como sistema. Se você vir uma ação atribuída a um usuário que não reconhece, investigue imediatamente — pode indicar uma conta comprometida.",
+    "actionHelp": "O tipo de operação que foi realizada. Valores possíveis:",
+    "actionCreated": "Criado (verde) — Um novo objeto foi adicionado ao sistema.",
+    "actionUpdated": "Atualizado (amarelo) — Um objeto existente foi modificado.",
+    "actionDeleted": "Excluído (vermelho) — Um objeto foi removido permanentemente.",
+    "actionGeneratedKey": "Chave gerada (cinza) — Uma chave de API MCP foi criada para um servidor.",
+    "actionRevokedKey": "Chave revogada (vermelho) — Uma chave de API MCP foi excluída, revogando todo o acesso do cliente.",
+    "actionLogin": "Login (cinza) — Um usuário fez login com sucesso.",
+    "entityHelp": "O tipo de objeto afetado pela ação. Valores possíveis: Servidor, Ferramenta, Usuário, Configurações, Chave de API.",
+    "entityDetail": "Combinado com a coluna Ação, isso informa exatamente que tipo de alteração ocorreu — por exemplo, Ação = \"Excluído\" + Entidade = \"Ferramenta\" significa que uma ferramenta foi removida permanentemente de um servidor.",
+    "itemHelp": "O nome ou identificador único do objeto específico que foi alterado.",
+    "itemDetail": "Quando um nome não está disponível (por exemplo, para operações de chave de API de baixo nível), o ID interno do banco de dados é exibido. Use esta coluna para localizar rapidamente qual registro exato foi afetado."
+  }
+}

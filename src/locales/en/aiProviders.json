@@ -1,0 +1,121 @@
+{
+  "heading": {
+    "title": "AI Providers",
+    "subtitle": "Configure AI model integrations to power automated features across your servers."
+  },
+  "create": {
+    "title": "New AI Provider",
+    "steps": {
+      "details": "Details",
+      "config": "Configuration",
+      "review": "Review"
+    },
+    "detailsTitle": "Name this provider",
+    "detailsHint": "Give a descriptive name so you can identify which model and provider this entry represents.",
+    "configTitle": "Provider configuration",
+    "configHint": "Select the provider and enter the model name and API key. The key is stored encrypted.",
+    "reviewTitle": "Review configuration",
+    "reviewHint": "Confirm everything looks correct before saving.",
+    "draftName": "Draft provider"
+  },
+  "provider": {
+    "openai": "OpenAI",
+    "anthropic": "Anthropic",
+    "google": "Google Gemini",
+    "gemini": "Google Gemini",
+    "mistral": "Mistral",
+    "groq": "Groq",
+    "cohere": "Cohere",
+    "azure-openai": "Azure OpenAI",
+    "azure": "Azure OpenAI",
+    "ollama": "Ollama",
+    "custom": "Custom (OpenAI-compatible)"
+  },
+  "action": {
+    "newProvider": "New provider",
+    "createProvider": "Create provider",
+    "saveChanges": "Save changes",
+    "deleteProvider": "Delete provider",
+    "testConnection": "Test connection",
+    "testingConnection": "Testing…",
+    "makeDefault": "Make default",
+    "editExistingProvider": "Edit existing provider"
+  },
+  "label": {
+    "name": "Name",
+    "description": "Description (optional)",
+    "provider": "Provider",
+    "model": "Model",
+    "apiKey": "API key",
+    "apiKeySecret": "API key secret",
+    "apiKeyOptional": "API key secret (optional)",
+    "replaceApiKeySecret": "Replace API key secret",
+    "baseUrl": "Base URL (optional)",
+    "isActive": "Active",
+    "general": "General",
+    "dangerZone": "Danger zone",
+    "default": "Default",
+    "makeDefault": "Use as the default provider",
+    "defaultEnabled": "Default provider",
+    "defaultDisabled": "Not default",
+    "lastTest": "Last test",
+    "created": "Created",
+    "lastUpdated": "Last updated",
+    "noDescription": "No description",
+    "updated": "Updated {{date}}"
+  },
+  "placeholder": {
+    "searchProviders": "Search providers…",
+    "name": "e.g. GPT-4o Production",
+    "description": "What this provider is used for…",
+    "model": "e.g. gpt-4o",
+    "apiKey": "sk-…",
+    "baseUrl": "https://api.example.com/v1"
+  },
+  "hint": {
+    "apiKeyProtected": "API key is encrypted and cannot be retrieved after saving. Ollama can be saved without a key.",
+    "modelPreset": "Choose a suggested model or enter a custom model name.",
+    "baseUrlOptional": "Leave empty to use the provider's default endpoint.",
+    "deleteWarning": "This will permanently remove the provider configuration.",
+    "singleProviderLimit": "Only one AI provider can be configured in this version. Edit or delete the existing provider to change it."
+  },
+  "empty": {
+    "noProviders": "No AI providers yet. Click New provider to add one.",
+    "noMatch": "No providers match your search.",
+    "notFound": "Provider not found."
+  },
+  "confirm": {
+    "deleteTitle": "Delete \"{{name}}\"?",
+    "deleteMessage": "This AI provider configuration will be permanently removed."
+  },
+  "error": {
+    "saveFailed": "Failed to save.",
+    "loadFailed": "Failed to load providers.",
+    "deleteFailed": "Failed to delete provider.",
+    "nameRequired": "Name is required.",
+    "providerRequired": "Provider is required.",
+    "modelRequired": "Model is required.",
+    "apiKeyRequired": "API key is required.",
+    "testFailed": "Connection test failed.",
+    "singleProviderLimit": "Only one AI provider can be saved right now."
+  },
+  "status": {
+    "success": "Connected",
+    "error": "Failed",
+    "notTested": "Not tested"
+  },
+  "toast": {
+    "saved": "Provider created.",
+    "updated": "Provider updated.",
+    "deleted": "Provider deleted.",
+    "defaultSaved": "Default provider updated.",
+    "testSucceeded": "Connection test succeeded in {{latency}}ms."
+  },
+  "tab": {
+    "overview": "Overview",
+    "settings": "Settings"
+  },
+  "nav": {
+    "backLabel": "AI Providers"
+  }
+}

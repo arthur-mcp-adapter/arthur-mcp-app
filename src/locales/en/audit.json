@@ -1,0 +1,63 @@
+{
+  "title": "Audit Logs",
+  "refresh": "Refresh",
+  "entries": "{{count}} entries",
+  "noEntries": "No entries",
+  "pagination": "{{from}}–{{to}} of {{total}}",
+  "noLogs": "No audit logs found.",
+  "loadError": "Failed to load logs.",
+  "loadFailed": "Failed to load audit logs.",
+  "retry": "Retry",
+  "accessRestricted": "Access restricted",
+  "accessRestrictedMsg": "You don't have permission to view audit logs.",
+  "columns": {
+    "dateTime": "Date/Time",
+    "user": "User",
+    "action": "Action",
+    "entity": "Entity",
+    "item": "Item",
+    "showIp": "Show IP column",
+    "hideIp": "Hide IP column"
+  },
+  "actions": {
+    "create": "Created",
+    "update": "Updated",
+    "delete": "Deleted",
+    "generate_key": "Generated key",
+    "revoke_key": "Revoked key",
+    "login": "Login"
+  },
+  "entities": {
+    "project": "Project",
+    "user": "User",
+    "tool": "Tool",
+    "settings": "Settings",
+    "api-key": "API Key"
+  },
+  "help": {
+    "title": "Audit Logs",
+    "intro": "The Audit Log is a complete, tamper-proof record of every administrative change made on this Arthur MCP server. It is intended for security monitoring, compliance auditing, and debugging unexpected behaviour.",
+    "body": "Every time a user creates, modifies, or deletes a server, tool, API key, or system setting, an entry is automatically written here. Login events are also recorded. Entries cannot be edited or deleted by any user.",
+    "howToUse": "How to use it:",
+    "tipInvestigate": "Investigate a change: Look at the Date/Time and Item columns to find when and what was changed.",
+    "tipWho": "Find out who did something: The User column shows which account performed the action.",
+    "tipSecurity": "Security incident response: The IP column shows where the request came from — useful for identifying unauthorised access.",
+    "tipCompliance": "Compliance reviews: Share the log with auditors to demonstrate that configuration changes are tracked.",
+    "retention": "Logs are stored in memory and retained for 30 days. They are reset when the server restarts — export important entries before performing maintenance windows.",
+    "dateTimeHelp": "The exact date and time (in your browser's local timezone) when the action was recorded by the server. Entries are listed newest-first.",
+    "dateTimeDetail": "If you are investigating an incident, compare the timestamp with your own activity timeline to determine exactly what changed and when. Precision here matters for security reviews.",
+    "userHelp": "The username of the account that performed the action. This is the account that was authenticated when the request was made.",
+    "userDetail": "System-generated actions (such as scheduled token refreshes) may show as system. If you see an action attributed to a user you don't recognise, investigate immediately — it could indicate a compromised account.",
+    "actionHelp": "The type of operation that was performed. Possible values:",
+    "actionCreated": "Created (green) — A new object was added to the system.",
+    "actionUpdated": "Updated (yellow) — An existing object was modified.",
+    "actionDeleted": "Deleted (red) — An object was permanently removed.",
+    "actionGeneratedKey": "Generated key (grey) — An MCP API key was created for a server.",
+    "actionRevokedKey": "Revoked key (red) — An MCP API key was deleted, revoking all client access.",
+    "actionLogin": "Login (grey) — A user successfully signed in.",
+    "entityHelp": "The type of object that was affected by the action. Possible values: Server, Tool, User, Settings, API Key.",
+    "entityDetail": "Combined with the Action column, this tells you exactly what kind of change occurred — for example, Action = \"Deleted\" + Entity = \"Tool\" means a tool was permanently removed from a server.",
+    "itemHelp": "The name or unique identifier of the specific object that was changed. For example, if a project named \"Stripe API\" was deleted, the Entity column shows \"Project\" and this column shows \"Stripe API\".",
+    "itemDetail": "When a name is not available (e.g. for low-level API key operations), the internal database ID is shown instead. Use this column to quickly locate which exact record was affected without needing to search the rest of the system."
+  }
+}

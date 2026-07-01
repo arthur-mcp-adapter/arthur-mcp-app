@@ -8,7 +8,9 @@ export interface SettingsRecord {
   smtpUser: string;
   smtpPass: string;
   smtpFrom: string;
+  jwtSecret: string;
   globalRequestHeaders: { name: string; value: string }[];
+  observabilityEnvironment?: Record<string, string>;
 }
 
 export interface ISettingsRepository {

@@ -1,0 +1,159 @@
+{
+  "heading": {
+    "title": "Observability",
+    "subtitle": "Runtime health, Prometheus metrics, structured logs, and OpenTelemetry readiness for this Arthur MCP instance."
+  },
+  "section": {
+    "runtime": "Runtime endpoints",
+    "signals": "Signals emitted",
+    "metrics": "Prometheus sample",
+    "environment": "Environment controls",
+    "configuration": "Active configuration",
+    "localStack": "Local stack"
+  },
+  "runtime": {
+    "health": "Health",
+    "ready": "Readiness",
+    "live": "Liveness",
+    "metrics": "Metrics",
+    "updated": "Updated {{time}}",
+    "saved": "Saved {{time}}"
+  },
+  "status": {
+    "checking": "Checking"
+  },
+  "signal": {
+    "logs": {
+      "title": "Structured logs",
+      "detail": "JSON log entries on stdout/stderr with request, trace, HTTP, and error fields."
+    },
+    "metrics": {
+      "title": "Prometheus metrics",
+      "detail": "Node.js defaults, HTTP request metrics, and MCP-specific counters/histograms."
+    },
+    "traces": {
+      "title": "OpenTelemetry traces",
+      "detail": "Optional console or OTLP exporter controlled by ENABLE_TRACING and OTEL_* variables."
+    },
+    "correlation": {
+      "title": "Correlation IDs",
+      "detail": "x-request-id, x-correlation-id, and trace identifiers are generated or reused."
+    }
+  },
+  "metric": {
+    "httpRequests": "HTTP requests",
+    "httpErrors": "HTTP errors",
+    "mcpToolCalls": "MCP tool calls",
+    "mcpToolErrors": "MCP tool errors",
+    "externalHttp": "External HTTP",
+    "memory": "Memory",
+    "eventLoop": "Event loop lag",
+    "uptime": "Uptime"
+  },
+  "restricted": {
+    "view": "You do not have permission to view observability."
+  },
+  "create": {
+    "title": "New Observability Provider",
+    "steps": {
+      "details": "Details",
+      "connection": "Connection",
+      "review": "Review"
+    },
+    "detailsTitle": "Name this provider",
+    "detailsHint": "Give a descriptive name so you can identify which tool and environment this entry represents.",
+    "connectionTitle": "Connection settings",
+    "connectionHint": "Enter the tool URL and API key. The key is stored encrypted.",
+    "reviewTitle": "Review configuration",
+    "reviewHint": "Confirm everything looks correct before saving."
+  },
+  "type": {
+    "grafana": "Grafana",
+    "prometheus": "Prometheus",
+    "datadog": "Datadog",
+    "newrelic": "New Relic",
+    "elastic": "Elastic / Kibana",
+    "loki": "Grafana Loki",
+    "custom": "Custom"
+  },
+  "action": {
+    "newProvider": "New provider",
+    "createProvider": "Create provider",
+    "saveChanges": "Save changes",
+    "deleteProvider": "Delete provider",
+    "openDashboard": "Open dashboard",
+    "testConnection": "Test connection"
+  },
+  "label": {
+    "name": "Name",
+    "description": "Description (optional)",
+    "type": "Tool",
+    "url": "URL",
+    "apiKey": "API key (optional)",
+    "isActive": "Active",
+    "general": "General",
+    "dangerZone": "Danger zone",
+    "created": "Created",
+    "lastUpdated": "Last updated",
+    "noDescription": "No description",
+    "updated": "Updated {{date}}"
+  },
+  "placeholder": {
+    "searchProviders": "Search providers…",
+    "name": "e.g. Grafana Production",
+    "description": "What this provider monitors…",
+    "url": "https://grafana.example.com",
+    "apiKey": "Bearer token or service account key…"
+  },
+  "hint": {
+    "apiKeyOptional": "Leave empty if the tool is publicly accessible or uses another auth method.",
+    "apiKeyProtected": "API key is encrypted and cannot be retrieved after saving.",
+    "urlRequired": "The base URL of your observability tool.",
+    "deleteWarning": "This will permanently remove the provider configuration.",
+    "environmentReadOnly": "You can view and copy these controls, but saving them requires settings management permission."
+  },
+  "empty": {
+    "noProviders": "No observability providers yet. Click New provider to add one.",
+    "noMatch": "No providers match your search.",
+    "notFound": "Provider not found."
+  },
+  "confirm": {
+    "deleteTitle": "Delete \"{{name}}\"?",
+    "deleteMessage": "This observability provider configuration will be permanently removed."
+  },
+  "error": {
+    "saveFailed": "Failed to save.",
+    "runtimeLoadFailed": "Failed to load one or more runtime observability endpoints.",
+    "environmentLoadFailed": "Failed to load saved environment controls.",
+    "environmentSaveFailed": "Failed to save environment controls.",
+    "loadFailed": "Failed to load providers.",
+    "deleteFailed": "Failed to delete provider.",
+    "nameRequired": "Name is required.",
+    "typeRequired": "Tool type is required.",
+    "urlRequired": "URL is required."
+  },
+  "toast": {
+    "saved": "Provider created.",
+    "updated": "Provider updated.",
+    "deleted": "Provider deleted."
+  },
+  "tab": {
+    "overview": "Overview",
+    "settings": "Settings"
+  },
+  "nav": {
+    "backLabel": "Observability"
+  },
+  "howToUse": {
+    "title": "How to use",
+    "step1Title": "Configure",
+    "step1Desc": "Enable metrics, logs, and tracing, and set service metadata in Settings > Observability.",
+    "step1Action": "Open settings",
+    "step2Title": "Start local stack",
+    "step2Desc": "Run Prometheus, Grafana, and Tempo with Docker Compose to visualize metrics and traces locally.",
+    "step3Title": "Verify health",
+    "step3Desc": "Confirm that /health, /ready, /live, and /metrics are responding — shown in the Runtime endpoints section above.",
+    "step4Title": "Connect a provider",
+    "step4Desc": "Register Grafana, Datadog, New Relic, or any other platform as a provider to centralize production monitoring."
+  }
+}

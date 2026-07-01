@@ -1,0 +1,159 @@
+{
+  "heading": {
+    "title": "Observabilidade",
+    "subtitle": "Health runtime, métricas Prometheus, logs estruturados e prontidão OpenTelemetry desta instância Arthur MCP."
+  },
+  "section": {
+    "runtime": "Endpoints runtime",
+    "signals": "Sinais emitidos",
+    "metrics": "Amostra Prometheus",
+    "environment": "Controles de ambiente",
+    "configuration": "Configuração ativa",
+    "localStack": "Stack local"
+  },
+  "runtime": {
+    "health": "Health",
+    "ready": "Readiness",
+    "live": "Liveness",
+    "metrics": "Métricas",
+    "updated": "Atualizado às {{time}}",
+    "saved": "Salvo às {{time}}"
+  },
+  "status": {
+    "checking": "Verificando"
+  },
+  "signal": {
+    "logs": {
+      "title": "Logs estruturados",
+      "detail": "Entradas JSON em stdout/stderr com campos de request, trace, HTTP e erro."
+    },
+    "metrics": {
+      "title": "Métricas Prometheus",
+      "detail": "Métricas padrão do Node.js, métricas HTTP e contadores/histogramas específicos de MCP."
+    },
+    "traces": {
+      "title": "Traces OpenTelemetry",
+      "detail": "Exporter opcional console ou OTLP controlado por ENABLE_TRACING e variáveis OTEL_*."
+    },
+    "correlation": {
+      "title": "Correlation IDs",
+      "detail": "x-request-id, x-correlation-id e identificadores de trace são gerados ou reutilizados."
+    }
+  },
+  "metric": {
+    "httpRequests": "Requests HTTP",
+    "httpErrors": "Erros HTTP",
+    "mcpToolCalls": "Chamadas de tools MCP",
+    "mcpToolErrors": "Erros de tools MCP",
+    "externalHttp": "HTTP externo",
+    "memory": "Memória",
+    "eventLoop": "Event loop lag",
+    "uptime": "Uptime"
+  },
+  "restricted": {
+    "view": "Você não tem permissão para ver observabilidade."
+  },
+  "create": {
+    "title": "Novo Provedor de Observabilidade",
+    "steps": {
+      "details": "Detalhes",
+      "connection": "Conexão",
+      "review": "Revisão"
+    },
+    "detailsTitle": "Nomeie este provedor",
+    "detailsHint": "Dê um nome descritivo para identificar qual ferramenta e ambiente esta entrada representa.",
+    "connectionTitle": "Configurações de conexão",
+    "connectionHint": "Informe a URL da ferramenta e a chave de API. A chave é armazenada de forma criptografada.",
+    "reviewTitle": "Revisar configuração",
+    "reviewHint": "Confirme se tudo está correto antes de salvar."
+  },
+  "type": {
+    "grafana": "Grafana",
+    "prometheus": "Prometheus",
+    "datadog": "Datadog",
+    "newrelic": "New Relic",
+    "elastic": "Elastic / Kibana",
+    "loki": "Grafana Loki",
+    "custom": "Personalizado"
+  },
+  "action": {
+    "newProvider": "Novo provedor",
+    "createProvider": "Criar provedor",
+    "saveChanges": "Salvar alterações",
+    "deleteProvider": "Excluir provedor",
+    "openDashboard": "Abrir dashboard",
+    "testConnection": "Testar conexão"
+  },
+  "label": {
+    "name": "Nome",
+    "description": "Descrição (opcional)",
+    "type": "Ferramenta",
+    "url": "URL",
+    "apiKey": "Chave de API (opcional)",
+    "isActive": "Ativo",
+    "general": "Geral",
+    "dangerZone": "Zona de perigo",
+    "created": "Criado em",
+    "lastUpdated": "Última atualização",
+    "noDescription": "Sem descrição",
+    "updated": "Atualizado em {{date}}"
+  },
+  "placeholder": {
+    "searchProviders": "Buscar provedores…",
+    "name": "ex: Grafana Produção",
+    "description": "O que este provedor monitora…",
+    "url": "https://grafana.exemplo.com",
+    "apiKey": "Bearer token ou chave de conta de serviço…"
+  },
+  "hint": {
+    "apiKeyOptional": "Deixe vazio se a ferramenta for de acesso público ou usar outro método de autenticação.",
+    "apiKeyProtected": "A chave de API é criptografada e não pode ser recuperada após salvar.",
+    "urlRequired": "A URL base da sua ferramenta de observabilidade.",
+    "deleteWarning": "Isso removerá permanentemente a configuração do provedor.",
+    "environmentReadOnly": "Você pode visualizar e copiar estes controles, mas salvar exige permissão para gerenciar configurações."
+  },
+  "empty": {
+    "noProviders": "Nenhum provedor de observabilidade ainda. Clique em Novo provedor para adicionar.",
+    "noMatch": "Nenhum provedor corresponde à sua busca.",
+    "notFound": "Provedor não encontrado."
+  },
+  "confirm": {
+    "deleteTitle": "Excluir \"{{name}}\"?",
+    "deleteMessage": "Esta configuração de provedor de observabilidade será removida permanentemente."
+  },
+  "error": {
+    "saveFailed": "Falha ao salvar.",
+    "runtimeLoadFailed": "Falha ao carregar um ou mais endpoints runtime de observabilidade.",
+    "environmentLoadFailed": "Falha ao carregar os controles de ambiente salvos.",
+    "environmentSaveFailed": "Falha ao salvar os controles de ambiente.",
+    "loadFailed": "Falha ao carregar provedores.",
+    "deleteFailed": "Falha ao excluir provedor.",
+    "nameRequired": "Nome é obrigatório.",
+    "typeRequired": "Tipo de ferramenta é obrigatório.",
+    "urlRequired": "URL é obrigatória."
+  },
+  "toast": {
+    "saved": "Provedor criado.",
+    "updated": "Provedor atualizado.",
+    "deleted": "Provedor excluído."
+  },
+  "tab": {
+    "overview": "Visão geral",
+    "settings": "Configurações"
+  },
+  "nav": {
+    "backLabel": "Observabilidade"
+  },
+  "howToUse": {
+    "title": "Como usar",
+    "step1Title": "Configurar",
+    "step1Desc": "Habilite métricas, logs e tracing, e defina os metadados do serviço em Configurações > Observabilidade.",
+    "step1Action": "Abrir configurações",
+    "step2Title": "Iniciar stack local",
+    "step2Desc": "Execute Prometheus, Grafana e Tempo com Docker Compose para visualizar métricas e traces localmente.",
+    "step3Title": "Verificar health",
+    "step3Desc": "Confirme que /health, /ready, /live e /metrics estão respondendo — exibido na seção Endpoints runtime acima.",
+    "step4Title": "Conectar provedor",
+    "step4Desc": "Registre Grafana, Datadog, New Relic ou outra plataforma como provedor para centralizar o monitoramento em produção."
+  }
+}

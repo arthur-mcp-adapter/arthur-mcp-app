@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState, useCallback } from 'react'
 import api from '../api'
+import { READ_ONLY_FALLBACK, ROLE_PERMISSION_FALLBACKS } from './permissionPresets'
 
 export enum Permission {
   ServersView = 'servers_view',
@@ -40,6 +41,19 @@ export enum Permission {
   AuditExport = 'audit_export',
   TemplatesUse = 'templates_use',
   SettingsManage = 'settings_manage',
+  AiProvidersView = 'ai_providers_view',
+  AiProvidersCreate = 'ai_providers_create',
+  AiProvidersEdit = 'ai_providers_edit',
+  AiProvidersDelete = 'ai_providers_delete',
+  AiProvidersExecute = 'ai_providers_execute',
+  ObservabilityView = 'observability_view',
+  ObservabilityCreate = 'observability_create',
+  ObservabilityEdit = 'observability_edit',
+  ObservabilityDelete = 'observability_delete',
+  ErrorTrackingView = 'error_tracking_view',
+  ErrorTrackingCreate = 'error_tracking_create',
+  ErrorTrackingEdit = 'error_tracking_edit',
+  ErrorTrackingDelete = 'error_tracking_delete',
 }
 
 export interface UserPermissions {
@@ -81,6 +95,19 @@ export interface UserPermissions {
   audit_export: boolean
   templates_use: boolean
   settings_manage: boolean
+  ai_providers_view: boolean
+  ai_providers_create: boolean
+  ai_providers_edit: boolean
+  ai_providers_delete: boolean
+  ai_providers_execute: boolean
+  observability_view: boolean
+  observability_create: boolean
+  observability_edit: boolean
+  observability_delete: boolean
+  error_tracking_view: boolean
+  error_tracking_create: boolean
+  error_tracking_edit: boolean
+  error_tracking_delete: boolean
 }
 
 export interface Me {
@@ -92,63 +119,12 @@ export interface Me {
   permissions?: UserPermissions
 }
 
-const ALL_OFF: UserPermissions = {
-  servers_view: false, servers_create: false, servers_edit_settings: false, servers_delete: false,
-  servers_toggle_active: false, servers_share: false,
-  tools_view: false, tools_create: false, tools_edit: false, tools_delete: false, tools_test: false, endpoints_create: false,
-  resources_view: false, resources_create: false, resources_edit: false, resources_delete: false,
-  prompts_view: false, prompts_create: false, prompts_edit: false, prompts_delete: false,
-  secrets_view_names: false, secrets_reveal_values: false, secrets_create: false, secrets_edit: false, secrets_delete: false,
-  api_keys_view: false, api_keys_create: false, api_keys_delete: false,
-  users_view: false, users_invite: false, users_edit: false, users_delete: false,
-  roles_view: false, roles_manage: false,
-  audit_view: false, audit_export: false,
-  templates_use: false,
-  settings_manage: false,
-}
-
 // Fallback permissions derived from role string when backend doesn't return them yet
 function permissionsFromRole(role: string): UserPermissions {
-  if (role === 'admin') {
-    return Object.fromEntries(Object.keys(ALL_OFF).map((k) => [k, true])) as unknown as UserPermissions
-  }
-  if (role === 'developer') {
-    return {
-      ...ALL_OFF,
-      servers_view: true, servers_create: true, servers_edit_settings: true,
-      servers_toggle_active: true, servers_share: true,
-      tools_view: true, tools_create: true, tools_edit: true, tools_delete: true, tools_test: true, endpoints_create: true,
-      resources_view: true, resources_create: true, resources_edit: true, resources_delete: true,
-      prompts_view: true, prompts_create: true, prompts_edit: true, prompts_delete: true,
-      secrets_view_names: true,
-      api_keys_view: true, api_keys_create: true,
-      users_view: true, roles_view: true,
-      audit_view: true, templates_use: true,
-    }
-  }
-  if (role === 'editor') {
-    return {
-      ...ALL_OFF,
-      servers_view: true,
-      tools_view: true, tools_create: true, tools_edit: true, tools_delete: true, tools_test: true, endpoints_create: true,
-      resources_view: true, resources_create: true, resources_edit: true, resources_delete: true,
-      prompts_view: true, prompts_create: true, prompts_edit: true, prompts_delete: true,
-      secrets_view_names: true,
-      users_view: true,
-      templates_use: true,
-    }
-  }
-  if (role === 'viewer') {
-    return {
-      ...ALL_OFF,
-      servers_view: true,
-      tools_view: true, resources_view: true, prompts_view: true,
-      users_view: true, roles_view: true,
-      audit_view: true,
-    }
-  }
+  const fallback = ROLE_PERMISSION_FALLBACKS[role]
+  if (fallback) return fallback
   // Unknown custom role not found in DB: read-only fallback
-  return { ...ALL_OFF, servers_view: true, tools_view: true, resources_view: true, prompts_view: true }
+  return READ_ONLY_FALLBACK
 }
 
 interface AuthContextType {

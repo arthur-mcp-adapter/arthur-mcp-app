@@ -1,0 +1,114 @@
+{
+  "heading": {
+    "title": "Prompts",
+    "subtitle": "Salve e organize seus templates de prompt para reutilização em projetos.",
+    "templates": "Templates de Prompt",
+    "templatesSubtitle": "Comece com um prompt pronto. Escolha um template, personalize o nome e ele é adicionado à sua biblioteca instantaneamente."
+  },
+  "create": {
+    "title": "Novo prompt",
+    "steps": {
+      "details": "Detalhes",
+      "content": "Conteúdo",
+      "review": "Revisão"
+    },
+    "detailsTitle": "Nomeie o prompt",
+    "detailsHint": "Dê um nome claro ao prompt e adicione tags opcionais para encontrá-lo depois.",
+    "contentTitle": "Escreva o conteúdo do prompt",
+    "reviewTitle": "Revise o prompt",
+    "reviewHint": "Confirme o prompt antes de adicioná-lo à biblioteca compartilhada."
+  },
+  "action": {
+    "newPrompt": "Novo prompt",
+    "useTemplate": "Usar template",
+    "createPrompt": "Criar prompt",
+    "saveChanges": "Salvar alterações",
+    "deletePrompt": "Excluir prompt",
+    "backToPrompts": "Voltar aos prompts",
+    "render": "Renderizar"
+  },
+  "label": {
+    "name": "Nome",
+    "description": "Descrição",
+    "content": "CONTEÚDO",
+    "tags": "Tags",
+    "variables": "Variáveis",
+    "promptContent": "Conteúdo do prompt",
+    "variableValues": "Valores das variáveis",
+    "contentPreview": "Prévia do conteúdo",
+    "general": "Geral",
+    "dangerZone": "Zona de perigo",
+    "detectedVariables": "Variáveis detectadas:",
+    "stringParameter": "Parâmetro de texto",
+    "noTags": "Sem tags",
+    "noDescription": "Sem descrição",
+    "chars": "{{count}} caracteres",
+    "updatedDate": "Atualizado em {{date}}",
+    "toolsCount_one": "{{count}} ferramenta pré-configurada",
+    "toolsCount_other": "{{count}} ferramentas pré-configuradas",
+    "varsChip_one": "{{count}} var",
+    "varsChip_other": "{{count}} vars",
+    "server": "servidor"
+  },
+  "placeholder": {
+    "searchPrompts": "Pesquisar prompts…",
+    "searchTemplates": "Pesquisar templates…",
+    "promptName": "ex.: Resumir documento",
+    "promptDescription": "O que este prompt faz…",
+    "promptNameField": "Nome do prompt",
+    "addTag": "Adicione uma tag e pressione Enter ou \",\""
+  },
+  "hint": {
+    "variableSyntax": "Use {{open}}variável{{close}} para valores dinâmicos",
+    "renameHint": "Você pode renomear depois na página de Prompts",
+    "editAfterCreate": "Você pode editar o conteúdo completo após a criação na página de Prompts.",
+    "cannotUndo": "Esta ação não pode ser desfeita."
+  },
+  "empty": {
+    "noPrompts": "Nenhum prompt ainda. Clique em <strong>Novo prompt</strong> para criar o primeiro.",
+    "noMatch": "Nenhum prompt corresponde à sua busca.",
+    "noTemplatesMatch": "Nenhum template corresponde a \"{{query}}\".",
+    "noVariables": "Nenhuma variável detectada. Use {{open}}nome_variavel{{close}} na aba Editor.",
+    "notReferenced": "Este prompt ainda não é referenciado por nenhum servidor.",
+    "emptyPrompt": "Prompt vazio"
+  },
+  "confirm": {
+    "deleteTitle": "Excluir \"{{name}}\"?",
+    "deleteMessage": "Este prompt será removido permanentemente.",
+    "deleteCannotUndo": "Esta ação não pode ser desfeita."
+  },
+  "error": {
+    "saveFailed": "Falha ao salvar.",
+    "loadFailed": "Falha ao carregar prompts.",
+    "deleteFailed": "Falha ao excluir o prompt.",
+    "createFailed": "Falha ao criar o prompt.",
+    "copyFailed": "Não foi possível copiar.",
+    "nameRequired": "O nome é obrigatório.",
+    "contentRequired": "O conteúdo é obrigatório."
+  },
+  "toast": {
+    "saved": "Prompt atualizado.",
+    "created": "Prompt criado.",
+    "deleted": "Prompt excluído.",
+    "copied": "Copiado!"
+  },
+  "tab": {
+    "editor": "Editor",
+    "variables": "Variáveis",
+    "preview": "Prévia",
+    "usage": "Uso",
+    "settings": "Configurações"
+  },
+  "drawer": {
+    "newPrompt": "Novo prompt",
+    "editPrompt": "Editar — {{name}}",
+    "promptContent": "Conteúdo do prompt",
+    "collapse": "Recolher",
+    "expandEditor": "Expandir editor"
+  },
+  "filter": {
+    "all": "Todos",
+    "copyContent": "Copiar conteúdo",
+    "delete": "Excluir"
+  }
+}

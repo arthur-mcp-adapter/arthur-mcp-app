@@ -1,6 +1,7 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
-import Layout from './components/Layout'
+import { ServerNavProvider } from './context/ServerNavContext'
+import { Layout } from './components/templates'
 import Login from './pages/Login'
 import ForgotPassword from './pages/ForgotPassword'
 import ResetPassword from './pages/ResetPassword'
@@ -16,8 +17,17 @@ import SetupWizard from './pages/SetupWizard'
 import SharePage from './pages/SharePage'
 import Templates from './pages/Templates'
 import Prompts from './pages/Prompts'
+import NewPrompt from './pages/NewPrompt'
+import PromptDetail from './pages/PromptDetail'
 import PromptTemplates from './pages/PromptTemplates'
 import Secrets from './pages/Secrets'
+import NewSecret from './pages/NewSecret'
+import SecretDetail from './pages/SecretDetail'
+import AiProviders from './pages/AiProviders'
+import NewAiProvider from './pages/NewAiProvider'
+import AiProviderDetail from './pages/AiProviderDetail'
+import Observability from './pages/Observability'
+import ErrorTracking from './pages/ErrorTracking'
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
   const token = localStorage.getItem('token')
@@ -32,12 +42,16 @@ function RequireSetup({ children }: { children: React.ReactNode }) {
 export default function App() {
   return (
     <AuthProvider>
+    <ServerNavProvider>
     <BrowserRouter>
       <Routes>
         {/* Public routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/mcp-swagger/:slug" element={<SharePage />} />
+        <Route path="/mcp-swagger/:slug/:token" element={<SharePage />} />
+        <Route path="/share/:slug/:token" element={<SharePage />} />
         <Route path="/share/:token" element={<SharePage />} />
 
         {/* Setup wizard — shown once after first login */}
@@ -61,8 +75,19 @@ export default function App() {
                   <Route path="/audit-logs" element={<AuditLogs />} />
                   <Route path="/templates" element={<Templates />} />
                   <Route path="/prompts" element={<Prompts />} />
+                  <Route path="/prompts/new" element={<NewPrompt />} />
+                  <Route path="/prompts/:id" element={<PromptDetail />} />
                   <Route path="/prompt-templates" element={<PromptTemplates />} />
                   <Route path="/secrets" element={<Secrets />} />
+                  <Route path="/secrets/new" element={<NewSecret />} />
+                  <Route path="/secrets/:id" element={<SecretDetail />} />
+                  <Route path="/ai-providers" element={<AiProviders />} />
+                  <Route path="/ai-providers/new" element={<NewAiProvider />} />
+                  <Route path="/ai-providers/:id" element={<AiProviderDetail />} />
+                  <Route path="/observability" element={<Observability />} />
+                  <Route path="/observability/new" element={<Navigate to="/observability" replace />} />
+                  <Route path="/observability/:id" element={<Navigate to="/observability" replace />} />
+                  <Route path="/error-tracking" element={<ErrorTracking />} />
                   <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
               </Layout>
@@ -71,6 +96,7 @@ export default function App() {
         } />
       </Routes>
     </BrowserRouter>
+    </ServerNavProvider>
     </AuthProvider>
   )
 }

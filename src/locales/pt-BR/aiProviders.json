@@ -1,0 +1,121 @@
+{
+  "heading": {
+    "title": "Provedores de IA",
+    "subtitle": "Configure integrações com modelos de IA para automatizar funcionalidades nos seus servidores."
+  },
+  "create": {
+    "title": "Novo Provedor de IA",
+    "steps": {
+      "details": "Detalhes",
+      "config": "Configuração",
+      "review": "Revisão"
+    },
+    "detailsTitle": "Nomeie este provedor",
+    "detailsHint": "Dê um nome descritivo para identificar qual modelo e provedor esta entrada representa.",
+    "configTitle": "Configuração do provedor",
+    "configHint": "Selecione o provedor e informe o nome do modelo e a chave de API. A chave é armazenada de forma criptografada.",
+    "reviewTitle": "Revisar configuração",
+    "reviewHint": "Confirme se tudo está correto antes de salvar.",
+    "draftName": "Provedor em rascunho"
+  },
+  "provider": {
+    "openai": "OpenAI",
+    "anthropic": "Anthropic",
+    "google": "Google Gemini",
+    "gemini": "Google Gemini",
+    "mistral": "Mistral",
+    "groq": "Groq",
+    "cohere": "Cohere",
+    "azure-openai": "Azure OpenAI",
+    "azure": "Azure OpenAI",
+    "ollama": "Ollama",
+    "custom": "Personalizado (compatível com OpenAI)"
+  },
+  "action": {
+    "newProvider": "Novo provedor",
+    "createProvider": "Criar provedor",
+    "saveChanges": "Salvar alterações",
+    "deleteProvider": "Excluir provedor",
+    "testConnection": "Testar conexão",
+    "testingConnection": "Testando…",
+    "makeDefault": "Tornar padrão",
+    "editExistingProvider": "Editar provedor existente"
+  },
+  "label": {
+    "name": "Nome",
+    "description": "Descrição (opcional)",
+    "provider": "Provedor",
+    "model": "Modelo",
+    "apiKey": "Chave de API",
+    "apiKeySecret": "Secret da chave de API",
+    "apiKeyOptional": "Secret da chave de API (opcional)",
+    "replaceApiKeySecret": "Substituir secret da chave de API",
+    "baseUrl": "URL base (opcional)",
+    "isActive": "Ativo",
+    "general": "Geral",
+    "dangerZone": "Zona de perigo",
+    "default": "Padrão",
+    "makeDefault": "Usar como provedor padrão",
+    "defaultEnabled": "Provedor padrão",
+    "defaultDisabled": "Não é padrão",
+    "lastTest": "Último teste",
+    "created": "Criado em",
+    "lastUpdated": "Última atualização",
+    "noDescription": "Sem descrição",
+    "updated": "Atualizado em {{date}}"
+  },
+  "placeholder": {
+    "searchProviders": "Buscar provedores…",
+    "name": "ex: GPT-4o Produção",
+    "description": "Para que este provedor é usado…",
+    "model": "ex: gpt-4o",
+    "apiKey": "sk-…",
+    "baseUrl": "https://api.exemplo.com/v1"
+  },
+  "hint": {
+    "apiKeyProtected": "A chave de API é criptografada e não pode ser recuperada após salvar. Ollama pode ser salvo sem chave.",
+    "modelPreset": "Escolha um modelo sugerido ou informe um nome de modelo personalizado.",
+    "baseUrlOptional": "Deixe vazio para usar o endpoint padrão do provedor.",
+    "deleteWarning": "Isso removerá permanentemente a configuração do provedor.",
+    "singleProviderLimit": "Apenas um provedor de IA pode ser configurado nesta versão. Edite ou exclua o provedor existente para alterá-lo."
+  },
+  "empty": {
+    "noProviders": "Nenhum provedor de IA ainda. Clique em Novo provedor para adicionar.",
+    "noMatch": "Nenhum provedor corresponde à sua busca.",
+    "notFound": "Provedor não encontrado."
+  },
+  "confirm": {
+    "deleteTitle": "Excluir \"{{name}}\"?",
+    "deleteMessage": "Esta configuração de provedor de IA será removida permanentemente."
+  },
+  "error": {
+    "saveFailed": "Falha ao salvar.",
+    "loadFailed": "Falha ao carregar provedores.",
+    "deleteFailed": "Falha ao excluir provedor.",
+    "nameRequired": "Nome é obrigatório.",
+    "providerRequired": "Provedor é obrigatório.",
+    "modelRequired": "Modelo é obrigatório.",
+    "apiKeyRequired": "Chave de API é obrigatória.",
+    "testFailed": "Falha ao testar conexão.",
+    "singleProviderLimit": "Apenas um provedor de IA pode ser salvo no momento."
+  },
+  "status": {
+    "success": "Conectado",
+    "error": "Falhou",
+    "notTested": "Não testado"
+  },
+  "toast": {
+    "saved": "Provedor criado.",
+    "updated": "Provedor atualizado.",
+    "deleted": "Provedor excluído.",
+    "defaultSaved": "Provedor padrão atualizado.",
+    "testSucceeded": "Teste de conexão concluído em {{latency}}ms."
+  },
+  "tab": {
+    "overview": "Visão geral",
+    "settings": "Configurações"
+  },
+  "nav": {
+    "backLabel": "Provedores de IA"
+  }
+}

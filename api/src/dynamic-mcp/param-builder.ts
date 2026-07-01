@@ -7,7 +7,7 @@ export interface BuiltParams {
 
 /**
  * Flattens path + query + header + body params into a single MCP inputSchema.
- * Cria o parameterMap para reconstruir a request HTTP a partir dos args.
+ * Builds the parameterMap used to reconstruct the HTTP request from args.
  */
 export function buildParams(endpoint: NormalizedEndpoint): BuiltParams {
   const properties: Record<string, JsonSchema> = {};
@@ -57,7 +57,7 @@ export function buildParams(endpoint: NormalizedEndpoint): BuiltParams {
         }
       }
     } else {
-      // Body complexo: envolve em "body"
+      // Complex body: wrap it in "body"
       const name = uniqueName('body', usedNames);
       properties[name] = { ...bodySchema, description: endpoint.requestBody.description ?? bodySchema.description };
       if (endpoint.requestBody.required) required.push(name);

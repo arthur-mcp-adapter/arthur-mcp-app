@@ -1,0 +1,34 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "servers": "Servers",
+    "prompts": "Prompts",
+    "secrets": "Secrets",
+    "settings": "Settings",
+    "auditLogs": "Audit Logs",
+    "aiProviders": "AI Providers",
+    "observability": "Observability",
+    "errorTracking": "Error Tracking"
+  },
+  "section": {
+    "overview": "OVERVIEW",
+    "main": "MAIN",
+    "administration": "ADMINISTRATION"
+  },
+  "account": {
+    "menu": "Account menu",
+    "myProfile": "Profile",
+    "logout": "Logout"
+  },
+  "theme": {
+    "lightMode": "Light mode",
+    "darkMode": "Dark mode"
+  },
+  "promo": {
+    "title": "Arthur MCP",
+    "subtitle": "Connect your AI to your data sources"
+  },
+  "sidebar": {
+    "backToServers": "Servers"
+  }
+}

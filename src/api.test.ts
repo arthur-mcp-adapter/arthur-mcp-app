@@ -24,12 +24,31 @@ describe('api client', () => {
 
   it('attaches request interceptor that reads token from localStorage', async () => {
     const { default: api } = await import('./api');
-    // Interceptors array is populated by the interceptors.request.use call
-    expect(api.interceptors.request).toBeDefined();
+    const handler = (api.interceptors.request as any).handlers[0].fulfilled;
+
+    localStorage.setItem('token', 'tok123');
+    expect(handler({ headers: {} })).toMatchObject({ headers: { Authorization: 'Bearer tok123' } });
+
+    localStorage.clear();
+    expect(handler({ headers: {} })).toEqual({ headers: {} });
   });
 
   it('attaches response interceptor for 401 handling', async () => {
     const { default: api } = await import('./api');
-    expect(api.interceptors.response).toBeDefined();
+    const originalLocation = window.location;
+    const location = { ...originalLocation, href: 'http://localhost/' } as Location;
+    Object.defineProperty(window, 'location', { configurable: true, value: location });
+    const handler = (api.interceptors.response as any).handlers[0].rejected;
+
+    localStorage.setItem('token', 'tok123');
+    await expect(handler({ response: { status: 401 } })).rejects.toEqual({ response: { status: 401 } });
+    expect(localStorage.getItem('token')).toBeNull();
+    expect(window.location.href).toBe('/login');
+
+    localStorage.setItem('token', 'tok456');
+    await expect(handler({ response: { status: 500 } })).rejects.toEqual({ response: { status: 500 } });
+    expect(localStorage.getItem('token')).toBe('tok456');
+
+    Object.defineProperty(window, 'location', { configurable: true, value: originalLocation });
   });
 });

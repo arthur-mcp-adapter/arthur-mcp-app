@@ -33,7 +33,7 @@ export class ProjectStateGuard implements CanActivate {
     const res = context.switchToHttp().getResponse<Response>();
     const serverId = req.params['serverId'];
 
-    const server = await this.projectRepo.findById(serverId);
+    const server = await this.projectRepo.findByIdOrShareSlug(serverId);
     if (!server) return true;
 
     if (server.isPaused) {

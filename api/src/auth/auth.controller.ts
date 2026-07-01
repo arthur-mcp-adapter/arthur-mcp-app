@@ -16,7 +16,7 @@ export class AuthController {
   @Post('login')
   @HttpCode(200)
   @UseGuards(LocalAuthGuard)
-  login(@Request() req: any): { access_token: string } {
+  login(@Request() req: any): Promise<{ access_token: string }> {
     return this.authService.login(req.user);
   }
 

@@ -5,9 +5,11 @@ import { McpApiKeyGuard } from './mcp-api-key.guard';
 import { RateLimitGuard } from './rate-limit.guard';
 import { ProjectStateGuard } from './project-state.guard';
 import { ExecutionLogsModule } from '../execution-logs/execution-logs.module';
+import { ErrorTrackingModule } from '../error-tracking/error-tracking.module';
+import { SettingsModule } from '../settings/settings.module';
 
 @Module({
-  imports: [ExecutionLogsModule],
+  imports: [ExecutionLogsModule, ErrorTrackingModule, SettingsModule],
   controllers: [DynamicMcpController],
   providers: [DynamicMcpService, McpApiKeyGuard, RateLimitGuard, ProjectStateGuard],
   exports: [DynamicMcpService],
