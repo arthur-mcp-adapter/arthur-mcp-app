@@ -48,6 +48,14 @@ function timestampColumn(queryRunner: QueryRunner, name: string, update = false,
   return { name, type: 'datetime', default: "datetime('now')", ...options };
 }
 
+function dateTimeColumn(queryRunner: QueryRunner, name: string, options: Partial<ColumnType> = {}): ColumnType {
+  if (isPostgres(queryRunner)) {
+    return { name, type: 'timestamp', ...options };
+  }
+
+  return { name, type: 'datetime', ...options };
+}
+
 function varcharColumn(name: string, options: Partial<ColumnType> = {}): ColumnType {
   return { name, type: 'varchar', ...options };
 }
@@ -151,7 +159,7 @@ export class InitialTypeormSchema1700000000000 implements MigrationInterface {
         idColumn(queryRunner),
         varcharColumn('userId'),
         varcharColumn('token', { isUnique: true }),
-        timestampColumn(queryRunner, 'expiresAt'),
+        dateTimeColumn(queryRunner, 'expiresAt'),
         booleanColumn('used', false),
         timestampColumn(queryRunner, 'createdAt'),
       ],
@@ -223,7 +231,7 @@ export class InitialTypeormSchema1700000000000 implements MigrationInterface {
         booleanColumn('isActive', true),
         booleanColumn('isDefault', false),
         varcharColumn('lastTestStatus', { isNullable: true }),
-        timestampColumn(queryRunner, 'lastTestedAt', false, { isNullable: true }),
+        dateTimeColumn(queryRunner, 'lastTestedAt', { isNullable: true }),
         varcharColumn('lastTestError', { isNullable: true }),
         timestampColumn(queryRunner, 'createdAt'),
         timestampColumn(queryRunner, 'updatedAt', true),

@@ -328,7 +328,8 @@ For production, always replace default credentials and use a long random JWT sec
 
 Database schema and persisted data-shape changes are managed through migrations only. TypeORM
 `synchronize` is disabled for SQLite, PostgreSQL, and MySQL; do not use startup sync or manual
-database edits as the delivery path for schema changes.
+database edits as the delivery path for schema changes. Pending migrations run during backend
+startup and block startup if they fail.
 
 ### Run Frontend And Backend
 

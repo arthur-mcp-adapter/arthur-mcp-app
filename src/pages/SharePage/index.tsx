@@ -17,6 +17,11 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import axios from 'axios'
 import { QRCodeSVG } from 'qrcode.react'
 import { apiUrl, backendUrl } from '../../config/urls'
+import { parseMcpResponse, formatMcpResult } from '../../utils/mcpResponse'
+import { normalizeMcpUrl, oauthTokenUrl, absoluteUrl } from '../../utils/mcpUrl'
+import { shellSingleQuote, buildCurlCommand } from '../../utils/curl'
+import { formatJson, isEmptyObject } from '../../utils/format'
+import { coerceParameterValue } from '../../utils/mcpParameters'
 
 interface ShareTool {
   name: string
@@ -69,92 +74,6 @@ interface ShareInfo {
 }
 
 type AuthMode = 'apiKey' | 'oauthClientCredentials'
-
-function formatJson(value: unknown) {
-  return JSON.stringify(value ?? {}, null, 2)
-}
-
-function isEmptyObject(value?: Record<string, unknown>) {
-  return !value || Object.keys(value).length === 0
-}
-
-function parseMcpResponse(data: unknown): Record<string, any> {
-  if (typeof data === 'object' && data !== null) return data as Record<string, any>
-  if (typeof data === 'string') {
-    const match = data.match(/^data:\s*(.+)$/m)
-    if (match) {
-      try { return JSON.parse(match[1]) } catch { /* fall through */ }
-    }
-    try { return JSON.parse(data) } catch { /* fall through */ }
-  }
-  return {}
-}
-
-function normalizeMcpUrl(mcpUrl: string) {
-  return mcpUrl.replace('/api/mcp/project/', '/api/mcp/server/')
-}
-
-function oauthTokenUrl(mcpUrl: string) {
-  return normalizeMcpUrl(mcpUrl).replace(/^\/api\/mcp\/server\//, '/oauth/server/').replace(/^\/mcp\/server\//, '/oauth/server/') + '/token'
-}
-
-function absoluteUrl(path: string) {
-  if (/^https?:\/\//i.test(path)) return path
-  return backendUrl(path)
-}
-
-function shellSingleQuote(value: string) {
-  return `'${value.replace(/'/g, `'\\''`)}'`
-}
-
-function buildCurlCommand({
-  authKey,
-  authMode,
-  mcpUrl,
-  payload,
-}: {
-  authKey: string
-  authMode: AuthMode
-  mcpUrl: string
-  payload: Record<string, unknown>
-}) {
-  const lines = [
-    `curl -X POST ${shellSingleQuote(absoluteUrl(normalizeMcpUrl(mcpUrl)))} \\`,
-    `  -H 'Content-Type: application/json' \\`,
-    `  -H 'Accept: application/json, text/event-stream' \\`,
-  ]
-  if (authKey.trim()) {
-    if (authMode === 'oauthClientCredentials') {
-      lines.push(`  -H ${shellSingleQuote(`Authorization: Bearer ${authKey.trim().replace(/^Bearer\s+/i, '')}`)} \\`)
-    } else {
-      lines.push(`  -H ${shellSingleQuote(`auth: ${authKey.trim()}`)} \\`)
-    }
-  }
-  lines.push(`  --data ${shellSingleQuote(formatJson(payload))}`)
-  return lines.join('\n')
-}
-
-function formatMcpResult(data: unknown) {
-  const rpc = parseMcpResponse(data)
-  if (rpc?.error) return { text: JSON.stringify(rpc.error, null, 2), isError: true }
-  const result = rpc?.result ?? rpc
-  const content = result?.content ?? rpc?.content
-  const text = result?.messages?.[0]?.content?.text ?? content?.[0]?.text
-  if (typeof text === 'string') {
-    try { return { text: JSON.stringify(JSON.parse(text), null, 2), isError: !!result?.isError } } catch { return { text, isError: !!result?.isError } }
-  }
-  return { text: JSON.stringify(result, null, 2), isError: !!result?.isError }
-}
-
-function coerceParameterValue(value: string, parameter: ShareToolParameter): unknown {
-  if (value === '') return undefined
-  if (parameter.type === 'number' || parameter.type === 'integer') return Number(value)
-  if (parameter.type === 'boolean') return value === 'true'
-  if (parameter.type === 'object' || parameter.type === 'array') {
-    try { return JSON.parse(value) } catch { return value }
-  }
-  return value
-}
 
 function CopyBox({ value, label }: { value: string; label: string }) {
   const { t } = useTranslation('servers')

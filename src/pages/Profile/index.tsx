@@ -43,6 +43,7 @@ import { useDetailPageNav } from '../../hooks/useDetailPageNav'
 import { useAsyncFeedback } from '../../hooks/useAsyncFeedback'
 import { ConfirmDialog } from '../../components'
 import { AppSnackbar } from '../../components'
+import { avatarLetter, avatarColor } from '../../utils/avatar'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -220,15 +221,6 @@ const BUILTIN_ROLES: Role[] = [
 ]
 
 const emptyPermissions = (): RolePermissions => ({ ...ALL_OFF, servers_view: true })
-
-function avatarLetter(username: string) {
-  return username.charAt(0).toUpperCase()
-}
-
-function avatarColor(username: string) {
-  const colors = ['#5D87FF', '#49BEFF', '#13DEB9', '#FFAE1F', '#FA896B']
-  return colors[username.charCodeAt(0) % colors.length]
-}
 
 // ─── User dialog ──────────────────────────────────────────────────────────────
 
@@ -1021,5 +1013,3 @@ export default function Profile() {
     </Box>
   )
 }
-
-export { avatarLetter, avatarColor }

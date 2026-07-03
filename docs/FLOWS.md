@@ -247,6 +247,30 @@ Risk to preserve:
 - Never log `apiKey` at any log level.
 - `isActive: false` providers are stored but should not be selected for active AI workflows.
 
+## Server Resources
+
+Goal: let authorized users manage and test static or dynamic MCP Resources exposed by a server.
+
+Entry points:
+
+- `/servers/:id` -> Resources tab
+
+Permissions:
+
+- `resources_view`: required to view resources.
+- `resources_create`, `resources_edit`, and `resources_delete`: required for matching resource mutations.
+
+Frontend behavior:
+
+- The Resources tab lists configured resources and lets users create static resources or generate dynamic resources from endpoints.
+- The resource execute panel sends a JSON-RPC `resources/read` request to the server MCP endpoint.
+- When a resource execution response is HTML, the frontend shows an isolated sandboxed HTML preview block and keeps the raw response visible below it.
+
+Risk to preserve:
+
+- Keep HTML previews sandboxed; do not execute returned scripts in the app origin.
+- Keep resource mutation controls aligned with the resource permissions above.
+
 ## Chains
 
 Goal: let users define multi-step tool sequences (chains) within a server and expose them as single MCP tools.

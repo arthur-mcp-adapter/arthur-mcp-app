@@ -14,6 +14,14 @@ Frontend duplication optimization is progressing through a phased extraction pla
 
 ## Latest Changes
 
+- Added HTML preview support to the authenticated Resource execute panel:
+  - `ResourceTestPanel` now detects HTML responses from resource execution by MIME type or content shape.
+  - HTML responses render in a sandboxed iframe preview block while the raw response remains visible below.
+  - Added server detail locale keys in English and Portuguese, and documented the Server Resources flow in `docs/FLOWS.md`.
+- Added the initial TypeORM schema baseline migration for empty databases:
+  - `DatabaseModule` now registers the baseline migration and runs pending migrations at startup with `migrationsRun: true`.
+  - The baseline creates `users`, `swagger_projects`, `settings`, `password_resets`, `prompts`, `secrets`, `roles`, `error_tracking_providers`, and `ai_providers` when missing.
+  - Added SQLite migration coverage proving the baseline creates key tables while `synchronize` remains disabled.
 - Enforced supported database URL validation at startup:
   - `DATABASE_URI` validation explicitly accepts only `sqlite:`, `postgres://`/`postgresql://`, and `mysql://` schemes.
   - Unsupported values such as `mongodb://`, `mariadb://`, `redis://`, or a bare file path fail environment validation and block project startup.

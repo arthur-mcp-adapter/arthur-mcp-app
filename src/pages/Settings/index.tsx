@@ -27,6 +27,7 @@ import { useDetailPageNav } from '../../hooks/useDetailPageNav'
 import { AppSnackbar, HelpButton } from '../../components'
 import { GlobalRequestHeadersPanel, type HeaderEntry } from '../../features/settings'
 import { ObservabilityEnvironmentPanel } from '../../features/observability'
+import { emailValid, portValid } from '../../utils/validation'
 
 interface SettingsData {
   serverBaseUrl: string
@@ -41,14 +42,6 @@ interface SettingsData {
 }
 
 type SettingsTab = 'server' | 'security' | 'headers' | 'email' | 'observability'
-
-function emailValid(v: string) {
-  return !v || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)
-}
-
-function portValid(v: number) {
-  return v >= 1 && v <= 65535
-}
 
 export default function Settings() {
   const { can, loading: authLoading } = useAuth()

@@ -37,6 +37,7 @@ import {
   IconSearch,
 } from '@tabler/icons-react'
 import api from '../../api'
+import { parseMcpResponse } from '../../utils/mcpResponse'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -103,18 +104,6 @@ const METHOD_BG: Record<string, string> = {
   PUT: 'rgba(252,161,48,0.12)',
   PATCH: 'rgba(80,227,194,0.12)',
   DELETE: 'rgba(249,62,62,0.12)',
-}
-
-// ─── MCP response parser ──────────────────────────────────────────────────────
-
-function parseMcpResponse(data: unknown): any {
-  if (typeof data === 'object' && data !== null) return data
-  if (typeof data === 'string') {
-    const match = data.match(/^data:\s*(.+)$/m)
-    if (match) { try { return JSON.parse(match[1]) } catch { /* fall through */ } }
-    try { return JSON.parse(data) } catch { /* fall through */ }
-  }
-  return {}
 }
 
 // ─── Sub-components ───────────────────────────────────────────────────────────

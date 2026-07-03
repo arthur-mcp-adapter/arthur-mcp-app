@@ -93,6 +93,7 @@ import { useColorMode } from '../../theme/ColorModeContext'
 import { useAuth, Permission } from '../../context/AuthContext'
 import { useDetailPageNav } from '../../hooks/useDetailPageNav'
 import { getProjectIcon, getSourceType } from '../../utils/sourceType'
+import { parseMcpResponse } from '../../utils/mcpResponse'
 import api from '../../api'
 import { backendUrl } from '../../config/urls'
 import { ConfirmDialog, HelpButton } from '../../components'
@@ -152,18 +153,6 @@ const SOURCE_CHIP_COLOR: Record<
 const METHODS = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']
 const SOURCES = ['path', 'query', 'body', 'header'] as const
 const PARAM_TYPES = ['string', 'number', 'integer', 'boolean', 'object', 'array']
-
-// ─── MCP response parser ──────────────────────────────────────────────────────
-
-function parseMcpResponse(data: unknown): any {
-  if (typeof data === 'object' && data !== null) return data
-  if (typeof data === 'string') {
-    const match = data.match(/^data:\s*(.+)$/m)
-    if (match) { try { return JSON.parse(match[1]) } catch { /* fall through */ } }
-    try { return JSON.parse(data) } catch { /* fall through */ }
-  }
-  return {}
-}
 
 // ─── Main page ────────────────────────────────────────────────────────────────
 

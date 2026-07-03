@@ -8,7 +8,7 @@ This file should be updated when task state changes. It does not replace issues 
 - [ ] Review existing uncommitted changes before starting a new task.
 - [ ] Keep `docs/HANDOFF.md` updated at the end of each Codex or Claude Code session.
 - [ ] Enforce the documentation gate for every code or configuration change.
-- [ ] Add the first formal TypeORM migration workflow/baseline so future database changes have a documented command path.
+- [ ] Add formal TypeORM migration generation/run commands for local development and CI.
 
 ## In Progress
 
@@ -121,6 +121,7 @@ This file should be updated when task state changes. It does not replace issues 
 - [x] Changed generated MCP Swagger share links to permanent slug-only URLs (`/mcp-swagger/:shareSlug`, no token), with `GET /api/share/by-slug/:slug` as the new public lookup and legacy token-based links (`/mcp-swagger/:slug/:token`, `/share/:slug/:token`, `/share/:token`) still supported.
 - [x] Added root-level Vercel frontend configuration and `VITE_API_URL` support so the React app can deploy from the repository root while targeting an external backend.
 - [x] Corrected the Vercel specialist guidance to stop recommending a non-existent `client/` root and to diagnose old-commit/old-Vite deploy logs as a repository or production-branch mismatch.
+- [x] Added the initial TypeORM schema migration baseline and configured pending migrations to run at startup with `synchronize` disabled.
 
 ## Decisions
 

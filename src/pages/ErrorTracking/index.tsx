@@ -34,6 +34,7 @@ import api from '../../api'
 import { HelpButton } from '../../components'
 import { useAuth, Permission } from '../../context/AuthContext'
 import type { ErrorTrackingProvider, TestConnectionResult } from '../../features/errorTracking'
+import { formatTestedAt } from '../../utils/format'
 
 const SENTRY_COLOR = '#362d59'
 
@@ -52,15 +53,6 @@ interface LastTestResult {
 }
 
 const EMPTY_FORM: SentryForm = { dsn: '', environment: '', projectName: '', isActive: true }
-
-function formatTestedAt(date: Date): string {
-  const diffMin = Math.floor((Date.now() - date.getTime()) / 60000)
-  if (diffMin < 1) return '0m'
-  if (diffMin < 60) return `${diffMin}m`
-  const diffHr = Math.floor(diffMin / 60)
-  if (diffHr < 24) return `${diffHr}h`
-  return date.toLocaleDateString()
-}
 
 export default function ErrorTracking() {
   const { t } = useTranslation('errorTracking')

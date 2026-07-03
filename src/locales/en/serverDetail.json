@@ -104,6 +104,8 @@
     "noParametersTemplate": "No parameters — template renders as-is.",
     "noParametersRendersAsIs": "No parameters — renders as-is.",
     "noInputsRequired": "No inputs required — the URI is fixed.",
+    "htmlPreview": "HTML preview",
+    "rawResponse": "Raw response",
     "thisPromptNoVariables": "This prompt has no variables.",
     "noNotes": "No notes yet.",
     "notes": "Notes ({{count}})",

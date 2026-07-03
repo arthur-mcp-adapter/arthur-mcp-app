@@ -25,6 +25,7 @@ import api from '../../api'
 import { useDetailPageNav } from '../../hooks/useDetailPageNav'
 import type { Prompt } from '../../features/prompts'
 import Swal from 'sweetalert2'
+import { extractVars } from '../../utils/promptVariables'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -32,13 +33,6 @@ interface SwaggerProject {
   id: string
   name: string
   prompts?: Array<{ name: string }>
-}
-
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-
-function extractVars(content: string): string[] {
-  const matches = [...content.matchAll(/\{\{(\w+)\}\}/g)]
-  return [...new Set(matches.map((m) => m[1]))]
 }
 
 // ─── Tag input (inline) ───────────────────────────────────────────────────────

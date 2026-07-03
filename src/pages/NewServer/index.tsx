@@ -45,6 +45,8 @@ import {
   IconCircleCheck,
 } from '@tabler/icons-react'
 import api from '../../api'
+import { isValidUrl } from '../../utils/validation'
+import { uid } from '../../utils/id'
 
 // ─── Source types ─────────────────────────────────────────────────────────────
 
@@ -180,9 +182,6 @@ interface AiProviderOption {
   isActive: boolean
   isDefault?: boolean
 }
-
-function isValidUrl(u: string) { try { new URL(u); return true } catch { return false } }
-function uid() { return Math.random().toString(36).slice(2) }
 
 // ─── Component ────────────────────────────────────────────────────────────────
 

@@ -45,7 +45,7 @@ import {
 } from '@tabler/icons-react'
 import { useTranslation } from 'react-i18next'
 import api from '../../../api'
-import { avatarLetter, avatarColor } from '../../../pages/Profile'
+import { avatarLetter, avatarColor } from '../../../utils/avatar'
 import { useColorMode, ColorMode } from '../../../theme/ColorModeContext'
 import { useAuth, type UserPermissions } from '../../../context/AuthContext'
 import { useServerNav } from '../../../context/ServerNavContext'

@@ -85,6 +85,7 @@ Rules:
 - TypeORM repositories are driver-agnostic and prefixed `typeorm-*`. They work identically with SQLite, MySQL, and PostgreSQL.
 - TypeORM `synchronize` must stay disabled for every driver, including local SQLite.
 - All database schema changes, seed/backfill changes, field additions/removals, index changes, and data-shape migrations must be shipped through explicit migrations. Do not use `DB_SYNC`, startup sync, or manual edits to local database files as the delivery mechanism.
+- Pending TypeORM migrations run automatically during application startup through `migrationsRun: true`; a failed migration must block startup instead of letting the app run against an incompatible schema.
 - When changing persistence, commit the entity/repository change and its migration together, then document the resulting entity shape in `docs/ENTITIES.md`.
 
 ### Guard and Decorator Authorization
