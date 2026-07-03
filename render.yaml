@@ -1,6 +1,5 @@
 databases:
   - name: Arthur MCP
-    type: postgresql
     databaseName: arthur_mcp
     plan: free
 
