@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import type { DataSourceOptions } from 'typeorm';
 
 import { parseDatabaseUri } from './database-uri';
+import { InitialTypeormSchema1700000000000 } from './migrations/1700000000000-InitialTypeormSchema';
 
 import { UserEntity } from '../users/user.entity';
 import { SwaggerProjectEntity } from '../swagger/swagger-project.entity';
@@ -38,6 +39,10 @@ const TYPEORM_ENTITIES = [
   AiProviderEntity,
 ];
 
+const TYPEORM_MIGRATIONS = [
+  InitialTypeormSchema1700000000000,
+];
+
 function buildTypeOrmOptions(): DataSourceOptions {
   const parsed = parseDatabaseUri(process.env.DATABASE_URI ?? 'sqlite:database.sqlite');
   const synchronize = false;
@@ -48,6 +53,8 @@ function buildTypeOrmOptions(): DataSourceOptions {
       url: parsed.url,
       ssl: parsed.ssl ? { rejectUnauthorized: false } : undefined,
       entities: TYPEORM_ENTITIES,
+      migrations: TYPEORM_MIGRATIONS,
+      migrationsRun: true,
       synchronize,
     };
   }
@@ -59,6 +66,8 @@ function buildTypeOrmOptions(): DataSourceOptions {
       charset: 'utf8mb4',
       ssl: parsed.ssl ? {} : undefined,
       entities: TYPEORM_ENTITIES,
+      migrations: TYPEORM_MIGRATIONS,
+      migrationsRun: true,
       synchronize,
     };
   }
@@ -67,6 +76,8 @@ function buildTypeOrmOptions(): DataSourceOptions {
     type: 'sqlite',
     database: parsed.database,
     entities: TYPEORM_ENTITIES,
+    migrations: TYPEORM_MIGRATIONS,
+    migrationsRun: true,
     synchronize,
   };
 }
