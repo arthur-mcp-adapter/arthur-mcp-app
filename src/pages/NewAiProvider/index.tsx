@@ -34,6 +34,8 @@ import { SecretAutocomplete, useSecrets } from '../../features/secrets'
 
 const PROVIDER_TYPES: AiProviderType[] = ['openai', 'anthropic', 'google', 'mistral', 'groq', 'cohere', 'azure-openai', 'ollama', 'custom']
 
+const SUPPORTED_PROVIDERS = new Set<AiProviderType>(['openai', 'anthropic'])
+
 const MODEL_OPTIONS: Record<string, string[]> = {
   openai: ['gpt-4o-mini', 'gpt-4o', 'gpt-4.1-mini', 'gpt-4.1'],
   anthropic: ['claude-3-5-haiku-latest', 'claude-3-5-sonnet-latest', 'claude-3-7-sonnet-latest'],
@@ -302,13 +304,14 @@ export default function NewAiProvider() {
                     key={pt}
                     value={pt}
                     disableRipple
+                    disabled={!SUPPORTED_PROVIDERS.has(pt)}
                     sx={{
                       px: 1.5, py: 0.75, fontSize: '0.78rem', fontWeight: 500,
                       textTransform: 'none', lineHeight: 1.3,
                       '&.Mui-selected': { color: 'primary.main', bgcolor: 'rgba(26,115,232,0.08)' },
                     }}
                   >
-                    {t(`aiProviders:provider.${pt}`)}
+                    {SUPPORTED_PROVIDERS.has(pt) ? t(`aiProviders:provider.${pt}`) : `${t(`aiProviders:provider.${pt}`)} (Soon)`}
                   </ToggleButton>
                 ))}
               </ToggleButtonGroup>
