@@ -17,6 +17,9 @@ export class PromptEntity {
   @Column('text', { name: 'tags_json', default: '[]' })
   tagsJson: string;
 
+  @Column({ name: 'owner_id', nullable: true })
+  ownerId?: string;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 

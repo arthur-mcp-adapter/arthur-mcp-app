@@ -176,7 +176,7 @@ describe('SwaggerService', () => {
       ]);
       mockProjectRepo.create.mockImplementation(async (data: any) => makeProject({ _id: 'new-project', ...data }));
 
-      const result = await service.createEmpty({ name: 'Test Project', baseUrl: 'https://api.example.com' });
+      const result = await service.createEmpty({ name: 'Test Project', baseUrl: 'https://api.example.com' }, 'owner-1');
 
       expect(mockProjectRepo.create).toHaveBeenCalledWith(expect.objectContaining({ shareSlug: 'test-project-2' }));
       expect(result.shareSlug).toBe('test-project-2');

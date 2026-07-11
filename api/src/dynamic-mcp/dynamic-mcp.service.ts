@@ -131,8 +131,8 @@ export class DynamicMcpService {
       if (p) resolvedPrompts.push(p);
     }
 
-    const allSecrets = await this.secretRepo.findAll();
-    const secretsMap = new Map(allSecrets.map((s) => [s.name, s.value]));
+    const ownedSecrets = await this.secretRepo.findAll(server.ownerId ?? undefined);
+    const secretsMap = new Map(ownedSecrets.map((s) => [s.name, s.value]));
 
     const settings = await this.settingsRepo.getGlobal();
     const globalRequestHeaders = Object.fromEntries(

@@ -3,6 +3,8 @@ import { AuthProvider } from './context/AuthContext'
 import { ServerNavProvider } from './context/ServerNavContext'
 import { Layout } from './components/templates'
 import Login from './pages/Login'
+import Signup from './pages/Signup'
+import OAuthCallback from './pages/OAuthCallback'
 import ForgotPassword from './pages/ForgotPassword'
 import ResetPassword from './pages/ResetPassword'
 import Servers from './pages/Servers'
@@ -47,6 +49,8 @@ export default function App() {
       <Routes>
         {/* Public routes */}
         <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/oauth-callback" element={<OAuthCallback />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/mcp-swagger/:slug" element={<SharePage />} />

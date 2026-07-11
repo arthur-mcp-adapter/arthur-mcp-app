@@ -12,6 +12,12 @@ This file should be updated when task state changes. It does not replace issues 
 
 ## In Progress
 
+- [ ] Wire non-API/Blank data sources (SQL, MongoDB, Redis/key-value, and later DynamoDB/Elasticsearch/Snowflake/GraphQL/gRPC/Cassandra/Firestore) end to end per `docs/DATA_SOURCE_INTEGRATION_PLAN.pt-BR.md`:
+  - [ ] Phase 0: fix ROADMAP claims above, extract reusable secret-ref resolver, add `servers_manage_connection` permission, audit Redis raw-command allowlist.
+  - [ ] Phase 1: SQL (Postgres/MySQL) end to end — execution dispatch, secret-backed `DbConnectionConfig`, Operations tab, wizard connection-config persistence fix.
+  - [ ] Phase 2: MongoDB (commands).
+  - [ ] Phase 3: Redis/key-value.
+  - [ ] Phase 4: remaining modeled-but-unbuilt source types, backlog-priority.
 - [ ] Audit permission coverage for newly added feature domains and integrations:
   - [x] Verify frontend permissions for AI providers are present in backend `RolePermissions`, backend built-in role presets, frontend fallback presets, and AI Provider UI gates, including `ai_providers_execute` for test/generation actions.
   - [ ] Verify frontend permissions for error tracking are present in backend `RolePermissions` and backend built-in role presets.
@@ -71,6 +77,7 @@ This file should be updated when task state changes. It does not replace issues 
 - [x] Added a Portuguese integration modeling document by explicit user request.
 - [x] Completed phase 1 of the operation-first migration by renaming user-facing data-source execution UI from Queries to Operations.
 - [x] Added input/output schema support to data-source operations and MCP Tool generation.
+  - **Correction (data-source integration audit):** these two entries describe target state, not shipped state. There is no "Operations" UI in `ServerDetail` today, and no MCP Tool is ever generated from a `DbQuery`/operation — `dynamic-mcp.service.ts`'s tool-call dispatch only ever reads `tool.endpointRef` (HTTP), never `tool.executionRef` (SQL/Mongo/Redis/...). See `docs/DATA_SOURCE_INTEGRATION_PLAN.pt-BR.md` for the real current state and the plan to close the gap.
 - [x] Expanded public `/share/:token` documentation with a privacy-scoped MCP server reference covering exposed tools, public tool parameters, resources, prompts, descriptions, resource URIs, MIME types, prompt arguments/content, and output schemas while excluding private source/origin details.
 - [x] Added backend tests and an 80% coverage gate for focused backend testable units.
 - [x] Started the `ServerDetail` SOLID refactor by extracting shared save status UI and the rate limit settings panel.

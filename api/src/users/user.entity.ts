@@ -17,6 +17,12 @@ export class UserEntity {
   @Column({ name: 'role', default: 'user' })
   role: string;
 
+  @Column({ name: 'google_id', unique: true, nullable: true })
+  googleId: string | null;
+
+  @Column({ name: 'github_id', unique: true, nullable: true })
+  githubId: string | null;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 

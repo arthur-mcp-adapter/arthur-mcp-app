@@ -19,6 +19,7 @@ import {
   Typography,
 } from '@mui/material'
 import api from '../../api'
+import SocialAuthButtons from '../../components/organisms/SocialAuthButtons'
 
 export default function Login() {
   const navigate = useNavigate()
@@ -215,6 +216,15 @@ export default function Login() {
                     t('action.signIn')
                   )}
                 </Button>
+
+                <SocialAuthButtons />
+
+                <Typography variant="body2" textAlign="center" color="text.secondary">
+                  {t('link.noAccount')}{' '}
+                  <Link component={RouterLink} to="/signup">
+                    {t('action.signUp')}
+                  </Link>
+                </Typography>
               </Stack>
             </Box>
           </Card>

@@ -3,7 +3,10 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 
 vi.mock('../../api', () => ({
-  default: { post: vi.fn() },
+  default: {
+    post: vi.fn(),
+    get: vi.fn().mockResolvedValue({ data: { google: false, github: false } }),
+  },
 }));
 
 vi.mock('react-i18next', () => ({

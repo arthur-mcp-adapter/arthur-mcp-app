@@ -17,13 +17,17 @@ export class TypeOrmSecretRepository implements ISecretRepository {
       name: e.name,
       value: e.value,
       description: e.description,
+      ownerId: e.ownerId,
       createdAt: e.createdAt,
       updatedAt: e.updatedAt,
     };
   }
 
-  async findAll(): Promise<SecretRecord[]> {
-    const entities = await this.repo.find({ order: { createdAt: 'DESC' } });
+  async findAll(ownerId?: string): Promise<SecretRecord[]> {
+    const entities = await this.repo.find({
+      where: ownerId ? { ownerId } : undefined,
+      order: { createdAt: 'DESC' },
+    });
     return entities.map((e) => this.toRecord(e));
   }
 
@@ -32,8 +36,8 @@ export class TypeOrmSecretRepository implements ISecretRepository {
     return e ? this.toRecord(e) : null;
   }
 
-  async findByName(name: string): Promise<SecretRecord | null> {
-    const e = await this.repo.findOne({ where: { name } });
+  async findByName(name: string, ownerId?: string): Promise<SecretRecord | null> {
+    const e = await this.repo.findOne({ where: ownerId ? { name, ownerId } : { name } });
     return e ? this.toRecord(e) : null;
   }
 

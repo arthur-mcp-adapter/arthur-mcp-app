@@ -11,6 +11,7 @@ import {
   Post,
   Put,
   Query,
+  Request,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -19,6 +20,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from '../auth/jwt.guard';
 import type { AuthConfig, DbConnectionConfig, DbQuery, EndpointRef, ExecutionRef } from '../dynamic-mcp/types';
 import { SwaggerService } from './swagger.service';
+import { ServerOwnershipGuard } from './guards/server-ownership.guard';
 import {
   AlertConfigDto,
   AvailabilityWindowDto,
@@ -38,7 +40,7 @@ import {
 } from './dto/swagger.dto';
 
 @Controller('swagger')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, ServerOwnershipGuard)
 export class SwaggerController {
   constructor(private readonly swaggerService: SwaggerService) {}
 
@@ -67,6 +69,7 @@ export class SwaggerController {
     FileInterceptor('file', { limits: { fileSize: 10 * 1024 * 1024 } }),
   )
   async upload(
+    @Request() req: any,
     @UploadedFile() file: Express.Multer.File,
     @Query('baseUrl') baseUrl?: string,
   ) {
@@ -80,6 +83,7 @@ export class SwaggerController {
     const server = await this.swaggerService.create(
       file.buffer.toString('utf-8'),
       file.originalname,
+      req.user.userId,
       baseUrl,
     );
 
@@ -97,20 +101,20 @@ export class SwaggerController {
   }
 
   @Post('servers')
-  createEmpty(@Body() dto: CreateServerDto) {
+  createEmpty(@Request() req: any, @Body() dto: CreateServerDto) {
     if (!dto.name?.trim()) throw new BadRequestException('Name is required.');
     return this.swaggerService.createEmpty({
       name: dto.name,
       description: dto.description,
       baseUrl: dto.baseUrl?.trim() || '',
       tags: dto.tags,
-    });
+    }, req.user.userId);
   }
 
   @Get('servers')
-  findAll(@Query('tags') tags?: string) {
+  findAll(@Request() req: any, @Query('tags') tags?: string) {
     const tagList = tags ? tags.split(',').map((t) => t.trim()).filter(Boolean) : undefined;
-    return this.swaggerService.findAll(tagList);
+    return this.swaggerService.findAll(tagList, req.user.userId);
   }
 
   @Get('servers/:id')
@@ -441,9 +445,9 @@ export class SwaggerController {
 
   @Post('import-postman')
   @UseInterceptors(FileInterceptor('file', { limits: { fileSize: 10 * 1024 * 1024 } }))
-  async importPostman(@UploadedFile() file: Express.Multer.File, @Query('baseUrl') baseUrl?: string) {
+  async importPostman(@Request() req: any, @UploadedFile() file: Express.Multer.File, @Query('baseUrl') baseUrl?: string) {
     if (!file) throw new BadRequestException('No file uploaded.');
-    const server = await this.swaggerService.fromPostman(file.buffer.toString('utf-8'), baseUrl);
+    const server = await this.swaggerService.fromPostman(file.buffer.toString('utf-8'), req.user.userId, baseUrl);
     return { _id: server._id, name: server.name, baseUrl: server.baseUrl, toolCount: server.tools.length };
   }
 

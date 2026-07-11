@@ -5,16 +5,19 @@ export const config = {
   get databaseUri(): string {
     return process.env.DATABASE_URI ?? 'sqlite:database.sqlite';
   },
-  get dashboardUser(): string {
-    return process.env.DASHBOARD_USER ?? 'admin';
-  },
-  get dashboardPassword(): string {
-    return process.env.DASHBOARD_PASSWORD ?? 'admin';
-  },
-  get dashboardEmail(): string {
-    return process.env.DASHBOARD_EMAIL ?? 'admin@arthurmcp.io';
-  },
   get jwtSecret(): string {
     return process.env.JWT_SECRET ?? 'change-me-in-production-secret';
+  },
+  get googleClientId(): string | undefined {
+    return process.env.GOOGLE_CLIENT_ID;
+  },
+  get googleClientSecret(): string | undefined {
+    return process.env.GOOGLE_CLIENT_SECRET;
+  },
+  get githubClientId(): string | undefined {
+    return process.env.GITHUB_CLIENT_ID;
+  },
+  get githubClientSecret(): string | undefined {
+    return process.env.GITHUB_CLIENT_SECRET;
   },
 };

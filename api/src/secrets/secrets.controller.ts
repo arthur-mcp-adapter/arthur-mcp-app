@@ -1,18 +1,19 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, Request, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt.guard';
 import { RequirePermission } from '../common/decorators/require-permission.decorator';
 import { PermissionsGuard } from '../common/guards/permissions.guard';
 import { SecretsService } from './secrets.service';
+import { SecretOwnershipGuard } from './guards/secret-ownership.guard';
 
 @Controller('secrets')
-@UseGuards(JwtAuthGuard, PermissionsGuard)
+@UseGuards(JwtAuthGuard, PermissionsGuard, SecretOwnershipGuard)
 export class SecretsController {
   constructor(private readonly secretsService: SecretsService) {}
 
   @Get()
   @RequirePermission('secrets_view_names')
-  findAll() {
-    return this.secretsService.findAll();
+  findAll(@Request() req: any) {
+    return this.secretsService.findAll(req.user.userId);
   }
 
   @Get(':id')
@@ -30,8 +31,8 @@ export class SecretsController {
   @Post()
   @HttpCode(201)
   @RequirePermission('secrets_create')
-  create(@Body() dto: { name: string; value: string; description?: string }) {
-    return this.secretsService.create(dto);
+  create(@Request() req: any, @Body() dto: { name: string; value: string; description?: string }) {
+    return this.secretsService.create(dto, req.user.userId);
   }
 
   @Patch(':id')

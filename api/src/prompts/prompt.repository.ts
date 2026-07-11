@@ -4,12 +4,13 @@ export interface PromptRecord {
   description?: string;
   content: string;
   tags: string[];
+  ownerId?: string;
   createdAt: Date;
   updatedAt: Date;
 }
 
 export interface IPromptRepository {
-  findAll(): Promise<PromptRecord[]>;
+  findAll(ownerId?: string): Promise<PromptRecord[]>;
   findById(id: string): Promise<PromptRecord | null>;
   create(data: Omit<PromptRecord, 'id' | 'createdAt' | 'updatedAt'>): Promise<PromptRecord>;
   update(id: string, data: Partial<Omit<PromptRecord, 'id'>>): Promise<PromptRecord | null>;

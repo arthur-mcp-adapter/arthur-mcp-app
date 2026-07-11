@@ -15,6 +15,8 @@ export class TypeOrmUserRepository implements IUserRepository {
       email: e.email,
       password: e.password,
       role: e.role,
+      googleId: e.googleId,
+      githubId: e.githubId,
       createdAt: e.createdAt,
       updatedAt: e.updatedAt,
     };
@@ -27,6 +29,16 @@ export class TypeOrmUserRepository implements IUserRepository {
 
   async findByEmail(email: string): Promise<UserRecord | null> {
     const e = await this.repo.findOne({ where: { email: email.toLowerCase().trim() } });
+    return e ? this.toRecord(e) : null;
+  }
+
+  async findByGoogleId(googleId: string): Promise<UserRecord | null> {
+    const e = await this.repo.findOne({ where: { googleId } });
+    return e ? this.toRecord(e) : null;
+  }
+
+  async findByGithubId(githubId: string): Promise<UserRecord | null> {
+    const e = await this.repo.findOne({ where: { githubId } });
     return e ? this.toRecord(e) : null;
   }
 
@@ -50,12 +62,21 @@ export class TypeOrmUserRepository implements IUserRepository {
     }));
   }
 
-  async create(data: { username: string; email: string; password: string; role?: string }): Promise<UserRecord> {
+  async create(data: {
+    username: string;
+    email: string;
+    password: string;
+    role?: string;
+    googleId?: string;
+    githubId?: string;
+  }): Promise<UserRecord> {
     const entity = this.repo.create({
       username: data.username.toLowerCase().trim(),
       email: data.email.toLowerCase().trim(),
       password: data.password,
       role: data.role ?? 'user',
+      googleId: data.googleId ?? null,
+      githubId: data.githubId ?? null,
     });
     const saved = await this.repo.save(entity);
     return this.toRecord(saved);

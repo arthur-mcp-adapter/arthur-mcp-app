@@ -6,8 +6,8 @@ import { IPromptRepository, PromptRecord } from './prompt.repository';
 export class PromptsService {
   constructor(@Inject(PROMPT_REPO) private readonly promptRepo: IPromptRepository) {}
 
-  findAll(): Promise<PromptRecord[]> {
-    return this.promptRepo.findAll();
+  findAll(ownerId: string): Promise<PromptRecord[]> {
+    return this.promptRepo.findAll(ownerId);
   }
 
   async findById(id: string): Promise<PromptRecord> {
@@ -16,7 +16,7 @@ export class PromptsService {
     return prompt;
   }
 
-  create(dto: { name: string; description?: string; content: string; tags?: string[] }): Promise<PromptRecord> {
+  create(dto: { name: string; description?: string; content: string; tags?: string[] }, ownerId: string): Promise<PromptRecord> {
     if (!dto.name?.trim()) throw new BadRequestException('name is required.');
     if (!dto.content?.trim()) throw new BadRequestException('content is required.');
 
@@ -25,6 +25,7 @@ export class PromptsService {
       description: dto.description?.trim() || undefined,
       content: dto.content.trim(),
       tags: dto.tags ?? [],
+      ownerId,
     });
   }
 

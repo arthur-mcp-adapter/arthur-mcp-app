@@ -11,6 +11,7 @@ describe('PromptsController', () => {
   } as unknown as jest.Mocked<PromptsService>;
 
   let controller: PromptsController;
+  const req = { user: { userId: 'owner-1' } } as any;
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -21,7 +22,7 @@ describe('PromptsController', () => {
     const prompts = [{ id: 'prompt-1' }];
     service.findAll.mockResolvedValue(prompts as any);
 
-    await expect(controller.findAll()).resolves.toBe(prompts);
+    await expect(controller.findAll(req)).resolves.toBe(prompts);
   });
 
   it('delegates read requests', async () => {
@@ -36,9 +37,9 @@ describe('PromptsController', () => {
     const dto = { name: 'Prompt', content: 'Body' };
     service.create.mockResolvedValue({ id: 'prompt-1', ...dto } as any);
 
-    await controller.create(dto);
+    await controller.create(req, dto);
 
-    expect(service.create).toHaveBeenCalledWith(dto);
+    expect(service.create).toHaveBeenCalledWith(dto, 'owner-1');
   });
 
   it('delegates update requests', async () => {

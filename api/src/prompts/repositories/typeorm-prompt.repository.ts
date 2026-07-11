@@ -17,13 +17,17 @@ export class TypeOrmPromptRepository implements IPromptRepository {
       description: e.description,
       content: e.content,
       tags: e.tagsJson ? JSON.parse(e.tagsJson) : [],
+      ownerId: e.ownerId,
       createdAt: e.createdAt,
       updatedAt: e.updatedAt,
     };
   }
 
-  async findAll(): Promise<PromptRecord[]> {
-    const entities = await this.repo.find({ order: { createdAt: 'DESC' } });
+  async findAll(ownerId?: string): Promise<PromptRecord[]> {
+    const entities = await this.repo.find({
+      where: ownerId ? { ownerId } : undefined,
+      order: { createdAt: 'DESC' },
+    });
     return entities.map((e) => this.toRecord(e));
   }
 
@@ -38,6 +42,7 @@ export class TypeOrmPromptRepository implements IPromptRepository {
       description: data.description,
       content: data.content,
       tagsJson: JSON.stringify(data.tags ?? []),
+      ownerId: data.ownerId,
     });
     const saved = await this.repo.save(entity);
     return this.toRecord(saved);

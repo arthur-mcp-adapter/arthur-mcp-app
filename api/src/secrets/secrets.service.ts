@@ -13,8 +13,8 @@ export class SecretsService {
     return metadata;
   }
 
-  async findAll(): Promise<SecretMetadataRecord[]> {
-    const secrets = await this.secretRepo.findAll();
+  async findAll(ownerId: string): Promise<SecretMetadataRecord[]> {
+    const secrets = await this.secretRepo.findAll(ownerId);
     return secrets.map((secret) => this.toMetadata(secret));
   }
 
@@ -30,12 +30,12 @@ export class SecretsService {
     return { value: s.value };
   }
 
-  async create(dto: { name: string; value: string; description?: string }): Promise<SecretMetadataRecord> {
+  async create(dto: { name: string; value: string; description?: string }, ownerId: string): Promise<SecretMetadataRecord> {
     if (!dto.name?.trim()) throw new BadRequestException('name is required.');
     if (!dto.value?.trim()) throw new BadRequestException('value is required.');
-    const existing = await this.secretRepo.findByName(dto.name.trim());
+    const existing = await this.secretRepo.findByName(dto.name.trim(), ownerId);
     if (existing) throw new BadRequestException(`A secret named "${dto.name.trim()}" already exists.`);
-    const created = await this.secretRepo.create({ name: dto.name.trim(), value: dto.value, description: dto.description?.trim() });
+    const created = await this.secretRepo.create({ name: dto.name.trim(), value: dto.value, description: dto.description?.trim(), ownerId });
     return this.toMetadata(created);
   }
 
@@ -43,7 +43,7 @@ export class SecretsService {
     const s = await this.secretRepo.findById(id);
     if (!s) throw new NotFoundException('Secret not found.');
     if (dto.name !== undefined && dto.name.trim() !== s.name) {
-      const existing = await this.secretRepo.findByName(dto.name.trim());
+      const existing = await this.secretRepo.findByName(dto.name.trim(), s.ownerId);
       if (existing) throw new BadRequestException(`A secret named "${dto.name.trim()}" already exists.`);
     }
     const updated = await this.secretRepo.update(id, {

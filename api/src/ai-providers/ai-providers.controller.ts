@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, Request, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt.guard';
 import { PermissionsGuard } from '../common/guards/permissions.guard';
 import { RequirePermission } from '../common/decorators/require-permission.decorator';
@@ -6,29 +6,30 @@ import { AiProvidersService } from './ai-providers.service';
 import { CreateAiProviderDto } from './dto/create-ai-provider.dto';
 import { UpdateAiProviderDto } from './dto/update-ai-provider.dto';
 import { GenerateToolsDto } from './dto/generate-tools.dto';
+import { AiProviderOwnershipGuard } from './guards/ai-provider-ownership.guard';
 
 @Controller('ai-providers')
-@UseGuards(JwtAuthGuard, PermissionsGuard)
+@UseGuards(JwtAuthGuard, PermissionsGuard, AiProviderOwnershipGuard)
 export class AiProvidersController {
   constructor(private readonly service: AiProvidersService) {}
 
   @Get()
   @RequirePermission('ai_providers_view')
-  findAll() {
-    return this.service.findAll();
+  findAll(@Request() req: any) {
+    return this.service.findAll(req.user.userId);
   }
 
   @Post()
   @HttpCode(201)
   @RequirePermission('ai_providers_create')
-  create(@Body() dto: CreateAiProviderDto) {
-    return this.service.create(dto);
+  create(@Request() req: any, @Body() dto: CreateAiProviderDto) {
+    return this.service.create(dto, req.user.userId);
   }
 
   @Post('generate-tools')
   @RequirePermission('ai_providers_execute')
-  generateTools(@Body() dto: GenerateToolsDto) {
-    return this.service.generateTools(dto);
+  generateTools(@Request() req: any, @Body() dto: GenerateToolsDto) {
+    return this.service.generateTools(dto, req.user.userId);
   }
 
   @Post('test-config')
@@ -45,14 +46,14 @@ export class AiProvidersController {
 
   @Patch(':id')
   @RequirePermission('ai_providers_edit')
-  update(@Param('id') id: string, @Body() dto: UpdateAiProviderDto) {
-    return this.service.update(id, dto);
+  update(@Request() req: any, @Param('id') id: string, @Body() dto: UpdateAiProviderDto) {
+    return this.service.update(id, dto, req.user.userId);
   }
 
   @Post(':id/default')
   @RequirePermission('ai_providers_edit')
-  setDefault(@Param('id') id: string) {
-    return this.service.setDefault(id);
+  setDefault(@Request() req: any, @Param('id') id: string) {
+    return this.service.setDefault(id, req.user.userId);
   }
 
   @Post(':id/test')

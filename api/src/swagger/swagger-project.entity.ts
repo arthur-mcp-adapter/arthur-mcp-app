@@ -20,6 +20,9 @@ export class SwaggerProjectEntity {
   @Column({ name: 'share_slug', nullable: true, unique: true })
   shareSlug?: string;
 
+  @Column({ name: 'owner_id', nullable: true })
+  ownerId?: string;
+
   @Column('text', { name: 'raw_spec', nullable: true })
   rawSpec?: string;
 

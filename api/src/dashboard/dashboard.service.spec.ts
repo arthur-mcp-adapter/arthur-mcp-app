@@ -68,6 +68,7 @@ describe('DashboardService', () => {
     const stats = await service.getStats(
       new Date('2026-01-01T10:00:00.000Z'),
       new Date('2026-01-01T12:00:00.000Z'),
+      'owner-1',
     );
 
     expect(stats.projects).toEqual({ total: 2, withApiKey: 1, active: 1 });
@@ -88,6 +89,7 @@ describe('DashboardService', () => {
     const stats = await service.getStats(
       new Date('2026-01-01T00:00:00.000Z'),
       new Date('2026-01-10T00:00:00.000Z'),
+      'owner-1',
     );
 
     expect(stats.calls.successRate).toBe(100);
@@ -104,7 +106,7 @@ describe('DashboardService', () => {
       ['server-1', { errorRatePct: 25, totalCalls: 4, lastCallAt }],
     ]));
 
-    await expect(service.getHealthSummary()).resolves.toEqual([
+    await expect(service.getHealthSummary('owner-1')).resolves.toEqual([
       { serverId: 'server-1', serverName: 'Payments', isPaused: true, errorRatePct: 25, totalCalls: 4, lastCallAt },
       { serverId: 'server-2', serverName: 'Inventory', isPaused: false, errorRatePct: -1, totalCalls: 0, lastCallAt: undefined },
     ]);

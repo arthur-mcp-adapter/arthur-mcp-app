@@ -14,6 +14,7 @@ export class AiProviderEntity {
   @Column({ name: 'last_test_status', nullable: true }) lastTestStatus?: string;
   @Column({ name: 'last_tested_at', nullable: true }) lastTestedAt?: Date;
   @Column({ name: 'last_test_error', nullable: true }) lastTestError?: string;
+  @Column({ name: 'owner_id', nullable: true }) ownerId?: string;
   @CreateDateColumn({ name: 'created_at' }) createdAt: Date;
   @UpdateDateColumn({ name: 'updated_at' }) updatedAt: Date;
 }

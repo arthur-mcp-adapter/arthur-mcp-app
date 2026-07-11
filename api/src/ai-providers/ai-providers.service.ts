@@ -41,8 +41,8 @@ export class AiProvidersService {
     private readonly errorTracking: ErrorTrackingService,
   ) {}
 
-  async findAll(): Promise<PublicProvider[]> {
-    const records = await this.repo.findAll();
+  async findAll(ownerId: string): Promise<PublicProvider[]> {
+    const records = await this.repo.findAll(ownerId);
     return records.map(toPublic);
   }
 
@@ -52,9 +52,9 @@ export class AiProvidersService {
     return toPublic(record);
   }
 
-  async create(dto: CreateAiProviderDto): Promise<PublicProvider> {
+  async create(dto: CreateAiProviderDto, ownerId: string): Promise<PublicProvider> {
     assertSecretBackedApiKey(dto.provider, dto.apiKey);
-    if (dto.isDefault) await this.repo.clearDefaultExcept();
+    if (dto.isDefault) await this.repo.clearDefaultExcept(ownerId);
     const record = await this.repo.create({
       name: dto.name,
       description: dto.description,
@@ -67,24 +67,25 @@ export class AiProvidersService {
       lastTestStatus: undefined,
       lastTestedAt: undefined,
       lastTestError: undefined,
+      ownerId,
     });
     return toPublic(record);
   }
 
-  async update(id: string, dto: UpdateAiProviderDto): Promise<PublicProvider> {
+  async update(id: string, dto: UpdateAiProviderDto, ownerId: string): Promise<PublicProvider> {
     if (dto.provider || dto.apiKey !== undefined) {
       const current = await this.repo.findById(id);
       if (!current) throw new NotFoundException(`AI provider ${id} not found`);
       assertSecretBackedApiKey(dto.provider ?? current.provider, dto.apiKey ?? current.apiKey);
     }
-    if (dto.isDefault) await this.repo.clearDefaultExcept(id);
+    if (dto.isDefault) await this.repo.clearDefaultExcept(ownerId, id);
     const record = await this.repo.update(id, dto);
     if (!record) throw new NotFoundException(`AI provider ${id} not found`);
     return toPublic(record);
   }
 
-  async setDefault(id: string): Promise<PublicProvider> {
-    await this.repo.clearDefaultExcept(id);
+  async setDefault(id: string, ownerId: string): Promise<PublicProvider> {
+    await this.repo.clearDefaultExcept(ownerId, id);
     const record = await this.repo.update(id, { isDefault: true, isActive: true });
     if (!record) throw new NotFoundException(`AI provider ${id} not found`);
     return toPublic(record);
@@ -135,9 +136,11 @@ export class AiProvidersService {
     }
   }
 
-  async generateTools(dto: GenerateToolsDto) {
-    const provider = dto.providerId ? await this.repo.findById(dto.providerId) : await this.repo.findDefault();
-    if (!provider) throw new NotFoundException('No AI provider found. Configure a default provider or select one explicitly.');
+  async generateTools(dto: GenerateToolsDto, ownerId: string) {
+    const provider = dto.providerId ? await this.repo.findById(dto.providerId) : await this.repo.findDefault(ownerId);
+    if (!provider || (dto.providerId && provider.ownerId !== ownerId)) {
+      throw new NotFoundException('No AI provider found. Configure a default provider or select one explicitly.');
+    }
     return {
       providerId: provider.id,
       tools: await this.executor.generateTools(provider, {

@@ -7,19 +7,21 @@ import {
   Param,
   Patch,
   Post,
+  Request,
   UseGuards,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt.guard';
 import { PromptsService } from './prompts.service';
+import { PromptOwnershipGuard } from './guards/prompt-ownership.guard';
 
 @Controller('prompts')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, PromptOwnershipGuard)
 export class PromptsController {
   constructor(private readonly promptsService: PromptsService) {}
 
   @Get()
-  findAll() {
-    return this.promptsService.findAll();
+  findAll(@Request() req: any) {
+    return this.promptsService.findAll(req.user.userId);
   }
 
   @Get(':id')
@@ -28,8 +30,8 @@ export class PromptsController {
   }
 
   @Post()
-  create(@Body() dto: { name: string; description?: string; content: string; tags?: string[] }) {
-    return this.promptsService.create(dto);
+  create(@Request() req: any, @Body() dto: { name: string; description?: string; content: string; tags?: string[] }) {
+    return this.promptsService.create(dto, req.user.userId);
   }
 
   @Patch(':id')

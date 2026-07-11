@@ -10,8 +10,10 @@ export class DashboardService {
     private readonly executionLogs: ExecutionLogsService,
   ) {}
 
-  async getStats(from: Date, to: Date) {
-    const logs = this.executionLogs.getInRange(from, to);
+  async getStats(from: Date, to: Date, ownerId: string) {
+    const allProjects = await this.projectRepo.findAll({ ownerId });
+    const ownedIds = new Set(allProjects.map((p) => p._id));
+    const logs = this.executionLogs.getInRange(from, to).filter((e) => ownedIds.has(e.serverId));
     const bucketType = this.bucketType(from, to);
 
     const callsInPeriod = logs.length;
@@ -40,7 +42,6 @@ export class DashboardService {
       .map(([_id, v]) => ({ _id, ...v }))
       .sort((a, b) => a._id.localeCompare(b._id));
 
-    const allProjects = await this.projectRepo.findAll();
     const totalProjects = allProjects.length;
     const projectsWithKey = allProjects.filter(
       (p) => p.mcpApiKey || (p.mcpApiKeys?.length ?? 0) > 0,
@@ -97,10 +98,10 @@ export class DashboardService {
     return `${d.getUTCFullYear()}-W${String(week).padStart(2, '0')}`;
   }
 
-  async getHealthSummary(): Promise<
+  async getHealthSummary(ownerId: string): Promise<
     { serverId: string; serverName: string; isPaused: boolean; errorRatePct: number; totalCalls: number; lastCallAt?: Date }[]
   > {
-    const projects = await this.projectRepo.findAll();
+    const projects = await this.projectRepo.findAll({ ownerId });
     const ids = projects.map((p) => p._id);
     const healthMap = this.executionLogs.getHealthSummary(ids);
 

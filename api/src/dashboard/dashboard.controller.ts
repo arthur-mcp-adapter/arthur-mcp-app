@@ -1,4 +1,4 @@
-import { BadRequestException, Controller, Get, Query, UseGuards } from '@nestjs/common';
+import { BadRequestException, Controller, Get, Query, Request, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt.guard';
 import { DashboardService } from './dashboard.service';
 
@@ -13,6 +13,7 @@ export class DashboardController {
    */
   @Get('stats')
   getStats(
+    @Request() req: any,
     @Query('from') fromStr?: string,
     @Query('to') toStr?: string,
   ) {
@@ -28,11 +29,11 @@ export class DashboardController {
       throw new BadRequestException('"from" must be before "to".');
     }
 
-    return this.dashboard.getStats(from, to);
+    return this.dashboard.getStats(from, to, req.user.userId);
   }
 
   @Get('health-summary')
-  getHealthSummary() {
-    return this.dashboard.getHealthSummary();
+  getHealthSummary(@Request() req: any) {
+    return this.dashboard.getHealthSummary(req.user.userId);
   }
 }

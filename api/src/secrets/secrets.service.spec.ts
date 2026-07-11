@@ -32,7 +32,7 @@ describe('SecretsService', () => {
   it('returns metadata only when listing secrets', async () => {
     repo.findAll.mockResolvedValue([makeSecret()]);
 
-    const result = await service.findAll();
+    const result = await service.findAll('owner-1');
 
     expect(result).toEqual([
       {
@@ -65,7 +65,7 @@ describe('SecretsService', () => {
     repo.findByName.mockResolvedValue(null);
     repo.create.mockResolvedValue(makeSecret());
 
-    const result = await service.create({ name: 'API_TOKEN', value: 'super-secret' });
+    const result = await service.create({ name: 'API_TOKEN', value: 'super-secret' }, 'owner-1');
 
     expect(result.name).toBe('API_TOKEN');
     expect('value' in result).toBe(false);
@@ -74,7 +74,7 @@ describe('SecretsService', () => {
   it('rejects duplicate names', async () => {
     repo.findByName.mockResolvedValue(makeSecret());
 
-    await expect(service.create({ name: 'API_TOKEN', value: 'super-secret' })).rejects.toThrow(BadRequestException);
+    await expect(service.create({ name: 'API_TOKEN', value: 'super-secret' }, 'owner-1')).rejects.toThrow(BadRequestException);
   });
 });
 

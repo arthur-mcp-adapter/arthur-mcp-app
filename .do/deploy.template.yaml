@@ -41,8 +41,3 @@ services:
       - key: MCP_API_KEY
         value: ""                        # set in dashboard
         type: SECRET
-      - key: DASHBOARD_USER
-        value: admin
-      - key: DASHBOARD_PASSWORD
-        value: ""                        # set in dashboard
-        type: SECRET

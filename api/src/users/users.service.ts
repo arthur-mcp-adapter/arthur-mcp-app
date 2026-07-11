@@ -4,24 +4,15 @@ import {
   Inject,
   Injectable,
   NotFoundException,
-  OnApplicationBootstrap,
 } from '@nestjs/common';
 import * as bcrypt from 'bcryptjs';
+import * as crypto from 'crypto';
 import { USER_REPO } from '../database/database.tokens';
 import { IUserRepository, UserRecord } from './user.repository';
-import { config } from '../config/configuration';
 
 @Injectable()
-export class UsersService implements OnApplicationBootstrap {
+export class UsersService {
   constructor(@Inject(USER_REPO) private readonly userRepo: IUserRepository) {}
-
-  async onApplicationBootstrap(): Promise<void> {
-    const username = config.dashboardUser;
-    const exists = await this.userRepo.findByUsername(username);
-    if (!exists) {
-      await this.create(username, config.dashboardPassword, config.dashboardEmail, 'admin');
-    }
-  }
 
   async findByUsername(username: string): Promise<UserRecord | null> {
     return this.userRepo.findByUsername(username);
@@ -31,7 +22,7 @@ export class UsersService implements OnApplicationBootstrap {
     return this.userRepo.findByEmail(email);
   }
 
-  async create(username: string, password: string, email: string, role = 'user'): Promise<UserRecord> {
+  async create(username: string, password: string, email: string, role = 'admin'): Promise<UserRecord> {
     const hash = await bcrypt.hash(password, 10);
     return this.userRepo.create({
       username: username.toLowerCase().trim(),
@@ -43,10 +34,6 @@ export class UsersService implements OnApplicationBootstrap {
 
   async validatePassword(plain: string, hash: string): Promise<boolean> {
     return bcrypt.compare(plain, hash);
-  }
-
-  async findAll(): Promise<Omit<UserRecord, 'password'>[]> {
-    return this.userRepo.findAll();
   }
 
   async findById(id: string): Promise<UserRecord> {
@@ -113,7 +100,35 @@ export class UsersService implements OnApplicationBootstrap {
     return safe;
   }
 
-  async remove(id: string): Promise<void> {
-    await this.userRepo.delete(id);
+  /** Finds the user linked to an OAuth identity, links it to a matching email, or creates a new account. */
+  async findOrCreateFromOAuth(
+    provider: 'google' | 'github',
+    profile: { id: string; email: string; name?: string },
+  ): Promise<UserRecord> {
+    const existing =
+      provider === 'google'
+        ? await this.userRepo.findByGoogleId(profile.id)
+        : await this.userRepo.findByGithubId(profile.id);
+    if (existing) return existing;
+
+    const providerField = provider === 'google' ? { googleId: profile.id } : { githubId: profile.id };
+
+    const byEmail = await this.userRepo.findByEmail(profile.email);
+    if (byEmail) return this.userRepo.update(byEmail._id, providerField);
+
+    const username = await this.generateUniqueUsername(profile.name || profile.email.split('@')[0]);
+    const password = await bcrypt.hash(crypto.randomBytes(32).toString('hex'), 10);
+    return this.userRepo.create({ username, email: profile.email, password, role: 'admin', ...providerField });
+  }
+
+  private async generateUniqueUsername(seed: string): Promise<string> {
+    const base = seed.toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 40).padEnd(3, '0') || 'user';
+    let candidate = base;
+    let suffix = 0;
+    while (await this.userRepo.findByUsername(candidate)) {
+      suffix += 1;
+      candidate = `${base}${suffix}`;
+    }
+    return candidate;
   }
 }

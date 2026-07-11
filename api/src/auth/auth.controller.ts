@@ -1,7 +1,11 @@
-import { Body, Controller, HttpCode, Post, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Post, Req, Request, Res, UseGuards } from '@nestjs/common';
+import type { Response } from 'express';
 import { z } from 'zod';
+import { config } from '../config/configuration';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './local.guard';
+import { GoogleAuthGuard } from './google.guard';
+import { GithubAuthGuard } from './github.guard';
 
 const RegisterSchema = z.object({
   username: z.string().min(3).max(50),
@@ -13,11 +17,42 @@ const RegisterSchema = z.object({
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  /** Which social sign-in buttons the frontend should show. */
+  @Get('providers')
+  providers(): { google: boolean; github: boolean } {
+    return {
+      google: !!(config.googleClientId && config.googleClientSecret),
+      github: !!(config.githubClientId && config.githubClientSecret),
+    };
+  }
+
   @Post('login')
   @HttpCode(200)
   @UseGuards(LocalAuthGuard)
   login(@Request() req: any): Promise<{ access_token: string }> {
     return this.authService.login(req.user);
+  }
+
+  @Get('google')
+  @UseGuards(GoogleAuthGuard)
+  googleAuth(): void {}
+
+  @Get('google/callback')
+  @UseGuards(GoogleAuthGuard)
+  async googleCallback(@Req() req: any, @Res() res: Response): Promise<void> {
+    const { access_token } = await this.authService.login(req.user);
+    res.redirect(`/oauth-callback?token=${encodeURIComponent(access_token)}`);
+  }
+
+  @Get('github')
+  @UseGuards(GithubAuthGuard)
+  githubAuth(): void {}
+
+  @Get('github/callback')
+  @UseGuards(GithubAuthGuard)
+  async githubCallback(@Req() req: any, @Res() res: Response): Promise<void> {
+    const { access_token } = await this.authService.login(req.user);
+    res.redirect(`/oauth-callback?token=${encodeURIComponent(access_token)}`);
   }
 
   @Post('register')

@@ -72,7 +72,7 @@ export class SwaggerImportService {
     };
   }
 
-  async create(content: string, filename: string, baseUrlOverride?: string, auth?: AuthConfig): Promise<SwaggerProjectRecord> {
+  async create(content: string, filename: string, ownerId: string, baseUrlOverride?: string, auth?: AuthConfig): Promise<SwaggerProjectRecord> {
     const rawSpec = this.parseContent(content, filename);
     this.validateSpec(rawSpec);
     const normalizedSpec = await this.normalizeSpec(rawSpec);
@@ -103,6 +103,7 @@ export class SwaggerImportService {
       maintenanceMode: { enabled: false, message: '' },
       availabilityWindow: { enabled: false, timezone: 'UTC', schedule: [] },
       alertConfig: { enabled: false, errorThresholdPct: 20, notifyEmail: '' },
+      ownerId,
     });
   }
 
@@ -140,7 +141,7 @@ export class SwaggerImportService {
     return { added, updated, baseUrl };
   }
 
-  async fromPostman(content: string, baseUrlOverride?: string): Promise<SwaggerProjectRecord> {
+  async fromPostman(content: string, ownerId: string, baseUrlOverride?: string): Promise<SwaggerProjectRecord> {
     const openApiSpec = this.parsePostman(content);
     const base = baseUrlOverride?.trim() || openApiSpec.servers?.[0]?.url || 'http://localhost';
     const normalizedSpec = await parseSpec(openApiSpec);
@@ -166,6 +167,7 @@ export class SwaggerImportService {
       maintenanceMode: { enabled: false, message: '' },
       availabilityWindow: { enabled: false, timezone: 'UTC', schedule: [] },
       alertConfig: { enabled: false, errorThresholdPct: 20, notifyEmail: '' },
+      ownerId,
     });
   }
 

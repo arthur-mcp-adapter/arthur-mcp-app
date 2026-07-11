@@ -50,7 +50,7 @@ describe('AiProvidersService', () => {
   it('omits apiKey from public reads', async () => {
     repo.findAll.mockResolvedValue([record()]);
 
-    const result = await service.findAll();
+    const result = await service.findAll('owner-1');
 
     expect(result[0]).not.toHaveProperty('apiKey');
   });
@@ -64,18 +64,18 @@ describe('AiProvidersService', () => {
       model: 'llama3.2',
       apiKey: '',
       isDefault: true,
-    });
+    }, 'owner-1');
 
-    expect(repo.clearDefaultExcept).toHaveBeenCalledWith();
+    expect(repo.clearDefaultExcept).toHaveBeenCalledWith('owner-1');
     expect(repo.create).toHaveBeenCalledWith(expect.objectContaining({ isDefault: true, apiKey: '' }));
   });
 
   it('marks a provider as default and active', async () => {
     repo.update.mockResolvedValue(record({ isDefault: true }));
 
-    await service.setDefault('provider-1');
+    await service.setDefault('provider-1', 'owner-1');
 
-    expect(repo.clearDefaultExcept).toHaveBeenCalledWith('provider-1');
+    expect(repo.clearDefaultExcept).toHaveBeenCalledWith('owner-1', 'provider-1');
     expect(repo.update).toHaveBeenCalledWith('provider-1', { isDefault: true, isActive: true });
   });
 
@@ -126,7 +126,7 @@ describe('AiProvidersService', () => {
 
     const result = await service.generateTools({
       tools: [{ name: 'getCustomers', method: 'GET', path: '/customers' }],
-    });
+    }, 'owner-1');
 
     expect(result.providerId).toBe('default-provider');
     expect(executor.generateTools).toHaveBeenCalledWith(expect.objectContaining({ id: 'default-provider' }), expect.any(Object));
@@ -135,6 +135,6 @@ describe('AiProvidersService', () => {
   it('throws when the selected provider does not exist', async () => {
     repo.findById.mockResolvedValue(null);
 
-    await expect(service.generateTools({ providerId: 'missing', tools: [] })).rejects.toBeInstanceOf(NotFoundException);
+    await expect(service.generateTools({ providerId: 'missing', tools: [] }, 'owner-1')).rejects.toBeInstanceOf(NotFoundException);
   });
 });

@@ -164,14 +164,15 @@ export class SwaggerService {
   async create(
     content: string,
     filename: string,
+    ownerId: string,
     baseUrlOverride?: string,
     auth?: AuthConfig,
   ): Promise<SwaggerProjectRecord> {
-    return this.imports.create(content, filename, baseUrlOverride, auth);
+    return this.imports.create(content, filename, ownerId, baseUrlOverride, auth);
   }
 
-  findAll(tags?: string[]): Promise<SwaggerProjectRecord[]> {
-    return this.projectRepo.findAll(tags?.length ? { tags } : undefined);
+  findAll(tags?: string[], ownerId?: string): Promise<SwaggerProjectRecord[]> {
+    return this.projectRepo.findAll({ ...(tags?.length ? { tags } : {}), ownerId });
   }
 
   async updateTags(id: string, tags: string[]): Promise<SwaggerProjectRecord> {
@@ -254,7 +255,7 @@ export class SwaggerService {
     return this.imports.reimportSpec(id, content, filename, baseUrlOverride);
   }
 
-  async createEmpty(dto: { name: string; description?: string; baseUrl: string; tags?: string[] }): Promise<SwaggerProjectRecord> {
+  async createEmpty(dto: { name: string; description?: string; baseUrl: string; tags?: string[] }, ownerId: string): Promise<SwaggerProjectRecord> {
     const name = dto.name.trim();
     const shareSlug = uniqueShareSlug(name, await this.projectRepo.findAll());
     return this.projectRepo.create({
@@ -275,6 +276,7 @@ export class SwaggerService {
       maintenanceMode: { enabled: false, message: '' },
       availabilityWindow: { enabled: false, timezone: 'UTC', schedule: [] },
       alertConfig: { enabled: false, errorThresholdPct: 20, notifyEmail: '' },
+      ownerId,
     });
   }
 
@@ -578,6 +580,8 @@ export class SwaggerService {
     if (!promptId?.trim()) throw new BadRequestException('promptId is required.');
     const server = await this.projectRepo.findById(id);
     if (!server) throw new NotFoundException('Project not found.');
+    const prompt = await this.promptRepo.findById(promptId);
+    if (!prompt || prompt.ownerId !== server.ownerId) throw new NotFoundException('Prompt not found.');
     const refs = server.prompts as Array<{ promptId: string }>;
     if (refs.some((r) => r.promptId === promptId)) return { promptId };
     refs.push({ promptId });
@@ -662,8 +666,8 @@ export class SwaggerService {
     return this.imports.testConnection(baseUrl, auth);
   }
 
-  async fromPostman(content: string, baseUrlOverride?: string): Promise<SwaggerProjectRecord> {
-    return this.imports.fromPostman(content, baseUrlOverride);
+  async fromPostman(content: string, ownerId: string, baseUrlOverride?: string): Promise<SwaggerProjectRecord> {
+    return this.imports.fromPostman(content, ownerId, baseUrlOverride);
   }
 
   async previewPostman(

@@ -42,6 +42,7 @@ export interface SwaggerProjectRecord {
   };
   connectionConfig?: DbConnectionConfig;
   dbQueries?: DbQuery[];
+  ownerId?: string | null;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -49,7 +50,7 @@ export interface SwaggerProjectRecord {
 export interface ISwaggerProjectRepository {
   findById(id: string): Promise<SwaggerProjectRecord | null>;
   findByIdOrShareSlug(identifier: string): Promise<SwaggerProjectRecord | null>;
-  findAll(filter?: { tags?: string[] }): Promise<SwaggerProjectRecord[]>;
+  findAll(filter?: { tags?: string[]; ownerId?: string }): Promise<SwaggerProjectRecord[]>;
   findAllIds(): Promise<string[]>;
   create(data: Omit<SwaggerProjectRecord, '_id' | 'createdAt' | 'updatedAt'>): Promise<SwaggerProjectRecord>;
   update(id: string, data: Partial<Omit<SwaggerProjectRecord, '_id'>>): Promise<SwaggerProjectRecord | null>;

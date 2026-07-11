@@ -212,7 +212,7 @@ export class AiProviderExecutorService {
     if (providerKey(provider.provider) === 'ollama' && !provider.apiKey) return '';
     const match = provider.apiKey.match(/^\{\{secret:([^}]+)\}\}$/);
     if (!match) throw new BadRequestException('AI provider API key must reference a Secret.');
-    const secret = await this.secretRepo.findByName(match[1]);
+    const secret = await this.secretRepo.findByName(match[1], provider.ownerId);
     if (!secret) throw new NotFoundException(`Secret "${match[1]}" not found.`);
     return secret.value;
   }

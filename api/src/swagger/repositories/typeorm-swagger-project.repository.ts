@@ -48,6 +48,7 @@ export class TypeOrmSwaggerProjectRepository implements ISwaggerProjectRepositor
       responseConfig: e.responseConfig ? JSON.parse(e.responseConfig) : { enabled: false },
       connectionConfig: e.connectionConfig ? JSON.parse(e.connectionConfig) : undefined,
       dbQueries: e.dbQueries ? JSON.parse(e.dbQueries) : [],
+      ownerId: e.ownerId,
       createdAt: e.createdAt,
       updatedAt: e.updatedAt,
     };
@@ -82,6 +83,7 @@ export class TypeOrmSwaggerProjectRepository implements ISwaggerProjectRepositor
     if (data.responseConfig !== undefined) (e as any).responseConfig = JSON.stringify(data.responseConfig);
     if (data.connectionConfig !== undefined) e.connectionConfig = data.connectionConfig ? JSON.stringify(data.connectionConfig) : undefined;
     if (data.dbQueries !== undefined) e.dbQueries = JSON.stringify(data.dbQueries);
+    if (data.ownerId !== undefined) e.ownerId = data.ownerId ?? undefined;
     return e;
   }
 
@@ -100,7 +102,7 @@ export class TypeOrmSwaggerProjectRepository implements ISwaggerProjectRepositor
     return e ? this.toRecord(e, true) : null;
   }
 
-  async findAll(filter?: { tags?: string[] }): Promise<SwaggerProjectRecord[]> {
+  async findAll(filter?: { tags?: string[]; ownerId?: string }): Promise<SwaggerProjectRecord[]> {
     let entities = await this.repo.find({
       select: {
         id: true, name: true, baseUrl: true, description: true, version: true,
@@ -108,8 +110,10 @@ export class TypeOrmSwaggerProjectRepository implements ISwaggerProjectRepositor
         tools: true, auth: true, status: true, errorMessage: true,
         mcpApiKeys: true, resources: true, prompts: true, tags: true, rateLimit: true, isPaused: true,
         maintenanceMode: true, availabilityWindow: true, alertConfig: true,
+        ownerId: true,
         createdAt: true, updatedAt: true,
       },
+      where: filter?.ownerId ? { ownerId: filter.ownerId } : undefined,
       order: { createdAt: 'DESC' },
     });
 

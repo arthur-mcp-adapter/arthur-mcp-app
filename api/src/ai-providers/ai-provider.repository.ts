@@ -11,16 +11,17 @@ export interface AiProviderRecord {
   lastTestStatus?: 'success' | 'error';
   lastTestedAt?: Date;
   lastTestError?: string;
+  ownerId?: string;
   createdAt: Date;
   updatedAt: Date;
 }
 
 export interface IAiProviderRepository {
-  findAll(): Promise<AiProviderRecord[]>;
+  findAll(ownerId?: string): Promise<AiProviderRecord[]>;
   findById(id: string): Promise<AiProviderRecord | null>;
-  findDefault(): Promise<AiProviderRecord | null>;
+  findDefault(ownerId?: string): Promise<AiProviderRecord | null>;
   create(data: Omit<AiProviderRecord, 'id' | 'createdAt' | 'updatedAt'>): Promise<AiProviderRecord>;
   update(id: string, data: Partial<Omit<AiProviderRecord, 'id' | 'createdAt' | 'updatedAt'>>): Promise<AiProviderRecord | null>;
-  clearDefaultExcept(id?: string): Promise<void>;
+  clearDefaultExcept(ownerId?: string, id?: string): Promise<void>;
   delete(id: string): Promise<boolean>;
 }

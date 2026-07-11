@@ -22,13 +22,17 @@ export class TypeOrmAiProviderRepository implements IAiProviderRepository {
       lastTestStatus: e.lastTestStatus as AiProviderRecord['lastTestStatus'],
       lastTestedAt: e.lastTestedAt,
       lastTestError: e.lastTestError,
+      ownerId: e.ownerId,
       createdAt: e.createdAt,
       updatedAt: e.updatedAt,
     };
   }
 
-  async findAll(): Promise<AiProviderRecord[]> {
-    const rows = await this.repo.find({ order: { isDefault: 'DESC', createdAt: 'DESC' } });
+  async findAll(ownerId?: string): Promise<AiProviderRecord[]> {
+    const rows = await this.repo.find({
+      where: ownerId ? { ownerId } : undefined,
+      order: { isDefault: 'DESC', createdAt: 'DESC' },
+    });
     return rows.map((e) => this.toRecord(e));
   }
 
@@ -37,8 +41,8 @@ export class TypeOrmAiProviderRepository implements IAiProviderRepository {
     return e ? this.toRecord(e) : null;
   }
 
-  async findDefault(): Promise<AiProviderRecord | null> {
-    const e = await this.repo.findOne({ where: { isDefault: true, isActive: true } });
+  async findDefault(ownerId?: string): Promise<AiProviderRecord | null> {
+    const e = await this.repo.findOne({ where: { isDefault: true, isActive: true, ...(ownerId ? { ownerId } : {}) } });
     return e ? this.toRecord(e) : null;
   }
 
@@ -56,8 +60,8 @@ export class TypeOrmAiProviderRepository implements IAiProviderRepository {
     return this.toRecord(saved);
   }
 
-  async clearDefaultExcept(id?: string): Promise<void> {
-    const rows = await this.repo.find({ where: { isDefault: true } });
+  async clearDefaultExcept(ownerId?: string, id?: string): Promise<void> {
+    const rows = await this.repo.find({ where: { isDefault: true, ...(ownerId ? { ownerId } : {}) } });
     await Promise.all(rows.filter((row) => row.id !== id).map((row) => this.repo.save({ ...row, isDefault: false })));
   }
 

@@ -7,11 +7,12 @@ import { SwaggerController } from './swagger.controller';
 import { SwaggerService } from './swagger.service';
 import { SwaggerApiKeysService } from './swagger-api-keys.service';
 import { SwaggerImportService } from './swagger-import.service';
+import { ServerOwnershipGuard } from './guards/server-ownership.guard';
 
 @Module({
   imports: [AuthModule, DynamicMcpModule, SettingsModule, ErrorTrackingModule],
   controllers: [SwaggerController],
-  providers: [SwaggerService, SwaggerApiKeysService, SwaggerImportService],
+  providers: [SwaggerService, SwaggerApiKeysService, SwaggerImportService, ServerOwnershipGuard],
   exports: [SwaggerService],
 })
 export class SwaggerModule {}

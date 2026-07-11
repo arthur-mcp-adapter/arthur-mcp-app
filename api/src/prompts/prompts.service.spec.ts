@@ -33,7 +33,7 @@ describe('PromptsService', () => {
     const prompts = [prompt()];
     repo.findAll.mockResolvedValue(prompts);
 
-    await expect(service.findAll()).resolves.toBe(prompts);
+    await expect(service.findAll('owner-1')).resolves.toBe(prompts);
   });
 
   it('returns a prompt by id', async () => {
@@ -57,19 +57,20 @@ describe('PromptsService', () => {
       name: '  New prompt  ',
       description: '   ',
       content: '  Hello {{name}}  ',
-    })).resolves.toBe(created);
+    }, 'owner-1')).resolves.toBe(created);
 
     expect(repo.create).toHaveBeenCalledWith({
       name: 'New prompt',
       description: undefined,
       content: 'Hello {{name}}',
       tags: [],
+      ownerId: 'owner-1',
     });
   });
 
   it('rejects invalid create input', async () => {
-    expect(() => service.create({ name: ' ', content: 'valid' })).toThrow(BadRequestException);
-    expect(() => service.create({ name: 'valid', content: ' ' })).toThrow(BadRequestException);
+    expect(() => service.create({ name: ' ', content: 'valid' }, 'owner-1')).toThrow(BadRequestException);
+    expect(() => service.create({ name: 'valid', content: ' ' }, 'owner-1')).toThrow(BadRequestException);
   });
 
   it('updates only provided fields and trims text fields', async () => {

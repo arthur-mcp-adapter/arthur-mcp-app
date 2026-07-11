@@ -1,11 +1,12 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, Column, Index, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity('secrets')
+@Index('UQ_secrets_owner_id_name', ['ownerId', 'name'], { unique: true })
 export class SecretEntity {
   @PrimaryGeneratedColumn('uuid', { name: 'id' })
   id: string;
 
-  @Column({ name: 'name', unique: true })
+  @Column({ name: 'name' })
   name: string;
 
   @Column('text', { name: 'value' })
@@ -13,6 +14,9 @@ export class SecretEntity {
 
   @Column({ name: 'description', nullable: true })
   description?: string;
+
+  @Column({ name: 'owner_id', nullable: true })
+  ownerId?: string;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;

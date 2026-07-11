@@ -3,6 +3,7 @@ export interface SecretRecord {
   name: string;
   value: string;
   description?: string;
+  ownerId?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -10,9 +11,9 @@ export interface SecretRecord {
 export type SecretMetadataRecord = Omit<SecretRecord, 'value'>;
 
 export interface ISecretRepository {
-  findAll(): Promise<SecretRecord[]>;
+  findAll(ownerId?: string): Promise<SecretRecord[]>;
   findById(id: string): Promise<SecretRecord | null>;
-  findByName(name: string): Promise<SecretRecord | null>;
+  findByName(name: string, ownerId?: string): Promise<SecretRecord | null>;
   create(data: Omit<SecretRecord, 'id' | 'createdAt' | 'updatedAt'>): Promise<SecretRecord>;
   update(id: string, data: Partial<Omit<SecretRecord, 'id'>>): Promise<SecretRecord | null>;
   delete(id: string): Promise<boolean>;

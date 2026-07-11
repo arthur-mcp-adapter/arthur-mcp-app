@@ -4,6 +4,8 @@ import type { DataSourceOptions } from 'typeorm';
 
 import { parseDatabaseUri } from './database-uri';
 import { InitialTypeormSchema1700000000000 } from './migrations/1700000000000-InitialTypeormSchema';
+import { AddOauthColumnsToUsers1700000001000 } from './migrations/1700000001000-AddOauthColumnsToUsers';
+import { AddOwnerIdColumns1700000002000 } from './migrations/1700000002000-AddOwnerIdColumns';
 
 import { UserEntity } from '../users/user.entity';
 import { SwaggerProjectEntity } from '../swagger/swagger-project.entity';
@@ -41,6 +43,8 @@ const TYPEORM_ENTITIES = [
 
 const TYPEORM_MIGRATIONS = [
   InitialTypeormSchema1700000000000,
+  AddOauthColumnsToUsers1700000001000,
+  AddOwnerIdColumns1700000002000,
 ];
 
 function buildTypeOrmOptions(): DataSourceOptions {
