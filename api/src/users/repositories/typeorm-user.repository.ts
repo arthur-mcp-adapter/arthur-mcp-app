@@ -17,6 +17,7 @@ export class TypeOrmUserRepository implements IUserRepository {
       role: e.role,
       googleId: e.googleId,
       githubId: e.githubId,
+      supabaseId: e.supabaseId,
       createdAt: e.createdAt,
       updatedAt: e.updatedAt,
     };
@@ -39,6 +40,11 @@ export class TypeOrmUserRepository implements IUserRepository {
 
   async findByGithubId(githubId: string): Promise<UserRecord | null> {
     const e = await this.repo.findOne({ where: { githubId } });
+    return e ? this.toRecord(e) : null;
+  }
+
+  async findBySupabaseId(supabaseId: string): Promise<UserRecord | null> {
+    const e = await this.repo.findOne({ where: { supabaseId } });
     return e ? this.toRecord(e) : null;
   }
 
@@ -69,6 +75,7 @@ export class TypeOrmUserRepository implements IUserRepository {
     role?: string;
     googleId?: string;
     githubId?: string;
+    supabaseId?: string;
   }): Promise<UserRecord> {
     const entity = this.repo.create({
       username: data.username.toLowerCase().trim(),
@@ -77,6 +84,7 @@ export class TypeOrmUserRepository implements IUserRepository {
       role: data.role ?? 'user',
       googleId: data.googleId ?? null,
       githubId: data.githubId ?? null,
+      supabaseId: data.supabaseId ?? null,
     });
     const saved = await this.repo.save(entity);
     return this.toRecord(saved);

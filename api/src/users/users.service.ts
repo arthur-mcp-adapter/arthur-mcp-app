@@ -100,18 +100,24 @@ export class UsersService {
     return safe;
   }
 
-  /** Finds the user linked to an OAuth identity, links it to a matching email, or creates a new account. */
+  /** Finds the user linked to an OAuth/external-auth identity, links it to a matching email, or creates a new account. */
   async findOrCreateFromOAuth(
-    provider: 'google' | 'github',
+    provider: 'google' | 'github' | 'supabase',
     profile: { id: string; email: string; name?: string },
   ): Promise<UserRecord> {
-    const existing =
-      provider === 'google'
-        ? await this.userRepo.findByGoogleId(profile.id)
-        : await this.userRepo.findByGithubId(profile.id);
-    if (existing) return existing;
+    const findByProviderId = {
+      google: this.userRepo.findByGoogleId.bind(this.userRepo),
+      github: this.userRepo.findByGithubId.bind(this.userRepo),
+      supabase: this.userRepo.findBySupabaseId.bind(this.userRepo),
+    }[provider];
+    const providerField = {
+      google: { googleId: profile.id },
+      github: { githubId: profile.id },
+      supabase: { supabaseId: profile.id },
+    }[provider];
 
-    const providerField = provider === 'google' ? { googleId: profile.id } : { githubId: profile.id };
+    const existing = await findByProviderId(profile.id);
+    if (existing) return existing;
 
     const byEmail = await this.userRepo.findByEmail(profile.email);
     if (byEmail) return this.userRepo.update(byEmail._id, providerField);

@@ -71,6 +71,7 @@ This file should be updated when task state changes. It does not replace issues 
 - [x] Added Claude Code `gof-expert` specialist for Gang of Four design pattern selection, naming, refactoring, and misuse review.
 - [x] Added Claude Code `solid-expert` specialist for SOLID responsibility, interface, dependency direction, substitutability, and maintainability review.
 - [x] Added Claude Code `supabase-expert` specialist for PostgreSQL schemas, migrations, RLS, Auth, Storage, Realtime, Edge Functions, security, and operations.
+- [x] Documented the phased Supabase adoption strategy in `docs/SUPABASE_ADOPTION_PLAN.md`, prioritizing managed PostgreSQL while preserving NestJS, TypeORM, and the existing permission model.
 - [x] Updated the Claude Code `devops-expert` for the current Arthur MCP stack and added the `kubernetes-expert` specialist for Kubernetes workloads and cluster operations.
 - [x] Documented the phased Ubuntu, Docker, K3s, GHCR, Flux, TLS, secrets, backup, observability, and rollback deployment plan in `docs/UBUNTU_K3S_DEPLOYMENT_PLAN.pt-BR.md`.
 - [ ] Implement phases 0-2 of the Ubuntu/K3s deployment plan: confirm production prerequisites, prepare the Ubuntu host, and harden the Docker image.

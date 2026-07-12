@@ -14,6 +14,8 @@ Frontend duplication optimization is progressing through a phased extraction pla
 
 ## Latest Changes
 
+- Added `docs/SUPABASE_ADOPTION_PLAN.md` with the recommended phased adoption path: managed PostgreSQL first, followed by measured PostgreSQL improvements, a Realtime pilot, Storage when required, RLS after workspace identity is explicit, and a separate future Auth evaluation.
+- Documented that NestJS, TypeORM migrations, backend permission guards, and the current authentication system remain authoritative during the initial Supabase adoption, avoiding duplicate backends and competing migration histories.
 - Added the Claude Code `supabase-expert` specialist for Supabase PostgreSQL schema design, migration-driven changes, RLS, Auth, Storage, Realtime, Edge Functions, generated types, security reviews, performance, and production operations.
 - Registered `supabase-expert` in `.claude/agents/README.md`, `AGENTS.md`, and `docs/ROADMAP.md`, including routing guidance and Arthur MCP-specific persistence and permission constraints.
 - Added `docs/UBUNTU_K3S_DEPLOYMENT_PLAN.pt-BR.md` with a phased plan for running Arthur MCP on a single Ubuntu host using Docker, K3s, public GHCR images, Flux GitOps, Kustomize, cert-manager, SOPS/age, an external PostgreSQL database, backups, observability, and Git-based rollback.
