@@ -1,29 +1,42 @@
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
-import { SETTINGS_REPO } from '../database/database.tokens';
-import { ISettingsRepository, SettingsRecord } from './settings.repository';
+import { Injectable } from '@nestjs/common';
+import { config } from '../config/configuration';
 
+export interface SettingsSnapshot {
+  appUrl: string;
+  jwtSecretConfigured: boolean;
+  globalRequestHeaders: { name: string; value: string }[];
+  smtp: {
+    configured: boolean;
+    host?: string;
+    port?: number;
+    user?: string;
+    from?: string;
+  };
+  /** Actual running values for the observability env vars shown on the Observability page. */
+  observabilityEnvironment: Record<string, string>;
+}
+
+/** Read-only snapshot of operator-level config, sourced entirely from environment variables. */
 @Injectable()
 export class SettingsService {
-  constructor(@Inject(SETTINGS_REPO) private readonly settingsRepo: ISettingsRepository) {}
-
-  async get(): Promise<SettingsRecord> {
-    return this.settingsRepo.getGlobal();
-  }
-
-  async update(dto: Partial<Omit<SettingsRecord, '_id' | 'key'>>): Promise<SettingsRecord> {
-    if (dto.jwtSecret !== undefined) {
-      const jwtSecret = dto.jwtSecret.trim();
-      if (jwtSecret && jwtSecret.length < 16) {
-        throw new BadRequestException('JWT secret must be at least 16 characters.');
-      }
-      dto.jwtSecret = jwtSecret;
-    }
-    return this.settingsRepo.updateGlobal(dto);
-  }
-
-  async getSafe(): Promise<Omit<SettingsRecord, 'smtpPass' | 'jwtSecret'> & { smtpPassSet: boolean; jwtSecretSet: boolean }> {
-    const doc = await this.get();
-    const { smtpPass, jwtSecret, ...rest } = doc;
-    return { ...rest, smtpPassSet: !!smtpPass, jwtSecretSet: !!jwtSecret };
+  getSnapshot(): SettingsSnapshot {
+    return {
+      appUrl: config.appUrl,
+      jwtSecretConfigured: config.jwtSecret !== 'change-me-in-production-secret',
+      globalRequestHeaders: config.globalRequestHeaders,
+      smtp: {
+        configured: !!(config.smtpHost && config.smtpUser),
+        host: config.smtpHost,
+        port: config.smtpPort,
+        user: config.smtpUser,
+        from: config.smtpFrom,
+      },
+      observabilityEnvironment: {
+        ENABLE_METRICS: process.env.ENABLE_METRICS ?? 'true',
+        SERVICE_NAME: process.env.SERVICE_NAME ?? 'arthur-mcp-adapter',
+        SERVICE_VERSION: process.env.SERVICE_VERSION ?? '1.0.0',
+        PROMETHEUS_METRICS_PATH: process.env.PROMETHEUS_METRICS_PATH ?? '/metrics',
+      },
+    };
   }
 }

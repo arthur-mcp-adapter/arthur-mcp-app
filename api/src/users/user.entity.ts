@@ -23,6 +23,9 @@ export class UserEntity {
   @Column({ name: 'github_id', unique: true, nullable: true })
   githubId: string | null;
 
+  @Column({ name: 'supabase_id', unique: true, nullable: true })
+  supabaseId: string | null;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 

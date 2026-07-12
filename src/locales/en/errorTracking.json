@@ -67,6 +67,7 @@
     "environment": "e.g. production"
   },
   "hint": {
+    "selfHostedOnly": "This is a platform-wide integration, configurable only on self-hosted deployments. It's read-only here.",
     "dsnRequired": "Find your DSN in Sentry under Settings → Projects → Client Keys.",
     "dsnProtected": "Credential is encrypted and cannot be retrieved after saving.",
     "environmentOptional": "Filter events by environment. Leave empty to capture all.",

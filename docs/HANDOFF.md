@@ -14,6 +14,12 @@ Frontend duplication optimization is progressing through a phased extraction pla
 
 ## Latest Changes
 
+- Added the Claude Code `supabase-expert` specialist for Supabase PostgreSQL schema design, migration-driven changes, RLS, Auth, Storage, Realtime, Edge Functions, generated types, security reviews, performance, and production operations.
+- Registered `supabase-expert` in `.claude/agents/README.md`, `AGENTS.md`, and `docs/ROADMAP.md`, including routing guidance and Arthur MCP-specific persistence and permission constraints.
+- Added `docs/UBUNTU_K3S_DEPLOYMENT_PLAN.pt-BR.md` with a phased plan for running Arthur MCP on a single Ubuntu host using Docker, K3s, public GHCR images, Flux GitOps, Kustomize, cert-manager, SOPS/age, an external PostgreSQL database, backups, observability, and Git-based rollback.
+- Updated the Claude Code specialist registry in both `AGENTS.md` and `.claude/agents/README.md`:
+  - Modernized `devops-expert` for the current Arthur MCP stack and operational workflow.
+  - Added `kubernetes-expert` for manifests, Helm/Kustomize, workloads, networking, policies, storage, observability, and cluster operations.
 - Added HTML preview support to the authenticated Resource execute panel:
   - `ResourceTestPanel` now detects HTML responses from resource execution by MIME type or content shape.
   - HTML responses render in a sandboxed iframe preview block while the raw response remains visible below.

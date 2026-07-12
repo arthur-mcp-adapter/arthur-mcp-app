@@ -67,6 +67,7 @@
     "environment": "ex: production"
   },
   "hint": {
+    "selfHostedOnly": "Esta é uma integração de toda a plataforma, configurável apenas em deployments self-hosted. Aqui ela é somente leitura.",
     "dsnRequired": "Encontre o DSN no Sentry em Configurações → Projetos → Chaves do Cliente.",
     "dsnProtected": "A credencial é criptografada e não pode ser recuperada após salvar.",
     "environmentOptional": "Filtre eventos por ambiente. Deixe vazio para capturar todos.",

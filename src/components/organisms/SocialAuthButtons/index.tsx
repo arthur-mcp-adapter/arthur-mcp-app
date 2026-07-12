@@ -3,7 +3,7 @@ import { Button, Divider, Stack, Typography } from '@mui/material'
 import { IconBrandGoogle, IconBrandGithub } from '@tabler/icons-react'
 import { useTranslation } from 'react-i18next'
 import api from '../../../api'
-import { backendUrl } from '../../../config/urls'
+import { apiUrl } from '../../../config/urls'
 
 interface OAuthProviders {
   google: boolean
@@ -33,12 +33,12 @@ export default function SocialAuthButtons() {
       </Divider>
       <Stack direction="row" spacing={2}>
         {providers.google && (
-          <Button variant="outlined" fullWidth href={backendUrl('/auth/google')} startIcon={<IconBrandGoogle size={18} />}>
+          <Button variant="outlined" fullWidth href={apiUrl('/auth/google')} startIcon={<IconBrandGoogle size={18} />}>
             Google
           </Button>
         )}
         {providers.github && (
-          <Button variant="outlined" fullWidth href={backendUrl('/auth/github')} startIcon={<IconBrandGithub size={18} />}>
+          <Button variant="outlined" fullWidth href={apiUrl('/auth/github')} startIcon={<IconBrandGithub size={18} />}>
             GitHub
           </Button>
         )}

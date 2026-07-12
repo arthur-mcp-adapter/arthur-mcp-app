@@ -13,8 +13,9 @@ import ServerDetail from './pages/ServerDetail'
 import McpDocs from './pages/McpDocs'
 import Profile from './pages/Profile'
 import Dashboard from './pages/Dashboard'
-import Settings from './pages/Settings'
-import AuditLogs from './pages/AuditLogs'
+// Administration (Only for Self Hosted) — routes disabled, see below.
+// import Settings from './pages/Settings'
+// import AuditLogs from './pages/AuditLogs'
 import SetupWizard from './pages/SetupWizard'
 import SharePage from './pages/SharePage'
 import Templates from './pages/Templates'
@@ -28,8 +29,8 @@ import SecretDetail from './pages/SecretDetail'
 import AiProviders from './pages/AiProviders'
 import NewAiProvider from './pages/NewAiProvider'
 import AiProviderDetail from './pages/AiProviderDetail'
-import Observability from './pages/Observability'
-import ErrorTracking from './pages/ErrorTracking'
+// import Observability from './pages/Observability'
+// import ErrorTracking from './pages/ErrorTracking'
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
   const token = localStorage.getItem('token')
@@ -75,8 +76,9 @@ export default function App() {
                   <Route path="/servers/:id/docs" element={<McpDocs />} />
 <Route path="/profile" element={<Profile />} />
                   <Route path="/dashboard" element={<Dashboard />} />
-                  <Route path="/settings" element={<Settings />} />
-                  <Route path="/audit-logs" element={<AuditLogs />} />
+                  {/* Administration (Only for Self Hosted) — disabled for hosted deployments */}
+                  {/* <Route path="/settings" element={<Settings />} /> */}
+                  {/* <Route path="/audit-logs" element={<AuditLogs />} /> */}
                   <Route path="/templates" element={<Templates />} />
                   <Route path="/prompts" element={<Prompts />} />
                   <Route path="/prompts/new" element={<NewPrompt />} />
@@ -88,10 +90,10 @@ export default function App() {
                   <Route path="/ai-providers" element={<AiProviders />} />
                   <Route path="/ai-providers/new" element={<NewAiProvider />} />
                   <Route path="/ai-providers/:id" element={<AiProviderDetail />} />
-                  <Route path="/observability" element={<Observability />} />
-                  <Route path="/observability/new" element={<Navigate to="/observability" replace />} />
-                  <Route path="/observability/:id" element={<Navigate to="/observability" replace />} />
-                  <Route path="/error-tracking" element={<ErrorTracking />} />
+                  {/* <Route path="/observability" element={<Observability />} /> */}
+                  {/* <Route path="/observability/new" element={<Navigate to="/observability" replace />} /> */}
+                  {/* <Route path="/observability/:id" element={<Navigate to="/observability" replace />} /> */}
+                  {/* <Route path="/error-tracking" element={<ErrorTracking />} /> */}
                   <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
               </Layout>

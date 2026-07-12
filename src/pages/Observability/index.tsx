@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 
 export default function Observability() {
   const { t } = useTranslation('observability')
-  const { can } = useAuth()
+  const { can, selfHosted } = useAuth()
 
   if (!can(Permission.ObservabilityView)) {
     return (
@@ -16,6 +16,9 @@ export default function Observability() {
   }
 
   return (
-    <TechnicalObservabilityPanel />
+    <Box>
+      {!selfHosted && <Alert severity="info" sx={{ mb: 3 }}>{t('hint.selfHostedOnly')}</Alert>}
+      <TechnicalObservabilityPanel />
+    </Box>
   )
 }

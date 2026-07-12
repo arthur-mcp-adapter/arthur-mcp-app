@@ -4,6 +4,7 @@ import { PassportModule } from '@nestjs/passport';
 import { config } from '../config/configuration';
 import { UsersModule } from '../users/users.module';
 import { SettingsModule } from '../settings/settings.module';
+import { EmailModule } from '../email/email.module';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './jwt.guard';
@@ -15,18 +16,12 @@ import { GoogleStrategy } from './google.strategy';
 import { GithubAuthGuard } from './github.guard';
 import { GithubStrategy } from './github.strategy';
 
-// Google/GitHub sign-in only activate once their client id/secret are configured,
-// so forks without those env vars still boot (passport strategies throw on missing clientID).
-const oauthProviders = [
-  ...(config.googleClientId && config.googleClientSecret ? [GoogleStrategy] : []),
-  ...(config.githubClientId && config.githubClientSecret ? [GithubStrategy] : []),
-];
-
 @Module({
   imports: [
     PassportModule,
     UsersModule,
     SettingsModule,
+    EmailModule,
     JwtModule.registerAsync({
       useFactory: () => ({
         secret: config.jwtSecret,
@@ -43,7 +38,8 @@ const oauthProviders = [
     LocalAuthGuard,
     GoogleAuthGuard,
     GithubAuthGuard,
-    ...oauthProviders,
+    GoogleStrategy,
+    GithubStrategy,
   ],
   exports: [JwtAuthGuard],
 })

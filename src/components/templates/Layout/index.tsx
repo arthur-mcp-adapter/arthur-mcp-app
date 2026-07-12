@@ -64,6 +64,7 @@ type NavItem = {
 type NavSection = {
   subheaderKey: string
   items: NavItem[]
+  selfHostedOnly?: boolean
 }
 
 const NAV_SECTIONS: NavSection[] = [
@@ -84,6 +85,7 @@ const NAV_SECTIONS: NavSection[] = [
   },
   {
     subheaderKey: 'section.administration',
+    selfHostedOnly: true,
     items: [
       { titleKey: 'nav.observability', icon: IconActivity, path: '/observability', permission: 'observability_view' },
       { titleKey: 'nav.errorTracking', icon: IconBug, path: '/error-tracking', permission: 'error_tracking_view' },
@@ -277,6 +279,14 @@ function SidebarContent() {
                   px: 2.5, pt: 2, pb: 0.75, textTransform: 'uppercase',
                 }}>
                   {t(section.subheaderKey)}
+                  {section.selfHostedOnly && (
+                    <Typography component="span" sx={{
+                      fontSize: '0.6875rem', fontWeight: 500, color: 'text.disabled',
+                      letterSpacing: 'normal', textTransform: 'none', ml: 0.5,
+                    }}>
+                      {t('section.administrationBadge')}
+                    </Typography>
+                  )}
                 </ListSubheader>
               }
               dense disablePadding
@@ -284,12 +294,13 @@ function SidebarContent() {
               {visibleItems.map((item) => {
                 const Icon = item.icon
                 const selected = location.pathname === item.path
+                const disabled = item.wip || section.selfHostedOnly
                 return (
                   <ListItem key={item.path} disablePadding sx={{ px: 1.5, py: '1px' }}>
                     <ListItemButton
                       selected={selected}
-                      disabled={item.wip}
-                      onClick={() => !item.wip && navigate(item.path)}
+                      disabled={disabled}
+                      onClick={() => !disabled && navigate(item.path)}
                       sx={{
                         borderRadius: '8px', minHeight: 38, px: 1.5,
                         '&.Mui-selected': {

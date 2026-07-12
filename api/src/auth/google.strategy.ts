@@ -8,9 +8,11 @@ import { UsersService } from '../users/users.service';
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
   constructor(private readonly users: UsersService) {
     super({
-      clientID: config.googleClientId,
-      clientSecret: config.googleClientSecret,
-      callbackURL: '/auth/google/callback',
+      // Strategies are always registered so .env can be loaded by ConfigModule
+      // before this constructor runs. Disabled providers use inert credentials.
+      clientID: config.googleClientId || 'disabled',
+      clientSecret: config.googleClientSecret || 'disabled',
+      callbackURL: '/api/auth/google/callback',
       scope: ['email', 'profile'],
     });
   }

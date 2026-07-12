@@ -6,10 +6,11 @@ import { parseDatabaseUri } from './database-uri';
 import { InitialTypeormSchema1700000000000 } from './migrations/1700000000000-InitialTypeormSchema';
 import { AddOauthColumnsToUsers1700000001000 } from './migrations/1700000001000-AddOauthColumnsToUsers';
 import { AddOwnerIdColumns1700000002000 } from './migrations/1700000002000-AddOwnerIdColumns';
+import { DropSettingsTable1700000003000 } from './migrations/1700000003000-DropSettingsTable';
+import { AddSupabaseIdToUsers1700000004000 } from './migrations/1700000004000-AddSupabaseIdToUsers';
 
 import { UserEntity } from '../users/user.entity';
 import { SwaggerProjectEntity } from '../swagger/swagger-project.entity';
-import { SettingsEntity } from '../settings/settings.entity';
 import { PasswordResetEntity } from '../auth/password-reset.entity';
 import { PromptEntity } from '../prompts/prompt.entity';
 import { SecretEntity } from '../secrets/secret.entity';
@@ -19,7 +20,6 @@ import { AiProviderEntity } from '../ai-providers/ai-provider.entity';
 
 import { TypeOrmUserRepository } from '../users/repositories/typeorm-user.repository';
 import { TypeOrmSwaggerProjectRepository } from '../swagger/repositories/typeorm-swagger-project.repository';
-import { TypeOrmSettingsRepository } from '../settings/repositories/typeorm-settings.repository';
 import { TypeOrmPasswordResetRepository } from '../auth/repositories/typeorm-password-reset.repository';
 import { TypeOrmPromptRepository } from '../prompts/repositories/typeorm-prompt.repository';
 import { TypeOrmSecretRepository } from '../secrets/repositories/typeorm-secret.repository';
@@ -27,12 +27,11 @@ import { TypeOrmRoleRepository } from '../roles/repositories/typeorm-role.reposi
 import { TypeOrmErrorTrackingProviderRepository } from '../error-tracking/repositories/typeorm-error-tracking-provider.repository';
 import { TypeOrmAiProviderRepository } from '../ai-providers/repositories/typeorm-ai-provider.repository';
 
-import { USER_REPO, PROJECT_REPO, SETTINGS_REPO, PASSWORD_RESET_REPO, PROMPT_REPO, SECRET_REPO, ROLE_REPO, ERROR_TRACKING_PROVIDER_REPO, AI_PROVIDER_REPO } from './database.tokens';
+import { USER_REPO, PROJECT_REPO, PASSWORD_RESET_REPO, PROMPT_REPO, SECRET_REPO, ROLE_REPO, ERROR_TRACKING_PROVIDER_REPO, AI_PROVIDER_REPO } from './database.tokens';
 
 const TYPEORM_ENTITIES = [
   UserEntity,
   SwaggerProjectEntity,
-  SettingsEntity,
   PasswordResetEntity,
   PromptEntity,
   SecretEntity,
@@ -45,6 +44,8 @@ const TYPEORM_MIGRATIONS = [
   InitialTypeormSchema1700000000000,
   AddOauthColumnsToUsers1700000001000,
   AddOwnerIdColumns1700000002000,
+  DropSettingsTable1700000003000,
+  AddSupabaseIdToUsers1700000004000,
 ];
 
 function buildTypeOrmOptions(): DataSourceOptions {
@@ -99,7 +100,6 @@ export class DatabaseModule {
       providers: [
         TypeOrmUserRepository,
         TypeOrmSwaggerProjectRepository,
-        TypeOrmSettingsRepository,
         TypeOrmPasswordResetRepository,
         TypeOrmPromptRepository,
         TypeOrmSecretRepository,
@@ -108,7 +108,6 @@ export class DatabaseModule {
         TypeOrmAiProviderRepository,
         { provide: USER_REPO, useExisting: TypeOrmUserRepository },
         { provide: PROJECT_REPO, useExisting: TypeOrmSwaggerProjectRepository },
-        { provide: SETTINGS_REPO, useExisting: TypeOrmSettingsRepository },
         { provide: PASSWORD_RESET_REPO, useExisting: TypeOrmPasswordResetRepository },
         { provide: PROMPT_REPO, useExisting: TypeOrmPromptRepository },
         { provide: SECRET_REPO, useExisting: TypeOrmSecretRepository },
@@ -116,7 +115,7 @@ export class DatabaseModule {
         { provide: ERROR_TRACKING_PROVIDER_REPO, useExisting: TypeOrmErrorTrackingProviderRepository },
         { provide: AI_PROVIDER_REPO, useExisting: TypeOrmAiProviderRepository },
       ],
-      exports: [USER_REPO, PROJECT_REPO, SETTINGS_REPO, PASSWORD_RESET_REPO, PROMPT_REPO, SECRET_REPO, ROLE_REPO, ERROR_TRACKING_PROVIDER_REPO, AI_PROVIDER_REPO],
+      exports: [USER_REPO, PROJECT_REPO, PASSWORD_RESET_REPO, PROMPT_REPO, SECRET_REPO, ROLE_REPO, ERROR_TRACKING_PROVIDER_REPO, AI_PROVIDER_REPO],
     };
   }
 }

@@ -13,7 +13,8 @@
   "section": {
     "overview": "VISÃO GERAL",
     "main": "PRINCIPAL",
-    "administration": "ADMINISTRAÇÃO"
+    "administration": "ADMINISTRAÇÃO",
+    "administrationBadge": "(Apenas para Self Hosted)"
   },
   "account": {
     "menu": "Menu da conta",

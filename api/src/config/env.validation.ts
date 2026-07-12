@@ -18,6 +18,23 @@ const envSchema = z
     SERVICE_NAME: z.string().min(1).default('arthur-mcp-adapter'),
     SERVICE_VERSION: z.string().min(1).default('1.0.0'),
     PROMETHEUS_METRICS_PATH: z.string().min(1).default('/metrics'),
+    SELF_HOSTED: z.enum(['true', 'false']).default('false'),
+    APP_URL: z.string().url().optional(),
+    SMTP_HOST: z.string().optional(),
+    SMTP_PORT: z.coerce.number().int().positive().optional(),
+    SMTP_USER: z.string().optional(),
+    SMTP_PASS: z.string().optional(),
+    SMTP_FROM: z.string().optional(),
+    GLOBAL_REQUEST_HEADERS: z.string().optional(),
+    GOOGLE_CLIENT_ID: z.string().optional(),
+    GOOGLE_CLIENT_SECRET: z.string().optional(),
+    GITHUB_CLIENT_ID: z.string().optional(),
+    GITHUB_CLIENT_SECRET: z.string().optional(),
+    SUPABASE_URL: z.string().url().optional(),
+    SUPABASE_PUBLISHABLE_KEY: z.string().optional(),
+    SUPABASE_SECRET_KEY: z.string().optional(),
+    SUPABASE_JWKS_URL: z.string().optional(),
+    SUPABASE_JWKS: z.string().optional(),
   })
   .superRefine((data, ctx) => {
     try {

@@ -18,11 +18,12 @@ This directory contains specialist agent definitions for Claude Code. Keep this 
 | `cloud-expert` | `.claude/agents/cloud-expert.md` | Designing or reviewing AWS, GCP, or Azure architecture; cloud security; managed services; cost control; Well-Architected reviews. |
 | `compliance-counsel` | `.claude/agents/compliance-counsel.md` | Reviewing software licenses, dependency obligations, attribution, distribution risk, contributor policies, and compliance/legal notes. |
 | `developer-advocate` | `.claude/agents/developer-advocate.md` | Creating developer quickstarts, demos, examples, launch content, DX reviews, and community feedback loops. |
-| `devops-expert` | `.claude/agents/devops-expert.md` | Creating or reviewing CI/CD, GitHub Actions, deploy automation, infrastructure scripts, monitoring, logging, or operational workflows. |
+| `devops-expert` | `.claude/agents/devops-expert.md` | Designing, implementing, reviewing, or debugging CI/CD, releases, infrastructure as code, secrets delivery, observability, reliability, incident response, backups, and operational runbooks. |
 | `docker-compose-expert` | `.claude/agents/docker-compose-expert.md` | Writing, reviewing, or debugging Docker Compose files, service dependencies, networks, volumes, environment variables, and healthchecks. |
 | `docker-expert` | `.claude/agents/docker-expert.md` | Writing, reviewing, or debugging Dockerfiles, multi-stage builds, image size, container security, and production image practices. |
 | `frontend-test-engineer` | `.claude/agents/frontend-test-engineer.md` | Writing, reviewing, debugging, and improving frontend tests for React pages, feature components, hooks, API client behavior, routing, permissions, i18n, forms, and user-visible flows with Vitest and React Testing Library. |
 | `gof-expert` | `.claude/agents/gof-expert.md` | Choosing, reviewing, naming, or refactoring toward Gang of Four design patterns without over-engineering. |
+| `kubernetes-expert` | `.claude/agents/kubernetes-expert.md` | Designing, implementing, reviewing, or debugging Kubernetes manifests, Helm/Kustomize packaging, workloads, networking, autoscaling, policies, secrets, storage, observability, and cluster operations. |
 | `nestjs-expert` | `.claude/agents/nestjs-expert.md` | Creating, reviewing, or refactoring NestJS modules, controllers, services, DTOs, guards, interceptors, persistence, authentication, and tests. |
 | `oss-scout` | `.claude/agents/opensource-expert.md` | Researching, comparing, or choosing open source libraries, frameworks, and tools using current project health signals. |
 | `product-owner` | `.claude/agents/project-owner.md` | Writing user stories, acceptance criteria, product specs, backlog prioritization, MVP scope, and requirements documentation. |
@@ -31,6 +32,7 @@ This directory contains specialist agent definitions for Claude Code. Keep this 
 | `software-architect` | `.claude/agents/software-architect.md` | Designing or reviewing architecture, module boundaries, data modeling, integration strategy, cross-cutting patterns, and technical roadmap decisions. |
 | `software-engineer` | `.claude/agents/software-engineer.md` | Implementing, debugging, refactoring, and testing full-stack features across frontend, backend, persistence, and documentation. |
 | `solid-expert` | `.claude/agents/solid-expert.md` | Reviewing responsibilities, interfaces, dependency direction, substitutability, extensibility, and maintainability against SOLID principles. |
+| `supabase-expert` | `.claude/agents/supabase-expert.md` | Designing, implementing, reviewing, or debugging Supabase PostgreSQL schemas, migrations, RLS, Auth, Storage, Realtime, Edge Functions, generated types, security, and operations. |
 | `system-tutor` | `.claude/agents/system-tutor.md` | Creating user-facing tutorials, walkthroughs, section guides, onboarding paths, and product explanations for Arthur MCP. |
 | `ui-expert` | `.claude/agents/ui-expert.md` | Creating, redesigning, or reviewing React, TypeScript, and MUI UI components/pages in the project's "openclaw" style while respecting Feature-Driven Architecture, Atomic Design, and barrel exports. |
 | `ux-analyst` | `.claude/agents/ux-analyst.md` | Auditing user journeys, usability, onboarding, friction points, empty/error/loading states, and user-facing flows while respecting frontend feature boundaries and shared UI conventions. |
@@ -51,8 +53,10 @@ This directory contains specialist agent definitions for Claude Code. Keep this 
 - Backend API/module work: `nestjs-expert`.
 - Gang of Four design pattern choice, naming, or misuse review: `gof-expert`.
 - SOLID responsibility, interface, substitutability, or dependency direction review: `solid-expert`.
+- Supabase schema design, migrations, RLS, Auth, Storage, Realtime, Edge Functions, or production diagnostics: `supabase-expert`.
 - Docker image work: `docker-expert`.
 - Local or production Compose orchestration: `docker-compose-expert`.
+- Kubernetes workloads, manifests, Helm, Kustomize, policies, storage, or cluster diagnostics: `kubernetes-expert`.
 - Render deployment: `render-expert`.
 - Vercel deployment: `vercel-expert`.
 - Cloud architecture or provider choice: `cloud-expert`.

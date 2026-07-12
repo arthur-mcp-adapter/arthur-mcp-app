@@ -3,8 +3,8 @@ import { ConflictException, BadRequestException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
-import { SettingsService } from '../settings/settings.service';
 import { JwtSecretService } from '../settings/jwt-secret.service';
+import { EmailService } from '../email/email.service';
 import { PASSWORD_RESET_REPO } from '../database/database.tokens';
 
 const mockUser = { _id: 'user123', username: 'testuser', password: 'hashed', role: 'user' };
@@ -28,8 +28,9 @@ const mockPasswordResetRepo = {
   markUsed: jest.fn().mockResolvedValue(undefined),
 };
 
-const mockSettingsService = {
-  get: jest.fn().mockResolvedValue({ serverBaseUrl: 'http://localhost:3000', smtpHost: null }),
+const mockEmailService = {
+  isConfigured: false,
+  send: jest.fn().mockResolvedValue(true),
 };
 
 describe('AuthService', () => {
@@ -41,8 +42,8 @@ describe('AuthService', () => {
         AuthService,
         { provide: UsersService, useValue: mockUsersService },
         { provide: JwtService, useValue: mockJwtService },
-        { provide: SettingsService, useValue: mockSettingsService },
         { provide: JwtSecretService, useValue: mockJwtSecretService },
+        { provide: EmailService, useValue: mockEmailService },
         { provide: PASSWORD_RESET_REPO, useValue: mockPasswordResetRepo },
       ],
     }).compile();
@@ -51,7 +52,8 @@ describe('AuthService', () => {
     jest.clearAllMocks();
     mockJwtService.signAsync.mockResolvedValue('jwt.token.here');
     mockJwtSecretService.getSecret.mockResolvedValue('test-jwt-secret-value');
-    mockSettingsService.get.mockResolvedValue({ serverBaseUrl: 'http://localhost:3000', smtpHost: null });
+    mockEmailService.isConfigured = false;
+    mockEmailService.send.mockResolvedValue(true);
     mockPasswordResetRepo.create.mockResolvedValue({});
     mockPasswordResetRepo.deleteByUserId.mockResolvedValue(undefined);
     mockPasswordResetRepo.markUsed.mockResolvedValue(undefined);

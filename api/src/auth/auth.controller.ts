@@ -17,12 +17,13 @@ const RegisterSchema = z.object({
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  /** Which social sign-in buttons the frontend should show. */
+  /** Which social sign-in buttons the frontend should show, and the deployment mode. */
   @Get('providers')
-  providers(): { google: boolean; github: boolean } {
+  providers(): { google: boolean; github: boolean; selfHosted: boolean } {
     return {
       google: !!(config.googleClientId && config.googleClientSecret),
       github: !!(config.githubClientId && config.githubClientSecret),
+      selfHosted: config.selfHosted,
     };
   }
 

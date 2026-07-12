@@ -110,7 +110,7 @@
     "apiKeyProtected": "API key is encrypted and cannot be retrieved after saving.",
     "urlRequired": "The base URL of your observability tool.",
     "deleteWarning": "This will permanently remove the provider configuration.",
-    "environmentReadOnly": "You can view and copy these controls, but saving them requires settings management permission."
+    "selfHostedOnly": "This shows infrastructure-wide health and metrics for the whole platform, not just your workspace."
   },
   "empty": {
     "noProviders": "No observability providers yet. Click New provider to add one.",

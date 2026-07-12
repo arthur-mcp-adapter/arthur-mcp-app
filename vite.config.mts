@@ -5,6 +5,12 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 5173,
+    watch: {
+      // Avoid ENOSPC on Linux workstations where editors and extensions have
+      // already consumed the available inotify watcher instances.
+      usePolling: true,
+      interval: 300,
+    },
     proxy: {
       '/api': 'http://localhost:3000',
       '/mcp/': 'http://localhost:3000',

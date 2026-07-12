@@ -979,12 +979,14 @@ export default function Profile() {
       backPath: '/',
       navItems: [
         { label: t('tabs.myProfile'), icon: <IconUser size={17} />, idx: 'profile' },
-        ...(can(Permission.UsersView)
-          ? [{ label: t('tabs.users'), icon: <IconUsers size={17} />, idx: 'users' as const }]
-          : []),
-        ...(can(Permission.RolesView)
-          ? [{ label: t('tabs.roles'), icon: <IconShield size={17} />, idx: 'roles' as const }]
-          : []),
+        // Users/Roles tabs disabled — the multi-tenant pivot removed the admin-manages-other-users
+        // endpoints these relied on, and every tenant is now 'admin' of their own workspace only.
+        // ...(can(Permission.UsersView)
+        //   ? [{ label: t('tabs.users'), icon: <IconUsers size={17} />, idx: 'users' as const }]
+        //   : []),
+        // ...(can(Permission.RolesView)
+        //   ? [{ label: t('tabs.roles'), icon: <IconShield size={17} />, idx: 'roles' as const }]
+        //   : []),
       ],
       tab,
       onTabChange: (next: typeof tab) => setTab(next),
@@ -1008,8 +1010,8 @@ export default function Profile() {
       <Typography variant="h5" fontWeight={700} mb={2.5} letterSpacing="-0.2px">{t('title')}</Typography>
 
       {tab === 'profile' && <MyProfileTab me={me} onUpdated={setMe} />}
-      {tab === 'users' && can(Permission.UsersView) && <UsersTab currentUserId={me._id} />}
-      {tab === 'roles' && can(Permission.RolesView) && <RolesTab />}
+      {/* {tab === 'users' && can(Permission.UsersView) && <UsersTab currentUserId={me._id} />} */}
+      {/* {tab === 'roles' && can(Permission.RolesView) && <RolesTab />} */}
     </Box>
   )
 }

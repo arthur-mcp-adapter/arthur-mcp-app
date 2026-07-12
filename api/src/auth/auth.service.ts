@@ -8,12 +8,12 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import * as nodemailer from 'nodemailer';
+import { config } from '../config/configuration';
 import { UsersService } from '../users/users.service';
 import { PASSWORD_RESET_REPO } from '../database/database.tokens';
 import { IPasswordResetRepository } from './password-reset.repository';
-import { SettingsService } from '../settings/settings.service';
 import { JwtSecretService } from '../settings/jwt-secret.service';
+import { EmailService } from '../email/email.service';
 
 export interface JwtPayload {
   sub: string;
@@ -34,8 +34,8 @@ export class AuthService {
   constructor(
     private readonly users: UsersService,
     private readonly jwt: JwtService,
-    private readonly settingsService: SettingsService,
     private readonly jwtSecretService: JwtSecretService,
+    private readonly emailService: EmailService,
     @Inject(PASSWORD_RESET_REPO) private readonly resetRepo: IPasswordResetRepository,
   ) {}
 
@@ -73,27 +73,14 @@ export class AuthService {
     const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
     await this.resetRepo.create({ userId: user._id, token, expiresAt });
 
-    const settings = await this.settingsService.get();
-    const baseUrl = settings.serverBaseUrl || 'http://localhost:3000';
-    const resetLink = `${baseUrl}/reset-password?token=${token}`;
+    const resetLink = `${config.appUrl}/reset-password?token=${token}`;
 
-    if (settings.smtpHost && settings.smtpUser) {
-      try {
-        const transporter = nodemailer.createTransport({
-          host: settings.smtpHost,
-          port: settings.smtpPort || 587,
-          auth: { user: settings.smtpUser, pass: settings.smtpPass },
-        });
-        await transporter.sendMail({
-          from: settings.smtpFrom || settings.smtpUser,
-          to: email,
-          subject: 'Password reset — Arthur MCP',
-          text: `Click the link to reset your password (valid for 1 hour):\n\n${resetLink}`,
-          html: `<p>Click the link to reset your password (valid for 1 hour):</p><p><a href="${resetLink}">${resetLink}</a></p>`,
-        });
-      } catch (err: any) {
-        this.logger.error(`Failed to send password reset email: ${err?.message}`);
-      }
+    if (this.emailService.isConfigured) {
+      await this.emailService.send({
+        to: email,
+        subject: 'Password reset — Arthur MCP',
+        html: `<p>Click the link to reset your password (valid for 1 hour):</p><p><a href="${resetLink}">${resetLink}</a></p>`,
+      });
     } else {
       this.logger.warn(`SMTP not configured. Reset link for ${email}: ${resetLink}`);
     }

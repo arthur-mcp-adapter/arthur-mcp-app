@@ -8,9 +8,9 @@ import { UsersService } from '../users/users.service';
 export class GithubStrategy extends PassportStrategy(Strategy, 'github') {
   constructor(private readonly users: UsersService) {
     super({
-      clientID: config.githubClientId,
-      clientSecret: config.githubClientSecret,
-      callbackURL: '/auth/github/callback',
+      clientID: config.githubClientId || 'disabled',
+      clientSecret: config.githubClientSecret || 'disabled',
+      callbackURL: '/api/auth/github/callback',
       scope: ['user:email'],
     });
   }

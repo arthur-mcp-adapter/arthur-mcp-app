@@ -18,11 +18,11 @@ import { ExecutionLogsService } from '../execution-logs/execution-logs.service';
 import { ErrorTrackingService } from '../error-tracking/error-tracking.service';
 import { MetricsService } from '../observability/metrics/metrics.service';
 import { TracingService } from '../observability/tracing/tracing.service';
-import { PROJECT_REPO, PROMPT_REPO, SECRET_REPO, SETTINGS_REPO } from '../database/database.tokens';
+import { PROJECT_REPO, PROMPT_REPO, SECRET_REPO } from '../database/database.tokens';
 import { ISwaggerProjectRepository } from '../swagger/swagger-project.repository';
 import type { IPromptRepository, PromptRecord } from '../prompts/prompt.repository';
 import type { ISecretRepository } from '../secrets/secret.repository';
-import type { ISettingsRepository } from '../settings/settings.repository';
+import { config } from '../config/configuration';
 
 function tryParseJson(body: string): unknown {
   try { return JSON.parse(body); } catch { return body; }
@@ -104,7 +104,6 @@ export class DynamicMcpService {
     @Inject(PROJECT_REPO) private readonly projectRepo: ISwaggerProjectRepository,
     @Inject(PROMPT_REPO) private readonly promptRepo: IPromptRepository,
     @Inject(SECRET_REPO) private readonly secretRepo: ISecretRepository,
-    @Inject(SETTINGS_REPO) private readonly settingsRepo: ISettingsRepository,
     private readonly executionLogs: ExecutionLogsService,
     private readonly errorTracking: ErrorTrackingService,
     private readonly metrics: MetricsService,
@@ -134,9 +133,8 @@ export class DynamicMcpService {
     const ownedSecrets = await this.secretRepo.findAll(server.ownerId ?? undefined);
     const secretsMap = new Map(ownedSecrets.map((s) => [s.name, s.value]));
 
-    const settings = await this.settingsRepo.getGlobal();
     const globalRequestHeaders = Object.fromEntries(
-      (settings.globalRequestHeaders ?? []).filter((h) => h.name).map((h) => [h.name, h.value]),
+      config.globalRequestHeaders.filter((h) => h.name).map((h) => [h.name, h.value]),
     );
 
     const entry: CachedProject = {

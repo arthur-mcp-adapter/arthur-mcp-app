@@ -56,7 +56,7 @@ const EMPTY_FORM: SentryForm = { dsn: '', environment: '', projectName: '', isAc
 
 export default function ErrorTracking() {
   const { t } = useTranslation('errorTracking')
-  const { can } = useAuth()
+  const { can, selfHosted } = useAuth()
 
   const [provider, setProvider] = useState<ErrorTrackingProvider | null>(null)
   const [loading, setLoading] = useState(true)
@@ -212,7 +212,7 @@ export default function ErrorTracking() {
     }
   }
 
-  const canEdit = can(Permission.ErrorTrackingEdit)
+  const canEdit = can(Permission.ErrorTrackingEdit) && selfHosted
   const isConnected = provider !== null
   const isDirty = form.dsn.trim() !== ''
     || form.environment !== (provider?.environment ?? '')
@@ -242,6 +242,10 @@ export default function ErrorTracking() {
         </HelpButton>
       </Box>
       <Typography variant="body2" color="text.secondary" mb={3}>{t('heading.subtitle')}</Typography>
+
+      {!selfHosted && (
+        <Alert severity="info" sx={{ mb: 3 }}>{t('hint.selfHostedOnly')}</Alert>
+      )}
 
       {/* Connection section */}
       <Paper variant="outlined" sx={{ p: 3, mb: 3 }}>
@@ -469,7 +473,7 @@ export default function ErrorTracking() {
       )}
 
       {/* Danger zone */}
-      {isConnected && can(Permission.ErrorTrackingDelete) && (
+      {isConnected && can(Permission.ErrorTrackingDelete) && selfHosted && (
         <Paper variant="outlined" sx={{ p: 3, mb: 3, borderColor: 'error.light' }}>
           <Typography variant="subtitle1" fontWeight={700} color="error.main" gutterBottom>
             {t('label.dangerZone')}

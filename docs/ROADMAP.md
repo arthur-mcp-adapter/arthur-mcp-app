@@ -70,6 +70,10 @@ This file should be updated when task state changes. It does not replace issues 
 - [x] Added Claude Code `system-tutor` specialist for user-facing tutorials and section guides.
 - [x] Added Claude Code `gof-expert` specialist for Gang of Four design pattern selection, naming, refactoring, and misuse review.
 - [x] Added Claude Code `solid-expert` specialist for SOLID responsibility, interface, dependency direction, substitutability, and maintainability review.
+- [x] Added Claude Code `supabase-expert` specialist for PostgreSQL schemas, migrations, RLS, Auth, Storage, Realtime, Edge Functions, security, and operations.
+- [x] Updated the Claude Code `devops-expert` for the current Arthur MCP stack and added the `kubernetes-expert` specialist for Kubernetes workloads and cluster operations.
+- [x] Documented the phased Ubuntu, Docker, K3s, GHCR, Flux, TLS, secrets, backup, observability, and rollback deployment plan in `docs/UBUNTU_K3S_DEPLOYMENT_PLAN.pt-BR.md`.
+- [ ] Implement phases 0-2 of the Ubuntu/K3s deployment plan: confirm production prerequisites, prepare the Ubuntu host, and harden the Docker image.
 - [x] Prepared frontend Claude Code specialists to use Feature-Driven Architecture, Atomic Design, and controlled barrel exports.
 - [x] Added `docs/FRONTEND_ARCHITECTURE_PLAN.md` with an incremental plan for Feature-Driven Architecture, Atomic Design, and barrel exports.
 - [x] Completed the first frontend architecture migration slice by adding feature/component `index.tsx` barrels and organizing shared/feature components into folder entry points.

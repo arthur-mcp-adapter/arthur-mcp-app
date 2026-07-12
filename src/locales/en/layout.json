@@ -13,7 +13,8 @@
   "section": {
     "overview": "OVERVIEW",
     "main": "MAIN",
-    "administration": "ADMINISTRATION"
+    "administration": "ADMINISTRATION",
+    "administrationBadge": "(Only for Self Hosted)"
   },
   "account": {
     "menu": "Account menu",

@@ -132,6 +132,8 @@ interface AuthContextType {
   loading: boolean
   can: (key: keyof UserPermissions) => boolean
   isAdmin: boolean
+  /** True only for self-hosted deployments — the Administration section (Settings, Error Tracking) is editable there. */
+  selfHosted: boolean
   reload: () => void
   logout: () => void
 }
@@ -141,6 +143,7 @@ const AuthContext = createContext<AuthContextType>({
   loading: true,
   can: () => false,
   isAdmin: false,
+  selfHosted: false,
   reload: () => {},
   logout: () => {},
 })
@@ -159,6 +162,7 @@ export function can(me: Me | null, key: keyof UserPermissions): boolean {
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [me, setMe] = useState<Me | null>(null)
   const [loading, setLoading] = useState(true)
+  const [selfHosted, setSelfHosted] = useState(false)
 
   const load = useCallback(() => {
     const token = localStorage.getItem('token')
@@ -168,6 +172,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       .then((r) => setMe(r.data))
       .catch(() => setMe(null))
       .finally(() => setLoading(false))
+    api.get<{ selfHosted: boolean }>('/auth/providers')
+      .then((r) => setSelfHosted(r.data.selfHosted))
+      .catch(() => setSelfHosted(false))
   }, [])
 
   useEffect(() => { load() }, [load])
@@ -184,7 +191,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [])
 
   return (
-    <AuthContext.Provider value={{ me, loading, can: canFn, isAdmin: me?.role === 'admin', reload: load, logout }}>
+    <AuthContext.Provider value={{ me, loading, can: canFn, isAdmin: me?.role === 'admin', selfHosted, reload: load, logout }}>
       {children}
     </AuthContext.Provider>
   )
