@@ -13,6 +13,7 @@ export { GuardRailsTab } from './guardRails'
 export { ApiKeysPanel, McpEndpointBar, OAuthClientPanel } from './connect'
 export { PromptsTab } from './prompts'
 export { ResourcesTab } from './resources'
+export { OperationsTab } from './operations'
 export {
   AlertConfigPanel,
   AuthConfigPanel,

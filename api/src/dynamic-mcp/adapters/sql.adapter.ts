@@ -24,6 +24,15 @@ function buildQuery(query: string, args: Record<string, unknown>, paramStyle: 'n
   return { text, values: names.map((n) => params[n]) };
 }
 
+export function buildQuestionMarkQuery(query: string, args: Record<string, unknown>): { text: string; values: unknown[] } {
+  const values: unknown[] = [];
+  const text = query.replace(/:(\w+)/g, (_, name: string) => {
+    values.push(args[name] ?? null);
+    return '?';
+  });
+  return { text, values };
+}
+
 // ─── PostgreSQL / CockroachDB ─────────────────────────────────────────────────
 
 async function executePostgres(ref: SqlExecRef, args: Record<string, unknown>, cfg: DbConnectionConfig): Promise<unknown> {
@@ -53,7 +62,7 @@ async function executeMysql(ref: SqlExecRef, args: Record<string, unknown>, cfg:
     user: cfg.user, password: cfg.password, ssl: cfg.ssl ? {} : undefined,
   });
   try {
-    const { text, values } = buildQuery(ref.query.replace(/:(\w+)/g, '?'), args, 'positional');
+    const { text, values } = buildQuestionMarkQuery(ref.query, args);
     const [rows] = await conn.execute(text, values);
     if (ref.resultMode === 'count') return Array.isArray(rows) ? rows.length : 0;
     if (ref.resultMode === 'first') return Array.isArray(rows) ? rows[0] ?? null : null;
@@ -118,7 +127,7 @@ async function executeCassandra(ref: SqlExecRef, args: Record<string, unknown>, 
   });
   await client.connect();
   try {
-    const { text, values } = buildQuery(ref.query.replace(/:(\w+)/g, '?'), args, 'positional');
+    const { text, values } = buildQuestionMarkQuery(ref.query, args);
     const res = await client.execute(text, values, { prepare: true });
     const rows = res.rows ?? [];
     if (ref.resultMode === 'count') return rows.length;

@@ -212,6 +212,8 @@ Rules:
 - Keep driver-specific logic inside the adapter.
 - Return normalized results from adapters so MCP response logic can stay generic.
 - Fail with actionable missing-driver messages.
+- Dynamic MCP dispatch checks `executionRef` first and routes data-source Tools through the adapter layer; HTTP Tools continue through `endpointRef`.
+- Resolve `{{secret:NAME}}` recursively in connection configuration immediately before adapter execution, using only secrets owned by the server owner.
 
 ### AI Provider Execution
 

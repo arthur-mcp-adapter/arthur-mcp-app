@@ -193,13 +193,15 @@ Entry points:
 
 Frontend behavior:
 
-- The server-detail navigation shows `Operations` for data-source backed servers.
-- The Operations tab is where source operations are created before being exposed as MCP tools.
+- PostgreSQL, MySQL, and MariaDB can be selected in the creation wizard by users with both `servers_create` and `servers_manage_connection`; the wizard persists the supplied connection configuration after creating the server.
+- Data-source servers show an Operations navigation item instead of API Endpoints. Authorized users can save/test the connection, introspect the schema, create/edit/delete parameterized SQL Operations, and test new or saved Operations.
+- Every saved Operation is synchronized to an MCP Tool. The Tools tab supports invoking these data-source Tools without assuming an HTTP endpoint exists.
 - Operation input parameters behave like GET query parameters: callers provide values used as variables in the execution definition.
 
 Compatibility note:
 
 - Backend routes and storage may still use `queries` and `DbQuery` until the operation-first backend migration is complete.
+- Creating, editing, testing, introspecting, or running connections and operations requires `servers_manage_connection`.
 
 ## AI Providers
 

@@ -1,5 +1,6 @@
 export interface RolePermissions {
   servers_view: boolean; servers_create: boolean; servers_edit_settings: boolean;
+  servers_manage_connection: boolean;
   servers_delete: boolean; servers_toggle_active: boolean; servers_share: boolean;
   tools_view: boolean; tools_create: boolean; tools_edit: boolean;
   tools_delete: boolean; tools_test: boolean; endpoints_create: boolean;

@@ -6,12 +6,12 @@ import * as jwt from 'jsonwebtoken';
 import { parseSpec } from '../dynamic-mcp/openapi-parser';
 import { generateTools } from '../dynamic-mcp/tool-generator';
 import { DynamicMcpService } from '../dynamic-mcp/dynamic-mcp.service';
-import type { AuthConfig, DbConnectionConfig, DbQuery, EndpointRef, ExecutionRef, McpResource, ToolChain, ToolComment } from '../dynamic-mcp/types';
+import type { AuthConfig, DbConnectionConfig, DbQuery, EndpointRef, ExecutionRef, GeneratedTool, JsonSchema, McpResource, ToolChain, ToolComment } from '../dynamic-mcp/types';
 import { testConnection, introspectSchema, executeWithRef } from '../dynamic-mcp/adapters/index';
 import { buildRequest } from '../dynamic-mcp/request-builder';
 import { applyAuth } from '../dynamic-mcp/auth-provider';
 import { executeRequest } from '../dynamic-mcp/http-client';
-import { PROJECT_REPO, PROMPT_REPO } from '../database/database.tokens';
+import { PROJECT_REPO, PROMPT_REPO, SECRET_REPO } from '../database/database.tokens';
 import { ISwaggerProjectRepository, McpApiKeyEntry, SwaggerProjectRecord } from './swagger-project.repository';
 import { parsePostmanCollection } from './postman-parser';
 import { SwaggerApiKeysService } from './swagger-api-keys.service';
@@ -19,6 +19,8 @@ import { SwaggerImportService } from './swagger-import.service';
 import { JwtSecretService } from '../settings/jwt-secret.service';
 import { ErrorTrackingService } from '../error-tracking/error-tracking.service';
 import type { IPromptRepository } from '../prompts/prompt.repository';
+import type { ISecretRepository } from '../secrets/secret.repository';
+import { resolveSecretRefsInValue } from '../dynamic-mcp/secret-resolver';
 import { baseShareSlug, normalizeShareSlug, uniqueShareSlug } from './share-slug.util';
 
 const SPEC_PATHS = [
@@ -114,12 +116,52 @@ export class SwaggerService {
   constructor(
     @Inject(PROJECT_REPO) private readonly projectRepo: ISwaggerProjectRepository,
     @Inject(PROMPT_REPO) private readonly promptRepo: IPromptRepository,
+    @Inject(SECRET_REPO) private readonly secretRepo: ISecretRepository,
     private readonly dynamicMcp: DynamicMcpService,
     private readonly imports: SwaggerImportService,
     private readonly apiKeys: SwaggerApiKeysService,
     private readonly jwtSecretService: JwtSecretService,
     private readonly errorTracking: ErrorTrackingService,
   ) {}
+
+  private async resolveConnectionConfig(server: SwaggerProjectRecord): Promise<DbConnectionConfig> {
+    if (!server.connectionConfig) {
+      throw new BadRequestException('No connection config found. Save connection details first.');
+    }
+    const secrets = await this.secretRepo.findAll(server.ownerId ?? undefined);
+    return resolveSecretRefsInValue(
+      server.connectionConfig,
+      new Map(secrets.map((secret) => [secret.name, secret.value])),
+    );
+  }
+
+  private dbQueryInputSchema(query: DbQuery): JsonSchema {
+    if (query.inputSchema) return query.inputSchema;
+    const parameters = query.parameters ?? [];
+    return {
+      type: 'object',
+      properties: Object.fromEntries(parameters.map((parameter) => [parameter.name, {
+        type: parameter.type,
+        ...(parameter.description ? { description: parameter.description } : {}),
+        ...(parameter.default !== undefined ? { default: parameter.default } : {}),
+      }])),
+      required: parameters.filter((parameter) => parameter.required).map((parameter) => parameter.name),
+    };
+  }
+
+  private dbQueryTool(query: DbQuery, existing?: GeneratedTool): GeneratedTool {
+    return {
+      ...existing,
+      name: query.name,
+      description: query.description ?? '',
+      inputSchema: this.dbQueryInputSchema(query),
+      ...(query.outputSchema ? { outputSchema: query.outputSchema } : { outputSchema: undefined }),
+      executionRef: { type: 'db', dbQueryId: query.id },
+      endpointRef: undefined,
+      endpointSource: undefined,
+      enabled: existing?.enabled ?? true,
+    };
+  }
 
   private parseContent(content: string, filename: string): Record<string, any> {
     try {
@@ -801,10 +843,9 @@ export class SwaggerService {
   async testDbConnection(id: string): Promise<{ ok: boolean; latencyMs?: number; error?: string }> {
     const server = await this.projectRepo.findById(id);
     if (!server) throw new NotFoundException('Server not found.');
-    const cfg = (server as any).connectionConfig as DbConnectionConfig | undefined;
-    if (!cfg) return { ok: false, error: 'No connection config found. Save connection details first.' };
     const sourceType = (server.tags ?? []).find((t) => t.startsWith('source:'))?.slice(7) ?? 'rest';
     try {
+      const cfg = await this.resolveConnectionConfig(server);
       const result = await testConnection(sourceType, cfg);
       return result;
     } catch (err: any) {
@@ -823,8 +864,7 @@ export class SwaggerService {
   }> {
     const server = await this.projectRepo.findById(id);
     if (!server) throw new NotFoundException('Server not found.');
-    const cfg = (server as any).connectionConfig as DbConnectionConfig | undefined;
-    if (!cfg) throw new BadRequestException('No connection config found. Save connection details first.');
+    const cfg = await this.resolveConnectionConfig(server);
     const sourceType = (server.tags ?? []).find((t) => t.startsWith('source:'))?.slice(7) ?? 'rest';
     return introspectSchema(sourceType, cfg);
   }
@@ -836,8 +876,7 @@ export class SwaggerService {
   ): Promise<{ result: unknown; error?: string }> {
     const server = await this.projectRepo.findById(id);
     if (!server) throw new NotFoundException('Server not found.');
-    const cfg = (server as any).connectionConfig as DbConnectionConfig | undefined;
-    if (!cfg) throw new BadRequestException('No connection config found.');
+    const cfg = await this.resolveConnectionConfig(server);
     try {
       const result = await executeWithRef(executionRef, args, cfg);
       return { result };
@@ -863,7 +902,13 @@ export class SwaggerService {
     const server = await this.projectRepo.findById(id);
     if (!server) throw new NotFoundException('Server not found.');
     const query: DbQuery = { ...dto, id: crypto.randomUUID() };
-    const updated = await this.projectRepo.update(id, { dbQueries: [...(server.dbQueries ?? []), query] });
+    if ((server.tools ?? []).some((tool) => tool.name === query.name)) {
+      throw new BadRequestException(`A tool named "${query.name}" already exists.`);
+    }
+    const updated = await this.projectRepo.update(id, {
+      dbQueries: [...(server.dbQueries ?? []), query],
+      tools: [...(server.tools ?? []), this.dbQueryTool(query)],
+    });
     if (!updated) throw new NotFoundException('Server not found.');
     this.dynamicMcp.invalidate(id);
     return query;
@@ -875,8 +920,15 @@ export class SwaggerService {
     const queries = server.dbQueries ?? [];
     const idx = queries.findIndex((q) => q.id === queryId);
     if (idx === -1) throw new NotFoundException('Query not found.');
-    queries[idx] = { ...queries[idx], ...dto };
-    await this.projectRepo.update(id, { dbQueries: queries });
+    const previous = queries[idx];
+    queries[idx] = { ...previous, ...dto };
+    const tools = [...(server.tools ?? [])];
+    const toolIndex = tools.findIndex((tool) => tool.executionRef?.type === 'db' && tool.executionRef.dbQueryId === queryId);
+    const nameConflict = tools.some((tool, index) => index !== toolIndex && tool.name === queries[idx].name);
+    if (nameConflict) throw new BadRequestException(`A tool named "${queries[idx].name}" already exists.`);
+    if (toolIndex === -1) tools.push(this.dbQueryTool(queries[idx]));
+    else tools[toolIndex] = this.dbQueryTool(queries[idx], tools[toolIndex]);
+    await this.projectRepo.update(id, { dbQueries: queries, tools });
     this.dynamicMcp.invalidate(id);
     return queries[idx];
   }
@@ -885,7 +937,10 @@ export class SwaggerService {
     const server = await this.projectRepo.findById(id);
     if (!server) throw new NotFoundException('Server not found.');
     const queries = (server.dbQueries ?? []).filter((q) => q.id !== queryId);
-    await this.projectRepo.update(id, { dbQueries: queries });
+    const tools = (server.tools ?? []).filter(
+      (tool) => !(tool.executionRef?.type === 'db' && tool.executionRef.dbQueryId === queryId),
+    );
+    await this.projectRepo.update(id, { dbQueries: queries, tools });
     this.dynamicMcp.invalidate(id);
   }
 
@@ -898,8 +953,7 @@ export class SwaggerService {
     if (!server) throw new NotFoundException('Server not found.');
     const query = (server.dbQueries ?? []).find((q) => q.id === queryId);
     if (!query) throw new NotFoundException('Query not found.');
-    const cfg = server.connectionConfig;
-    if (!cfg) throw new BadRequestException('No connection config found.');
+    const cfg = await this.resolveConnectionConfig(server);
     try {
       const { executeDbQuery } = await import('../dynamic-mcp/adapters/index');
       const result = await executeDbQuery(query, args, cfg);
@@ -922,8 +976,7 @@ export class SwaggerService {
   ): Promise<{ result: unknown; error?: string }> {
     const server = await this.projectRepo.findById(id);
     if (!server) throw new NotFoundException('Server not found.');
-    const cfg = server.connectionConfig;
-    if (!cfg) throw new BadRequestException('No connection config found. Save connection details in the Connection tab first.');
+    const cfg = await this.resolveConnectionConfig(server);
     try {
       const { executeDbQuery } = await import('../dynamic-mcp/adapters/index');
       const result = await executeDbQuery(query, args, cfg);

@@ -272,15 +272,15 @@ export function DynamicResourceDialog({
                     {tools.filter((t) => !!t.endpointRef).map((t) => (
                       <MenuItem key={t.name} value={t.name}>
                         <Box display="flex" alignItems="center" gap={1}>
-                          <Chip label={t.endpointRef.method.toUpperCase()} size="small" sx={{ fontSize: '0.65rem', height: 18 }} />
-                          <Typography variant="body2" fontFamily="monospace">{t.endpointRef.path}</Typography>
+                          <Chip label={t.endpointRef!.method.toUpperCase()} size="small" sx={{ fontSize: '0.65rem', height: 18 }} />
+                          <Typography variant="body2" fontFamily="monospace">{t.endpointRef!.path}</Typography>
                           <Typography variant="caption" color="text.secondary">{t.name}</Typography>
                         </Box>
                       </MenuItem>
                     ))}
                   </Select>
                 </FormControl>
-                {selectedTool && (
+                {selectedTool?.endpointRef && (
                   <Paper variant="outlined" sx={{ px: 2, py: 1.25, mb: 1.5, borderRadius: 1.5 }}>
                     <Box display="flex" alignItems="center" gap={1}>
                       <Box sx={{
@@ -306,7 +306,7 @@ export function DynamicResourceDialog({
                 )}
               </>
             )}
-            {selectedTool && selectedTool.endpointRef.parameterMap.length > 0 && (
+            {selectedTool?.endpointRef && selectedTool.endpointRef.parameterMap.length > 0 && (
               <Box display="flex" flexDirection="column" gap={1}>
                 <Typography variant="caption" color="text.secondary" fontWeight={600}>{t('label.fixedParamValues')}</Typography>
                 {selectedTool.endpointRef.parameterMap.map((p) => (

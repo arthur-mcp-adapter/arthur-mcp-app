@@ -195,6 +195,7 @@
       "Cloud": "Cloud & Analytics"
     },
     "available": "Available",
+    "restricted": "Restricted",
     "soon": "Soon",
     "types": {
       "blank":         { "name": "Blank / Static",  "description": "No external connection. Define tools that return hardcoded or parameter-based responses." },
