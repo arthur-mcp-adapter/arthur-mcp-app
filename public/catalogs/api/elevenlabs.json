@@ -1,0 +1,70 @@
+{
+  "id": "elevenlabs",
+  "name": "ElevenLabs",
+  "tagline": "Text-to-speech and voice cloning",
+  "description": "Convert text to ultra-realistic speech, clone voices, and manage audio projects with ElevenLabs — the leading AI voice platform.",
+  "category": "AI",
+  "color": "#FFC107",
+  "emoji": "🔊",
+  "baseUrl": "https://api.elevenlabs.io/v1",
+  "auth": {
+    "type": "api-key",
+    "hint": "Find your API key in ElevenLabs → Profile Settings → API Key.",
+    "keyName": "xi-api-key",
+    "keyIn": "header"
+  },
+  "signupUrl": "https://elevenlabs.io/sign-up",
+  "docsUrl": "https://elevenlabs.io/docs/api-reference",
+  "tools": [
+    {
+      "name": "text_to_speech",
+      "description": "Convert text to speech using a specific ElevenLabs voice. Returns audio data.",
+      "method": "POST",
+      "path": "/text-to-speech/{voice_id}",
+      "params": [
+        {
+          "name": "voice_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Voice ID from list_voices, e.g. 21m00Tcm4TlvDq8ikWAM for Rachel"
+        },
+        {
+          "name": "text",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Text to synthesize (max 5000 characters per request)"
+        },
+        {
+          "name": "model_id",
+          "in": "body",
+          "required": false,
+          "type": "string",
+          "description": "Model: eleven_turbo_v2_5, eleven_multilingual_v2, or eleven_flash_v2_5"
+        },
+        {
+          "name": "voice_settings",
+          "in": "body",
+          "required": false,
+          "type": "object",
+          "description": "Optional settings, e.g. {\"stability\":0.5,\"similarity_boost\":0.75}"
+        }
+      ]
+    },
+    {
+      "name": "list_voices",
+      "description": "List all available ElevenLabs voices including cloned and pre-made voices.",
+      "method": "GET",
+      "path": "/voices",
+      "params": []
+    },
+    {
+      "name": "get_models",
+      "description": "List all TTS models available on ElevenLabs with their languages and features.",
+      "method": "GET",
+      "path": "/models",
+      "params": []
+    }
+  ]
+}

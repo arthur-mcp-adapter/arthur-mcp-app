@@ -1,0 +1,113 @@
+{
+  "id": "slack",
+  "name": "Slack",
+  "tagline": "Messages, channels and users",
+  "description": "Post messages, read channel history, list members, and search across your Slack workspace using a Bot Token.",
+  "category": "Communication",
+  "color": "#4A154B",
+  "emoji": "💬",
+  "baseUrl": "https://slack.com/api",
+  "auth": {
+    "type": "bearer",
+    "hint": "Create a Slack App and install it to your workspace to get a Bot Token (xoxb-...)."
+  },
+  "signupUrl": "https://api.slack.com/apps/new",
+  "docsUrl": "https://api.slack.com/methods",
+  "tools": [
+    {
+      "name": "post_message",
+      "description": "Send a message to a Slack channel or direct message.",
+      "method": "POST",
+      "path": "/chat.postMessage",
+      "params": [
+        {
+          "name": "channel",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Channel ID or name, e.g. #general or C01234567"
+        },
+        {
+          "name": "text",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Message text (supports Slack markdown: *bold*, _italic_, `code`)"
+        },
+        {
+          "name": "thread_ts",
+          "in": "body",
+          "required": false,
+          "type": "string",
+          "description": "Timestamp of a parent message to reply in a thread"
+        }
+      ]
+    },
+    {
+      "name": "list_channels",
+      "description": "List public channels in the workspace with their name, topic, member count, and ID.",
+      "method": "GET",
+      "path": "/conversations.list",
+      "params": [
+        {
+          "name": "types",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Channel types: public_channel, private_channel, im, mpim"
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of results (max 1000)"
+        }
+      ]
+    },
+    {
+      "name": "get_channel_history",
+      "description": "Get recent messages from a channel, including replies count and reactions.",
+      "method": "GET",
+      "path": "/conversations.history",
+      "params": [
+        {
+          "name": "channel",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Channel ID, e.g. C01234567"
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of messages (max 999)"
+        },
+        {
+          "name": "oldest",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Oldest message timestamp to include"
+        }
+      ]
+    },
+    {
+      "name": "list_users",
+      "description": "Get all members of the Slack workspace with their display name, email, and role.",
+      "method": "GET",
+      "path": "/users.list",
+      "params": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of results per page (max 200)"
+        }
+      ]
+    }
+  ]
+}

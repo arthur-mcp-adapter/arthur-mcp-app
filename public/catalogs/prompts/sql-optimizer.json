@@ -1,0 +1,15 @@
+{
+  "id": "sql-optimizer",
+  "name": "SQL Query Optimizer",
+  "tagline": "Optimize slow SQL queries for performance",
+  "description": "Analyzes SQL queries for performance issues and rewrites them with indexing and optimization suggestions.",
+  "category": "Code",
+  "emoji": "🗃️",
+  "tags": [
+    "code",
+    "sql",
+    "database",
+    "performance"
+  ],
+  "content": "Optimize the following SQL query for performance.\n\nAnalysis steps:\n1. **Identify bottlenecks**: missing indexes, full table scans, N+1 patterns, Cartesian products\n2. **Rewrite the query** with optimizations applied\n3. **Explain changes**: what was changed and why\n4. **Indexing recommendations**: which indexes to add and on which columns\n5. **Alternative approaches**: CTEs, window functions, materialized views if applicable\n\nDatabase: {{database}} (e.g., PostgreSQL, MySQL, SQLite)\nTable schema (if known): {{schema}}\n\nQuery:\n{{query}}"
+}

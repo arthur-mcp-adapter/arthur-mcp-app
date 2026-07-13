@@ -1,0 +1,15 @@
+{
+  "id": "on-call-alert-triage",
+  "name": "On-Call Alert Triage",
+  "tagline": "Classify and prioritize production alerts",
+  "description": "Structures the investigation and classification of production alerts for on-call engineers.",
+  "category": "DevOps",
+  "emoji": "📟",
+  "tags": [
+    "devops",
+    "oncall",
+    "sre",
+    "monitoring"
+  ],
+  "content": "Triage the following production alert.\n\n**Alert name:** {{alert_name}}\n**Service:** {{service}}\n**Severity:** {{severity}}\n**Time triggered:** {{time}}\n**Environment:** {{environment}}\n\n## Initial Classification\n**Real or Noise?** [Real / False Positive / Flapping]\n**Severity Assessment:** [SEV1 / SEV2 / SEV3 / No Action]\n\n## Impact Assessment\n- Users affected:\n- Revenue impact:\n- Degraded vs. down:\n\n## Immediate Actions\n1.\n2.\n3.\n\n## Investigation Checklist\n- [ ] Check recent deployments\n- [ ] Check dependent services\n- [ ] Check infrastructure health\n- [ ] Review error logs\n- [ ] Check external dependencies\n\n## Escalation Decision\n**Escalate?** [Yes / No]\n**Escalate to:**\n**Communication needed?** [Yes / No — customer-facing?]\n\n---\nAlert details:\n{{alert_details}}"
+}

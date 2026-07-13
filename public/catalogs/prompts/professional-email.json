@@ -1,0 +1,14 @@
+{
+  "id": "professional-email",
+  "name": "Professional Email",
+  "tagline": "Draft polished, purpose-driven business emails",
+  "description": "Creates professional emails with clear subject lines and appropriate tone.",
+  "category": "Writing",
+  "emoji": "✉️",
+  "tags": [
+    "writing",
+    "email",
+    "communication"
+  ],
+  "content": "Draft a professional email.\n\nContext: {{context}}\nRecipient: {{recipient}}\nPurpose: {{purpose}}\nTone: {{tone}}\nKey points: {{key_points}}\n\nOutput the complete email including subject line."
+}

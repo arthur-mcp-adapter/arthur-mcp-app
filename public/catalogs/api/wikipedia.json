@@ -1,0 +1,98 @@
+{
+  "id": "wikipedia",
+  "name": "Wikipedia",
+  "tagline": "Search and read encyclopedia articles",
+  "description": "Instantly look up summaries, definitions, and facts from Wikipedia. No authentication required. Great for giving your AI access to world knowledge.",
+  "category": "Data",
+  "color": "#000000",
+  "emoji": "📚",
+  "baseUrl": "https://en.wikipedia.org/api/rest_v1",
+  "auth": {
+    "type": "none",
+    "hint": ""
+  },
+  "docsUrl": "https://en.wikipedia.org/api/rest_v1/#/",
+  "tools": [
+    {
+      "name": "get_article_summary",
+      "description": "Get a plain-text summary of a Wikipedia article — the first paragraph with key facts.",
+      "method": "GET",
+      "path": "/page/summary/{title}",
+      "params": [
+        {
+          "name": "title",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Article title as it appears in the Wikipedia URL, e.g. Artificial_intelligence or React_(JavaScript_library)"
+        }
+      ]
+    },
+    {
+      "name": "get_page_content",
+      "description": "Get the full HTML content of a Wikipedia article.",
+      "method": "GET",
+      "path": "/page/html/{title}",
+      "params": [
+        {
+          "name": "title",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Article title as in the Wikipedia URL"
+        }
+      ]
+    },
+    {
+      "name": "get_featured_content",
+      "description": "Get today's featured article, image of the day, and most-read articles on Wikipedia.",
+      "method": "GET",
+      "path": "/feed/featured/{year}/{month}/{day}",
+      "params": [
+        {
+          "name": "year",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Year, e.g. 2025"
+        },
+        {
+          "name": "month",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Month as 2 digits, e.g. 06"
+        },
+        {
+          "name": "day",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Day as 2 digits, e.g. 15"
+        }
+      ]
+    },
+    {
+      "name": "get_on_this_day",
+      "description": "Get historical events, births, and deaths that happened on a specific day in history.",
+      "method": "GET",
+      "path": "/feed/onthisday/all/{month}/{day}",
+      "params": [
+        {
+          "name": "month",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Month as 2 digits, e.g. 06"
+        },
+        {
+          "name": "day",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Day as 2 digits, e.g. 28"
+        }
+      ]
+    }
+  ]
+}

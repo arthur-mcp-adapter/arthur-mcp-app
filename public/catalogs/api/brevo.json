@@ -1,0 +1,121 @@
+{
+  "id": "brevo",
+  "name": "Brevo",
+  "tagline": "Email, SMS and marketing automation",
+  "description": "Send transactional emails and SMS, manage contacts, and track campaign performance with Brevo (formerly Sendinblue).",
+  "category": "Communication",
+  "color": "#0092FF",
+  "emoji": "📨",
+  "baseUrl": "https://api.brevo.com/v3",
+  "auth": {
+    "type": "api-key",
+    "hint": "Go to Brevo → Profile → SMTP & API → API Keys and create a key.",
+    "keyName": "api-key",
+    "keyIn": "header"
+  },
+  "signupUrl": "https://www.brevo.com/free-email-marketing-tool/",
+  "docsUrl": "https://developers.brevo.com/reference",
+  "tools": [
+    {
+      "name": "send_email",
+      "description": "Send a transactional email immediately.",
+      "method": "POST",
+      "path": "/smtp/email",
+      "params": [
+        {
+          "name": "sender",
+          "in": "body",
+          "required": true,
+          "type": "object",
+          "description": "Sender info, e.g. {\"name\":\"Company\",\"email\":\"noreply@co.com\"}"
+        },
+        {
+          "name": "to",
+          "in": "body",
+          "required": true,
+          "type": "array",
+          "description": "Recipients, e.g. [{\"email\":\"user@example.com\",\"name\":\"User\"}]"
+        },
+        {
+          "name": "subject",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Email subject"
+        },
+        {
+          "name": "htmlContent",
+          "in": "body",
+          "required": false,
+          "type": "string",
+          "description": "Email body as HTML"
+        },
+        {
+          "name": "textContent",
+          "in": "body",
+          "required": false,
+          "type": "string",
+          "description": "Plain text fallback"
+        }
+      ]
+    },
+    {
+      "name": "get_contacts",
+      "description": "List Brevo contacts with their email, attributes, and list memberships.",
+      "method": "GET",
+      "path": "/contacts",
+      "params": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of results (max 1000)"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Pagination offset"
+        },
+        {
+          "name": "modifiedSince",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "ISO date — return contacts modified after this date"
+        }
+      ]
+    },
+    {
+      "name": "get_email_stats",
+      "description": "Get delivery statistics for your transactional emails.",
+      "method": "GET",
+      "path": "/smtp/statistics/events",
+      "params": [
+        {
+          "name": "startDate",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Start date in YYYY-MM-DD format"
+        },
+        {
+          "name": "endDate",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "End date in YYYY-MM-DD format"
+        },
+        {
+          "name": "event",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Filter by event: delivered, opened, clicked, bounces, spam"
+        }
+      ]
+    }
+  ]
+}

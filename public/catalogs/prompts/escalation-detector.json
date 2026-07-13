@@ -1,0 +1,14 @@
+{
+  "id": "escalation-detector",
+  "name": "Escalation Detector",
+  "tagline": "Identify tickets that need immediate escalation",
+  "description": "Scans messages for escalation signals like legal threats, VIP accounts, or critical issues.",
+  "category": "Customer Support",
+  "emoji": "🚨",
+  "tags": [
+    "support",
+    "escalation",
+    "risk"
+  ],
+  "content": "Analyze this message for escalation triggers.\n\nTriggers to check: legal threats, regulatory complaints (GDPR/CCPA), financial impact, social media threats, VIP/enterprise customer, safety concerns, repeated failures.\n\n**Escalation Required:** [YES / NO]\n**Urgency:** [Immediate <1h / High <4h / Medium same day / Low standard SLA]\n**Reason:**\n**Escalation Path:**\n**Key Quotes:**\n**Immediate Action:**\n\n---\nMessage:\n{{customer_message}}"
+}

@@ -139,6 +139,38 @@ Risk to preserve:
 - Treat simulator execution as MCP client behavior: share-link access lets the user see the public contract, while protected servers still require the visitor to provide a valid API key or valid OAuth client credentials before calls succeed.
 - Add fields to the share payload rather than removing existing setup fields, so older clients/pages remain compatible.
 
+## Built-in Template Catalogs
+
+Goal: search and open built-in API/prompt templates without shipping every complete definition in the frontend JavaScript bundle.
+
+Entry points:
+
+- `/templates`
+- `/prompts/templates`
+
+Frontend behavior:
+
+- Opening a gallery fetches its static summary index from `public/catalogs/` and displays skeleton cards until it resolves.
+- API search covers name, tagline, description, category, tool names, and tool descriptions.
+- Prompt search covers name, tagline, description, category, and tags.
+- Search is case/accent insensitive, treats underscores/hyphens as spaces, and requires every query token to match.
+- Category chips are derived from the loaded index.
+- Choosing a template fetches only that template's detail JSON; successful detail requests are cached in memory.
+- Index failures show a translated retry state. Detail failures leave the gallery usable and show a translated error.
+- Template-derived server cards use the API summary index for icon/color metadata and fall back to the generic source icon while unavailable.
+
+Permission decision:
+
+- API template use continues to use `templates_use`.
+- Prompt creation from a template continues to use `prompts_create`.
+- Static files are public built-in definitions and contain no credentials or secrets. They are not an authorization boundary.
+- No backend endpoint or permission contract was added.
+
+Validation:
+
+- `npm run check:template-catalogs` verifies index/detail parity and catalog invariants.
+- The same validation runs during frontend type-check and before production builds.
+
 ## REST Server Templates
 
 Goal: let users create a preconfigured REST server from a template while preserving source-type filtering.
@@ -154,7 +186,8 @@ Backend behavior:
 
 Frontend behavior:
 
-- `src/data/api-templates.ts` exports `SERVER_TEMPLATE_SOURCE_TAG` as `source:rest`.
+- `src/data/serverTemplateSourceTag.constant.ts` exports `SERVER_TEMPLATE_SOURCE_TAG` as `source:rest`; `src/data/index.ts` exposes it through the data public API.
+- The gallery searches the lightweight API index and fetches a complete template detail only when the user chooses it.
 - Tools from the template are added after the tagged server is created.
 
 Risk to preserve:

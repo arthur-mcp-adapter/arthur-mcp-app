@@ -2,10 +2,6 @@ import { useState } from 'react'
 import type { CopyFeedback } from './copyFeedback.interface'
 import type { UseCopyToClipboardConfig } from './useCopyToClipboardConfig.interface'
 import type { UseCopyToClipboardReturn } from './useCopyToClipboardReturn.interface'
-export type { CopyFeedback } from './copyFeedback.interface'
-export type { UseCopyToClipboardConfig } from './useCopyToClipboardConfig.interface'
-export type { UseCopyToClipboardReturn } from './useCopyToClipboardReturn.interface'
-
 
 /**
  * Hook for copying text to clipboard with feedback.

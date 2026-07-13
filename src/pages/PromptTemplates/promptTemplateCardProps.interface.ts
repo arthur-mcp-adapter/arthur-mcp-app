@@ -1,3 +1,7 @@
-import type { PromptTemplate } from '../../data/prompt-templates'
+import type { PromptTemplateSummary } from '../../features/templates'
 
-export interface PromptTemplateCardProps { template: PromptTemplate; onUse: (t: PromptTemplate) => void }
+export interface PromptTemplateCardProps {
+  template: PromptTemplateSummary
+  loading: boolean
+  onUse: (id: string) => void
+}

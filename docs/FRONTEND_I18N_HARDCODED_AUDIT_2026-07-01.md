@@ -37,19 +37,19 @@ Important:
 
 Top files by concentration of potential hardcoded UI strings:
 
-1. `src/pages/NewServer/index.tsx` (26 text-node matches, 48 UI-attribute matches)
-2. `src/features/server/connect/McpEndpointBar/index.tsx` (12 text-node matches, 3 UI-attribute matches)
-3. `src/features/server/api-endpoints/ToolAccordion/index.tsx` (12 text-node matches, 5 UI-attribute matches)
-4. `src/features/server/api-endpoints/EndpointAccordion/index.tsx` (11 text-node matches, 3 UI-attribute matches)
-5. `src/features/server/prompts/PromptsTab/index.tsx` (10 text-node matches, 4 UI-attribute matches)
-6. `src/pages/ErrorTracking/index.tsx` (9 text-node matches, 4 UI-attribute matches)
-7. `src/features/server/settings/BaseUrlPanel/index.tsx` (9 text-node matches, 6 UI-attribute matches)
+1. `src/pages/NewServer/NewServer.tsx` (26 text-node matches, 48 UI-attribute matches)
+2. `src/features/server/connect/McpEndpointBar/McpEndpointBar.tsx` (12 text-node matches, 3 UI-attribute matches)
+3. `src/features/server/api-endpoints/ToolAccordion/ToolAccordion.tsx` (12 text-node matches, 5 UI-attribute matches)
+4. `src/features/server/api-endpoints/EndpointAccordion/EndpointAccordion.tsx` (11 text-node matches, 3 UI-attribute matches)
+5. `src/features/server/prompts/PromptsTab/PromptsTab.tsx` (10 text-node matches, 4 UI-attribute matches)
+6. `src/pages/ErrorTracking/ErrorTracking.tsx` (9 text-node matches, 4 UI-attribute matches)
+7. `src/features/server/settings/BaseUrlPanel/BaseUrlPanel.tsx` (9 text-node matches, 6 UI-attribute matches)
 
 ## Confirmed Hardcoded UX Terms (Representative)
 
 ### 1) New Server flow
 
-File: `src/pages/NewServer/index.tsx`
+File: `src/pages/NewServer/NewServer.tsx`
 
 Examples found:
 
@@ -86,7 +86,7 @@ Impact: High (onboarding/setup path is heavily user-facing).
 
 ### 2) Server Connect panel
 
-File: `src/features/server/connect/McpEndpointBar/index.tsx`
+File: `src/features/server/connect/McpEndpointBar/McpEndpointBar.tsx`
 
 Examples found:
 
@@ -111,11 +111,11 @@ Impact: High (core share/connect flow exposed to end users).
 
 Files:
 
-- `src/features/server/api-endpoints/EndpointAccordion/index.tsx`
-- `src/features/server/api-endpoints/ToolAccordion/index.tsx`
-- `src/features/server/api-endpoints/FromEndpointPickerDialog/index.tsx`
-- `src/features/server/api-endpoints/ReimportSpecDialog/index.tsx`
-- `src/features/server/api-endpoints/ToolCommentsSection/index.tsx`
+- `src/features/server/api-endpoints/EndpointAccordion/EndpointAccordion.tsx`
+- `src/features/server/api-endpoints/ToolAccordion/ToolAccordion.tsx`
+- `src/features/server/api-endpoints/FromEndpointPickerDialog/FromEndpointPickerDialog.tsx`
+- `src/features/server/api-endpoints/ReimportSpecDialog/ReimportSpecDialog.tsx`
+- `src/features/server/api-endpoints/ToolCommentsSection/ToolCommentsSection.tsx`
 
 Examples found:
 
@@ -142,7 +142,7 @@ Impact: High (tooling authoring experience).
 
 ### 4) Prompts in Server Detail
 
-File: `src/features/server/prompts/PromptsTab/index.tsx`
+File: `src/features/server/prompts/PromptsTab/PromptsTab.tsx`
 
 Examples found:
 
@@ -170,7 +170,7 @@ Impact: High (frequent content authoring flow).
 
 ### 5) Error Tracking page
 
-File: `src/pages/ErrorTracking/index.tsx`
+File: `src/pages/ErrorTracking/ErrorTracking.tsx`
 
 Examples found:
 
@@ -199,7 +199,7 @@ Impact: Medium-High (admin page, but full UX still visible).
 
 ### 6) Base URL settings help panel
 
-File: `src/features/server/settings/BaseUrlPanel/index.tsx`
+File: `src/features/server/settings/BaseUrlPanel/BaseUrlPanel.tsx`
 
 Examples found:
 
@@ -223,12 +223,12 @@ Not all literals should become i18n keys. Keep as-is unless product explicitly w
 
 ## Recommended Remediation Order
 
-1. `src/pages/NewServer/index.tsx`
-2. `src/features/server/connect/McpEndpointBar/index.tsx`
+1. `src/pages/NewServer/NewServer.tsx`
+2. `src/features/server/connect/McpEndpointBar/McpEndpointBar.tsx`
 3. `src/features/server/api-endpoints/*`
-4. `src/features/server/prompts/PromptsTab/index.tsx`
-5. `src/pages/ErrorTracking/index.tsx`
-6. `src/features/server/settings/BaseUrlPanel/index.tsx`
+4. `src/features/server/prompts/PromptsTab/PromptsTab.tsx`
+5. `src/pages/ErrorTracking/ErrorTracking.tsx`
+6. `src/features/server/settings/BaseUrlPanel/BaseUrlPanel.tsx`
 
 ## Suggested Execution Strategy
 

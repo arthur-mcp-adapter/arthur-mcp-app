@@ -298,12 +298,12 @@ Pattern: each main route maps to a page component under `src/pages/`.
 Examples:
 
 - Route table in `src/App.tsx`.
-- Pages in `src/pages/Servers/index.tsx`, `src/pages/ServerDetail/index.tsx`, `src/pages/Settings/index.tsx`, and related files.
+- Pages in `src/pages/Servers/Servers.tsx`, `src/pages/ServerDetail/ServerDetail.tsx`, `src/pages/Settings/Settings.tsx`, and related files.
 
 Rules:
 
 - Put route orchestration, page-specific data loading, and page-local UI state in page components.
-- Store route pages in `src/pages/PageName/index.tsx`, not loose `src/pages/PageName.tsx` files.
+- Store route pages in `src/pages/PageName/PageName.tsx`, with `src/pages/PageName/index.ts` as the public entry point and `src/pages/PageName/index.css` as the local stylesheet entry.
 - Colocate page-specific tests in the page folder, such as `src/pages/Login/Login.test.tsx`.
 - Extract cohesive route feature sections to `src/features/<feature>/` when a page grows beyond orchestration and starts owning unrelated UI, state, and API concerns.
 - Extract reusable widgets to `src/components/` only when they are shared across features or are truly domain-neutral.
@@ -368,6 +368,8 @@ Examples:
 Rules:
 
 - Store every named interface, enum, type alias, class, entity, and component props contract in its own lower-camel `name.kind.ts` file.
+- Every named frontend `.ts` or `.tsx` file exports exactly one symbol. Re-exports are allowed only in `index.ts`.
+- Every directory under `src/` contains `index.ts` and `index.css`; non-public or non-visual directories may use `export {}` and an empty stylesheet.
 - Do not add catch-all `types.ts`, `utils.ts`, `constants.ts`, `helpers.ts`, `format.ts`, `validation.ts`, or `*-utils.ts` files.
 - Keep `.tsx` modules for React rendering. Top-level functions in component modules must return React UI.
 - Closure-based handlers that coordinate component-local state may stay inside the component function. Reusable stateful coordination belongs in a `.hook.ts`; stateless decisions and transformations belong in a focused utility.
@@ -382,9 +384,9 @@ Pattern: shared reusable UI can follow Atomic Design when the component set grow
 
 Examples:
 
-- Atoms: `src/components/atoms/HelpButton/index.tsx`, `src/components/atoms/SaveIndicator/index.tsx`
-- Organisms: `src/components/organisms/BaseListCard/index.tsx`, `src/components/organisms/ConfirmDialog/index.tsx`
-- Templates: `src/components/templates/BaseDialogLayout/index.tsx`, `src/components/templates/Layout/index.tsx`
+- Atoms: `src/components/atoms/HelpButton/HelpButton.tsx`, `src/components/atoms/SaveIndicator/SaveIndicator.tsx`
+- Organisms: `src/components/organisms/BaseListCard/BaseListCard.tsx`, `src/components/organisms/ConfirmDialog/ConfirmDialog.tsx`
+- Templates: `src/components/templates/BaseDialogLayout/BaseDialogLayout.tsx`, `src/components/templates/Layout/Layout.tsx`
 
 Rules:
 
@@ -395,11 +397,11 @@ Rules:
 - Keep pages as route-level composition under `src/pages/`.
 - Do not create `atoms/`, `molecules/`, `organisms/`, or `templates/` folders for one-off components; introduce them when shared UI volume justifies the structure.
 - Keep atoms domain-neutral. If a component knows about servers, prompts, secrets, operations, or MCP details, it usually belongs in a feature.
-- Store React components in `ComponentName/index.tsx` folders rather than loose `ComponentName.tsx` files when applying this architecture.
+- Store React components as `ComponentName/ComponentName.tsx`, expose them through `ComponentName/index.ts`, and keep the folder stylesheet at `ComponentName/index.css`.
 
 ### Barrel Exports
 
-Pattern: `index.ts` files define controlled public APIs; `index.tsx` is reserved for files that render JSX.
+Pattern: `index.ts` files are the only export aggregators. React implementations use matching named `.tsx` files; `index.tsx` is forbidden.
 
 Examples:
 
@@ -413,7 +415,8 @@ Examples:
 Rules:
 
 - Use `index.ts` barrels at feature or shared component boundaries when they make imports clearer.
-- Use `ComponentName/index.tsx` only when the entry point contains a React component or other JSX rendering.
+- Keep implementation and executable logic out of `index.ts`; it contains only explicit export declarations.
+- Prefer direct sibling imports inside a folder to avoid barrel cycles.
 - Export only stable public components, hooks, types, constants, and helpers.
 - Prefer named exports and explicit type exports over broad `export *`.
 - Avoid barrels in tiny folders with one file unless the folder is expected to grow.
@@ -426,13 +429,13 @@ Pattern: `ServerDetail` should act as the server detail route orchestrator, whil
 
 Examples:
 
-- `src/features/server/settings/RateLimitPanel/index.tsx`
+- `src/features/server/settings/RateLimitPanel/RateLimitPanel.tsx`
 - `src/features/server/types/project.interface.ts`
-- `src/components/atoms/SaveIndicator/index.tsx`
+- `src/components/atoms/SaveIndicator/SaveIndicator.tsx`
 
 Rules:
 
-- Keep page-level tab selection, project loading, navigation, and cross-tab state in `src/pages/ServerDetail/index.tsx`.
+- Keep page-level tab selection, project loading, navigation, and cross-tab state in `src/pages/ServerDetail/ServerDetail.tsx`.
 - Move self-contained panels, dialogs, accordions, and tab bodies into `src/features/server/<area>/`.
 - Store each server contract under `src/features/server/types/name.kind.ts`; expose stable shared contracts through `src/features/server/types/index.ts`.
 - Put cross-feature UI widgets in `src/components/` only when they are not specific to server detail.
@@ -484,7 +487,7 @@ Pattern: `Layout` owns the main shell; `ServerNavContext` lets detail pages repl
 Examples:
 
 - `src/components/Layout.tsx`
-- `src/context/ServerNavContext.tsx`
+- `src/context/ServerNavProvider.tsx`
 - `src/pages/ServerDetail.tsx`
 
 Rules:
@@ -534,11 +537,11 @@ Rules:
 
 ### Auth and Permission Context
 
-Pattern: authentication state and permission checks are centralized in `AuthContext`.
+Pattern: authentication state and permission checks are centralized behind the `src/context/auth/index.ts` public API.
 
 Examples:
 
-- `src/context/AuthContext.tsx`
+- `src/context/auth/AuthProvider.tsx`
 - `Permission` enum mirrors backend permission keys.
 - `can()` supports backend-provided permissions and role-based fallback.
 
@@ -546,7 +549,7 @@ Rules:
 
 - Gate UI actions with `can(Permission.X)`.
 - Keep frontend permission names aligned with backend `RolePermissions`.
-- Keep role fallback presets in `src/context/permissionPresets.ts`.
+- Keep role fallback presets in `src/context/auth/rolePermissionFallbacks.constant.ts`.
 - Do not rely on frontend permission checks as the only security layer; backend guards remain authoritative.
 - When adding a permission, update backend role permissions, frontend `Permission`, docs, and affected UI.
 - Every new route, sidebar item, tab, primary action, destructive action, credential action, execution/test action, and settings control needs a permission decision before implementation is complete.
@@ -568,6 +571,28 @@ Rules:
 - Promote state to context only when multiple unrelated components need shared access.
 - Use explicit loading, error, and empty states for user-facing fetches.
 - Keep async handlers small enough to show the success and failure path clearly.
+
+### Static Searchable Catalogs
+
+Pattern: large read-only frontend catalogs use a lightweight static summary index plus one static detail file per item.
+
+Example:
+
+- `public/catalogs/api/index.json` contains API card/search metadata; `public/catalogs/api/<id>.json` contains one complete API template.
+- `public/catalogs/prompts/index.json` contains prompt card/search metadata; `public/catalogs/prompts/<id>.json` contains one complete prompt template.
+- `src/features/templates/` owns index/detail loaders, request caches, hooks, summary contracts, and search normalization.
+
+Rules:
+
+- Do not embed a large read-only catalog in a TypeScript module when consumers can fetch static assets lazily.
+- Put only card, grouping, and search fields in the index; keep large nested definitions/content in per-item detail files.
+- Load an index when its lazy route needs it and load a detail only after selection.
+- Cache index/detail promises in memory and remove failed requests from the cache so retry remains possible.
+- Normalize case, diacritics, separators, and whitespace before multi-token client-side search.
+- Derive categories from the index rather than maintaining duplicate category constants.
+- Validate index/detail parity, safe unique IDs, and domain invariants with `npm run check:template-catalogs`; run the gate in type-check and before builds.
+- Static catalog data must not contain credentials or secrets and must not be treated as a permission boundary.
+- Prefer this pattern over browser databases for small read-only catalogs; introduce persistence only when editing, synchronization, offline mutation, or relational queries become real requirements.
 
 ### Shared Feedback Components
 
@@ -615,7 +640,7 @@ Pattern: theme definitions are centralized and selected through `ColorModeProvid
 Examples:
 
 - `src/theme/index.ts`
-- `src/theme/ColorModeContext.tsx`
+- `src/theme/ColorModeProvider.tsx`
 - `src/main.tsx`
 
 Rules:
@@ -674,7 +699,7 @@ Rules:
 - Test route/page behavior when user-visible interactions change.
 - Test API client behavior when interceptors change.
 - Prefer user-facing queries in React Testing Library tests.
-- Run `npm run check:frontend-structure` through `npm run type-check` to reject inline contracts, non-rendering top-level component helpers, JSX-free `index.tsx` barrels, and forbidden catch-all modules.
+- Run `npm run check:frontend-structure` through `npm run type-check` to reject inline contracts, named multi-export modules, executable barrels, missing directory entry files, `index.tsx`, non-rendering top-level component helpers, and forbidden catch-all modules.
 
 ## Change Checklist
 

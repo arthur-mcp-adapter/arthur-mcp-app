@@ -1,0 +1,97 @@
+{
+  "id": "jsonplaceholder",
+  "name": "JSONPlaceholder",
+  "tagline": "Free fake REST API for testing",
+  "description": "A free online REST API ideal for quick prototyping. No setup or credentials needed — great for testing your AI workflow before connecting a real API.",
+  "category": "Testing",
+  "color": "#5D87FF",
+  "emoji": "🧪",
+  "baseUrl": "https://jsonplaceholder.typicode.com",
+  "auth": {
+    "type": "none",
+    "hint": ""
+  },
+  "docsUrl": "https://jsonplaceholder.typicode.com",
+  "tools": [
+    {
+      "name": "list_posts",
+      "description": "Get all blog posts. Returns up to 100 posts with id, title, body, and userId.",
+      "method": "GET",
+      "path": "/posts",
+      "params": []
+    },
+    {
+      "name": "get_post",
+      "description": "Get a specific post by its numeric ID (1–100).",
+      "method": "GET",
+      "path": "/posts/{id}",
+      "params": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "integer",
+          "description": "Post ID (1–100)"
+        }
+      ]
+    },
+    {
+      "name": "create_post",
+      "description": "Create a new post (simulated — returns the data with a new ID but does not persist).",
+      "method": "POST",
+      "path": "/posts",
+      "params": [
+        {
+          "name": "title",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Post title"
+        },
+        {
+          "name": "body",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Post content"
+        },
+        {
+          "name": "userId",
+          "in": "body",
+          "required": true,
+          "type": "integer",
+          "description": "Author user ID"
+        }
+      ]
+    },
+    {
+      "name": "list_users",
+      "description": "Get all users with name, email, address, and company details.",
+      "method": "GET",
+      "path": "/users",
+      "params": []
+    },
+    {
+      "name": "get_user",
+      "description": "Get a specific user by ID including contact and location details.",
+      "method": "GET",
+      "path": "/users/{id}",
+      "params": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "integer",
+          "description": "User ID (1–10)"
+        }
+      ]
+    },
+    {
+      "name": "list_todos",
+      "description": "Get all to-do items with their completion status.",
+      "method": "GET",
+      "path": "/todos",
+      "params": []
+    }
+  ]
+}

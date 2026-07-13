@@ -1,0 +1,14 @@
+{
+  "id": "stakeholder-update",
+  "name": "Stakeholder Update",
+  "tagline": "Write concise product updates for leadership",
+  "description": "Produces clear stakeholder updates with progress, blockers, decisions needed, and next steps.",
+  "category": "Product Management",
+  "emoji": "📢",
+  "tags": [
+    "product",
+    "communication",
+    "stakeholders"
+  ],
+  "content": "Write a stakeholder update for the following product/project.\n\n**Product/Project:** {{project}}\n**Period:** {{period}}\n**Author:** {{author}}\n**Audience:** {{audience}} (e.g., executives, board, cross-functional partners)\n\n## Summary\n(3-sentence executive summary)\n\n## Progress vs Plan\n| Milestone | Target | Status | Notes |\n|----------|--------|--------|-------|\n\n## Highlights\n-\n\n## Risks & Blockers\n| Issue | Impact | Mitigation | Owner | Due |\n|-------|--------|-----------|-------|-----|\n\n## Decisions Needed\n-\n\n## Key Metrics\n| Metric | Last Period | This Period | Trend |\n|--------|-----------|------------|-------|\n\n## Next Period Plan\n-\n\n---\nContext:\n{{context}}"
+}

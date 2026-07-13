@@ -55,6 +55,9 @@ Important folders:
 ## Frontend Engineering Principles
 
 - Read the existing page/component before editing.
+- Keep exactly one export in every named `.ts`/`.tsx` module; aggregate public symbols only in `index.ts`.
+- Store React implementations in matching named `.tsx` files, never `index.tsx`, and keep `index.ts` free of executable logic.
+- Ensure every directory below `src/` contains `index.ts` and `index.css`; non-visual folders may keep an empty stylesheet.
 - Prefer local project patterns over generic React advice.
 - Keep state close to where it is used unless it is genuinely shared.
 - Use derived state instead of duplicated state when practical.
@@ -87,10 +90,11 @@ src/features/<feature>/
   components/
   hooks/
   api/
-  types.ts
-  constants.ts
-  utils.ts
+  types/
+  constants/
+  utils/
   index.ts
+  index.css
 ```
 
 Use only the folders the feature actually needs. A small feature may have a flat structure.

@@ -1,0 +1,99 @@
+{
+  "id": "appwrite",
+  "name": "Appwrite",
+  "tagline": "Open-source backend — databases via REST",
+  "description": "Read-only access to Appwrite database documents using the server-side REST API. Each tool requires your Appwrite Project ID as a header parameter. After creating this project, set the API key under Authentication. For self-hosted Appwrite, update the base URL in Settings.",
+  "category": "Database",
+  "color": "#F02E65",
+  "emoji": "🔺",
+  "baseUrl": "https://cloud.appwrite.io/v1",
+  "auth": {
+    "type": "api-key",
+    "hint": "Create a Server API Key in the Appwrite Console → Project Settings → API Keys. Grant at least the \"databases.read\" scope.",
+    "keyName": "x-appwrite-key",
+    "keyIn": "header"
+  },
+  "signupUrl": "https://cloud.appwrite.io",
+  "docsUrl": "https://appwrite.io/docs/references/cloud/server-rest/databases",
+  "tools": [
+    {
+      "name": "list_documents",
+      "description": "List documents from an Appwrite collection. Requires the Appwrite Project ID as a header. Supports pagination via limit and offset.",
+      "method": "GET",
+      "path": "/databases/{databaseId}/collections/{collectionId}/documents",
+      "params": [
+        {
+          "name": "x-appwrite-project",
+          "in": "header",
+          "required": true,
+          "type": "string",
+          "description": "Your Appwrite Project ID, found in Project Settings → Project ID"
+        },
+        {
+          "name": "databaseId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Database ID, found in Databases → select database → Settings"
+        },
+        {
+          "name": "collectionId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Collection ID, found in Databases → collection → Settings"
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Maximum documents to return (default 25, max 5000)"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of documents to skip for pagination"
+        }
+      ]
+    },
+    {
+      "name": "get_document",
+      "description": "Get a single document from an Appwrite collection by its document ID.",
+      "method": "GET",
+      "path": "/databases/{databaseId}/collections/{collectionId}/documents/{documentId}",
+      "params": [
+        {
+          "name": "x-appwrite-project",
+          "in": "header",
+          "required": true,
+          "type": "string",
+          "description": "Your Appwrite Project ID, found in Project Settings → Project ID"
+        },
+        {
+          "name": "databaseId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Database ID"
+        },
+        {
+          "name": "collectionId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Collection ID"
+        },
+        {
+          "name": "documentId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Document ID to retrieve"
+        }
+      ]
+    }
+  ]
+}

@@ -2,7 +2,7 @@
 
 This document turns the current frontend modularization direction into an execution plan. It is intentionally incremental and should be applied without broad rewrites.
 
-Current file convention: `docs/FRONTEND_FILE_ORGANIZATION_PLAN.md` is implemented and authoritative. Generic `types.ts`, `constants.ts`, `utils.ts`, `*-utils.ts`, and JSX-free `index.tsx` modules are no longer allowed. Use individual `name.kind.ts` contracts, one-purpose utility files, `.hook.ts` hooks, focused `.constant.ts` files, and pure `index.ts` barrels.
+Current file convention: `docs/FRONTEND_EXPORT_AND_FOLDER_CONVENTION_PLAN.md` is implemented and authoritative. Generic `types.ts`, `constants.ts`, `utils.ts`, and `*-utils.ts` modules are forbidden. Use individual `name.kind.ts` contracts, one-purpose utilities, `.hook.ts` hooks, focused `.constant.ts` files, matching named React `.tsx` implementations, and pure `index.ts` barrels. Every named module exports one symbol and every source directory contains `index.ts` plus `index.css`.
 
 ## Goal
 

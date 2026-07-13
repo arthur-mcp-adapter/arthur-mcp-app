@@ -2,14 +2,14 @@
 
 This plan defines how to align the frontend with Feature-Driven Architecture, Atomic Design, and controlled barrel exports. It is intentionally incremental: preserve behavior first, then improve structure in small validated steps.
 
-Current file convention: `docs/FRONTEND_FILE_ORGANIZATION_PLAN.md` has been implemented and supersedes this document's historical `types.ts`, `constants.ts`, `utils.ts`, and JSX-free `index.tsx` examples. Contracts now use individual `name.kind.ts` files, utilities have one responsibility per file, hooks use `.hook.ts`, and pure barrels use `index.ts`. Component entry points continue to use `ComponentName/index.tsx`.
+Current file convention: `docs/FRONTEND_EXPORT_AND_FOLDER_CONVENTION_PLAN.md` is implemented and authoritative. Contracts use individual `name.kind.ts` files, named modules export one symbol, React implementations use matching named `.tsx` files, only `index.ts` aggregates exports, and every source directory contains `index.ts` and `index.css`.
 
 ## Goals
 
 - Keep route pages thin and focused on routing, top-level loading, page-level state, and feature composition.
 - Move domain-specific UI, hooks, types, constants, API helpers, and utilities into `src/features/<feature>/`.
 - Promote only truly reusable, domain-neutral UI into shared Atomic Design component groups.
-- Add `index.tsx` barrels as explicit public APIs at feature and shared component boundaries.
+- Add `index.ts` barrels as explicit public APIs at feature and shared component boundaries.
 - Reduce deep imports, cross-feature coupling, and page-owned implementation details.
 - Keep every migration step type-safe and behavior-preserving.
 
@@ -49,9 +49,13 @@ Use this as the long-term shape, not as a mandatory folder scaffold for every fe
 src/
   pages/
     ServerDetail/
-      index.tsx
+      ServerDetail.tsx
+      index.ts
+      index.css
     NewServer/
-      index.tsx
+      NewServer.tsx
+      index.ts
+      index.css
   features/
     server/
       api-endpoints/
@@ -95,7 +99,7 @@ Only create folders when there is enough code to justify them.
 
 - A feature is a product capability or domain surface, not just a technical category.
 - Feature-owned code belongs under `src/features/<feature>/`.
-- Route pages live in `src/pages/PageName/index.tsx`, with focused page tests colocated in the same folder when present.
+- Route implementations live in `src/pages/PageName/PageName.tsx`, with `index.ts`, `index.css`, and focused tests colocated in the same folder.
 - Pages may import feature public APIs, but should not import deep internals when a feature barrel exists.
 - Features should not import another feature's internals. If reuse is needed, expose a stable public API through the owning feature.
 - Shared folders are for cross-cutting, domain-neutral code only.
@@ -105,7 +109,7 @@ Only create folders when there is enough code to justify them.
 
 - Use feature-local components first.
 - Promote UI to `src/components/` only when it is reused across features or is genuinely domain-neutral.
-- Put each React component in its own folder with an `index.tsx` entry point, for example `src/components/atoms/HelpButton/index.tsx`.
+- Put each React component in its own folder with a named implementation, a pure `index.ts` entry point, and `index.css`, for example `src/components/atoms/HelpButton/HelpButton.tsx`.
 - Use atoms for primitives such as chips, badges, labels, icon actions, status indicators, and field pieces.
 - Use molecules for composed controls such as search bars, filters, tag inputs, action groups, and compact form groups.
 - Use organisms for reusable sections such as panels, drawers, accordions, tables, list cards, and settings groups.
@@ -114,7 +118,7 @@ Only create folders when there is enough code to justify them.
 
 ### Barrel Exports
 
-- Use `index.ts` as a controlled public API for component groups and features; reserve `ComponentName/index.tsx` for JSX-rendering entry points.
+- Use `index.ts` as the only controlled public API aggregator; React rendering belongs in `ComponentName/ComponentName.tsx`.
 - Prefer named exports and `export type` over broad `export *`.
 - Barrel files belong at feature boundaries and shared component group boundaries.
 - Avoid importing from a barrel inside the same folder that defines the exported files.
@@ -153,34 +157,34 @@ Objective: create stable public APIs for existing feature modules without changi
 
 Suggested first barrels:
 
-- `src/features/server/index.tsx`
-- `src/features/server/api-endpoints/index.tsx`
-- `src/features/server/settings/index.tsx`
-- `src/features/server/connect/index.tsx`
-- `src/features/server/resources/index.tsx`
-- `src/features/server/prompts/index.tsx`
-- `src/features/server/chains/index.tsx`
-- `src/features/prompts/index.tsx`
-- `src/features/secrets/index.tsx`
-- `src/features/settings/index.tsx`
+- `src/features/server/index.ts`
+- `src/features/server/api-endpoints/index.ts`
+- `src/features/server/settings/index.ts`
+- `src/features/server/connect/index.ts`
+- `src/features/server/resources/index.ts`
+- `src/features/server/prompts/index.ts`
+- `src/features/server/chains/index.ts`
+- `src/features/prompts/index.ts`
+- `src/features/secrets/index.ts`
+- `src/features/settings/index.ts`
 
 Completed first-slice barrels:
 
-- `src/features/server/index.tsx`
-- `src/features/server/activity/index.tsx`
-- `src/features/server/api-endpoints/index.tsx`
-- `src/features/server/chains/index.tsx`
-- `src/features/server/connect/index.tsx`
-- `src/features/server/prompts/index.tsx`
-- `src/features/server/resources/index.tsx`
-- `src/features/server/settings/index.tsx`
-- `src/features/prompts/index.tsx`
-- `src/features/secrets/index.tsx`
-- `src/features/settings/index.tsx`
-- `src/components/index.tsx`
-- `src/components/atoms/index.tsx`
-- `src/components/organisms/index.tsx`
-- `src/components/templates/index.tsx`
+- `src/features/server/index.ts`
+- `src/features/server/activity/index.ts`
+- `src/features/server/api-endpoints/index.ts`
+- `src/features/server/chains/index.ts`
+- `src/features/server/connect/index.ts`
+- `src/features/server/prompts/index.ts`
+- `src/features/server/resources/index.ts`
+- `src/features/server/settings/index.ts`
+- `src/features/prompts/index.ts`
+- `src/features/secrets/index.ts`
+- `src/features/settings/index.ts`
+- `src/components/index.ts`
+- `src/components/atoms/index.ts`
+- `src/components/organisms/index.ts`
+- `src/components/templates/index.ts`
 
 Tasks:
 
@@ -202,20 +206,20 @@ Validation:
 
 ### Phase 2: Thin The Largest Route Pages
 
-Status: page files have been moved into `PageName/index.tsx` folders; route thinning is still pending.
+Status: page implementations live in `PageName/PageName.tsx` folders with `index.ts` and `index.css`; route thinning is still pending.
 
 Objective: convert implementation-heavy pages into route orchestrators.
 
 Priority order:
 
-1. `src/pages/NewServer.tsx`
-2. `src/pages/Profile.tsx`
-3. `src/pages/McpDocs.tsx`
-4. `src/pages/PromptDetail.tsx`
-5. `src/pages/SecretDetail.tsx`
-6. `src/pages/Dashboard.tsx`
-7. `src/pages/Templates.tsx`
-8. `src/pages/Settings.tsx`
+1. `src/pages/NewServer/NewServer.tsx`
+2. `src/pages/Profile/Profile.tsx`
+3. `src/pages/McpDocs/McpDocs.tsx`
+4. `src/pages/PromptDetail/PromptDetail.tsx`
+5. `src/pages/SecretDetail/SecretDetail.tsx`
+6. `src/pages/Dashboard/Dashboard.tsx`
+7. `src/pages/Templates/Templates.tsx`
+8. `src/pages/Settings/Settings.tsx`
 
 Tasks:
 
@@ -253,7 +257,7 @@ Tasks:
 - Create atomic folders only for categories with multiple shared components or clear near-term growth.
 - Move domain-neutral shared components into `src/components/atoms`, `src/components/molecules`, `src/components/organisms`, or `src/components/templates`.
 - Leave domain-aware components in their features.
-- Add `src/components/index.tsx` and group-level barrels only when they reduce import noise.
+- Add `src/components/index.ts` and group-level barrels only when they reduce import noise.
 - Update imports incrementally.
 
 Acceptance criteria:

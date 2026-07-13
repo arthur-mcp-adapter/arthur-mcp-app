@@ -20,6 +20,15 @@ const forbiddenNames = new Set([
   'validation.ts',
 ])
 const focusedFunctionFile = /\.(builder|factory|formatter|hook|parser|permission|role|util|validator)\.ts$/
+const exportlessEntryFiles = new Set(['main.tsx', 'setupTests.ts', 'vite-env.d.ts'])
+
+function walkDirectories(directory, directories = []) {
+  directories.push(directory)
+  for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+    if (entry.isDirectory()) walkDirectories(path.join(directory, entry.name), directories)
+  }
+  return directories
+}
 
 function walk(directory, files = []) {
   for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
@@ -74,6 +83,37 @@ function exportedCallables(sourceFile) {
   return callables
 }
 
+function exportedSymbols(sourceFile) {
+  const symbols = []
+  for (const statement of sourceFile.statements) {
+    if (ts.isExportAssignment(statement)) {
+      symbols.push(statement)
+      continue
+    }
+    if (ts.isExportDeclaration(statement)) {
+      if (statement.exportClause && ts.isNamedExports(statement.exportClause)) {
+        symbols.push(...statement.exportClause.elements)
+      } else {
+        symbols.push(statement)
+      }
+      continue
+    }
+    if (!hasExportModifier(statement)) continue
+    if (ts.isVariableStatement(statement)) symbols.push(...statement.declarationList.declarations)
+    else symbols.push(statement)
+  }
+  return symbols
+}
+
+for (const directory of walkDirectories('src')) {
+  if (!fs.existsSync(path.join(directory, 'index.ts'))) {
+    failures.push(`${directory}:1 every frontend directory must contain index.ts`)
+  }
+  if (!fs.existsSync(path.join(directory, 'index.css'))) {
+    failures.push(`${directory}:1 every frontend directory must contain index.css`)
+  }
+}
+
 for (const file of walk('src')) {
   const basename = path.basename(file)
   const testFile = basename.includes('.test.') || basename.includes('.spec.')
@@ -88,6 +128,30 @@ for (const file of walk('src')) {
 
   if (!testFile && (forbiddenNames.has(basename) || basename.endsWith('-utils.ts'))) {
     failures.push(`${file}:1 catch-all frontend file name is forbidden`)
+  }
+
+  if (basename === 'index.tsx') {
+    failures.push(`${file}:1 React implementations must use a named .tsx file with an index.ts barrel`)
+  }
+
+  if (!testFile && basename === 'index.ts') {
+    for (const statement of sourceFile.statements) {
+      if (!ts.isExportDeclaration(statement)) {
+        fail(file, sourceFile, statement, 'index.ts files may contain only explicit export declarations')
+      }
+    }
+  }
+
+  if (!testFile && basename !== 'index.ts' && !exportlessEntryFiles.has(basename)) {
+    const exports = exportedSymbols(sourceFile)
+    if (exports.length !== 1) {
+      failures.push(`${file}:1 named frontend files must export exactly one symbol; found ${exports.length}`)
+    }
+    for (const statement of sourceFile.statements) {
+      if (ts.isExportDeclaration(statement)) {
+        fail(file, sourceFile, statement, 're-exports are allowed only in index.ts')
+      }
+    }
   }
 
   if (!testFile && focusedFunctionFile.test(basename)) {
@@ -117,10 +181,6 @@ for (const file of walk('src')) {
 
   for (const declaration of declarations) {
     fail(file, sourceFile, declaration, 'named contracts and entities are forbidden in React modules')
-  }
-
-  if (basename === 'index.tsx' && !containsJsx(sourceFile)) {
-    failures.push(`${file}:1 JSX-free barrels must use index.ts`)
   }
 
   for (const statement of sourceFile.statements) {

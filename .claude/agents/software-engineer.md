@@ -27,6 +27,7 @@ Arthur MCP is a full-stack TypeScript application:
 ## Engineering Principles
 
 - Read the existing code before editing.
+- In frontend code, named `.ts`/`.tsx` modules export exactly one symbol, only `index.ts` aggregates exports, React implementations use matching named `.tsx` files, and every `src/` directory contains `index.ts` and `index.css`.
 - Prefer local project patterns over generic best practices.
 - Keep controllers thin, services focused, and repositories responsible for persistence details.
 - Keep frontend pages responsible for route orchestration and page-local state.

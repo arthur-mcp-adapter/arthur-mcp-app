@@ -1,0 +1,14 @@
+{
+  "id": "objection-handler",
+  "name": "Objection Handler",
+  "tagline": "Craft responses to common sales objections",
+  "description": "Prepares polished, empathetic responses to the most common objections in your sales cycle.",
+  "category": "Sales",
+  "emoji": "🛡️",
+  "tags": [
+    "sales",
+    "objections",
+    "negotiation"
+  ],
+  "content": "Create objection handling responses for the following sales scenario.\n\n**Product/Service:** {{product}}\n**Price point:** {{price}}\n**Target market:** {{market}}\n**Objections to address:** {{objections}}\n\nFor each objection, provide:\n1. **Acknowledge** (validate the concern)\n2. **Reframe** (shift perspective)\n3. **Respond** (address the substance)\n4. **Confirm** (check if resolved)\n\nExample format:\n**Objection:** \"It's too expensive.\"\n**Response:** \"I hear you — budget is always a real constraint. [Reframe] Many of our customers felt the same way initially, but when we calculated the time saved per week, the ROI typically pays for itself in under 90 days. [Ask] What would need to be true for this to make sense for your budget?\"\n\nObjections:\n{{objections}}"
+}

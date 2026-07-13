@@ -1,0 +1,135 @@
+{
+  "id": "newsapi",
+  "name": "NewsAPI",
+  "tagline": "Top headlines and news search",
+  "description": "Search millions of news articles from thousands of sources worldwide. Great for competitive intelligence, market research, and staying on top of industry news.",
+  "category": "Data",
+  "color": "#E64C13",
+  "emoji": "📰",
+  "baseUrl": "https://newsapi.org/v2",
+  "auth": {
+    "type": "api-key",
+    "hint": "Sign up for a free API key at newsapi.org. The free tier supports 100 requests/day.",
+    "keyName": "X-Api-Key",
+    "keyIn": "header"
+  },
+  "signupUrl": "https://newsapi.org/register",
+  "docsUrl": "https://newsapi.org/docs",
+  "tools": [
+    {
+      "name": "get_top_headlines",
+      "description": "Get the latest top headlines by country, category, or keyword.",
+      "method": "GET",
+      "path": "/top-headlines",
+      "params": [
+        {
+          "name": "country",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "2-letter ISO country code, e.g. us, br, gb, fr, de"
+        },
+        {
+          "name": "category",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "News category: business, entertainment, health, science, sports, technology"
+        },
+        {
+          "name": "q",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Keywords to filter headlines"
+        },
+        {
+          "name": "pageSize",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of articles (max 100)"
+        }
+      ]
+    },
+    {
+      "name": "search_news",
+      "description": "Search all news articles by keyword, source, date range, and language.",
+      "method": "GET",
+      "path": "/everything",
+      "params": [
+        {
+          "name": "q",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Search query — supports AND, OR, NOT and exact phrases in quotes"
+        },
+        {
+          "name": "from",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Start date in YYYY-MM-DD format"
+        },
+        {
+          "name": "to",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "End date in YYYY-MM-DD format"
+        },
+        {
+          "name": "language",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Language code: en, pt, es, fr, de, it, nl, no, ru, se, ud, zh"
+        },
+        {
+          "name": "sortBy",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Sort by: relevancy, popularity, or publishedAt"
+        },
+        {
+          "name": "pageSize",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of articles (max 100)"
+        }
+      ]
+    },
+    {
+      "name": "get_sources",
+      "description": "Get the list of news sources available, filterable by category, language, and country.",
+      "method": "GET",
+      "path": "/top-headlines/sources",
+      "params": [
+        {
+          "name": "category",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Category: business, entertainment, health, science, sports, technology"
+        },
+        {
+          "name": "language",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Language code: en, pt, es, fr, de"
+        },
+        {
+          "name": "country",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "2-letter country code"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "id": "contract-review",
+  "name": "Contract Review Checklist",
+  "tagline": "Review contracts for missing or risky clauses",
+  "description": "Evaluates contracts against a standard checklist of clauses, flagging gaps and risks.",
+  "category": "Legal",
+  "emoji": "📑",
+  "tags": [
+    "legal",
+    "contracts",
+    "compliance"
+  ],
+  "content": "Review the following contract against standard requirements.\n\n**Contract type:** {{contract_type}}\n**Our role:** {{our_role}} (buyer/seller/licensor/licensee/etc.)\n\n## Clause Checklist\n| Clause | Present? | Risk Level | Notes |\n|--------|---------|-----------|-------|\n| Parties and definitions | | | |\n| Scope of work / deliverables | | | |\n| Payment terms | | | |\n| Intellectual property ownership | | | |\n| Confidentiality / NDA | | | |\n| Limitation of liability | | | |\n| Indemnification | | | |\n| Warranties and representations | | | |\n| Termination rights | | | |\n| Governing law and jurisdiction | | | |\n| Dispute resolution | | | |\n| Force majeure | | | |\n| Amendment process | | | |\n\n## High-Risk Items\n-\n\n## Missing Critical Clauses\n-\n\n## Negotiation Priorities\n1.\n2.\n3.\n\nNote: This is a preliminary review — engage qualified legal counsel before signing.\n\n---\nContract:\n{{contract}}"
+}

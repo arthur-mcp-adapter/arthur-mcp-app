@@ -1,0 +1,14 @@
+{
+  "id": "security-scanner",
+  "name": "Security Vulnerability Scanner",
+  "tagline": "Scan code for OWASP Top 10 and common vulnerabilities",
+  "description": "Reviews code for security vulnerabilities including injection, auth issues, and data exposure risks.",
+  "category": "Code",
+  "emoji": "🔒",
+  "tags": [
+    "code",
+    "security",
+    "owasp"
+  ],
+  "content": "Perform a security vulnerability scan on the following code, focusing on the OWASP Top 10:\n\n1. **Injection** (SQL, command, LDAP)\n2. **Broken Authentication**\n3. **Sensitive Data Exposure**\n4. **XML External Entities (XXE)**\n5. **Broken Access Control**\n6. **Security Misconfiguration**\n7. **Cross-Site Scripting (XSS)**\n8. **Insecure Deserialization**\n9. **Using Components with Known Vulnerabilities**\n10. **Insufficient Logging & Monitoring**\n\nFor each vulnerability found:\n- OWASP category\n- Severity: Critical / High / Medium / Low\n- Affected code location\n- Attack scenario\n- Remediation with secure code example\n\nLanguage: {{language}}\n\nCode:\n{{code}}"
+}

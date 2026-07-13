@@ -44,6 +44,7 @@ Arthur MCP is a full-stack application for managing MCP servers/projects, import
 - Build frontend: `npm run build`
 - Type-check frontend: `npm run type-check`
 - Check frontend file organization: `npm run check:frontend-structure`
+- Validate static template catalogs: `npm run check:template-catalogs`
 - Test frontend: `npm test`
 - Build backend: `npm run build --prefix api`
 - Test backend: `npm test --prefix api`
@@ -66,7 +67,7 @@ Before working:
 While working:
 
 - Prefer existing repository patterns.
-- Keep frontend contracts in individual `name.kind.ts` files, focused utilities one responsibility per file, hooks in `.hook.ts`, pure barrels in `index.ts`, and React-rendering modules in `.tsx`; `npm run type-check` enforces these conventions.
+- Keep frontend contracts in individual `name.kind.ts` files, focused utilities one responsibility per file, hooks in `.hook.ts`, and React-rendering modules in matching named `.tsx` files. Named source files export exactly one symbol; only `index.ts` aggregates exports; every directory under `src/` contains `index.ts` and `index.css`. `npm run type-check` enforces these conventions.
 - Avoid broad refactors when the task is focused.
 - Treat permissions as part of every new feature, not as follow-up work. Any new user-facing surface, route, action, API endpoint, integration, or settings panel must either reuse an existing permission intentionally or add a new permission end-to-end.
 - Update tests when changing meaningful behavior.

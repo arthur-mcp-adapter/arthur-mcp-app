@@ -1,0 +1,14 @@
+{
+  "id": "interview-questions",
+  "name": "Interview Question Generator",
+  "tagline": "Create targeted interview questions for any role",
+  "description": "Generates behavioral, technical, and situational interview questions tailored to a specific role.",
+  "category": "HR & Recruiting",
+  "emoji": "🎤",
+  "tags": [
+    "hr",
+    "recruiting",
+    "interviews"
+  ],
+  "content": "Generate interview questions for the following role.\n\n**Role:** {{role}}\n**Level:** {{level}}\n**Key competencies to assess:** {{competencies}}\n**Technical areas to test:** {{technical_areas}}\n\nGenerate:\n\n## Behavioral Questions (STAR format)\n(5 questions, each probing a specific competency)\n\n## Technical / Skills Questions\n(5 questions with what a good answer looks like)\n\n## Situational Questions\n(3 hypothetical scenarios)\n\n## Culture Fit Questions\n(3 questions)\n\n## Candidate Questions to Ask Us\n(3 questions the candidate should ask — assess if they do)\n\nFor each question, note: **What you're assessing** and **Green/Red flag answers**"
+}

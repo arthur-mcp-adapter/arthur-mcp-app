@@ -1,0 +1,128 @@
+{
+  "id": "zendesk",
+  "name": "Zendesk",
+  "tagline": "Customer support tickets and agents",
+  "description": "Look up and create support tickets, search customers, and read agent activity. After creating, update the base URL in Settings to your own Zendesk subdomain.",
+  "category": "Business",
+  "color": "#03363D",
+  "emoji": "🎫",
+  "baseUrl": "https://your-domain.zendesk.com/api/v2",
+  "auth": {
+    "type": "bearer",
+    "hint": "Generate an OAuth token in Admin Center → Apps → OAuth Clients, or use an API Token via Basic Auth (email/token:API_TOKEN) configured after creation."
+  },
+  "signupUrl": "https://www.zendesk.com/register/",
+  "docsUrl": "https://developer.zendesk.com/api-reference",
+  "tools": [
+    {
+      "name": "list_tickets",
+      "description": "List recent support tickets with their subject, status, priority, and requester.",
+      "method": "GET",
+      "path": "/tickets.json",
+      "params": [
+        {
+          "name": "sort_by",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Sort field: created_at, updated_at, priority, or status"
+        },
+        {
+          "name": "sort_order",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Sort direction: asc or desc"
+        },
+        {
+          "name": "per_page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Results per page (max 100)"
+        }
+      ]
+    },
+    {
+      "name": "get_ticket",
+      "description": "Get all details for a specific ticket: description, status, assignee, and conversation history.",
+      "method": "GET",
+      "path": "/tickets/{id}.json",
+      "params": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "integer",
+          "description": "Ticket ID number"
+        }
+      ]
+    },
+    {
+      "name": "create_ticket",
+      "description": "Open a new support ticket on behalf of a customer.",
+      "method": "POST",
+      "path": "/tickets.json",
+      "params": [
+        {
+          "name": "ticket",
+          "in": "body",
+          "required": true,
+          "type": "object",
+          "description": "Ticket data, e.g. {\"subject\":\"Login issue\",\"comment\":{\"body\":\"User cannot log in\"},\"priority\":\"high\",\"tags\":[\"login\",\"urgent\"]}"
+        }
+      ]
+    },
+    {
+      "name": "search_tickets",
+      "description": "Search across tickets, users, and organizations using Zendesk query syntax.",
+      "method": "GET",
+      "path": "/search.json",
+      "params": [
+        {
+          "name": "query",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Search query, e.g. \"status:open type:ticket priority:high\""
+        },
+        {
+          "name": "sort_by",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Sort by: created_at, updated_at, or score"
+        },
+        {
+          "name": "per_page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Results per page (max 100)"
+        }
+      ]
+    },
+    {
+      "name": "list_users",
+      "description": "List Zendesk users (agents and customers) with their name, email, and role.",
+      "method": "GET",
+      "path": "/users.json",
+      "params": [
+        {
+          "name": "role",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Filter by role: end-user, agent, or admin"
+        },
+        {
+          "name": "per_page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Results per page (max 100)"
+        }
+      ]
+    }
+  ]
+}

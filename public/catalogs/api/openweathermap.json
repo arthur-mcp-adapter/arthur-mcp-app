@@ -1,0 +1,100 @@
+{
+  "id": "openweathermap",
+  "name": "OpenWeatherMap",
+  "tagline": "Real-time and forecast weather data",
+  "description": "Get current weather, hourly and 5-day forecasts for any city in the world. Requires a free API key.",
+  "category": "Data",
+  "color": "#EB6E4B",
+  "emoji": "🌤",
+  "baseUrl": "https://api.openweathermap.org/data/2.5",
+  "auth": {
+    "type": "api-key",
+    "hint": "Sign up for a free API key at openweathermap.org.",
+    "keyName": "appid",
+    "keyIn": "query"
+  },
+  "signupUrl": "https://home.openweathermap.org/users/sign_up",
+  "docsUrl": "https://openweathermap.org/api",
+  "tools": [
+    {
+      "name": "get_current_weather",
+      "description": "Get the current weather for a city. Returns temperature, humidity, wind speed, and conditions.",
+      "method": "GET",
+      "path": "/weather",
+      "params": [
+        {
+          "name": "q",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "City name, e.g. \"London\" or \"New York,US\""
+        },
+        {
+          "name": "units",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Unit system: metric (°C), imperial (°F), or standard (K)"
+        }
+      ]
+    },
+    {
+      "name": "get_forecast",
+      "description": "Get a 5-day weather forecast in 3-hour intervals for a city.",
+      "method": "GET",
+      "path": "/forecast",
+      "params": [
+        {
+          "name": "q",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "City name, e.g. \"Paris,FR\""
+        },
+        {
+          "name": "units",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Unit system: metric, imperial, or standard"
+        },
+        {
+          "name": "cnt",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of timestamps to return (max 40)"
+        }
+      ]
+    },
+    {
+      "name": "get_weather_by_coords",
+      "description": "Get current weather using geographic coordinates (latitude and longitude).",
+      "method": "GET",
+      "path": "/weather",
+      "params": [
+        {
+          "name": "lat",
+          "in": "query",
+          "required": true,
+          "type": "number",
+          "description": "Latitude, e.g. 51.5074"
+        },
+        {
+          "name": "lon",
+          "in": "query",
+          "required": true,
+          "type": "number",
+          "description": "Longitude, e.g. -0.1278"
+        },
+        {
+          "name": "units",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Unit system: metric, imperial, or standard"
+        }
+      ]
+    }
+  ]
+}

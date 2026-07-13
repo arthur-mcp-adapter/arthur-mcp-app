@@ -1,0 +1,14 @@
+{
+  "id": "risk-assessment",
+  "name": "Risk Assessment Matrix",
+  "tagline": "Identify, score, and prioritize project risks",
+  "description": "Produces a structured risk register with likelihood, impact, and mitigation strategies.",
+  "category": "Analysis",
+  "emoji": "⚠️",
+  "tags": [
+    "analysis",
+    "risk",
+    "project management"
+  ],
+  "content": "Create a risk assessment for the following project or initiative.\n\n**Project:** {{project}}\n**Scope:** {{scope}}\n\n## Risk Register\n| # | Risk | Category | Likelihood (1-5) | Impact (1-5) | Score | Mitigation Strategy | Owner |\n|---|------|----------|-----------------|-------------|-------|-------------------|-------|\n\n## Top Priority Risks\n(Score ≥ 15)\n-\n\n## Risk Response Plan\n-\n\n## Early Warning Indicators\n-\n\nContext:\n{{context}}"
+}

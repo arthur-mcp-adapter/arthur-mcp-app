@@ -1,0 +1,123 @@
+{
+  "id": "tmdb",
+  "name": "The Movie Database",
+  "tagline": "Movies, TV shows and cast info",
+  "description": "Comprehensive movie and TV show database. Search titles, get cast and crew, check ratings, and browse trending content.",
+  "category": "Music & Media",
+  "color": "#01B4E4",
+  "emoji": "🎬",
+  "baseUrl": "https://api.themoviedb.org/3",
+  "auth": {
+    "type": "bearer",
+    "hint": "Create a free account and generate an API Read Access Token in your account settings."
+  },
+  "signupUrl": "https://www.themoviedb.org/signup",
+  "docsUrl": "https://developer.themoviedb.org/docs",
+  "tools": [
+    {
+      "name": "search_movies",
+      "description": "Search for movies by title. Returns name, release year, rating, and overview.",
+      "method": "GET",
+      "path": "/search/movie",
+      "params": [
+        {
+          "name": "query",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Movie title to search for"
+        },
+        {
+          "name": "year",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Filter results by release year"
+        },
+        {
+          "name": "page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Page number (default 1)"
+        }
+      ]
+    },
+    {
+      "name": "get_movie",
+      "description": "Get full details for a movie: synopsis, runtime, genres, rating, budget, revenue, and tagline.",
+      "method": "GET",
+      "path": "/movie/{movie_id}",
+      "params": [
+        {
+          "name": "movie_id",
+          "in": "path",
+          "required": true,
+          "type": "integer",
+          "description": "TMDB movie ID",
+          "originalName": "movie_id"
+        }
+      ]
+    },
+    {
+      "name": "get_movie_credits",
+      "description": "Get the cast and crew for a movie.",
+      "method": "GET",
+      "path": "/movie/{movie_id}/credits",
+      "params": [
+        {
+          "name": "movie_id",
+          "in": "path",
+          "required": true,
+          "type": "integer",
+          "description": "TMDB movie ID",
+          "originalName": "movie_id"
+        }
+      ]
+    },
+    {
+      "name": "get_trending",
+      "description": "Get the trending movies or TV shows for today or this week.",
+      "method": "GET",
+      "path": "/trending/{media_type}/{time_window}",
+      "params": [
+        {
+          "name": "media_type",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Type of media: movie, tv, or all"
+        },
+        {
+          "name": "time_window",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Time window: day or week"
+        }
+      ]
+    },
+    {
+      "name": "search_tv",
+      "description": "Search for TV shows by name. Returns title, first air date, rating, and overview.",
+      "method": "GET",
+      "path": "/search/tv",
+      "params": [
+        {
+          "name": "query",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "TV show name to search for"
+        },
+        {
+          "name": "page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Page number (default 1)"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,104 @@
+{
+  "id": "chargebee",
+  "name": "Chargebee",
+  "tagline": "Subscriptions, invoices and revenue",
+  "description": "Manage subscriptions, customers, invoices, and plans in Chargebee. Update the base URL in Settings to your Chargebee site (your-site.chargebee.com/api/v2).",
+  "category": "E-commerce",
+  "color": "#FF6600",
+  "emoji": "🔄",
+  "baseUrl": "https://your-site.chargebee.com/api/v2",
+  "auth": {
+    "type": "api-key",
+    "hint": "Go to Settings → Configure Chargebee → API Keys. In the API Key field enter: Basic <base64 of \"API_KEY:\">  (note the colon with empty password).",
+    "keyName": "Authorization",
+    "keyIn": "header"
+  },
+  "signupUrl": "https://www.chargebee.com/trial-signup/",
+  "docsUrl": "https://apidocs.chargebee.com/docs/api",
+  "tools": [
+    {
+      "name": "list_subscriptions",
+      "description": "List all subscriptions with their plan, status, billing period, and customer.",
+      "method": "GET",
+      "path": "/subscriptions",
+      "params": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of results (max 100)"
+        },
+        {
+          "name": "status[is]",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Filter by status: active, cancelled, in_trial, or paused",
+          "originalName": "status[is]"
+        }
+      ]
+    },
+    {
+      "name": "get_subscription",
+      "description": "Get full details for a subscription including plan, add-ons, and next billing date.",
+      "method": "GET",
+      "path": "/subscriptions/{subscription_id}",
+      "params": [
+        {
+          "name": "subscription_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Subscription ID"
+        }
+      ]
+    },
+    {
+      "name": "list_invoices",
+      "description": "List invoices with their amount, status, and due date.",
+      "method": "GET",
+      "path": "/invoices",
+      "params": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of results (max 100)"
+        },
+        {
+          "name": "status[is]",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Filter: paid, posted, payment_due, not_paid, or voided",
+          "originalName": "status[is]"
+        }
+      ]
+    },
+    {
+      "name": "list_customers",
+      "description": "List Chargebee customers with their email, company, and billing address.",
+      "method": "GET",
+      "path": "/customers",
+      "params": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of results (max 100)"
+        },
+        {
+          "name": "email[is]",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Filter by exact email address",
+          "originalName": "email[is]"
+        }
+      ]
+    }
+  ]
+}

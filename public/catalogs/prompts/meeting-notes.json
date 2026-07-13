@@ -1,0 +1,14 @@
+{
+  "id": "meeting-notes",
+  "name": "Meeting Notes Distiller",
+  "tagline": "Turn meeting transcripts into structured notes and action items",
+  "description": "Converts raw meeting transcripts into organized notes with decisions, action items, and follow-ups.",
+  "category": "Summarization",
+  "emoji": "📝",
+  "tags": [
+    "summarization",
+    "meetings",
+    "productivity"
+  ],
+  "content": "Transform the following meeting transcript into structured notes.\n\n**Date:** {{date}}\n**Attendees:** {{attendees}}\n\n## Key Decisions\n-\n\n## Action Items\n| Task | Owner | Due Date |\n|------|-------|----------|\n\n## Discussion Points\n-\n\n## Next Steps\n-\n\n---\nTranscript:\n{{transcript}}"
+}

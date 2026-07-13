@@ -1,0 +1,15 @@
+{
+  "id": "press-release",
+  "name": "Press Release Writer",
+  "tagline": "Craft newsworthy press releases in AP style",
+  "description": "Writes professional press releases following AP style with quotes, boilerplate, and contact info.",
+  "category": "Writing",
+  "emoji": "📰",
+  "tags": [
+    "writing",
+    "pr",
+    "marketing",
+    "news"
+  ],
+  "content": "Write a press release in AP style.\n\n**Company:** {{company}}\n**Announcement:** {{announcement}}\n**Key Facts:** {{key_facts}}\n**Quote from executive:** {{quote}}\n**Release date:** {{date}}\n**Embargo:** {{embargo}}\n\nStructure:\n- FOR IMMEDIATE RELEASE header\n- City, Date dateline\n- Headline (active voice, present tense)\n- Lead paragraph (who, what, when, where, why)\n- Body paragraphs with supporting details\n- Executive quote\n- About the company boilerplate\n- Media contact information\n\nTone: Professional, newsworthy, factual"
+}

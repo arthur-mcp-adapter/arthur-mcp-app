@@ -12,6 +12,21 @@ This file should be updated when task state changes. It does not replace issues 
 
 ## In Progress
 
+- [x] Apply the static frontend template catalog plan (`docs/FRONTEND_TEMPLATE_CATALOG_PERSISTENCE_PLAN.md`):
+  - [x] **Phase 0:** Record counts, source size, consumers, search behavior, and summary/detail field requirements.
+  - [x] **Phase 1:** Convert 69 API and 90 prompt templates into searchable indexes plus 159 individual static detail files.
+  - [x] **Phase 2:** Add isolated summary contracts, cached fetch loaders, React catalog hooks, and normalized token search.
+  - [x] **Phase 3:** Migrate both galleries and template-derived server visuals without changing create/apply behavior.
+  - [x] **Phase 4:** Remove embedded catalog/category constants and obsolete template parameter builders.
+  - [x] **Phase 5:** Add catalog integrity validation, translated loading/error/retry states, tests, and documentation.
+- [x] Apply the frontend export and folder convention plan (`docs/FRONTEND_EXPORT_AND_FOLDER_CONVENTION_PLAN.md`):
+  - [x] **Phase 0:** Regenerated the directory/export/import inventory and captured the passing frontend baseline.
+  - [x] **Phase 1:** Replaced the `AuthContext.tsx` compatibility facade with a single-export `AuthProvider.tsx` and `auth/index.ts` public API.
+  - [x] **Phase 2:** Split the remaining named multi-export context, hook, theme, and data modules.
+  - [x] **Phase 3:** Replaced all 87 component/page `index.tsx` implementations with named `.tsx` files plus `index.ts` barrels and `index.css`.
+  - [x] **Phase 4:** Added `index.ts` and `index.css` to every remaining directory below `src/`.
+  - [x] **Phase 5:** Normalized public imports and preserved separate lazy chunks for large template datasets.
+  - [x] **Phase 6:** Enforced the convention permanently and synchronized architecture/agent documentation.
 - [x] Apply the frontend file organization plan (`docs/FRONTEND_FILE_ORGANIZATION_PLAN.md`):
   - [x] **Phase 0:** Validated Git state while ignoring stale `.claude/worktrees` gitlinks, captured the frontend baseline, and generated the declaration/helper/import inventory.
   - [x] **Phase 1:** Used authentication and permissions as the reference slice for isolated contracts, focused role/permission utilities, hooks, and the React provider.
@@ -53,6 +68,7 @@ This file should be updated when task state changes. It does not replace issues 
 
 ## Done
 
+- [x] Enforced single-export named frontend modules, `index.ts`-only aggregation, named React implementations, and `index.ts`/`index.css` coverage in all 185 source directories.
 - [x] Completed the frontend file organization migration: 249 isolated contract files, focused utility/hook/constant modules, pure `index.ts` barrels, and an enforced `check:frontend-structure` gate.
 - [x] Audited frontend hardcoded user-facing terms that bypass i18n and documented findings/remediation priorities in `docs/FRONTEND_I18N_HARDCODED_AUDIT_2026-07-01.md`.
 - [x] Added missing `serverDetail` and `errorTracking` locale keys introduced by the recent i18n sweep in EN/PT-BR and stabilized translated UI references.
@@ -145,12 +161,13 @@ This file should be updated when task state changes. It does not replace issues 
 - Use `docs/DESIGN_PATTERNS.md` as the reference for backend and frontend implementation patterns.
 - Sensitive values must use explicit reveal flows; metadata endpoints should not expose secret values.
 - User-facing copy should use i18n namespaces when the surrounding page has been migrated to translations.
-- Server templates in `API_TEMPLATES` are REST templates and must create servers with `source:rest`.
+- Built-in API catalog templates are REST templates and must create servers with `source:rest`.
 - Primary entity creation should use dedicated `new` routes with stepper/review flows, following `NewServer`.
 - The Portuguese document `docs/INTEGRATION_MODEL.pt-BR.md` is an explicit exception to the English documentation rule.
 - During the compatibility phase, user-facing UI should say `Operations` while legacy backend names may still use `DbQuery` and `/queries`.
 - Data-source operations should define schemas before being exposed as MCP Tools or Resources; Tools inherit operation schemas when available.
 - All database schema changes and persisted data-shape changes must be delivered through migrations. TypeORM `synchronize` stays disabled for SQLite, PostgreSQL, and MySQL.
+- Built-in template catalogs use versioned static JSON: one searchable summary index per catalog and one detail file per template. The frontend loads indexes by lazy route and details on selection, with in-memory request caching. Do not use SQLite or IndexedDB for this read-only 159-record catalog; existing `templates_use` and `prompts_create` gates remain unchanged.
 - Technical observability endpoints are intentionally public operational surfaces, not user-facing product actions, and do not require role permissions.
 - The `/observability` app page is permission-gated with `observability_view`; provider create/edit/delete routes are not part of the current observability implementation and redirect to the runtime dashboard.
 

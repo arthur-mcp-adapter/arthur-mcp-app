@@ -14,8 +14,37 @@ Frontend duplication optimization is progressing through a phased extraction pla
 
 `docs/FRONTEND_FILE_ORGANIZATION_PLAN.md` is now fully implemented. Production contracts and component props are isolated in 249 `name.kind.ts` files, top-level non-rendering helpers and hooks have left React modules, shared/feature utilities have one responsibility per file, constants are focused, and pure barrels use `index.ts`. Authentication/permissions is the reference slice. `npm run type-check` now begins with an AST structural gate so the convention cannot silently regress.
 
+`docs/FRONTEND_EXPORT_AND_FOLDER_CONVENTION_PLAN.md` is also fully implemented. Named frontend modules export exactly one symbol, only pure `index.ts` files aggregate exports, React implementations use matching named `.tsx` files, no `index.tsx` remains, and all 185 directories below `src/` contain `index.ts` and `index.css`.
+
 ## Latest Changes
 
+- Implemented the static frontend template catalog architecture selected from the software engineering review:
+  - Replaced the 242,655-byte API/prompt TypeScript constants with two searchable static indexes and 159 individual JSON detail files under `public/catalogs/`.
+  - API summaries retain card metadata and index tool names/descriptions; prompt summaries retain tags. Multi-token search is case/accent/separator insensitive.
+  - Added the `src/features/templates/` boundary with isolated summary/state contracts, cached index/detail loaders, normalized search utilities, and React hooks.
+  - Migrated both galleries to skeleton/error/retry states, summary search, per-card detail loading, and non-destructive detail errors while preserving create/apply behavior.
+  - Changed template-derived server icons to consume the lightweight API summary index only when tagged servers exist, with the existing generic source fallback.
+  - Removed embedded catalog/category constants and now-unused template parameter builders.
+  - Added `scripts/check-template-catalogs.mjs`; catalog validation runs in `type-check` and automatically before builds.
+  - Added English/Portuguese catalog-loading errors, focused loader/search/source/payload tests, and synchronized the plan, roadmap, design patterns, flows, commands, and handoff.
+  - No backend code, schema, endpoint, dependency, or permission contract changed. Existing `templates_use` and `prompts_create` decisions remain authoritative.
+- Completed all phases of `docs/FRONTEND_EXPORT_AND_FOLDER_CONVENTION_PLAN.md` without changing product behavior or styling:
+  - Removed the multi-export `AuthContext.tsx` facade; `context/auth/AuthProvider.tsx` now exports only `AuthProvider`, while `context/auth/index.ts` owns the auth public API.
+  - Replaced the Server Navigation and Color Mode compatibility facades with single-export provider files and directory barrels.
+  - Removed type/constant re-exports from named hook and component implementations, split theme definitions and template datasets, and separated the reusable MCP docs content/page plus public field/stat components.
+  - Migrated all 87 React `index.tsx` implementations to matching named `.tsx` files and created pure `index.ts` barrels.
+  - Added `index.ts` and `index.css` to all 185 directories under `src/`; non-visual CSS entries remain intentionally empty and are not imported at runtime.
+  - Extended `scripts/check-frontend-structure.mjs` to require directory entry files, exactly one export per named production module, re-exports only in `index.ts`, pure barrels, and no `index.tsx`.
+  - Preserved separate lazy chunks for the large API and prompt template datasets with deliberate direct imports, avoiding an initial combined 193 kB shared data chunk.
+  - Updated current architecture plans, design patterns, AGENTS guidance, and the React/frontend/software engineering/software architecture specialist files.
+  - `npm run type-check`, all 88 frontend tests, and `npm run build` passed. The first parallel test run had one Login timeout from resource contention; the isolated full rerun passed.
+- Added `docs/FRONTEND_EXPORT_AND_FOLDER_CONVENTION_PLAN.md` as a corrective follow-up to the completed frontend file organization refactor:
+  - Recorded that `AuthContext.tsx` currently exports/re-exports 7 symbols and must become a single-export `AuthProvider.tsx`, with aggregation only in `context/auth/index.ts`.
+  - Audited 185 frontend directories: 142 lacked `index.ts`, 184 lacked `index.css`, and 87 used `index.tsx` as their implementation entry point.
+  - Identified 9 named production modules with multiple exports.
+  - Defined the literal target that every directory under `src/` contains `index.ts` and `index.css`, including intentionally empty files for non-public/non-visual directories.
+  - Defined component/page migration to named `.tsx` implementations, single-export named modules, controlled `index.ts` aggregation, CSS ownership, phased validation, circular dependency safeguards, rollback, and automated enforcement.
+  - Updated `docs/ROADMAP.md`; no source, behavior, style, route, API, copy, auth, or permission change was made.
 - Completed all phases of `docs/FRONTEND_FILE_ORGANIZATION_PLAN.md` without changing UI behavior, routes, API contracts, copy, or permissions:
   - Extracted every production interface, enum, type alias, class, page contract, and component props shape into an individual lower-camel `name.kind.ts` module.
   - Reorganized auth into isolated contracts, constants, context, hook, and permission/role decisions while preserving the existing `AuthContext.tsx` public facade and all fallback behavior.
@@ -276,7 +305,7 @@ Frontend duplication optimization is progressing through a phased extraction pla
   - `src/components/organisms/index.tsx`
   - `src/components/templates/index.tsx`
 - Added feature `index.tsx` barrels for `server`, `prompts`, `secrets`, and `settings`, including server subfeatures.
-- Moved `SecretAutocomplete` into `src/features/secrets/SecretAutocomplete/index.tsx`.
+- Moved `SecretAutocomplete` into `src/features/secrets/SecretAutocomplete/SecretAutocomplete.tsx`.
 - Moved route pages into `src/pages/<PageName>/index.tsx`.
 - Moved page tests into their page folders:
   - `src/pages/Login/Login.test.tsx`
@@ -395,6 +424,9 @@ Frontend duplication optimization is progressing through a phased extraction pla
 
 ## Validation
 
+- Static template catalog implementation: `npm run type-check` passed, including frontend structure and validation of all 69 API plus 90 prompt index/detail records; the full `npm test` run passed with 14 files and 91 tests; `npm run build` passed and copied 70 API plus 91 prompt JSON assets. Preview-server smoke requests successfully loaded both indexes plus the GitHub and Executive Summary details. The final JavaScript has no matches for representative API/prompt catalog content; the API and prompt gallery chunks are now 9.08 kB and 7.79 kB respectively. The existing non-failing `@tabler/icons-react` large-barrel warning remains.
+- Frontend export/folder implementation: `npm run type-check` passed with the strengthened structural gate; the isolated full `npm test` rerun passed with 12 files and 88 tests; `npm run build` passed with only the existing non-failing `@tabler/icons-react` large-barrel warning. The initial test run executed in parallel with type-check had one Login timeout while the other 87 tests passed; it did not reproduce when run alone.
+- Documentation-only frontend export/folder planning: the new plan and roadmap references resolve, the directory audit recorded 185 folders with 142 missing `index.ts` and 184 missing `index.css`, the AST audit identified 9 named multi-export production modules, and `git diff --check --ignore-submodules=all` passed. Application type-check/tests/build were not rerun because no application code changed.
 - Frontend file organization implementation: `npm run type-check` passed with the new AST structural gate; `npm test` passed with 12 files and 88 tests; `npm run build` passed with the existing non-failing `@tabler/icons-react` large-barrel warning. Focused auth, endpoint utility, observability environment, and template tests also passed during migration.
 - Documentation-only frontend organization planning: the new plan exists, roadmap/handoff references resolve, an AST audit confirmed the recorded declaration counts, and the Markdown trailing-whitespace check passed. Application type-check/tests/build were not run because no application code changed.
 - `npm run type-check` passed after adding Vercel URL configuration and `VITE_API_URL` support.
@@ -496,7 +528,7 @@ Frontend duplication optimization is progressing through a phased extraction pla
 
 ## Recommended Next Step
 
-Review and commit the frontend file organization refactor separately from the pre-existing backend/deploy/database/website changes. Continue using `git status --ignore-submodules=all` until the stale `.claude/worktrees` gitlinks are cleaned up intentionally. After that, resume the remaining frontend architecture page-thinning and i18n roadmap items.
+Manually smoke-test `/templates`, `/prompts/templates`, and template-derived server cards through the development server, then commit the static catalog implementation together with its generated JSON assets and documentation. Keep it separate from the pre-existing backend/deploy/database/website changes, and continue using `git status --ignore-submodules=all` until the stale `.claude/worktrees` gitlinks are cleaned up intentionally.
 
 ## Points Of Attention
 

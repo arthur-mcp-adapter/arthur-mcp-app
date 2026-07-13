@@ -1,3 +1,7 @@
-import type { ApiTemplate } from '../../data/api-templates'
+import type { ApiTemplateSummary } from '../../features/templates'
 
-export interface TemplateCardProps { template: ApiTemplate; onUse: (tmpl: ApiTemplate) => void }
+export interface TemplateCardProps {
+  template: ApiTemplateSummary
+  loading: boolean
+  onUse: (id: string) => void
+}

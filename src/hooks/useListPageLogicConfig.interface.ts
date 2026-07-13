@@ -1,4 +1,4 @@
-import type { Permission } from '../context/AuthContext'
+import type { Permission } from '../context/auth'
 
 export interface UseListPageLogicConfig<T> {
   /** Load items from API */

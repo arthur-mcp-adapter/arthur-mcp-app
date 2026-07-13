@@ -1,7 +1,5 @@
 import { useState } from 'react'
 import type { AsyncFeedback } from './asyncFeedback.interface'
-export type { AsyncFeedback } from './asyncFeedback.interface'
-
 
 export function useAsyncFeedback() {
   const [feedback, setFeedback] = useState<AsyncFeedback>({ open: false, message: '', severity: 'success' })

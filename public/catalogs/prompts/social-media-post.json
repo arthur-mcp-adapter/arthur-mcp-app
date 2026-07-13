@@ -1,0 +1,14 @@
+{
+  "id": "social-media-post",
+  "name": "Social Media Post Generator",
+  "tagline": "Create platform-native posts for any social network",
+  "description": "Generates optimized posts for LinkedIn, Twitter/X, Instagram, and Facebook with platform-specific formatting.",
+  "category": "Social Media",
+  "emoji": "📱",
+  "tags": [
+    "social media",
+    "content",
+    "marketing"
+  ],
+  "content": "Create social media posts for the following content.\n\n**Topic/Announcement:** {{topic}}\n**Brand voice:** {{voice}} (e.g., professional, playful, inspirational)\n**Target audience:** {{audience}}\n**Goal:** {{goal}} (awareness / engagement / traffic / leads)\n\nGenerate one optimized post for each platform:\n\n**LinkedIn:**\n(Professional tone, 1200-1500 chars, paragraph format, 3-5 hashtags)\n\n**Twitter/X:**\n(Punchy, under 280 chars, 1-2 hashtags, strong hook)\n\n**Instagram:**\n(Visual-first caption, conversational, 2-3 sentences + hashtag block of 10-15 tags)\n\n**Facebook:**\n(Conversational, question-driven for engagement, 1-3 short paragraphs)\n\nAlso suggest:\n- Best posting time for each platform\n- Emoji recommendations\n- Content type for visual (photo / video / carousel / infographic)"
+}

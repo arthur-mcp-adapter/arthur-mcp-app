@@ -1,3 +1,4 @@
+export { AuthProvider } from './AuthProvider'
 export { Permission } from './permission.enum'
 export { ALL_PERMISSIONS_OFF } from './allPermissionsOff.constant'
 export { ROLE_PERMISSION_FALLBACKS } from './rolePermissionFallbacks.constant'

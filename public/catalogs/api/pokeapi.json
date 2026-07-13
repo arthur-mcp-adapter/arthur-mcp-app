@@ -1,0 +1,87 @@
+{
+  "id": "pokeapi",
+  "name": "PokéAPI",
+  "tagline": "Complete Pokémon game database",
+  "description": "A free, open Pokémon data API. No authentication required. Great for demos and AI experiments with structured data.",
+  "category": "Testing",
+  "color": "#EE8130",
+  "emoji": "⚡",
+  "baseUrl": "https://pokeapi.co/api/v2",
+  "auth": {
+    "type": "none",
+    "hint": ""
+  },
+  "docsUrl": "https://pokeapi.co/docs/v2",
+  "tools": [
+    {
+      "name": "get_pokemon",
+      "description": "Get a Pokémon's stats, abilities, types, and moves by name or ID.",
+      "method": "GET",
+      "path": "/pokemon/{name_or_id}",
+      "params": [
+        {
+          "name": "name_or_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Pokémon name (e.g. pikachu) or Pokédex number (e.g. 25)",
+          "originalName": "name_or_id"
+        }
+      ]
+    },
+    {
+      "name": "list_pokemon",
+      "description": "Get a paginated list of all Pokémon names and their API URLs.",
+      "method": "GET",
+      "path": "/pokemon",
+      "params": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of results (default 20, max 100000)"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of results to skip"
+        }
+      ]
+    },
+    {
+      "name": "get_type",
+      "description": "Get all damage relations for a Pokémon type (e.g. fire is weak against water).",
+      "method": "GET",
+      "path": "/type/{name_or_id}",
+      "params": [
+        {
+          "name": "name_or_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Type name (e.g. fire, water, electric) or ID",
+          "originalName": "name_or_id"
+        }
+      ]
+    },
+    {
+      "name": "get_ability",
+      "description": "Get the description and affected Pokémon for a specific ability.",
+      "method": "GET",
+      "path": "/ability/{name_or_id}",
+      "params": [
+        {
+          "name": "name_or_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Ability name (e.g. blaze) or ID",
+          "originalName": "name_or_id"
+        }
+      ]
+    }
+  ]
+}

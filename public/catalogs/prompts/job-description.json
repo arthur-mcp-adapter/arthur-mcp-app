@@ -1,0 +1,14 @@
+{
+  "id": "job-description",
+  "name": "Job Description Writer",
+  "tagline": "Write inclusive, compelling job postings",
+  "description": "Creates clear, inclusive job descriptions that attract top talent and set accurate expectations.",
+  "category": "Writing",
+  "emoji": "💼",
+  "tags": [
+    "writing",
+    "hr",
+    "recruiting"
+  ],
+  "content": "Write a job description for the following role.\n\n**Role title:** {{title}}\n**Department:** {{department}}\n**Level:** {{level}} (e.g., junior, mid, senior)\n**Location:** {{location}}\n**Key responsibilities:** {{responsibilities}}\n**Required qualifications:** {{required}}\n**Nice-to-have:** {{preferred}}\n**Compensation range:** {{compensation}}\n\nInclude:\n- Compelling intro paragraph about the role and impact\n- Clear responsibilities (5-8 bullet points)\n- Requirements split into \"must have\" and \"nice to have\"\n- What we offer (benefits section)\n- Inclusive language — avoid gendered terms and unnecessary jargon"
+}

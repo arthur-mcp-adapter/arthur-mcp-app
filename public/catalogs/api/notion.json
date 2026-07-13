@@ -1,0 +1,122 @@
+{
+  "id": "notion",
+  "name": "Notion",
+  "tagline": "Pages, databases and workspace search",
+  "description": "Search your Notion workspace, read and create pages, and query databases programmatically using the Notion API.",
+  "category": "Business",
+  "color": "#000000",
+  "emoji": "📓",
+  "baseUrl": "https://api.notion.com/v1",
+  "auth": {
+    "type": "bearer",
+    "hint": "Create an integration at notion.so/my-integrations and share your pages with it."
+  },
+  "signupUrl": "https://www.notion.so/my-integrations",
+  "docsUrl": "https://developers.notion.com",
+  "tools": [
+    {
+      "name": "search",
+      "description": "Search across pages and databases in your Notion workspace by title or content.",
+      "method": "POST",
+      "path": "/search",
+      "params": [
+        {
+          "name": "query",
+          "in": "body",
+          "required": false,
+          "type": "string",
+          "description": "Search term"
+        },
+        {
+          "name": "filter",
+          "in": "body",
+          "required": false,
+          "type": "object",
+          "description": "Filter by type: {\"value\":\"page\",\"property\":\"object\"} or {\"value\":\"database\",\"property\":\"object\"}"
+        },
+        {
+          "name": "page_size",
+          "in": "body",
+          "required": false,
+          "type": "integer",
+          "description": "Number of results (max 100)"
+        }
+      ]
+    },
+    {
+      "name": "get_page",
+      "description": "Get a Notion page's properties and metadata by its ID.",
+      "method": "GET",
+      "path": "/pages/{page_id}",
+      "params": [
+        {
+          "name": "page_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Notion page ID (32-character UUID from the page URL)",
+          "originalName": "page_id"
+        }
+      ]
+    },
+    {
+      "name": "create_page",
+      "description": "Create a new page inside a parent page or database.",
+      "method": "POST",
+      "path": "/pages",
+      "params": [
+        {
+          "name": "parent",
+          "in": "body",
+          "required": true,
+          "type": "object",
+          "description": "Parent container, e.g. {\"page_id\":\"<id>\"} or {\"database_id\":\"<id>\"}"
+        },
+        {
+          "name": "properties",
+          "in": "body",
+          "required": true,
+          "type": "object",
+          "description": "Page properties. For a basic page: {\"title\":[{\"text\":{\"content\":\"Page title\"}}]}"
+        }
+      ]
+    },
+    {
+      "name": "query_database",
+      "description": "Query a Notion database with optional filters and sorting.",
+      "method": "POST",
+      "path": "/databases/{database_id}/query",
+      "params": [
+        {
+          "name": "database_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Notion database ID",
+          "originalName": "database_id"
+        },
+        {
+          "name": "filter",
+          "in": "body",
+          "required": false,
+          "type": "object",
+          "description": "Filter conditions"
+        },
+        {
+          "name": "sorts",
+          "in": "body",
+          "required": false,
+          "type": "array",
+          "description": "Sort order, e.g. [{\"property\":\"Name\",\"direction\":\"ascending\"}]"
+        },
+        {
+          "name": "page_size",
+          "in": "body",
+          "required": false,
+          "type": "integer",
+          "description": "Results per page (max 100)"
+        }
+      ]
+    }
+  ]
+}

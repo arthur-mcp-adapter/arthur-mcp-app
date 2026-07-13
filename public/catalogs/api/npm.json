@@ -1,0 +1,83 @@
+{
+  "id": "npm",
+  "name": "npm Registry",
+  "tagline": "Search packages and check versions",
+  "description": "Search npm packages, get version history, check dependencies, and retrieve download counts. No authentication required for public registry data.",
+  "category": "Development",
+  "color": "#CB3837",
+  "emoji": "📦",
+  "baseUrl": "https://registry.npmjs.org",
+  "auth": {
+    "type": "none",
+    "hint": ""
+  },
+  "docsUrl": "https://github.com/npm/registry/blob/master/docs/REGISTRY-API.md",
+  "tools": [
+    {
+      "name": "get_package",
+      "description": "Get full metadata for an npm package: description, latest version, dependencies, and repository.",
+      "method": "GET",
+      "path": "/{packageName}",
+      "params": [
+        {
+          "name": "packageName",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Package name, e.g. react or @types/node"
+        }
+      ]
+    },
+    {
+      "name": "get_package_version",
+      "description": "Get metadata for a specific version of an npm package.",
+      "method": "GET",
+      "path": "/{packageName}/{version}",
+      "params": [
+        {
+          "name": "packageName",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Package name, e.g. lodash"
+        },
+        {
+          "name": "version",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Version number or \"latest\""
+        }
+      ]
+    },
+    {
+      "name": "search_packages",
+      "description": "Search npm packages by keyword, author, or description.",
+      "method": "GET",
+      "path": "/-/v1/search",
+      "params": [
+        {
+          "name": "text",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Search query, e.g. \"date formatting\" or \"author:sindresorhus\""
+        },
+        {
+          "name": "size",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of results (max 250)"
+        },
+        {
+          "name": "from",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Offset for pagination"
+        }
+      ]
+    }
+  ]
+}

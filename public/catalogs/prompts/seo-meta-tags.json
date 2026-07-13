@@ -1,0 +1,14 @@
+{
+  "id": "seo-meta-tags",
+  "name": "SEO Meta Tags Generator",
+  "tagline": "Generate optimized title tags and meta descriptions",
+  "description": "Creates SEO-optimized title tags, meta descriptions, and Open Graph tags for web pages.",
+  "category": "SEO & Marketing",
+  "emoji": "🔖",
+  "tags": [
+    "seo",
+    "marketing",
+    "meta"
+  ],
+  "content": "Generate SEO meta tags for the following page.\n\n**Page topic:** {{topic}}\n**Primary keyword:** {{keyword}}\n**Secondary keywords:** {{secondary}}\n**Page type:** {{page_type}} (e.g., blog post, product page, homepage)\n\nOutput:\n- **Title tag** (50-60 chars, includes primary keyword near the start)\n- **Meta description** (150-155 chars, compelling, includes keyword, has a CTA)\n- **Open Graph title**\n- **Open Graph description**\n- **Twitter card title**\n- **Twitter card description**\n- **Canonical URL suggestion**\n- **5 related long-tail keyword ideas**"
+}

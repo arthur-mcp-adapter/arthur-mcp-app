@@ -1,0 +1,70 @@
+{
+  "id": "replicate",
+  "name": "Replicate",
+  "tagline": "Run AI models in the cloud",
+  "description": "Run thousands of open-source AI models — image generation, speech, video, and more — via a simple REST API.",
+  "category": "AI",
+  "color": "#000000",
+  "emoji": "🧬",
+  "baseUrl": "https://api.replicate.com/v1",
+  "auth": {
+    "type": "bearer",
+    "hint": "Create an API token at replicate.com/account/api-tokens."
+  },
+  "signupUrl": "https://replicate.com/signin",
+  "docsUrl": "https://replicate.com/docs/reference/http",
+  "tools": [
+    {
+      "name": "run_model",
+      "description": "Run an AI model on Replicate and get a prediction. Provide the model version and inputs.",
+      "method": "POST",
+      "path": "/predictions",
+      "params": [
+        {
+          "name": "version",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Model version ID from the Replicate model page"
+        },
+        {
+          "name": "input",
+          "in": "body",
+          "required": true,
+          "type": "object",
+          "description": "Input parameters for the model, e.g. {\"prompt\":\"a cat on the moon\",\"width\":512,\"height\":512}"
+        }
+      ]
+    },
+    {
+      "name": "get_prediction",
+      "description": "Get the status and output of a prediction (model run).",
+      "method": "GET",
+      "path": "/predictions/{prediction_id}",
+      "params": [
+        {
+          "name": "prediction_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Prediction ID from run_model response"
+        }
+      ]
+    },
+    {
+      "name": "list_models",
+      "description": "Browse popular public models on Replicate.",
+      "method": "GET",
+      "path": "/models",
+      "params": [
+        {
+          "name": "cursor",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Pagination cursor"
+        }
+      ]
+    }
+  ]
+}

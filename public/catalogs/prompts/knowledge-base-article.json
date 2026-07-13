@@ -1,0 +1,14 @@
+{
+  "id": "knowledge-base-article",
+  "name": "Knowledge Base Article",
+  "tagline": "Write self-service help articles from support tickets",
+  "description": "Transforms resolved support tickets or feature explanations into polished KB articles.",
+  "category": "Customer Support",
+  "emoji": "📚",
+  "tags": [
+    "support",
+    "documentation",
+    "knowledge base"
+  ],
+  "content": "Write a knowledge base article for the following topic.\n\n**Topic:** {{topic}}\n**Audience:** {{audience}} (e.g., end users, administrators)\n**Product/Feature:** {{product}}\n\nStructure:\n# {{Title}}\n\n## Overview\n(What this article covers — 1-2 sentences)\n\n## Before You Begin\n(Prerequisites or requirements)\n\n## Step-by-Step Instructions\n1.\n2.\n3.\n\n## Screenshots / Visuals\n(Note where to add visuals)\n\n## Common Issues\n| Issue | Cause | Solution |\n|-------|-------|---------|\n\n## Related Articles\n-\n\n## Was this helpful?\n(Feedback prompt)\n\n---\nSource content:\n{{source}}"
+}

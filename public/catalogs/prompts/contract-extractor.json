@@ -1,0 +1,15 @@
+{
+  "id": "contract-extractor",
+  "name": "Contract Key Terms Extractor",
+  "tagline": "Pull critical clauses and obligations from contracts",
+  "description": "Extracts parties, obligations, dates, payment terms, and risk clauses from contract text.",
+  "category": "Data Extraction",
+  "emoji": "📜",
+  "tags": [
+    "data",
+    "extraction",
+    "legal",
+    "contracts"
+  ],
+  "content": "Extract key terms from the following contract.\n\nOutput as JSON:\n{\n  \"parties\": [{ \"name\": \"\", \"role\": \"\" }],\n  \"effective_date\": \"\",\n  \"expiration_date\": \"\",\n  \"auto_renewal\": false,\n  \"payment_terms\": { \"amount\": \"\", \"frequency\": \"\", \"due_date\": \"\" },\n  \"termination_notice_days\": null,\n  \"governing_law\": \"\",\n  \"dispute_resolution\": \"\",\n  \"confidentiality_obligations\": \"\",\n  \"key_obligations\": [],\n  \"liability_cap\": \"\",\n  \"unusual_clauses\": []\n}\n\nNote any clauses that appear unusual or especially favorable/unfavorable to one party.\n\n---\nContract:\n{{contract}}"
+}

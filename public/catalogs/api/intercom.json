@@ -1,0 +1,113 @@
+{
+  "id": "intercom",
+  "name": "Intercom",
+  "tagline": "Customer contacts and conversations",
+  "description": "Search customers, read conversations, send messages, and create contacts in Intercom — your AI gets direct access to customer communication data.",
+  "category": "Business",
+  "color": "#6EEAFF",
+  "emoji": "💬",
+  "baseUrl": "https://api.intercom.io",
+  "auth": {
+    "type": "bearer",
+    "hint": "Create an Access Token in Settings → Integrations → Developer Hub → New App → Authentication."
+  },
+  "signupUrl": "https://app.intercom.com/developer-hub",
+  "docsUrl": "https://developers.intercom.com/docs",
+  "tools": [
+    {
+      "name": "search_contacts",
+      "description": "Search Intercom contacts by email, name, or custom attributes.",
+      "method": "POST",
+      "path": "/contacts/search",
+      "params": [
+        {
+          "name": "query",
+          "in": "body",
+          "required": true,
+          "type": "object",
+          "description": "Search query, e.g. {\"field\":\"email\",\"operator\":\"=\",\"value\":\"user@example.com\"}"
+        },
+        {
+          "name": "pagination",
+          "in": "body",
+          "required": false,
+          "type": "object",
+          "description": "Pagination, e.g. {\"per_page\":25}"
+        }
+      ]
+    },
+    {
+      "name": "get_contact",
+      "description": "Get a contact's full profile: email, name, company, plan, and custom attributes.",
+      "method": "GET",
+      "path": "/contacts/{id}",
+      "params": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Intercom contact ID"
+        }
+      ]
+    },
+    {
+      "name": "create_contact",
+      "description": "Create a new contact (lead or user) in Intercom.",
+      "method": "POST",
+      "path": "/contacts",
+      "params": [
+        {
+          "name": "role",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Contact role: user or lead"
+        },
+        {
+          "name": "email",
+          "in": "body",
+          "required": false,
+          "type": "string",
+          "description": "Contact email address"
+        },
+        {
+          "name": "name",
+          "in": "body",
+          "required": false,
+          "type": "string",
+          "description": "Contact full name"
+        },
+        {
+          "name": "custom_attributes",
+          "in": "body",
+          "required": false,
+          "type": "object",
+          "description": "Custom attributes, e.g. {\"plan\":\"Pro\",\"company\":\"Acme\"}"
+        }
+      ]
+    },
+    {
+      "name": "list_conversations",
+      "description": "List conversations with their assignee, status, and last message preview.",
+      "method": "GET",
+      "path": "/conversations",
+      "params": [
+        {
+          "name": "display_as",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Display format: plaintext"
+        },
+        {
+          "name": "per_page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Results per page (max 150)"
+        }
+      ]
+    }
+  ]
+}

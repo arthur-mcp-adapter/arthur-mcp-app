@@ -1,0 +1,14 @@
+{
+  "id": "expense-categorizer",
+  "name": "Expense Categorizer",
+  "tagline": "Auto-categorize expense line items for accounting",
+  "description": "Categorizes raw expense data into standard accounting categories with tax treatment notes.",
+  "category": "Finance",
+  "emoji": "💳",
+  "tags": [
+    "finance",
+    "accounting",
+    "expenses"
+  ],
+  "content": "Categorize the following expense items for accounting purposes.\n\n**Company type:** {{company_type}}\n**Accounting standard:** {{standard}} (GAAP / IFRS / Cash basis)\n**Currency:** {{currency}}\n\nFor each expense, assign:\n- Category (e.g., Travel, Software, Marketing, COGS, R&D, G&A)\n- Subcategory\n- Deductible: Yes / No / Partial\n- Tax treatment notes\n- Reimbursable: Yes / No\n\nOutput as a table with columns: Date | Vendor | Amount | Category | Subcategory | Deductible | Notes\n\nFlag any expenses that need further review or receipts.\n\n---\nExpense list:\n{{expenses}}"
+}

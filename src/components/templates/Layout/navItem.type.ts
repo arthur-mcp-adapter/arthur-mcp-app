@@ -1,4 +1,4 @@
-import type { UserPermissions } from '../../../context/AuthContext'
+import type { UserPermissions } from '../../../context/auth'
 
 export type NavItem = {
   titleKey: string

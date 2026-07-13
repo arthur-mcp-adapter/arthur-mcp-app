@@ -1,0 +1,14 @@
+{
+  "id": "explainer-for-beginners",
+  "name": "Concept Explainer for Beginners",
+  "tagline": "Explain any complex concept to a complete beginner",
+  "description": "Breaks down complex concepts using the Feynman Technique with analogies and examples.",
+  "category": "Education",
+  "emoji": "🧠",
+  "tags": [
+    "education",
+    "explanation",
+    "learning"
+  ],
+  "content": "Explain the following concept to a complete beginner using the Feynman Technique.\n\n**Concept:** {{concept}}\n**Beginner's background:** {{background}}\n**Analogy universe to draw from:** {{analogy_domain}} (e.g., cooking, sports, everyday life)\n\nStructure:\n1. **The Core Idea** (1-2 sentences, zero jargon)\n2. **The Analogy** (map the concept to something familiar)\n3. **How It Actually Works** (step by step, simple language)\n4. **A Concrete Example** (real-world scenario)\n5. **Common Misconceptions** (what people often get wrong)\n6. **Why It Matters** (practical relevance)\n7. **If You Want to Learn More** (logical next step)"
+}

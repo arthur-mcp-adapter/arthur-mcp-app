@@ -1,0 +1,14 @@
+{
+  "id": "gap-analysis",
+  "name": "Gap Analysis",
+  "tagline": "Identify the distance between current and desired state",
+  "description": "Maps the gap between where you are and where you want to be, with a roadmap to close it.",
+  "category": "Analysis",
+  "emoji": "📐",
+  "tags": [
+    "analysis",
+    "strategy",
+    "improvement"
+  ],
+  "content": "Conduct a gap analysis for the following scenario.\n\n**Subject:** {{subject}}\n**Current State:** {{current_state}}\n**Desired State:** {{desired_state}}\n\n## Gap Summary\n\n## Detailed Gap Analysis\n| Dimension | Current State | Desired State | Gap | Priority |\n|-----------|--------------|--------------|-----|---------|\n\n## Root Causes of Gaps\n-\n\n## Recommended Actions to Close Gaps\n1.\n2.\n3.\n\n## Resources Required\n-\n\n## Timeline Estimate\n-"
+}

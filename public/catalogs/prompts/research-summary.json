@@ -1,0 +1,14 @@
+{
+  "id": "research-summary",
+  "name": "Research Paper Summary",
+  "tagline": "Distill academic or technical papers into actionable insights",
+  "description": "Summarizes research papers with methodology, findings, practical implications, and limitations.",
+  "category": "Research",
+  "emoji": "🔬",
+  "tags": [
+    "research",
+    "summarization",
+    "academic"
+  ],
+  "content": "Summarize the following research paper for a technical audience.\n\n**Title:**\n**Authors:**\n**Published:**\n**Contribution:** (one sentence)\n\n## Problem Statement\n## Methodology\n## Key Findings\n1.\n2.\n3.\n## Results & Evidence\n## Limitations\n## Practical Implications\n## Related Work\n\n---\nPaper:\n{{paper}}"
+}

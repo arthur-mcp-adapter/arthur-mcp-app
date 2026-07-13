@@ -1,0 +1,15 @@
+{
+  "id": "incident-postmortem",
+  "name": "Incident Postmortem",
+  "tagline": "Write blameless postmortems for production incidents",
+  "description": "Creates structured blameless postmortem documents with timeline, impact, root cause, and action items.",
+  "category": "DevOps",
+  "emoji": "🚒",
+  "tags": [
+    "devops",
+    "incident",
+    "sre",
+    "postmortem"
+  ],
+  "content": "Write a blameless incident postmortem.\n\n**Incident ID:** {{incident_id}}\n**Date:** {{date}}\n**Severity:** {{severity}} (SEV1 / SEV2 / SEV3)\n**Duration:** {{duration}}\n**Services affected:** {{services}}\n**Incident commander:** {{commander}}\n\n## Summary\n(2-3 sentence plain-language description of what happened and the impact)\n\n## Impact\n- Users affected:\n- Revenue impact:\n- SLA breach:\n\n## Timeline\n| Time | Event |\n|------|-------|\n\n## Root Cause\n(Technical root cause — no blame, focus on systems)\n\n## Contributing Factors\n-\n\n## What Went Well\n-\n\n## What Went Poorly\n-\n\n## Action Items\n| Action | Owner | Priority | Due Date | Status |\n|--------|-------|---------|---------|--------|\n\n## Lessons Learned\n-"
+}

@@ -9,7 +9,7 @@ import { PromptCard, TagInput } from './prompts'
 import SecretAutocomplete, { useSecrets } from './secrets/SecretAutocomplete'
 import { SecretCard } from './secrets'
 import { ProjectCard } from './server/ProjectCard'
-import { Permission } from '../context/AuthContext'
+import { Permission } from '../context/auth'
 import type { Project } from './server/types'
 
 const authState = vi.hoisted(() => ({
@@ -23,8 +23,8 @@ vi.mock('../api', () => ({
   default: { get: apiGet },
 }))
 
-vi.mock('../context/AuthContext', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('../context/AuthContext')>()
+vi.mock('../context/auth', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../context/auth')>()
   return {
     ...actual,
     useAuth: () => ({ can: (permission: string) => authState.allowed.has(permission) }),

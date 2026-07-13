@@ -1,0 +1,113 @@
+{
+  "id": "stripe",
+  "name": "Stripe",
+  "tagline": "Payments, customers and invoices",
+  "description": "Access your Stripe account to look up customers, list payments and charges, and retrieve invoice data using the Stripe REST API.",
+  "category": "Business",
+  "color": "#635BFF",
+  "emoji": "💳",
+  "baseUrl": "https://api.stripe.com/v1",
+  "auth": {
+    "type": "bearer",
+    "hint": "Use your Stripe Secret Key (sk_live_... or sk_test_...) from the Stripe Dashboard → Developers → API Keys."
+  },
+  "signupUrl": "https://dashboard.stripe.com/register",
+  "docsUrl": "https://stripe.com/docs/api",
+  "tools": [
+    {
+      "name": "list_customers",
+      "description": "List Stripe customers. Returns email, name, creation date, and balance.",
+      "method": "GET",
+      "path": "/customers",
+      "params": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of customers (max 100)"
+        },
+        {
+          "name": "email",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Filter by exact email address"
+        }
+      ]
+    },
+    {
+      "name": "get_customer",
+      "description": "Get a specific customer's profile, balance, and metadata.",
+      "method": "GET",
+      "path": "/customers/{id}",
+      "params": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Stripe customer ID, e.g. cus_ABC123"
+        }
+      ]
+    },
+    {
+      "name": "list_payment_intents",
+      "description": "List recent payment intents with their amount, currency, status, and creation date.",
+      "method": "GET",
+      "path": "/payment_intents",
+      "params": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of results (max 100)"
+        },
+        {
+          "name": "customer",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Filter by customer ID"
+        }
+      ]
+    },
+    {
+      "name": "list_invoices",
+      "description": "List invoices for your account or a specific customer.",
+      "method": "GET",
+      "path": "/invoices",
+      "params": [
+        {
+          "name": "customer",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Stripe customer ID to filter by"
+        },
+        {
+          "name": "status",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Invoice status: draft, open, paid, void, or uncollectible"
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of results (max 100)"
+        }
+      ]
+    },
+    {
+      "name": "get_balance",
+      "description": "Get the current balance of your Stripe account including available and pending amounts.",
+      "method": "GET",
+      "path": "/balance",
+      "params": []
+    }
+  ]
+}

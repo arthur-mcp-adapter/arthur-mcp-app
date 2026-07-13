@@ -1,0 +1,14 @@
+{
+  "id": "faq-generator",
+  "name": "FAQ Generator",
+  "tagline": "Generate comprehensive FAQ sections from any content",
+  "description": "Creates thorough FAQ sections anticipating real user questions from a topic or document.",
+  "category": "Writing",
+  "emoji": "❓",
+  "tags": [
+    "writing",
+    "documentation",
+    "support"
+  ],
+  "content": "Generate a comprehensive FAQ section for the following topic or product.\n\n**Topic/Product:** {{topic}}\n**Target audience:** {{audience}}\n**Tone:** {{tone}}\n\nGenerate at least 15 questions covering:\n- Basic \"what is\" and \"how does it work\" questions\n- Pricing and plans (if applicable)\n- Technical requirements or compatibility\n- Common troubleshooting questions\n- Privacy and security questions\n- Getting started questions\n- Advanced usage questions\n\nFor each question, provide:\n- **Q:** Clear, natural-language question a user would actually ask\n- **A:** Concise, helpful answer (2-4 sentences)\n\nContext:\n{{context}}"
+}

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
-import { Permission } from '../../context/AuthContext'
+import { Permission } from '../../context/auth'
 import { RateLimitPanel } from './settings/RateLimitPanel'
 import { BaseUrlPanel } from './settings/BaseUrlPanel'
 import { InlineEdit } from './settings/InlineEdit'
@@ -17,8 +17,8 @@ vi.mock('../../api', () => ({
   default: { get: apiGet, patch: apiPatch },
 }))
 
-vi.mock('../../context/AuthContext', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('../../context/AuthContext')>()
+vi.mock('../../context/auth', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../../context/auth')>()
   return {
     ...actual,
     useAuth: () => ({ can: (permission: string) => authState.allowed.has(permission) }),

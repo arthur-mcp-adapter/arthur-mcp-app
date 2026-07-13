@@ -1,0 +1,14 @@
+{
+  "id": "performance-review",
+  "name": "Performance Review Writer",
+  "tagline": "Draft balanced, constructive performance reviews",
+  "description": "Writes structured performance reviews with achievements, areas for growth, and development goals.",
+  "category": "HR & Recruiting",
+  "emoji": "📊",
+  "tags": [
+    "hr",
+    "performance",
+    "management"
+  ],
+  "content": "Write a performance review for the following employee.\n\n**Employee:** {{employee}}\n**Role:** {{role}}\n**Review period:** {{period}}\n**Manager:** {{manager}}\n**Accomplishments:** {{accomplishments}}\n**Areas needing improvement:** {{improvements}}\n**Goals for next period:** {{goals}}\n**Overall rating:** {{rating}} (e.g., Exceeds Expectations)\n\nStructure:\n## Overall Performance Summary\n## Key Accomplishments\n-\n## Core Competency Ratings\n| Competency | Rating | Notes |\n|-----------|--------|-------|\n## Areas for Development\n-\n## Goals for Next Period\n| Goal | Success Metric | Timeline |\n|------|---------------|---------|\n## Manager's Closing Remarks"
+}

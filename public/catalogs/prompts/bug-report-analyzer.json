@@ -1,0 +1,14 @@
+{
+  "id": "bug-report-analyzer",
+  "name": "Bug Report Analyzer",
+  "tagline": "Diagnose bug reports and generate investigation plans",
+  "description": "Analyzes bug reports and stack traces to produce structured investigation plans with fix suggestions.",
+  "category": "Code",
+  "emoji": "🐛",
+  "tags": [
+    "code",
+    "debugging",
+    "analysis"
+  ],
+  "content": "Analyze the following bug report and provide a structured investigation plan.\n\n**Bug Summary**\n\n**Root Cause Hypothesis**\n\n**Investigation Steps**\n1.\n2.\n3.\n\n**Potential Fixes**\n(most to least likely, with implementation notes)\n\n**Prevention**\n\n---\nBug Report:\n{{bug_report}}\n\nStack Trace:\n{{stack_trace}}"
+}

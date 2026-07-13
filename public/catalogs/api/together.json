@@ -1,0 +1,69 @@
+{
+  "id": "together",
+  "name": "Together AI",
+  "tagline": "Open-source LLMs at scale",
+  "description": "Run Llama, Mixtral, DBRX, and hundreds of other open-source models via an OpenAI-compatible API at very competitive prices.",
+  "category": "AI",
+  "color": "#0057FF",
+  "emoji": "🤝",
+  "baseUrl": "https://api.together.xyz/v1",
+  "auth": {
+    "type": "bearer",
+    "hint": "Create a free API key at api.together.xyz/settings/api-keys. Comes with free credits."
+  },
+  "signupUrl": "https://api.together.xyz/",
+  "docsUrl": "https://docs.together.ai/reference/completions",
+  "tools": [
+    {
+      "name": "chat_completion",
+      "description": "Chat with any open-source LLM via Together AI's OpenAI-compatible endpoint.",
+      "method": "POST",
+      "path": "/chat/completions",
+      "params": [
+        {
+          "name": "model",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Model ID, e.g. meta-llama/Llama-3.3-70B-Instruct-Turbo, mistralai/Mixtral-8x7B-Instruct-v0.1"
+        },
+        {
+          "name": "messages",
+          "in": "body",
+          "required": true,
+          "type": "array",
+          "description": "Messages: [{role:\"user\"|\"assistant\"|\"system\",content:\"...\"}]"
+        },
+        {
+          "name": "temperature",
+          "in": "body",
+          "required": false,
+          "type": "number",
+          "description": "Randomness 0–2"
+        },
+        {
+          "name": "max_tokens",
+          "in": "body",
+          "required": false,
+          "type": "integer",
+          "description": "Max tokens in response"
+        }
+      ]
+    },
+    {
+      "name": "list_models",
+      "description": "List all available models on Together AI with their context length and pricing.",
+      "method": "GET",
+      "path": "/models",
+      "params": [
+        {
+          "name": "type",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Filter by type: chat, language, image, or embedding"
+        }
+      ]
+    }
+  ]
+}

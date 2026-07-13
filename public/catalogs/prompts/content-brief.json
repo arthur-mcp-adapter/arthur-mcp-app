@@ -1,0 +1,15 @@
+{
+  "id": "content-brief",
+  "name": "Content Brief Generator",
+  "tagline": "Create detailed briefs for content writers",
+  "description": "Generates comprehensive content briefs with SEO requirements, structure, and messaging guidelines.",
+  "category": "SEO & Marketing",
+  "emoji": "📝",
+  "tags": [
+    "marketing",
+    "content",
+    "seo",
+    "brief"
+  ],
+  "content": "Create a detailed content brief for a writer.\n\n**Topic:** {{topic}}\n**Content type:** {{content_type}} (blog post, whitepaper, guide, etc.)\n**Target audience:** {{audience}}\n**Primary keyword:** {{keyword}}\n**Search intent:** {{intent}} (informational / commercial / transactional)\n**Competitor URLs to beat:** {{competitors}}\n\nBrief includes:\n- **Goal & KPIs**\n- **Target audience persona**\n- **SEO requirements** (keyword, secondary terms, internal links)\n- **Recommended structure** (H1, H2s, H3s with guidance)\n- **Word count range**\n- **Tone and style guidelines**\n- **Key points to cover**\n- **Points of differentiation** (what competitors miss)\n- **Sources to cite**\n- **Visuals needed**"
+}

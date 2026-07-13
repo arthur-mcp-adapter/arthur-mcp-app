@@ -1,0 +1,136 @@
+{
+  "id": "trello",
+  "name": "Trello",
+  "tagline": "Boards, lists and cards",
+  "description": "Read and manage Trello boards, lists, and cards. Requires an API Key (set in auth) plus your OAuth Token passed as a parameter in each call.",
+  "category": "Business",
+  "color": "#0052CC",
+  "emoji": "📋",
+  "baseUrl": "https://api.trello.com/1",
+  "auth": {
+    "type": "api-key",
+    "hint": "Get your API Key at trello.com/power-ups/admin. You also need an OAuth Token — generate one at trello.com/1/authorize?key=YOUR_KEY&scope=read,write&expiration=never&name=MyApp&response_type=token",
+    "keyName": "key",
+    "keyIn": "query"
+  },
+  "signupUrl": "https://trello.com/power-ups/admin",
+  "docsUrl": "https://developer.atlassian.com/cloud/trello/rest/",
+  "tools": [
+    {
+      "name": "get_boards",
+      "description": "List all Trello boards for the authenticated user.",
+      "method": "GET",
+      "path": "/members/me/boards",
+      "params": [
+        {
+          "name": "token",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Your Trello OAuth Token (from the auth hint)"
+        },
+        {
+          "name": "fields",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Fields to return, e.g. name,url,desc,closed"
+        }
+      ]
+    },
+    {
+      "name": "get_board_lists",
+      "description": "Get all lists on a Trello board.",
+      "method": "GET",
+      "path": "/boards/{id}/lists",
+      "params": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Board ID"
+        },
+        {
+          "name": "token",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Your Trello OAuth Token"
+        }
+      ]
+    },
+    {
+      "name": "get_cards",
+      "description": "Get all cards on a Trello board with their list, due date, and members.",
+      "method": "GET",
+      "path": "/boards/{id}/cards",
+      "params": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Board ID"
+        },
+        {
+          "name": "token",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Your Trello OAuth Token"
+        },
+        {
+          "name": "fields",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Fields: name,desc,due,dueComplete,idList,url"
+        }
+      ]
+    },
+    {
+      "name": "create_card",
+      "description": "Create a new card on a Trello list.",
+      "method": "POST",
+      "path": "/cards",
+      "params": [
+        {
+          "name": "token",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Your Trello OAuth Token"
+        },
+        {
+          "name": "idList",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Target list ID"
+        },
+        {
+          "name": "name",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Card name"
+        },
+        {
+          "name": "desc",
+          "in": "body",
+          "required": false,
+          "type": "string",
+          "description": "Card description"
+        },
+        {
+          "name": "due",
+          "in": "body",
+          "required": false,
+          "type": "string",
+          "description": "Due date in ISO format, e.g. 2025-12-31T00:00:00Z"
+        }
+      ]
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-import type { ContextualNavTab } from '../context/ServerNavContext'
+import type { ContextualNavTab } from '../context'
 import type { ReactNode } from 'react'
 
 export interface DetailPageNavItem<T extends ContextualNavTab = ContextualNavTab> {

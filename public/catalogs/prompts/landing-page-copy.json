@@ -1,0 +1,15 @@
+{
+  "id": "landing-page-copy",
+  "name": "Landing Page Copy",
+  "tagline": "Conversion-optimized copy for landing pages",
+  "description": "Writes full landing page copy following the AIDA framework with social proof and objection handling.",
+  "category": "SEO & Marketing",
+  "emoji": "🎯",
+  "tags": [
+    "marketing",
+    "landing page",
+    "copywriting",
+    "conversion"
+  ],
+  "content": "Write conversion-optimized landing page copy following the AIDA framework.\n\n**Product/Service:** {{product}}\n**Target audience:** {{audience}}\n**Primary offer:** {{offer}}\n**Key benefits (3-5):** {{benefits}}\n**Social proof available:** {{social_proof}}\n**Main objections:** {{objections}}\n**CTA:** {{cta}}\n\nSections:\n1. **Hero headline** + subheadline\n2. **Problem statement** (agitate the pain)\n3. **Solution** (your product as the answer)\n4. **Benefits section** (3 benefit blocks with headline + 2-line description)\n5. **Social proof** (testimonials, logos, numbers)\n6. **Objection handling** (FAQ-style)\n7. **CTA section** (urgency + clear action)"
+}

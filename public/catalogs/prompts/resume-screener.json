@@ -1,0 +1,14 @@
+{
+  "id": "resume-screener",
+  "name": "Resume Screener",
+  "tagline": "Score and rank candidates against job requirements",
+  "description": "Evaluates resumes against job criteria and produces a structured scorecard with hire/no-hire recommendation.",
+  "category": "HR & Recruiting",
+  "emoji": "🗂️",
+  "tags": [
+    "hr",
+    "recruiting",
+    "screening"
+  ],
+  "content": "Screen the following resume against the job requirements.\n\n**Job title:** {{title}}\n**Must-have requirements:** {{must_have}}\n**Nice-to-have requirements:** {{nice_to_have}}\n**Years of experience required:** {{experience}}\n\n## Candidate Scorecard\n| Requirement | Met? | Evidence |\n|-------------|------|---------|\n\n**Total Score:** X/10\n**Recommendation:** [Strong Yes / Yes / Maybe / No]\n**Reasoning:**\n**Green flags:**\n-\n**Red flags:**\n-\n**Suggested interview questions** (based on gaps):\n-\n\n---\nResume:\n{{resume}}"
+}

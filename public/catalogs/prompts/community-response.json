@@ -1,0 +1,14 @@
+{
+  "id": "community-response",
+  "name": "Community Response Writer",
+  "tagline": "Craft authentic replies to comments and DMs",
+  "description": "Generates on-brand, authentic responses to social media comments, DMs, and reviews.",
+  "category": "Social Media",
+  "emoji": "💬",
+  "tags": [
+    "social media",
+    "community",
+    "engagement"
+  ],
+  "content": "Write a response to the following social media interaction.\n\n**Brand:** {{brand}}\n**Platform:** {{platform}}\n**Brand voice:** {{voice}}\n**Context/thread:** {{context}}\n\nInteraction type: {{type}} (comment / DM / review / complaint / compliment / question)\n\nResponse guidelines:\n- Match platform norms (casual for Instagram, professional for LinkedIn)\n- Use brand voice consistently\n- Be genuine — avoid corporate-speak\n- For complaints: acknowledge, empathize, offer solution/next step\n- For compliments: thank sincerely, reinforce brand value\n- For questions: answer fully, invite further conversation\n- Keep it concise\n\nGenerate 2 variants (different tones/approaches) so you can choose.\n\n---\nInteraction:\n{{interaction}}"
+}

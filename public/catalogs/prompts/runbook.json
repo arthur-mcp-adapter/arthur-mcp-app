@@ -1,0 +1,15 @@
+{
+  "id": "runbook",
+  "name": "Runbook Writer",
+  "tagline": "Create step-by-step operational runbooks",
+  "description": "Produces clear, actionable runbooks for operational procedures, deployments, and incident response.",
+  "category": "DevOps",
+  "emoji": "📗",
+  "tags": [
+    "devops",
+    "runbook",
+    "operations",
+    "sre"
+  ],
+  "content": "Write an operational runbook for the following procedure.\n\n**Procedure:** {{procedure}}\n**System:** {{system}}\n**Trigger:** {{trigger}} (when to run this)\n**Author:** {{author}}\n**Last updated:** {{date}}\n\n## Overview\n(What this runbook accomplishes)\n\n## Prerequisites\n- Access/permissions required:\n- Tools required:\n- Estimated duration:\n\n## Steps\n1. **Step title**\n   - Command/action:\n   ```\n   {{command}}\n   ```\n   - Expected output:\n   - If this fails:\n\n## Verification\n(How to confirm the procedure succeeded)\n\n## Rollback Procedure\n-\n\n## Escalation Path\nIf you cannot complete this runbook, contact:\n-\n\n## Common Issues\n| Issue | Symptoms | Resolution |\n|-------|---------|-----------|"
+}

@@ -1,0 +1,14 @@
+{
+  "id": "roadmap-prioritizer",
+  "name": "Roadmap Prioritizer",
+  "tagline": "Score and rank features using RICE or MoSCoW",
+  "description": "Evaluates a list of features using prioritization frameworks to produce a ranked roadmap.",
+  "category": "Product Management",
+  "emoji": "🗓️",
+  "tags": [
+    "product",
+    "roadmap",
+    "prioritization"
+  ],
+  "content": "Prioritize the following feature backlog.\n\n**Product:** {{product}}\n**Team size:** {{team}}\n**Timeframe:** {{timeframe}}\n**Strategic goals:** {{goals}}\n**Prioritization framework:** {{framework}} (RICE / ICE / MoSCoW / Value vs Effort)\n\nFeatures to evaluate:\n{{features}}\n\n## RICE Scoring (if selected)\n| Feature | Reach | Impact | Confidence | Effort | RICE Score |\n|---------|-------|--------|-----------|--------|-----------|\n\n## MoSCoW Breakdown (if selected)\n**Must Have:**\n**Should Have:**\n**Could Have:**\n**Won't Have (this cycle):**\n\n## Recommended Roadmap\n| Quarter | Features | Rationale |\n|---------|---------|-----------|\n\n## Dependencies & Risks\n-\n\n## What We're Not Building (and why)\n-"
+}

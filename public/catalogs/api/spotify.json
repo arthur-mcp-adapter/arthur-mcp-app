@@ -1,0 +1,130 @@
+{
+  "id": "spotify",
+  "name": "Spotify",
+  "tagline": "Music search, playlists and playback",
+  "description": "Search for tracks, albums, and artists; browse playlists; and explore the Spotify catalogue using the official Web API.",
+  "category": "Music & Media",
+  "color": "#1DB954",
+  "emoji": "🎵",
+  "baseUrl": "https://api.spotify.com/v1",
+  "auth": {
+    "type": "bearer",
+    "hint": "Get an OAuth2 access token from the Spotify Developer Dashboard."
+  },
+  "signupUrl": "https://developer.spotify.com/dashboard",
+  "docsUrl": "https://developer.spotify.com/documentation/web-api",
+  "tools": [
+    {
+      "name": "search",
+      "description": "Search for tracks, albums, artists, or playlists. Returns the top matches for each type.",
+      "method": "GET",
+      "path": "/search",
+      "params": [
+        {
+          "name": "q",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Search query, e.g. \"Taylor Swift\" or \"year:2024 genre:pop\""
+        },
+        {
+          "name": "type",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Comma-separated types: track, album, artist, playlist"
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of results per type (max 50)"
+        }
+      ]
+    },
+    {
+      "name": "get_track",
+      "description": "Get detailed information about a track: name, artists, album, duration, and popularity.",
+      "method": "GET",
+      "path": "/tracks/{id}",
+      "params": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Spotify track ID, e.g. 4iV5W9uYEdYUVa79Axb7Rh"
+        }
+      ]
+    },
+    {
+      "name": "get_album",
+      "description": "Get an album's details including all tracks, release date, artists, and cover art URL.",
+      "method": "GET",
+      "path": "/albums/{id}",
+      "params": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Spotify album ID"
+        }
+      ]
+    },
+    {
+      "name": "get_artist",
+      "description": "Get an artist's profile: name, genres, follower count, and popularity score.",
+      "method": "GET",
+      "path": "/artists/{id}",
+      "params": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Spotify artist ID"
+        }
+      ]
+    },
+    {
+      "name": "get_artist_top_tracks",
+      "description": "Get the top 10 tracks for an artist in a given country.",
+      "method": "GET",
+      "path": "/artists/{id}/top-tracks",
+      "params": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Spotify artist ID"
+        },
+        {
+          "name": "market",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "ISO 3166-1 alpha-2 country code, e.g. US or BR"
+        }
+      ]
+    },
+    {
+      "name": "get_playlist",
+      "description": "Get a playlist's details and its tracks with artist and duration info.",
+      "method": "GET",
+      "path": "/playlists/{playlist_id}",
+      "params": [
+        {
+          "name": "playlist_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Spotify playlist ID",
+          "originalName": "playlist_id"
+        }
+      ]
+    }
+  ]
+}

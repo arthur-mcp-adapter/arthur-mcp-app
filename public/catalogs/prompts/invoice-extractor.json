@@ -1,0 +1,15 @@
+{
+  "id": "invoice-extractor",
+  "name": "Invoice & Receipt Extractor",
+  "tagline": "Extract structured data from invoices and receipts",
+  "description": "Pulls vendor, line items, totals, and payment terms from invoice text or OCR output.",
+  "category": "Data Extraction",
+  "emoji": "🧾",
+  "tags": [
+    "data",
+    "extraction",
+    "finance",
+    "invoices"
+  ],
+  "content": "Extract all data from the following invoice or receipt.\n\nOutput as JSON with this structure:\n{\n  \"vendor\": { \"name\": \"\", \"address\": \"\", \"tax_id\": \"\" },\n  \"invoice_number\": \"\",\n  \"invoice_date\": \"\",\n  \"due_date\": \"\",\n  \"line_items\": [{ \"description\": \"\", \"quantity\": 0, \"unit_price\": 0, \"total\": 0 }],\n  \"subtotal\": 0,\n  \"tax\": { \"rate\": 0, \"amount\": 0 },\n  \"total\": 0,\n  \"currency\": \"\",\n  \"payment_terms\": \"\",\n  \"notes\": \"\"\n}\n\nUse null for any field not present. Return valid JSON only.\n\n---\nInvoice text:\n{{invoice_text}}"
+}

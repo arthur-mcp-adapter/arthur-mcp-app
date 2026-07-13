@@ -50,11 +50,13 @@
     "start:dev": "vite",
     "start:prod": "vite preview --port 5173",
     "build": "vite build",
+    "prebuild": "npm run check:template-catalogs",
     "preview": "vite preview",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "test:watch": "vitest",
     "check:frontend-structure": "node scripts/check-frontend-structure.mjs",
-    "type-check": "npm run check:frontend-structure && tsc --noEmit"
+    "check:template-catalogs": "node scripts/check-template-catalogs.mjs",
+    "type-check": "npm run check:frontend-structure && npm run check:template-catalogs && tsc --noEmit"
   }
 }

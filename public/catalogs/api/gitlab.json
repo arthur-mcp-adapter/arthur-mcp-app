@@ -1,0 +1,184 @@
+{
+  "id": "gitlab",
+  "name": "GitLab",
+  "tagline": "Repos, issues and CI/CD pipelines",
+  "description": "Manage GitLab repositories, issues, and merge requests. Works with gitlab.com or self-hosted instances — update the base URL in Settings for self-hosted.",
+  "category": "Development",
+  "color": "#FC6D26",
+  "emoji": "🦊",
+  "baseUrl": "https://gitlab.com/api/v4",
+  "auth": {
+    "type": "bearer",
+    "hint": "Create a Personal Access Token in GitLab → Settings → Access Tokens with the \"api\" scope."
+  },
+  "signupUrl": "https://gitlab.com/-/user_settings/personal_access_tokens",
+  "docsUrl": "https://docs.gitlab.com/ee/api/",
+  "tools": [
+    {
+      "name": "search_projects",
+      "description": "Search GitLab projects by name or keyword.",
+      "method": "GET",
+      "path": "/projects",
+      "params": [
+        {
+          "name": "search",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Search term"
+        },
+        {
+          "name": "owned",
+          "in": "query",
+          "required": false,
+          "type": "boolean",
+          "description": "Show only projects you own"
+        },
+        {
+          "name": "order_by",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Sort by: id, name, stars, or updated_at"
+        },
+        {
+          "name": "per_page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Results per page (max 100)"
+        }
+      ]
+    },
+    {
+      "name": "list_issues",
+      "description": "List issues for a project with title, state, labels, and assignee.",
+      "method": "GET",
+      "path": "/projects/{id}/issues",
+      "params": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Project ID (integer) or URL-encoded path like namespace%2Fproject"
+        },
+        {
+          "name": "state",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "State: opened, closed, or all"
+        },
+        {
+          "name": "labels",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Comma-separated label names"
+        },
+        {
+          "name": "per_page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Results per page (max 100)"
+        }
+      ]
+    },
+    {
+      "name": "create_issue",
+      "description": "Create a new issue in a GitLab project.",
+      "method": "POST",
+      "path": "/projects/{id}/issues",
+      "params": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Project ID or URL-encoded path"
+        },
+        {
+          "name": "title",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Issue title"
+        },
+        {
+          "name": "description",
+          "in": "body",
+          "required": false,
+          "type": "string",
+          "description": "Markdown description"
+        },
+        {
+          "name": "labels",
+          "in": "body",
+          "required": false,
+          "type": "string",
+          "description": "Comma-separated label names"
+        }
+      ]
+    },
+    {
+      "name": "list_merge_requests",
+      "description": "List merge requests with source/target branches and review status.",
+      "method": "GET",
+      "path": "/projects/{id}/merge_requests",
+      "params": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Project ID or URL-encoded path"
+        },
+        {
+          "name": "state",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "State: opened, closed, locked, or merged"
+        },
+        {
+          "name": "per_page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Results per page (max 100)"
+        }
+      ]
+    },
+    {
+      "name": "list_pipelines",
+      "description": "List CI/CD pipelines for a project with their status and duration.",
+      "method": "GET",
+      "path": "/projects/{id}/pipelines",
+      "params": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Project ID or URL-encoded path"
+        },
+        {
+          "name": "status",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Filter by status: running, pending, success, failed, canceled"
+        },
+        {
+          "name": "per_page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Results per page (max 100)"
+        }
+      ]
+    }
+  ]
+}

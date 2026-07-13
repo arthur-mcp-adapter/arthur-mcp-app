@@ -1,0 +1,14 @@
+{
+  "id": "sales-proposal",
+  "name": "Sales Proposal Writer",
+  "tagline": "Create compelling, customized sales proposals",
+  "description": "Writes professional sales proposals with problem framing, solution, pricing, and social proof.",
+  "category": "Sales",
+  "emoji": "📊",
+  "tags": [
+    "sales",
+    "proposal",
+    "business development"
+  ],
+  "content": "Write a sales proposal.\n\n**Our company:** {{our_company}}\n**Prospect:** {{prospect}}\n**Decision maker:** {{decision_maker}}\n**Problem/Need identified:** {{problem}}\n**Our solution:** {{solution}}\n**Key differentiators:** {{differentiators}}\n**Pricing:** {{pricing}}\n**Timeline:** {{timeline}}\n**Case studies/references:** {{case_studies}}\n\n## Executive Summary\n(3 sentences: their problem, our solution, expected outcome)\n\n## Understanding Your Challenge\n(Demonstrate you understand their specific situation)\n\n## Our Proposed Solution\n## Why {{our_company}}\n## Investment\n| Package | Price | Includes |\n|---------|-------|---------|\n## Expected ROI / Outcomes\n## Implementation Timeline\n## Case Study\n## Next Steps\n## Terms & Validity"
+}

@@ -1,0 +1,77 @@
+{
+  "id": "paypal",
+  "name": "PayPal",
+  "tagline": "Payments, invoices and subscriptions",
+  "description": "Access PayPal orders, invoices, and subscription data via the REST API. Note: requires OAuth2 — get an access token first using your client credentials.",
+  "category": "E-commerce",
+  "color": "#003087",
+  "emoji": "🅿️",
+  "baseUrl": "https://api-m.paypal.com/v2",
+  "auth": {
+    "type": "bearer",
+    "hint": "Generate an OAuth2 access token by calling POST https://api-m.paypal.com/v1/oauth2/token with your Client ID and Secret as Basic auth. Use the returned access_token as the Bearer."
+  },
+  "signupUrl": "https://developer.paypal.com/dashboard/",
+  "docsUrl": "https://developer.paypal.com/api/rest/",
+  "tools": [
+    {
+      "name": "get_order",
+      "description": "Get details for a PayPal order: amount, currency, status, and payer info.",
+      "method": "GET",
+      "path": "/checkout/orders/{id}",
+      "params": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "PayPal order ID"
+        }
+      ]
+    },
+    {
+      "name": "list_invoices",
+      "description": "List PayPal invoices with their status, amount, and recipient.",
+      "method": "GET",
+      "path": "/invoicing/invoices",
+      "params": [
+        {
+          "name": "page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Page number"
+        },
+        {
+          "name": "page_size",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Results per page (max 100)"
+        },
+        {
+          "name": "total_count_required",
+          "in": "query",
+          "required": false,
+          "type": "boolean",
+          "description": "Include total count in response"
+        }
+      ]
+    },
+    {
+      "name": "get_subscription",
+      "description": "Get details for a PayPal subscription including status and billing cycle.",
+      "method": "GET",
+      "path": "/billing/subscriptions/{id}",
+      "params": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Subscription ID"
+        }
+      ]
+    }
+  ]
+}

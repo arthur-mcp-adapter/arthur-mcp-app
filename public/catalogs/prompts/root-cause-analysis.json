@@ -1,0 +1,14 @@
+{
+  "id": "root-cause-analysis",
+  "name": "Root Cause Analysis",
+  "tagline": "Identify root causes using the 5 Whys methodology",
+  "description": "Guides a structured 5 Whys root cause analysis for incidents or business problems.",
+  "category": "Analysis",
+  "emoji": "🔎",
+  "tags": [
+    "analysis",
+    "incident",
+    "process"
+  ],
+  "content": "Conduct a root cause analysis using the 5 Whys methodology.\n\n## Problem Statement\n{{problem}}\n\n## Timeline\n{{timeline}}\n\n## 5 Whys\n\n**Why 1:** →\n\n**Why 2:** →\n\n**Why 3:** →\n\n**Why 4:** →\n\n**Why 5:** →\n\n## Root Cause\n\n## Corrective Actions\n| Action | Owner | Priority | Due |\n|--------|-------|----------|-----|\n\n## Preventive Measures"
+}

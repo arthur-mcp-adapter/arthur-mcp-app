@@ -1,0 +1,61 @@
+{
+  "id": "mistral",
+  "name": "Mistral AI",
+  "tagline": "European LLMs — fast and efficient",
+  "description": "Run Mistral's open-weight and commercial language models. OpenAI-compatible API format with strong multilingual performance and EU data residency.",
+  "category": "AI",
+  "color": "#FF7000",
+  "emoji": "🌬️",
+  "baseUrl": "https://api.mistral.ai/v1",
+  "auth": {
+    "type": "bearer",
+    "hint": "Create an API key at console.mistral.ai. Free trial credits available."
+  },
+  "signupUrl": "https://console.mistral.ai/",
+  "docsUrl": "https://docs.mistral.ai/api/",
+  "tools": [
+    {
+      "name": "chat_completion",
+      "description": "Send a message to a Mistral model and get a response.",
+      "method": "POST",
+      "path": "/chat/completions",
+      "params": [
+        {
+          "name": "model",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Model: mistral-large-latest, mistral-small-latest, mistral-7b-instruct, or codestral-latest"
+        },
+        {
+          "name": "messages",
+          "in": "body",
+          "required": true,
+          "type": "array",
+          "description": "Messages: [{role:\"user\"|\"assistant\"|\"system\", content:\"...\"}]"
+        },
+        {
+          "name": "temperature",
+          "in": "body",
+          "required": false,
+          "type": "number",
+          "description": "Randomness 0–1"
+        },
+        {
+          "name": "max_tokens",
+          "in": "body",
+          "required": false,
+          "type": "integer",
+          "description": "Max tokens in response"
+        }
+      ]
+    },
+    {
+      "name": "list_models",
+      "description": "List all available Mistral AI models.",
+      "method": "GET",
+      "path": "/models",
+      "params": []
+    }
+  ]
+}

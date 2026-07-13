@@ -1,0 +1,14 @@
+{
+  "id": "lesson-plan",
+  "name": "Lesson Plan Creator",
+  "tagline": "Design structured lesson plans with objectives and activities",
+  "description": "Creates detailed lesson plans with learning objectives, activities, assessment, and materials.",
+  "category": "Education",
+  "emoji": "🎓",
+  "tags": [
+    "education",
+    "teaching",
+    "curriculum"
+  ],
+  "content": "Create a detailed lesson plan.\n\n**Topic:** {{topic}}\n**Subject:** {{subject}}\n**Grade level / Age group:** {{level}}\n**Duration:** {{duration}}\n**Learning standards addressed:** {{standards}}\n**Prior knowledge assumed:** {{prior_knowledge}}\n\n## Learning Objectives\nBy the end of this lesson, students will be able to:\n1. (Knowledge)\n2. (Comprehension/Application)\n3. (Analysis/Synthesis)\n\n## Materials Needed\n-\n\n## Lesson Structure\n| Phase | Duration | Activity | Teacher Actions | Student Actions |\n|-------|---------|---------|----------------|----------------|\n| Hook/Warm-up | | | | |\n| Instruction | | | | |\n| Guided Practice | | | | |\n| Independent Practice | | | | |\n| Closure | | | | |\n\n## Assessment\n-\n\n## Differentiation\n- For advanced students:\n- For struggling students:\n- For ELL students:\n\n## Homework / Extension\n-"
+}

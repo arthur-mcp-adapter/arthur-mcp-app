@@ -1,0 +1,14 @@
+{
+  "id": "product-requirements",
+  "name": "Product Requirements Document",
+  "tagline": "Create a full PRD for a new product or feature",
+  "description": "Produces a complete Product Requirements Document with context, user needs, requirements, and success criteria.",
+  "category": "Product Management",
+  "emoji": "📄",
+  "tags": [
+    "product",
+    "prd",
+    "requirements"
+  ],
+  "content": "Write a Product Requirements Document (PRD).\n\n**Product/Feature:** {{feature}}\n**Author:** {{author}}\n**Version:** 1.0\n**Date:** {{date}}\n\n## 1. Overview & Context\n## 2. Problem Statement\n## 3. Target Users\n## 4. Goals\n| Goal | Metric | Target |\n|------|--------|--------|\n## 5. Non-Goals\n## 6. Assumptions & Constraints\n## 7. User Stories\n## 8. Detailed Requirements\n### 8.1 Functional Requirements\n### 8.2 Non-Functional Requirements\n### 8.3 Design Requirements\n## 9. Technical Considerations\n## 10. Dependencies\n## 11. Timeline & Milestones\n## 12. Open Questions\n## 13. Appendix / References"
+}

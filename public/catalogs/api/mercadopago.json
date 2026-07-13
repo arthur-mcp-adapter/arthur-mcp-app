@@ -1,0 +1,99 @@
+{
+  "id": "mercadopago",
+  "name": "Mercado Pago",
+  "tagline": "Payments and transactions (LATAM)",
+  "description": "Access payments, refunds, and customer data from Mercado Pago — the leading payment platform in Latin America. Used widely in Brazil, Argentina, Mexico, and Colombia.",
+  "category": "E-commerce",
+  "color": "#009EE3",
+  "emoji": "💙",
+  "baseUrl": "https://api.mercadopago.com",
+  "auth": {
+    "type": "bearer",
+    "hint": "Go to mercadopago.com.br/developers → Your credentials → Access Token (Production or Test)."
+  },
+  "signupUrl": "https://www.mercadopago.com.br/developers",
+  "docsUrl": "https://www.mercadopago.com.br/developers/en/reference",
+  "tools": [
+    {
+      "name": "get_payment",
+      "description": "Get details for a specific Mercado Pago payment: amount, status, payer, and payment method.",
+      "method": "GET",
+      "path": "/v1/payments/{id}",
+      "params": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "integer",
+          "description": "Payment ID"
+        }
+      ]
+    },
+    {
+      "name": "search_payments",
+      "description": "Search payments with filters for date range, status, and payment method.",
+      "method": "GET",
+      "path": "/v1/payments/search",
+      "params": [
+        {
+          "name": "status",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Payment status: approved, pending, rejected, refunded, cancelled"
+        },
+        {
+          "name": "begin_date",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Start date in ISO format"
+        },
+        {
+          "name": "end_date",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "End date in ISO format"
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of results (max 50)"
+        }
+      ]
+    },
+    {
+      "name": "get_customer",
+      "description": "Get a Mercado Pago customer's profile and saved cards.",
+      "method": "GET",
+      "path": "/v1/customers/{id}",
+      "params": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Customer ID"
+        }
+      ]
+    },
+    {
+      "name": "search_customers",
+      "description": "Search customers by email in Mercado Pago.",
+      "method": "GET",
+      "path": "/v1/customers/search",
+      "params": [
+        {
+          "name": "email",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Customer email address to search for"
+        }
+      ]
+    }
+  ]
+}

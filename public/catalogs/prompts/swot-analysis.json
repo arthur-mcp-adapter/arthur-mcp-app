@@ -1,0 +1,14 @@
+{
+  "id": "swot-analysis",
+  "name": "SWOT Analysis",
+  "tagline": "Structured strengths, weaknesses, opportunities, and threats",
+  "description": "Generates a complete SWOT analysis with strategic recommendations.",
+  "category": "Analysis",
+  "emoji": "🧭",
+  "tags": [
+    "analysis",
+    "strategy",
+    "business"
+  ],
+  "content": "Perform a comprehensive SWOT analysis.\n\n## SWOT Analysis: {{subject}}\n\n### 💪 Strengths\n-\n\n### ⚠️ Weaknesses\n-\n\n### 🚀 Opportunities\n-\n\n### 🔴 Threats\n-\n\n### Strategic Recommendations\n(2-3 priorities based on the SWOT)\n\n---\nContext:\n{{context}}"
+}

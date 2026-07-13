@@ -1,0 +1,15 @@
+{
+  "id": "resume-parser",
+  "name": "Resume / CV Parser",
+  "tagline": "Extract structured data from resumes and CVs",
+  "description": "Parses resume text into structured JSON with contact info, experience, skills, and education.",
+  "category": "Data Extraction",
+  "emoji": "📄",
+  "tags": [
+    "data",
+    "extraction",
+    "hr",
+    "resume"
+  ],
+  "content": "Parse the following resume/CV into structured data.\n\nOutput as JSON:\n{\n  \"personal\": { \"name\": \"\", \"email\": \"\", \"phone\": \"\", \"location\": \"\", \"linkedin\": \"\", \"github\": \"\" },\n  \"summary\": \"\",\n  \"experience\": [{ \"company\": \"\", \"title\": \"\", \"start\": \"\", \"end\": \"\", \"description\": \"\" }],\n  \"education\": [{ \"institution\": \"\", \"degree\": \"\", \"field\": \"\", \"year\": \"\" }],\n  \"skills\": { \"technical\": [], \"soft\": [], \"languages\": [], \"certifications\": [] },\n  \"projects\": [{ \"name\": \"\", \"description\": \"\", \"technologies\": [] }],\n  \"total_experience_years\": 0\n}\n\n---\nResume:\n{{resume_text}}"
+}

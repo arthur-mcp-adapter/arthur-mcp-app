@@ -1,0 +1,70 @@
+{
+  "id": "huggingface",
+  "name": "Hugging Face",
+  "tagline": "Open AI models and inference API",
+  "description": "Run inference on thousands of open-source AI models — text generation, classification, image generation, audio, and more — via the Hugging Face Inference API.",
+  "category": "AI",
+  "color": "#FFD21E",
+  "emoji": "🤗",
+  "baseUrl": "https://api-inference.huggingface.co/models",
+  "auth": {
+    "type": "bearer",
+    "hint": "Create a User Access Token at huggingface.co/settings/tokens with \"Inference\" permissions."
+  },
+  "signupUrl": "https://huggingface.co/join",
+  "docsUrl": "https://huggingface.co/docs/api-inference",
+  "tools": [
+    {
+      "name": "text_generation",
+      "description": "Generate text with a language model (e.g. GPT-2, Mistral, Llama).",
+      "method": "POST",
+      "path": "/gpt2",
+      "params": [
+        {
+          "name": "inputs",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Text prompt to continue"
+        },
+        {
+          "name": "parameters",
+          "in": "body",
+          "required": false,
+          "type": "object",
+          "description": "Options, e.g. {\"max_new_tokens\":200,\"temperature\":0.7}"
+        }
+      ]
+    },
+    {
+      "name": "text_classification",
+      "description": "Classify text into categories (sentiment, topic, etc.) using a fine-tuned model.",
+      "method": "POST",
+      "path": "/distilbert-base-uncased-finetuned-sst-2-english",
+      "params": [
+        {
+          "name": "inputs",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Text to classify"
+        }
+      ]
+    },
+    {
+      "name": "image_to_text",
+      "description": "Generate a text description (caption) for an image using a vision model.",
+      "method": "POST",
+      "path": "/Salesforce/blip-image-captioning-large",
+      "params": [
+        {
+          "name": "inputs",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Image URL (public HTTPS) or base64-encoded image data"
+        }
+      ]
+    }
+  ]
+}

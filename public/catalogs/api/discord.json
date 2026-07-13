@@ -1,0 +1,128 @@
+{
+  "id": "discord",
+  "name": "Discord",
+  "tagline": "Servers, channels and community messages",
+  "description": "Read and post messages in Discord servers, list channels, and look up server and user information using a Discord Bot Token.",
+  "category": "Communication",
+  "color": "#5865F2",
+  "emoji": "🎮",
+  "baseUrl": "https://discord.com/api/v10",
+  "auth": {
+    "type": "bearer",
+    "hint": "Create a Bot at discord.com/developers/applications, enable it under \"Bot\", and copy the Token. Invite the bot to your server before using."
+  },
+  "signupUrl": "https://discord.com/developers/applications",
+  "docsUrl": "https://discord.com/developers/docs/reference",
+  "tools": [
+    {
+      "name": "get_guild",
+      "description": "Get information about a Discord server (guild): name, member count, roles, and icon.",
+      "method": "GET",
+      "path": "/guilds/{guild_id}",
+      "params": [
+        {
+          "name": "guild_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Guild (server) ID — enable Developer Mode to copy it"
+        }
+      ]
+    },
+    {
+      "name": "list_channels",
+      "description": "List all channels in a Discord server with their names, topics, and types.",
+      "method": "GET",
+      "path": "/guilds/{guild_id}/channels",
+      "params": [
+        {
+          "name": "guild_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Guild (server) ID"
+        }
+      ]
+    },
+    {
+      "name": "get_messages",
+      "description": "Fetch recent messages from a Discord channel.",
+      "method": "GET",
+      "path": "/channels/{channel_id}/messages",
+      "params": [
+        {
+          "name": "channel_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Channel ID — right-click a channel and Copy Channel ID"
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of messages to fetch (max 100)"
+        },
+        {
+          "name": "before",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Get messages before this message ID"
+        }
+      ]
+    },
+    {
+      "name": "send_message",
+      "description": "Post a message to a Discord channel.",
+      "method": "POST",
+      "path": "/channels/{channel_id}/messages",
+      "params": [
+        {
+          "name": "channel_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Channel ID to post to"
+        },
+        {
+          "name": "content",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Message text (supports Discord markdown: **bold**, *italic*, `code`)"
+        },
+        {
+          "name": "tts",
+          "in": "body",
+          "required": false,
+          "type": "boolean",
+          "description": "Send as text-to-speech message"
+        }
+      ]
+    },
+    {
+      "name": "get_guild_members",
+      "description": "List members of a Discord server with their usernames and roles.",
+      "method": "GET",
+      "path": "/guilds/{guild_id}/members",
+      "params": [
+        {
+          "name": "guild_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Guild (server) ID"
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of members to return (max 1000)"
+        }
+      ]
+    }
+  ]
+}

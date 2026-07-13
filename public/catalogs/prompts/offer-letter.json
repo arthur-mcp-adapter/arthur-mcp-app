@@ -1,0 +1,14 @@
+{
+  "id": "offer-letter",
+  "name": "Job Offer Letter",
+  "tagline": "Generate professional, legally-aware offer letters",
+  "description": "Drafts complete job offer letters with compensation details, start date, and standard contingencies.",
+  "category": "HR & Recruiting",
+  "emoji": "📨",
+  "tags": [
+    "hr",
+    "recruiting",
+    "offer"
+  ],
+  "content": "Draft a job offer letter.\n\n**Company:** {{company}}\n**Candidate:** {{candidate_name}}\n**Role:** {{role}}\n**Department:** {{department}}\n**Manager:** {{manager}}\n**Start date:** {{start_date}}\n**Base salary:** {{salary}}\n**Bonus:** {{bonus}}\n**Equity:** {{equity}}\n**Benefits:** {{benefits}}\n**Offer expiry:** {{expiry}}\n\nInclude:\n- Warm opening congratulating the candidate\n- Role and reporting structure\n- Compensation breakdown\n- Benefits summary\n- Start date and onboarding logistics\n- At-will employment statement (if applicable)\n- Contingencies (background check, I-9, etc.)\n- How to accept\n- Closing with enthusiasm\n\nNote: This is a draft template — consult legal counsel before sending."
+}

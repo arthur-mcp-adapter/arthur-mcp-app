@@ -1,0 +1,14 @@
+{
+  "id": "quiz-generator",
+  "name": "Quiz Generator",
+  "tagline": "Create quizzes with multiple formats from any content",
+  "description": "Generates multiple choice, true/false, and short answer questions from educational content.",
+  "category": "Education",
+  "emoji": "❓",
+  "tags": [
+    "education",
+    "assessment",
+    "quiz"
+  ],
+  "content": "Generate a quiz from the following content.\n\n**Topic:** {{topic}}\n**Level:** {{level}}\n**Number of questions:** {{count}}\n**Question types:** {{types}} (multiple choice, true/false, short answer, matching)\n**Difficulty distribution:** {{difficulty}} (e.g., 40% easy, 40% medium, 20% hard)\n\nFor multiple choice questions:\n- 4 options (A-D)\n- One clearly correct answer\n- Plausible distractors\n- No \"all of the above\" or \"none of the above\"\n\nInclude:\n- Answer key at the end\n- Brief explanation for each correct answer\n- Bloom's taxonomy level for each question\n\n---\nSource content:\n{{content}}"
+}

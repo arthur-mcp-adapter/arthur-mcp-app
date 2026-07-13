@@ -1,0 +1,14 @@
+{
+  "id": "article-key-points",
+  "name": "Article Key Points",
+  "tagline": "Extract essential insights from any article",
+  "description": "Reads through articles and surfaces the most important takeaways in a scannable format.",
+  "category": "Summarization",
+  "emoji": "🗞️",
+  "tags": [
+    "summarization",
+    "reading",
+    "research"
+  ],
+  "content": "Extract the most important insights from the article below.\n\n**TL;DR** (one sentence)\n\n**Key Points**\n1.\n2.\n3.\n4.\n5.\n\n**Notable Quotes**\n>\n\n**Implications**\n\n---\nArticle:\n{{article}}"
+}

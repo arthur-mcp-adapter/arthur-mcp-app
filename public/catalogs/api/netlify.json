@@ -1,0 +1,106 @@
+{
+  "id": "netlify",
+  "name": "Netlify",
+  "tagline": "Sites, deploys and edge functions",
+  "description": "Manage your Netlify sites, monitor deployments, and check build status via the Netlify REST API.",
+  "category": "Development",
+  "color": "#00C7B7",
+  "emoji": "🌐",
+  "baseUrl": "https://api.netlify.com/api/v1",
+  "auth": {
+    "type": "bearer",
+    "hint": "Create a Personal Access Token in Netlify → User Settings → Applications → Personal Access Tokens."
+  },
+  "signupUrl": "https://app.netlify.com/user/applications",
+  "docsUrl": "https://docs.netlify.com/api/get-started/",
+  "tools": [
+    {
+      "name": "list_sites",
+      "description": "List all Netlify sites with their URL, build status, and last publish date.",
+      "method": "GET",
+      "path": "/sites",
+      "params": [
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Filter: all, owner, or member"
+        },
+        {
+          "name": "page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Page number"
+        },
+        {
+          "name": "per_page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Results per page (max 100)"
+        }
+      ]
+    },
+    {
+      "name": "get_site",
+      "description": "Get details for a specific Netlify site including domain aliases and deploy settings.",
+      "method": "GET",
+      "path": "/sites/{site_id}",
+      "params": [
+        {
+          "name": "site_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Site ID from the Netlify dashboard"
+        }
+      ]
+    },
+    {
+      "name": "list_deploys",
+      "description": "List deploys for a site with their state, branch, and creation time.",
+      "method": "GET",
+      "path": "/sites/{site_id}/deploys",
+      "params": [
+        {
+          "name": "site_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Site ID"
+        },
+        {
+          "name": "page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Page number"
+        },
+        {
+          "name": "per_page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Results per page"
+        }
+      ]
+    },
+    {
+      "name": "get_deploy",
+      "description": "Get full info for a specific deploy: state, build log URL, and deploy time.",
+      "method": "GET",
+      "path": "/deploys/{deploy_id}",
+      "params": [
+        {
+          "name": "deploy_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Deploy ID"
+        }
+      ]
+    }
+  ]
+}

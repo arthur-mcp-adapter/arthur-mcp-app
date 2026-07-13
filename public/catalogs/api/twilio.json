@@ -1,0 +1,114 @@
+{
+  "id": "twilio",
+  "name": "Twilio",
+  "tagline": "SMS, voice and messaging",
+  "description": "Send and receive SMS messages and check message logs via the Twilio REST API.",
+  "category": "Communication",
+  "color": "#F22F46",
+  "emoji": "📱",
+  "baseUrl": "https://api.twilio.com/2010-04-01",
+  "auth": {
+    "type": "api-key",
+    "hint": "Go to console.twilio.com → Account Info. In the API Key field enter: Basic <base64 of \"ACCOUNT_SID:AUTH_TOKEN\">. Generate base64 at base64encode.net.",
+    "keyName": "Authorization",
+    "keyIn": "header"
+  },
+  "signupUrl": "https://www.twilio.com/try-twilio",
+  "docsUrl": "https://www.twilio.com/docs/usage/api",
+  "tools": [
+    {
+      "name": "send_sms",
+      "description": "Send an SMS message to a phone number from your Twilio number.",
+      "method": "POST",
+      "path": "/Accounts/{AccountSid}/Messages.json",
+      "params": [
+        {
+          "name": "AccountSid",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Your Twilio Account SID (starts with AC)"
+        },
+        {
+          "name": "To",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Recipient phone number in E.164 format, e.g. +5511999999999"
+        },
+        {
+          "name": "From",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Your Twilio phone number in E.164 format"
+        },
+        {
+          "name": "Body",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "SMS message text (max 1600 characters)"
+        }
+      ]
+    },
+    {
+      "name": "list_messages",
+      "description": "List sent and received SMS messages in your Twilio account.",
+      "method": "GET",
+      "path": "/Accounts/{AccountSid}/Messages.json",
+      "params": [
+        {
+          "name": "AccountSid",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Your Twilio Account SID"
+        },
+        {
+          "name": "To",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Filter by recipient phone number"
+        },
+        {
+          "name": "From",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Filter by sender phone number"
+        },
+        {
+          "name": "PageSize",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Results per page (max 1000)"
+        }
+      ]
+    },
+    {
+      "name": "get_message",
+      "description": "Get details for a specific SMS message: status, direction, and delivery info.",
+      "method": "GET",
+      "path": "/Accounts/{AccountSid}/Messages/{MessageSid}.json",
+      "params": [
+        {
+          "name": "AccountSid",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Your Twilio Account SID"
+        },
+        {
+          "name": "MessageSid",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Message SID starting with SM"
+        }
+      ]
+    }
+  ]
+}

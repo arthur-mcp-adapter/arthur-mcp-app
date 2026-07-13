@@ -1,4 +1,4 @@
-import type { ContextualNavTab } from '../context/ServerNavContext'
+import type { ContextualNavTab } from '../context'
 import type { DetailPageNavItem } from './detailPageNavItem.interface'
 
 export interface DetailPageNav<T extends ContextualNavTab = ContextualNavTab> {

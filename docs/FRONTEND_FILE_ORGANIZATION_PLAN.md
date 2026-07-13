@@ -1,8 +1,8 @@
 # Frontend File Organization Plan
 
-This document defines the migration plan for giving every frontend contract, React module, and utility a clear owner and a single-purpose file. It is a structural refactor plan only: implementation must preserve behavior, UI, copy, routes, API payloads, and permissions.
+This document defines the completed migration that gave every frontend contract, React module, and utility a clear owner and a single-purpose file. `docs/FRONTEND_EXPORT_AND_FOLDER_CONVENTION_PLAN.md` is the authoritative follow-up for single-export modules, named React implementations, directory barrels, and CSS entry files.
 
-This plan supersedes the `types.ts`, `utils.ts`, `constants.ts`, and JSX-free `index.tsx` target examples currently present in older frontend architecture documents. Those documents describe the current transition state and must be aligned when this plan begins implementation.
+This plan superseded the `types.ts`, `utils.ts`, `constants.ts`, and JSX-free `index.tsx` target examples that were present in older frontend architecture documents.
 
 ## Implementation Status
 
@@ -11,7 +11,7 @@ Completed on 2026-07-13.
 - All 146 pre-existing named production declarations were extracted; additional component props contracts bring the isolated contract total to 249 files.
 - Authentication/permissions is the reference slice, including `permission.enum.ts`, `userPermissions.interface.ts`, and `utils/userPermissionRole.role.ts`.
 - Shared and feature utilities are separated by responsibility, duplicate MCP response parsers were consolidated, and hooks use `.hook.ts`.
-- All 20 JSX-free `index.tsx` barrels were renamed to `index.ts`.
+- All 20 JSX-free `index.tsx` barrels were renamed to `index.ts` during this migration; the follow-up migration subsequently removed every remaining `index.tsx` implementation.
 - `npm run check:frontend-structure` enforces the convention and runs automatically through `npm run type-check`.
 - Full type-check, 88 frontend tests, and the production build pass without behavior, UI, route, copy, API, or permission changes.
 
@@ -60,7 +60,7 @@ The read-only audit found:
 - 119 `.tsx` files and 39 `.ts` files under `src/`.
 - 85 interface, type, enum, or class declarations embedded in 38 production `.tsx` files.
 - 41 additional declarations concentrated in generic `types.ts` files.
-- 20 JSX-free barrel files named `index.tsx` even though they only re-export symbols.
+- 20 JSX-free barrel files were named `index.tsx` even though they only re-exported symbols.
 - About 31,600 lines of frontend TypeScript/TSX.
 - Large mixed-responsibility hotspots in `NewServer`, `Profile`, `SharePage`, `McpDocs`, `ServerDetail`, and `ToolDialog`.
 
@@ -80,7 +80,7 @@ The audit is a planning baseline, not an exhaustive migration manifest. Phase 0 
 
 ### 1. Component Files
 
-- React components remain in `.tsx`, preferably `ComponentName/index.tsx` under the existing component-folder convention.
+- React components remain in `ComponentName/ComponentName.tsx`; `ComponentName/index.ts` is the public barrel and `ComponentName/index.css` is the stylesheet entry.
 - A top-level function declared in a component `.tsx` file must return React UI and act as a component or render component.
 - A reusable render helper must become a named component with its own component module.
 - Top-level parsing, formatting, validation, mapping, building, decision, factory, or ID-generation functions are forbidden in component files.
@@ -157,8 +157,9 @@ The specific `userPermissionRole.role.ts` convention is the reference for role-b
 
 ### 5. Barrel Files
 
-- A barrel that only imports/exports symbols is `index.ts`, never `index.tsx`.
-- `index.tsx` is reserved for a module that actually renders JSX, such as the existing component entry-point convention.
+- Every barrel is `index.ts`; `index.tsx` is forbidden.
+- React rendering belongs in a matching named `.tsx` implementation, never in `index.ts`.
+- Named modules export one symbol; aggregation and re-exports belong only in `index.ts`.
 - Barrels contain no interfaces, enums, constants, decisions, utilities, or side effects.
 - Preserve controlled named exports and explicit `export type`; do not introduce broad `export *` exports.
 - Use direct imports inside the same feature when a barrel would create a cycle.
@@ -172,15 +173,12 @@ Illustrative target shape:
 
 ```text
 src/context/auth/
-  AuthProvider/
-    index.tsx
-  hooks/
-    useAuth.hook.ts
-  models/
-    permission.enum.ts
-    userPermissions.interface.ts
-    me.interface.ts
-    authContextValue.interface.ts
+  AuthProvider.tsx
+  useAuth.hook.ts
+  permission.enum.ts
+  userPermissions.interface.ts
+  me.interface.ts
+  authContextValue.interface.ts
   constants/
     allPermissionsOff.constant.ts
     rolePermissionFallbacks.constant.ts
@@ -188,6 +186,10 @@ src/context/auth/
   utils/
     userPermissionRole.role.ts
     canUserPermission.permission.ts
+    index.ts
+    index.css
+  index.ts
+  index.css
   index.ts
 ```
 
@@ -216,7 +218,7 @@ Tasks:
    - generic type/utility/constant files;
    - top-level non-rendering functions in React modules;
    - duplicate helpers and all consumers;
-   - JSX-free `index.tsx` barrels;
+   - JSX-free `index.ts` barrels;
    - import cycles and high-fan-out contracts.
 4. Turn the inventory into a per-file migration checklist grouped by owner and dependency.
 5. Align `docs/DESIGN_PATTERNS.md`, `docs/FRONTEND_ARCHITECTURE_PLAN.md`, and `docs/FRONTEND_MODULARIZATION_PLAN.md` with this convention before the first source migration is considered complete.
@@ -340,11 +342,11 @@ Objective: remove transitional structure and prevent regression.
 
 Tasks:
 
-1. Rename every JSX-free `index.tsx` barrel to `index.ts`.
+1. Rename every JSX-free `index.ts` barrel to `index.ts`.
 2. Remove obsolete `types.ts`, mixed utilities, compatibility re-exports, and duplicate helpers.
 3. Add an AST-based frontend structure check using the existing TypeScript toolchain. It should report:
    - interface, enum, type alias, class, or entity declarations in production `.tsx` files;
-   - JSX-free barrels named `index.tsx`;
+   - JSX-free barrels named `index.ts`;
    - forbidden generic catch-all file names;
    - top-level non-rendering helpers in component modules;
    - utility modules with multiple public responsibilities.
@@ -414,7 +416,8 @@ The migration is complete when:
 - No generic `types.ts`, `utils.ts`, `constants.ts`, `helpers.ts`, `format.ts`, or `validation.ts` catch-all remains in the migrated frontend.
 - Known duplicated parsing, slug, schema, formatting, and role decision logic is consolidated under the correct owner.
 - Hooks, API modules, constants, and utilities are not confused with one another.
-- Pure barrels use `index.ts`; JSX entry points alone use `index.tsx`.
+- Only `index.ts` aggregates exports; React entry points use matching named `.tsx` files.
+- Every directory under `src/` contains `index.ts` and `index.css`.
 - Feature public APIs remain explicit and no new circular dependency is introduced.
 - Permission behavior, routes, UI, API contracts, and user-facing copy are unchanged.
 - Type-check, full frontend tests, production build, and the structural check pass.
@@ -422,4 +425,4 @@ The migration is complete when:
 
 ## Recommended First Implementation Step
 
-After repairing the Git worktree metadata, execute Phase 0 and then implement the authentication/permissions reference slice only. Do not begin the server type split until the auth slice demonstrates the naming, export, test, and rollback conventions successfully.
+The migration and its corrective export/folder follow-up are complete. Future work should preserve the enforced convention through `npm run check:frontend-structure` and avoid compatibility facades that re-export from named files.

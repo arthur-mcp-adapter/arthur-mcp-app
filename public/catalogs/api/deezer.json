@@ -1,0 +1,91 @@
+{
+  "id": "deezer",
+  "name": "Deezer",
+  "tagline": "Music search and charts",
+  "description": "Search tracks, albums, and artists on Deezer. Access global and country-specific music charts. No authentication required for public data.",
+  "category": "Music & Media",
+  "color": "#A238FF",
+  "emoji": "🎶",
+  "baseUrl": "https://api.deezer.com",
+  "auth": {
+    "type": "none",
+    "hint": ""
+  },
+  "docsUrl": "https://developers.deezer.com/api",
+  "tools": [
+    {
+      "name": "search",
+      "description": "Search Deezer for tracks, albums, or artists.",
+      "method": "GET",
+      "path": "/search",
+      "params": [
+        {
+          "name": "q",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Search query, e.g. \"artist:\\\"Eminem\\\" track:\\\"Lose Yourself\\\"\""
+        },
+        {
+          "name": "type",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Type: track, album, artist, playlist, podcast, episode"
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of results (max 25)"
+        }
+      ]
+    },
+    {
+      "name": "get_chart",
+      "description": "Get the top tracks, albums, artists, and playlists chart for a country.",
+      "method": "GET",
+      "path": "/chart/{id}",
+      "params": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "integer",
+          "description": "Chart ID: 0 for global, or get country ID from /chart list"
+        }
+      ]
+    },
+    {
+      "name": "get_track",
+      "description": "Get full details for a track: title, artist, album, duration, and preview URL.",
+      "method": "GET",
+      "path": "/track/{id}",
+      "params": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "integer",
+          "description": "Deezer track ID"
+        }
+      ]
+    },
+    {
+      "name": "get_artist",
+      "description": "Get an artist's profile: name, fan count, top tracks, and albums.",
+      "method": "GET",
+      "path": "/artist/{id}",
+      "params": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "integer",
+          "description": "Deezer artist ID"
+        }
+      ]
+    }
+  ]
+}
