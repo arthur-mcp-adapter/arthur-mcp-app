@@ -1,5 +1,3 @@
-[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/alexmmatos-arthur-mcp-badge.png)](https://mseep.ai/app/alexmmatos-arthur-mcp)
-
 # Arthur MCP
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/alexmmatos/arthur-mcp)
 
@@ -460,6 +458,8 @@ npm run type-check
 npm test
 npm test --prefix api
 ```
+## Found this app on Mseep.ai
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/alexmmatos-arthur-mcp-badge.png)](https://mseep.ai/app/alexmmatos-arthur-mcp)
 
 ## License
 
