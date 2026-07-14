@@ -49,12 +49,16 @@ export function ToolAccordion({ tool: initialTool, projectId, anyApiKey, onToolC
   // Sync when parent updates the tool (e.g. after dialog save)
   useEffect(() => { setTool(initialTool) }, [initialTool])
 
-  const { method, path, parameterMap } = tool.endpointRef
+  const method = tool.endpointRef?.method ?? 'DATA'
+  const path = tool.endpointRef?.path ?? t('tab.operations')
+  const parameterMap = tool.endpointRef?.parameterMap ?? Object.keys(tool.inputSchema.properties ?? {}).map((name) => ({
+    toolParamName: name, originalName: name, source: 'argument' as const, required: tool.inputSchema.required?.includes(name) ?? false,
+  }))
   const properties = tool.inputSchema.properties ?? {}
   const requiredFields = tool.inputSchema.required ?? []
   const allParams = parameterMap ?? []
   const paramEntries = Object.entries(properties)
-  const curl = buildCurl(tool)
+  const curl = tool.endpointRef ? buildCurl(tool as GeneratedTool & { endpointRef: NonNullable<GeneratedTool['endpointRef']> }) : ''
   const mcpCurl = buildMcpCurl(tool, projectId, !!anyApiKey)
 
   const saveToolMeta = async (field: 'name' | 'description', newValue: string) => {
@@ -153,7 +157,7 @@ export function ToolAccordion({ tool: initialTool, projectId, anyApiKey, onToolC
           <Typography fontFamily="monospace" fontSize="0.78rem" color="text.secondary" noWrap flexGrow={1}>{path}</Typography>
 
           {/* Toggle enable/disable */}
-          {can(Permission.ToolsEdit) && (
+          {tool.endpointRef && can(Permission.ToolsEdit) && (
             <Tooltip title={isDisabled ? t('tooltip.enableTool') : t('tooltip.disableTool')}>
               <Switch
                 size="small"
@@ -285,7 +289,7 @@ export function ToolAccordion({ tool: initialTool, projectId, anyApiKey, onToolC
         {!tryMode && (
           <Box mt={2} display="flex" flexDirection="column" gap={2}>
             {/* Direct curl */}
-            <Box>
+            {tool.endpointRef && <Box>
               <Typography variant="subtitle2" fontWeight={700} mb={1}>{t('heading.directApiCurl')}</Typography>
               <Box component="pre" sx={{
                 bgcolor: '#1e1e1e', color: '#d4d4d4', p: 2, borderRadius: 1,
@@ -300,7 +304,7 @@ export function ToolAccordion({ tool: initialTool, projectId, anyApiKey, onToolC
                 </Tooltip>
                 {curl}
               </Box>
-            </Box>
+            </Box>}
 
             {/* MCP via POST */}
             <Box>

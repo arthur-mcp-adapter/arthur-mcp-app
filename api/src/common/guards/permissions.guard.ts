@@ -8,7 +8,7 @@ type PermMap = Record<string, boolean>;
 
 const BUILTIN: Record<string, PermMap> = {
   developer: {
-    servers_view: true, servers_create: true, servers_edit_settings: true, servers_delete: false,
+    servers_view: true, servers_create: true, servers_edit_settings: true, servers_manage_connection: true, servers_delete: false,
     servers_toggle_active: true, servers_share: true,
     tools_view: true, tools_create: true, tools_edit: true, tools_delete: true, tools_test: true,
     resources_view: true, resources_create: true, resources_edit: true, resources_delete: true,
@@ -22,7 +22,7 @@ const BUILTIN: Record<string, PermMap> = {
     ai_providers_view: true, ai_providers_create: true, ai_providers_edit: true, ai_providers_delete: true,
   },
   editor: {
-    servers_view: true, servers_create: false, servers_edit_settings: false, servers_delete: false,
+    servers_view: true, servers_create: false, servers_edit_settings: false, servers_manage_connection: false, servers_delete: false,
     servers_toggle_active: false, servers_share: true,
     tools_view: true, tools_create: true, tools_edit: true, tools_delete: false, tools_test: true,
     resources_view: true, resources_create: true, resources_edit: true, resources_delete: false,
@@ -36,7 +36,7 @@ const BUILTIN: Record<string, PermMap> = {
     ai_providers_view: true, ai_providers_create: true, ai_providers_edit: true, ai_providers_delete: false,
   },
   viewer: {
-    servers_view: true, servers_create: false, servers_edit_settings: false, servers_delete: false,
+    servers_view: true, servers_create: false, servers_edit_settings: false, servers_manage_connection: false, servers_delete: false,
     servers_toggle_active: false, servers_share: false,
     tools_view: true, tools_create: false, tools_edit: false, tools_delete: false, tools_test: false,
     resources_view: true, resources_create: false, resources_edit: false, resources_delete: false,

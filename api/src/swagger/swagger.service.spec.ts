@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
 import { SwaggerService } from './swagger.service';
-import { PROJECT_REPO, PROMPT_REPO } from '../database/database.tokens';
+import { PROJECT_REPO, PROMPT_REPO, SECRET_REPO } from '../database/database.tokens';
 import { DynamicMcpService } from '../dynamic-mcp/dynamic-mcp.service';
 import type { SwaggerProjectRecord } from './swagger-project.repository';
 import { SwaggerApiKeysService } from './swagger-api-keys.service';
@@ -43,6 +43,7 @@ const mockProjectRepo = {
 const mockPromptRepo = {
   findById: jest.fn(),
 };
+const mockSecretRepo = { findAll: jest.fn() };
 
 const mockDynamicMcp = {
   invalidate: jest.fn(),
@@ -62,6 +63,7 @@ describe('SwaggerService', () => {
         SwaggerService,
         { provide: PROJECT_REPO, useValue: mockProjectRepo },
         { provide: PROMPT_REPO, useValue: mockPromptRepo },
+        { provide: SECRET_REPO, useValue: mockSecretRepo },
         { provide: DynamicMcpService, useValue: mockDynamicMcp },
         { provide: SwaggerImportService, useValue: mockImportService },
         { provide: SwaggerApiKeysService, useValue: mockApiKeysService },
@@ -74,6 +76,7 @@ describe('SwaggerService', () => {
     jest.clearAllMocks();
     mockJwtSecretService.getSecret.mockResolvedValue('test-jwt-secret-value');
     mockPromptRepo.findById.mockResolvedValue(null);
+    mockSecretRepo.findAll.mockResolvedValue([]);
     mockProjectRepo.findAll.mockResolvedValue([]);
   });
 
@@ -311,6 +314,80 @@ describe('SwaggerService', () => {
       mockProjectRepo.findByIdOrShareSlug.mockResolvedValue(null);
 
       await expect(service.getProjectForShareBySlug('missing-slug')).rejects.toThrow(NotFoundException);
+    });
+  });
+
+  describe('data-source operations', () => {
+    it('creates a callable tool when an operation is added', async () => {
+      const project = makeProject({ tools: [], dbQueries: [] });
+      mockProjectRepo.findById.mockResolvedValue(project);
+      mockProjectRepo.update.mockResolvedValue(project);
+
+      const query = await service.addDbQuery('proj-1', {
+        name: 'find_invoice',
+        description: 'Find an invoice by id',
+        sourceType: 'postgresql',
+        query: 'select * from invoices where id = :id',
+        parameters: [{ name: 'id', type: 'string', required: true }],
+        outputSchema: { type: 'object' },
+      });
+
+      expect(mockProjectRepo.update).toHaveBeenCalledWith('proj-1', expect.objectContaining({
+        dbQueries: [expect.objectContaining({ id: query.id, name: 'find_invoice' })],
+        tools: [expect.objectContaining({
+          name: 'find_invoice',
+          inputSchema: expect.objectContaining({ required: ['id'] }),
+          outputSchema: { type: 'object' },
+          executionRef: { type: 'db', dbQueryId: query.id },
+        })],
+      }));
+      expect(mockDynamicMcp.invalidate).toHaveBeenCalledWith('proj-1');
+    });
+
+    it('updates the generated tool while preserving its enabled state', async () => {
+      const query = {
+        id: 'query-1',
+        name: 'old_name',
+        sourceType: 'postgresql',
+        query: 'select 1',
+      } as any;
+      mockProjectRepo.findById.mockResolvedValue(makeProject({
+        dbQueries: [query],
+        tools: [{
+          name: 'old_name',
+          description: '',
+          inputSchema: { type: 'object' },
+          executionRef: { type: 'db', dbQueryId: 'query-1' },
+          enabled: false,
+        }],
+      }));
+
+      await service.updateDbQuery('proj-1', 'query-1', { name: 'new_name' });
+
+      expect(mockProjectRepo.update).toHaveBeenCalledWith('proj-1', expect.objectContaining({
+        tools: [expect.objectContaining({
+          name: 'new_name',
+          enabled: false,
+          executionRef: { type: 'db', dbQueryId: 'query-1' },
+        })],
+      }));
+    });
+
+    it('deletes only the tool generated for the removed operation', async () => {
+      mockProjectRepo.findById.mockResolvedValue(makeProject({
+        dbQueries: [{ id: 'query-1', name: 'find_invoice', sourceType: 'postgresql' } as any],
+        tools: [
+          { name: 'find_invoice', description: '', inputSchema: {}, executionRef: { type: 'db', dbQueryId: 'query-1' } },
+          { name: 'http_tool', description: '', inputSchema: {}, endpointRef: { method: 'GET', path: '/', baseUrl: 'https://example.com', contentType: 'application/json', parameterMap: [] } },
+        ],
+      }));
+
+      await service.deleteDbQuery('proj-1', 'query-1');
+
+      expect(mockProjectRepo.update).toHaveBeenCalledWith('proj-1', {
+        dbQueries: [],
+        tools: [expect.objectContaining({ name: 'http_tool' })],
+      });
     });
   });
 });

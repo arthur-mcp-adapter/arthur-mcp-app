@@ -195,6 +195,7 @@
       "Cloud": "Cloud & Analytics"
     },
     "available": "Disponível",
+    "restricted": "Restrito",
     "soon": "Em breve",
     "types": {
       "blank":         { "name": "Blank / Static",  "description": "Sem conexão externa. Defina ferramentas que retornam respostas fixas ou baseadas em parâmetros." },
