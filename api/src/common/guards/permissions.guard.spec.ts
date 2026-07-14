@@ -5,7 +5,7 @@ import { ROLE_REPO } from '../../database/database.tokens';
 import type { RoleRecord, RolePermissions } from '../../roles/role.repository';
 
 const allOff = (): RolePermissions => ({
-  servers_view: false, servers_create: false, servers_edit_settings: false,
+  servers_view: false, servers_create: false, servers_edit_settings: false, servers_manage_connection: false,
   servers_delete: false, servers_toggle_active: false, servers_share: false,
   tools_view: false, tools_create: false, tools_edit: false,
   tools_delete: false, tools_test: false,

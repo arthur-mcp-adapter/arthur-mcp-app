@@ -110,6 +110,7 @@ import {
   InlineEdit,
   McpEndpointBar,
   OAuthClientPanel,
+  OperationsTab,
   ProjectControlsPanel,
   ProjectLogs,
   PromptsTab,
@@ -195,7 +196,9 @@ export default function ServerDetail() {
       backPath: '/',
       navItems: [
         { label: t('tab.connect'), icon: <IconWorld size={17} />, idx: 0 },
-        { label: t('tab.apiEndpoints'), icon: <IconRoute size={17} />, idx: 1 },
+        ...(getSourceType(project) === 'rest'
+          ? [{ label: t('tab.apiEndpoints'), icon: <IconRoute size={17} />, idx: 1 }]
+          : [{ label: t('tab.operations'), icon: <IconDatabase size={17} />, idx: 11 }]),
         { label: t('tab.tools'), icon: <IconTool size={17} />, idx: 2, badge: project.tools.length },
         { label: t('tab.resources'), icon: <IconDatabase size={17} />, idx: 3, badge: (project.resources ?? []).length },
         { label: t('tab.prompts'), icon: <IconBulb size={17} />, idx: 4, badge: (project.prompts ?? []).length },
@@ -369,6 +372,25 @@ export default function ServerDetail() {
           onToolDeleted={handleDeleteTool}
         />
       )}
+
+      {/* ── Tab 11: Data-source connection and Operations ───────────────────── */}
+      {tab === 11 && (can(Permission.ServersManageConnection) ? (
+        <OperationsTab
+          projectId={id!}
+          sourceType={getSourceType(project)}
+          initialConnection={project.connectionConfig}
+          initialOperations={project.dbQueries ?? []}
+          onChange={(connectionConfig, dbQueries) => {
+            setProject((prev) => prev ? { ...prev, connectionConfig, dbQueries } : prev)
+            api.get<Project>(`/swagger/servers/${id}`).then((response) => setProject(response.data)).catch(() => undefined)
+          }}
+        />
+      ) : (
+        <Box display="flex" flexDirection="column" alignItems="center" gap={2} py={12}>
+          <Typography color="text.secondary" variant="h6">{t('empty.accessRestricted')}</Typography>
+          <Typography color="text.secondary" variant="body2">{t('operations.noPermission')}</Typography>
+        </Box>
+      ))}
 
       {/* ── Tab 2: Tools ──────────────────────────────────────────────────────── */}
       {tab === 2 && (can(Permission.ToolsView) ? (

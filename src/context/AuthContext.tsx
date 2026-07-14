@@ -6,6 +6,7 @@ export enum Permission {
   ServersView = 'servers_view',
   ServersCreate = 'servers_create',
   ServersEditSettings = 'servers_edit_settings',
+  ServersManageConnection = 'servers_manage_connection',
   ServersDelete = 'servers_delete',
   ServersToggleActive = 'servers_toggle_active',
   ServersShare = 'servers_share',
@@ -60,6 +61,7 @@ export interface UserPermissions {
   servers_view: boolean
   servers_create: boolean
   servers_edit_settings: boolean
+  servers_manage_connection: boolean
   servers_delete: boolean
   servers_toggle_active: boolean
   servers_share: boolean

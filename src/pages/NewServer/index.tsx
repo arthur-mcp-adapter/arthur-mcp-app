@@ -69,25 +69,25 @@ const SOURCE_TYPES: Array<{
   { id: 'blank',   name: 'Blank / Static', description: 'No external connection. Define tools that return hardcoded or parameter-based responses.', emoji: '📄', color: '#9E9E9E', available: true, group: 'Other' },
   // ── APIs ──────────────────────────────────────────────────────────────────
   { id: 'rest',    name: 'REST API',  description: 'HTTP APIs described with OpenAPI, Swagger, or Postman collections.', emoji: '🌐', color: '#5D87FF', available: true,  group: 'API' },
-  { id: 'graphql', name: 'GraphQL',   description: 'Expose queries and mutations from a GraphQL endpoint as MCP tools.', emoji: '🔮', color: '#E535AB', available: false, group: 'API' },
-  { id: 'grpc',    name: 'gRPC',      description: 'High-performance RPC services using Protocol Buffer definitions.',    emoji: '⚡', color: '#fca130', available: false, group: 'API' },
+  { id: 'graphql', name: 'GraphQL',   description: 'Expose queries and mutations from a GraphQL endpoint as MCP tools.', emoji: '🔮', color: '#E535AB', available: true, group: 'API' },
+  { id: 'grpc',    name: 'gRPC',      description: 'High-performance RPC services using Protocol Buffer definitions.',    emoji: '⚡', color: '#fca130', available: true, group: 'API' },
   // ── Relational databases ──────────────────────────────────────────────────
-  { id: 'postgresql',  name: 'PostgreSQL',   description: 'Open-source object-relational database system.',                        emoji: '🐘', color: '#336791', available: false, group: 'SQL' },
-  { id: 'mysql',       name: 'MySQL',        description: 'The world\'s most popular open-source relational database.',             emoji: '🐬', color: '#4479A1', available: false, group: 'SQL' },
-  { id: 'mariadb',     name: 'MariaDB',      description: 'MySQL-compatible community-driven relational database.',                 emoji: '🦭', color: '#003545', available: false, group: 'SQL' },
-  { id: 'mssql',       name: 'SQL Server',   description: 'Microsoft\'s enterprise relational database management system.',        emoji: '🏢', color: '#CC2927', available: false, group: 'SQL' },
-  { id: 'oracle',      name: 'Oracle DB',    description: 'Oracle\'s enterprise-grade relational database.',                       emoji: '🏛️', color: '#F80000', available: false, group: 'SQL' },
-  { id: 'cockroachdb', name: 'CockroachDB',  description: 'Distributed SQL database with PostgreSQL compatibility.',               emoji: '🪳', color: '#6933FF', available: false, group: 'SQL' },
-  { id: 'clickhouse',  name: 'ClickHouse',   description: 'Column-oriented database for real-time analytics at scale.',            emoji: '🖱️', color: '#FAFF00', available: false, group: 'SQL' },
+  { id: 'postgresql',  name: 'PostgreSQL',   description: 'Open-source object-relational database system.',                        emoji: '🐘', color: '#336791', available: true, group: 'SQL' },
+  { id: 'mysql',       name: 'MySQL',        description: 'The world\'s most popular open-source relational database.',             emoji: '🐬', color: '#4479A1', available: true, group: 'SQL' },
+  { id: 'mariadb',     name: 'MariaDB',      description: 'MySQL-compatible community-driven relational database.',                 emoji: '🦭', color: '#003545', available: true, group: 'SQL' },
+  { id: 'mssql',       name: 'SQL Server',   description: 'Microsoft\'s enterprise relational database management system.',        emoji: '🏢', color: '#CC2927', available: true, group: 'SQL' },
+  { id: 'oracle',      name: 'Oracle DB',    description: 'Oracle\'s enterprise-grade relational database.',                       emoji: '🏛️', color: '#F80000', available: true, group: 'SQL' },
+  { id: 'cockroachdb', name: 'CockroachDB',  description: 'Distributed SQL database with PostgreSQL compatibility.',               emoji: '🪳', color: '#6933FF', available: true, group: 'SQL' },
+  { id: 'clickhouse',  name: 'ClickHouse',   description: 'Column-oriented database for real-time analytics at scale.',            emoji: '🖱️', color: '#FAFF00', available: true, group: 'SQL' },
   // ── NoSQL / Document / Key-value ─────────────────────────────────────────
-  { id: 'mongodb',       name: 'MongoDB',       description: 'Document-oriented NoSQL database with flexible schema.',              emoji: '🍃', color: '#47A248', available: false, group: 'NoSQL' },
-  { id: 'redis',         name: 'Redis',          description: 'In-memory key-value store for caching, queues, and pub/sub.',        emoji: '🔴', color: '#DC382D', available: false, group: 'NoSQL' },
-  { id: 'cassandra',     name: 'Cassandra',      description: 'Wide-column store for high availability and massive datasets.',       emoji: '👁️', color: '#1287B1', available: false, group: 'NoSQL' },
-  { id: 'firestore',     name: 'Firestore',      description: 'Google\'s serverless document database for web and mobile apps.',    emoji: '🔥', color: '#FFCA28', available: false, group: 'NoSQL' },
+  { id: 'mongodb',       name: 'MongoDB',       description: 'Document-oriented NoSQL database with flexible schema.',              emoji: '🍃', color: '#47A248', available: true, group: 'NoSQL' },
+  { id: 'redis',         name: 'Redis',          description: 'In-memory key-value store for caching, queues, and pub/sub.',        emoji: '🔴', color: '#DC382D', available: true, group: 'NoSQL' },
+  { id: 'cassandra',     name: 'Cassandra',      description: 'Wide-column store for high availability and massive datasets.',       emoji: '👁️', color: '#1287B1', available: true, group: 'NoSQL' },
+  { id: 'firestore',     name: 'Firestore',      description: 'Google\'s serverless document database for web and mobile apps.',    emoji: '🔥', color: '#FFCA28', available: true, group: 'NoSQL' },
   // ── Cloud / Warehouse ────────────────────────────────────────────────────
-  { id: 'dynamodb',      name: 'DynamoDB',       description: 'AWS fully managed key-value and document database service.',         emoji: '🔷', color: '#232F3E', available: false, group: 'Cloud' },
-  { id: 'elasticsearch', name: 'Elasticsearch',  description: 'Distributed search and analytics engine built on Apache Lucene.',    emoji: '🔍', color: '#FEC514', available: false, group: 'Cloud' },
-  { id: 'snowflake',     name: 'Snowflake',      description: 'Cloud data warehouse with multi-cluster shared data architecture.',  emoji: '❄️', color: '#29B5E8', available: false, group: 'Cloud' },
+  { id: 'dynamodb',      name: 'DynamoDB',       description: 'AWS fully managed key-value and document database service.',         emoji: '🔷', color: '#232F3E', available: true, group: 'Cloud' },
+  { id: 'elasticsearch', name: 'Elasticsearch',  description: 'Distributed search and analytics engine built on Apache Lucene.',    emoji: '🔍', color: '#FEC514', available: true, group: 'Cloud' },
+  { id: 'snowflake',     name: 'Snowflake',      description: 'Cloud data warehouse with multi-cluster shared data architecture.',  emoji: '❄️', color: '#29B5E8', available: true, group: 'Cloud' },
 ]
 
 // ─── Step definitions (dynamic per source type) ───────────────────────────────
@@ -107,6 +107,9 @@ const DB_PORT_DEFAULTS: Partial<Record<SourceType, string>> = {
 
 // Databases that use the standard host/port/database/user/password/SSL form
 const SQL_HOSTS: SourceType[] = ['postgresql', 'mysql', 'mariadb', 'mssql', 'oracle', 'cockroachdb', 'clickhouse', 'cassandra']
+const CONNECTION_MANAGED_SOURCES: SourceType[] = [
+  ...SQL_HOSTS, 'mongodb', 'redis', 'firestore', 'dynamodb', 'elasticsearch', 'snowflake',
+]
 
 const AI_TOOL_IMPROVEMENT_AVAILABLE = false
 
@@ -298,7 +301,9 @@ export default function NewServer() {
     : !!postmanFile
 
   const isSourceAvailable = (nextSourceType: SourceType | null) =>
-    nextSourceType !== null && SOURCE_TYPES.some((source) => source.id === nextSourceType && source.available)
+    nextSourceType !== null &&
+    SOURCE_TYPES.some((source) => source.id === nextSourceType && source.available) &&
+    (!CONNECTION_MANAGED_SOURCES.includes(nextSourceType) || can(Permission.ServersManageConnection))
 
   const canNext = (): boolean => {
     if (activeStep === 0) return isSourceAvailable(sourceType)
@@ -568,6 +573,22 @@ export default function NewServer() {
           description: description.trim() || undefined,
         })
         projectId = data._id
+        if (CONNECTION_MANAGED_SOURCES.includes(sourceType as SourceType)) {
+          const connectionConfig = SQL_HOSTS.includes(sourceType as SourceType)
+            ? { host: dbHost.trim(), port: Number(dbPort || DB_PORT_DEFAULTS[sourceType as SourceType]), database: dbDatabase.trim(), user: dbUser.trim(), password: dbPassword, ssl: dbSsl }
+            : sourceType === 'mongodb'
+              ? { uri: mongoUri.trim() }
+              : sourceType === 'redis'
+                ? { redisHost: redisHost.trim(), redisPort: Number(redisPort), redisPassword, redisTls }
+                : sourceType === 'dynamodb'
+                  ? { dynamoRegion, dynamoAccessKey, dynamoSecretKey, dynamoEndpoint: dynamoEndpoint.trim() || undefined }
+                  : sourceType === 'elasticsearch'
+                    ? { esUrl: esUrl.trim(), esApiKey, esUser: dbUser.trim(), esPassword: dbPassword }
+                    : sourceType === 'snowflake'
+                      ? { snowflakeAccount: snowflakeAccount.trim(), snowflakeWarehouse: snowflakeWarehouse.trim(), snowflakeSchema: snowflakeSchema.trim(), database: dbDatabase.trim(), user: dbUser.trim(), password: dbPassword }
+                      : { firestoreProject: firestoreProject.trim(), firestoreCredentials }
+          await api.patch(`/swagger/servers/${projectId}/connection`, connectionConfig)
+        }
         // Auth (GraphQL / gRPC)
         if ((sourceType === 'graphql' || sourceType === 'grpc') && authType !== 'none') {
           await api.patch(`/swagger/servers/${projectId}/auth`, buildAuth())
@@ -638,23 +659,24 @@ export default function NewServer() {
                 <Grid container spacing={1.5}>
                   {items.map((s) => {
                     const selected = sourceType === s.id
+                    const sourceAvailable = isSourceAvailable(s.id)
                     return (
                       <Grid item xs={12} sm={6} md={4} key={s.id}>
                         <Paper
                           variant="outlined"
                           onClick={() => selectSource(s.id)}
                           onDoubleClick={() => selectSourceAndContinue(s.id)}
-                          aria-disabled={!s.available}
+                          aria-disabled={!sourceAvailable}
                           sx={{
                             p: 2,
-                            cursor: s.available ? 'pointer' : 'not-allowed',
+                            cursor: sourceAvailable ? 'pointer' : 'not-allowed',
                             height: '100%',
-                            opacity: s.available ? 1 : 0.58,
+                            opacity: sourceAvailable ? 1 : 0.58,
                             borderColor: selected ? s.color : undefined,
                             borderWidth: selected ? 2 : 1,
                             bgcolor: selected ? `${s.color}0d` : undefined,
                             transition: 'border-color 0.15s, background-color 0.15s',
-                            '&:hover': s.available ? { borderColor: s.color, bgcolor: `${s.color}08` } : undefined,
+                            '&:hover': sourceAvailable ? { borderColor: s.color, bgcolor: `${s.color}08` } : undefined,
                           }}
                         >
                           <Box display="flex" alignItems="center" gap={1.5}>
@@ -669,9 +691,9 @@ export default function NewServer() {
                             <Box flexGrow={1} minWidth={0}>
                               <Box display="flex" alignItems="center" gap={0.75} flexWrap="wrap">
                                 <Typography fontWeight={700} fontSize="0.875rem" noWrap>{t(`source.types.${s.id}.name` as Parameters<typeof t>[0])}</Typography>
-                                {s.available
+                                {sourceAvailable
                                   ? <Chip label={t('servers:source.available')} size="small" color="success" sx={{ fontSize: '0.6rem', height: 16, fontWeight: 600 }} />
-                                  : <Chip label={t('servers:source.soon')} size="small" sx={{ fontSize: '0.6rem', height: 16 }} />
+                                  : <Chip label={s.available ? t('servers:source.restricted') : t('servers:source.soon')} size="small" sx={{ fontSize: '0.6rem', height: 16 }} />
                                 }
                               </Box>
                               <Typography variant="caption" color="text.secondary"

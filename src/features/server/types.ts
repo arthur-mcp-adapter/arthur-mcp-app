@@ -40,9 +40,38 @@ export interface GeneratedTool {
   outputTemplate?: string
   errorConfig?: { message: string }
   endpointRef: EndpointRef
+  executionRef?: { type: string; dbQueryId?: string }
   endpointSource?: string
   enabled?: boolean
   comments?: ToolComment[]
+}
+
+export interface DbConnectionConfig {
+  host?: string
+  port?: number
+  database?: string
+  user?: string
+  password?: string
+  ssl?: boolean
+}
+
+export interface DbQueryParameter {
+  name: string
+  type: 'string' | 'number' | 'boolean' | 'array' | 'object'
+  required?: boolean
+  description?: string
+}
+
+export interface DbQuery {
+  id: string
+  name: string
+  description?: string
+  sourceType: string
+  query?: string
+  resultMode?: 'rows' | 'first' | 'count'
+  parameters?: DbQueryParameter[]
+  inputSchema?: JsonSchema
+  outputSchema?: JsonSchema
 }
 
 export interface McpApiKeyEntry {
@@ -137,6 +166,8 @@ export interface Project {
     errorTruncateLen?: number
   }
   auth?: AuthConfig
+  connectionConfig?: DbConnectionConfig
+  dbQueries?: DbQuery[]
   createdAt: string
   updatedAt: string
 }

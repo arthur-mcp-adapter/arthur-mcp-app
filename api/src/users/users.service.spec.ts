@@ -18,6 +18,9 @@ const makeUserRecord = (overrides: Record<string, any> = {}) => ({
 const mockUserRepo = {
   findByUsername: jest.fn(),
   findByEmail: jest.fn(),
+  findByGoogleId: jest.fn(),
+  findByGithubId: jest.fn(),
+  findBySupabaseId: jest.fn(),
   findById: jest.fn(),
   findAll: jest.fn(),
   create: jest.fn(),
@@ -174,4 +177,44 @@ describe('UsersService', () => {
     });
   });
 
+  describe('findOrCreateFromOAuth', () => {
+    it('returns the existing user when the provider id is already linked', async () => {
+      const doc = makeUserRecord({ supabaseId: 'sb-user-1' });
+      mockUserRepo.findBySupabaseId.mockResolvedValue(doc);
+
+      const result = await service.findOrCreateFromOAuth('supabase', { id: 'sb-user-1', email: 'test@test.com' });
+
+      expect(result).toBe(doc);
+      expect(mockUserRepo.findByEmail).not.toHaveBeenCalled();
+    });
+
+    it('links the provider id to an existing account matched by email', async () => {
+      const doc = makeUserRecord({ email: 'match@test.com' });
+      mockUserRepo.findBySupabaseId.mockResolvedValue(null);
+      mockUserRepo.findByEmail.mockResolvedValue(doc);
+      mockUserRepo.update.mockResolvedValue({ ...doc, supabaseId: 'sb-user-2' });
+
+      const result = await service.findOrCreateFromOAuth('supabase', { id: 'sb-user-2', email: 'match@test.com' });
+
+      expect(mockUserRepo.update).toHaveBeenCalledWith('user123', { supabaseId: 'sb-user-2' });
+      expect(result.supabaseId).toBe('sb-user-2');
+    });
+
+    it('creates a new admin account with a generated username when nothing matches', async () => {
+      mockUserRepo.findBySupabaseId.mockResolvedValue(null);
+      mockUserRepo.findByEmail.mockResolvedValue(null);
+      mockUserRepo.findByUsername.mockResolvedValue(null);
+      (bcrypt.hash as jest.Mock).mockResolvedValue('random-hash');
+      mockUserRepo.create.mockResolvedValue(makeUserRecord({ username: 'newperson', supabaseId: 'sb-user-3' }));
+
+      await service.findOrCreateFromOAuth('supabase', { id: 'sb-user-3', email: 'new@test.com', name: 'New Person' });
+
+      expect(mockUserRepo.create).toHaveBeenCalledWith(expect.objectContaining({
+        username: 'newperson',
+        email: 'new@test.com',
+        role: 'admin',
+        supabaseId: 'sb-user-3',
+      }));
+    });
+  });
 });

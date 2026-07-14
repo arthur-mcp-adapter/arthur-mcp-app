@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { config } from '../config/configuration';
@@ -15,7 +15,12 @@ import { GoogleAuthGuard } from './google.guard';
 import { GoogleStrategy } from './google.strategy';
 import { GithubAuthGuard } from './github.guard';
 import { GithubStrategy } from './github.strategy';
+import { SupabaseAuthService } from './supabase-auth.service';
 
+// Global: JwtAuthGuard is used via @UseGuards(JwtAuthGuard) across many feature
+// modules that don't import AuthModule — its Supabase fallback dependency must
+// resolve from anywhere, same reasoning as DatabaseModule being global.
+@Global()
 @Module({
   imports: [
     PassportModule,
@@ -40,7 +45,8 @@ import { GithubStrategy } from './github.strategy';
     GithubAuthGuard,
     GoogleStrategy,
     GithubStrategy,
+    SupabaseAuthService,
   ],
-  exports: [JwtAuthGuard],
+  exports: [JwtAuthGuard, SupabaseAuthService],
 })
 export class AuthModule {}

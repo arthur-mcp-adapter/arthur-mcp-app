@@ -21,6 +21,8 @@ import { JwtAuthGuard } from '../auth/jwt.guard';
 import type { AuthConfig, DbConnectionConfig, DbQuery, EndpointRef, ExecutionRef } from '../dynamic-mcp/types';
 import { SwaggerService } from './swagger.service';
 import { ServerOwnershipGuard } from './guards/server-ownership.guard';
+import { PermissionsGuard } from '../common/guards/permissions.guard';
+import { RequirePermission } from '../common/decorators/require-permission.decorator';
 import {
   AlertConfigDto,
   AvailabilityWindowDto,
@@ -40,7 +42,7 @@ import {
 } from './dto/swagger.dto';
 
 @Controller('swagger')
-@UseGuards(JwtAuthGuard, ServerOwnershipGuard)
+@UseGuards(JwtAuthGuard, PermissionsGuard, ServerOwnershipGuard)
 export class SwaggerController {
   constructor(private readonly swaggerService: SwaggerService) {}
 
@@ -466,23 +468,27 @@ export class SwaggerController {
   // ── DB connection management ──────────────────────────────────────────────────
 
   @Patch('servers/:id/connection')
+  @RequirePermission('servers_manage_connection')
   updateConnection(@Param('id') id: string, @Body() cfg: DbConnectionConfig) {
     return this.swaggerService.updateConnectionConfig(id, cfg);
   }
 
   @Post('servers/:id/test-db-connection')
+  @RequirePermission('servers_manage_connection')
   @HttpCode(200)
   testDbConnection(@Param('id') id: string) {
     return this.swaggerService.testDbConnection(id);
   }
 
   @Post('servers/:id/introspect')
+  @RequirePermission('servers_manage_connection')
   @HttpCode(200)
   introspect(@Param('id') id: string) {
     return this.swaggerService.introspectDbSchema(id);
   }
 
   @Post('servers/:id/test-db-query')
+  @RequirePermission('servers_manage_connection')
   @HttpCode(200)
   testDbQuery(
     @Param('id') id: string,
@@ -496,11 +502,13 @@ export class SwaggerController {
   // ── DbQuery CRUD ──────────────────────────────────────────────────────────────
 
   @Get('servers/:id/queries')
+  @RequirePermission('servers_manage_connection')
   listDbQueries(@Param('id') id: string) {
     return this.swaggerService.listDbQueries(id);
   }
 
   @Post('servers/:id/queries')
+  @RequirePermission('servers_manage_connection')
   addDbQuery(@Param('id') id: string, @Body() dto: DbQueryDto) {
     if (!dto.name?.trim()) throw new BadRequestException('name is required.');
     if (!dto.sourceType) throw new BadRequestException('sourceType is required.');
@@ -508,6 +516,7 @@ export class SwaggerController {
   }
 
   @Put('servers/:id/queries/:queryId')
+  @RequirePermission('servers_manage_connection')
   updateDbQuery(
     @Param('id') id: string,
     @Param('queryId') queryId: string,
@@ -517,12 +526,14 @@ export class SwaggerController {
   }
 
   @Delete('servers/:id/queries/:queryId')
+  @RequirePermission('servers_manage_connection')
   @HttpCode(204)
   deleteDbQuery(@Param('id') id: string, @Param('queryId') queryId: string) {
     return this.swaggerService.deleteDbQuery(id, queryId);
   }
 
   @Post('servers/:id/queries/:queryId/run')
+  @RequirePermission('servers_manage_connection')
   @HttpCode(200)
   runDbQuery(
     @Param('id') id: string,
@@ -533,6 +544,7 @@ export class SwaggerController {
   }
 
   @Post('servers/:id/run-query-inline')
+  @RequirePermission('servers_manage_connection')
   @HttpCode(200)
   runQueryInline(
     @Param('id') id: string,

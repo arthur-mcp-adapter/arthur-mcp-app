@@ -13,11 +13,11 @@ This file should be updated when task state changes. It does not replace issues 
 ## In Progress
 
 - [ ] Wire non-API/Blank data sources (SQL, MongoDB, Redis/key-value, and later DynamoDB/Elasticsearch/Snowflake/GraphQL/gRPC/Cassandra/Firestore) end to end per `docs/DATA_SOURCE_INTEGRATION_PLAN.pt-BR.md`:
-  - [ ] Phase 0: fix ROADMAP claims above, extract reusable secret-ref resolver, add `servers_manage_connection` permission, audit Redis raw-command allowlist.
-  - [ ] Phase 1: SQL (Postgres/MySQL) end to end — execution dispatch, secret-backed `DbConnectionConfig`, Operations tab, wizard connection-config persistence fix.
+  - [x] Phase 0: fix ROADMAP claims above, extract reusable secret-ref resolver, add `servers_manage_connection` permission, audit Redis raw-command allowlist.
+  - [ ] Phase 1: SQL (Postgres/MySQL) end to end — execution dispatch, secret-backed `DbConnectionConfig`, Operations tab, wizard connection-config persistence fix. Backend dispatch/tool synchronization, wizard persistence, permission-gated Server Detail UI, and a real PostgreSQL adapter integration test are implemented; a full authenticated MCP transport e2e remains.
   - [ ] Phase 2: MongoDB (commands).
   - [ ] Phase 3: Redis/key-value.
-  - [ ] Phase 4: remaining modeled-but-unbuilt source types, backlog-priority.
+  - [ ] Phase 4: remaining modeled-but-unbuilt source types, backlog-priority. Creation cards and connection persistence are enabled; runtime adapters and source-specific Operations UI remain incremental work.
 - [ ] Audit permission coverage for newly added feature domains and integrations:
   - [x] Verify frontend permissions for AI providers are present in backend `RolePermissions`, backend built-in role presets, frontend fallback presets, and AI Provider UI gates, including `ai_providers_execute` for test/generation actions.
   - [ ] Verify frontend permissions for error tracking are present in backend `RolePermissions` and backend built-in role presets.

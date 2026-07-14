@@ -9,11 +9,13 @@ import {
   ListToolsRequestSchema,
   ReadResourceRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js';
-import type { AuthConfig, ChainInputSource, GeneratedTool, JsonSchema, McpResource, ToolChain } from './types';
+import type { AuthConfig, ChainInputSource, DbConnectionConfig, DbQuery, ExecutionRef, GeneratedTool, JsonSchema, McpResource, ToolChain } from './types';
 import { buildRequest } from './request-builder';
 import { executeRequest } from './http-client';
 import { mapResponse, McpToolResult, ResponseMapperConfig } from './response-mapper';
 import { applyAuth, resolveSecretRefs } from './auth-provider';
+import { resolveSecretRefsInValue } from './secret-resolver';
+import { executeDbQuery, executeWithRef } from './adapters';
 import { ExecutionLogsService } from '../execution-logs/execution-logs.service';
 import { ErrorTrackingService } from '../error-tracking/error-tracking.service';
 import { MetricsService } from '../observability/metrics/metrics.service';
@@ -47,6 +49,8 @@ interface CachedProject {
   tenantConfig: { enabled: boolean; params: TenantParamDef[] };
   globalRequestHeaders: Record<string, string>;
   responseConfig: ResponseMapperConfig;
+  connectionConfig?: DbConnectionConfig;
+  dbQueries: DbQuery[];
   expiresAt: number;
 }
 
@@ -149,6 +153,8 @@ export class DynamicMcpService {
       tenantConfig: (server as any).tenantConfig ?? { enabled: false, params: [] },
       globalRequestHeaders,
       responseConfig: (server as any).responseConfig ?? { enabled: false },
+      connectionConfig: server.connectionConfig,
+      dbQueries: server.dbQueries ?? [],
       expiresAt: Date.now() + this.CACHE_TTL_MS,
     };
     this.projectCache.set(canonicalServerId, entry);
@@ -175,7 +181,7 @@ export class DynamicMcpService {
     for (const def of tenantConfig.params) {
       const value = queryParams[def.name];
       if (value === undefined) continue;
-      const mapping = tool.endpointRef.parameterMap.find((m) => m.originalName === def.name);
+      const mapping = tool.endpointRef?.parameterMap.find((m) => m.originalName === def.name);
       if (!mapping) continue;
       injected[mapping.toolParamName] = this.coerceTenantValue(value, def.type);
     }
@@ -184,9 +190,12 @@ export class DynamicMcpService {
 
   async createMcpServer(serverId: string, queryParams: Record<string, string> = {}): Promise<Server> {
     const project = await this.getProjectData(serverId);
-    const { tools: allTools, chains: allChains, auth: rawAuth, name, version, resources, prompts, secrets, tenantConfig, globalRequestHeaders, responseConfig } = project;
+    const { tools: allTools, chains: allChains, auth: rawAuth, name, version, resources, prompts, secrets, tenantConfig, globalRequestHeaders, responseConfig, connectionConfig: rawConnectionConfig, dbQueries } = project;
     serverId = project.serverId;
     const auth = resolveSecretRefs(rawAuth, secrets);
+    const connectionConfig = rawConnectionConfig
+      ? resolveSecretRefsInValue(rawConnectionConfig, secrets)
+      : undefined;
 
     // Resolve endpointRef/inputSchema from source endpoint for linked tools/resources
     const resolveToolRef = (tool: GeneratedTool): GeneratedTool => {
@@ -302,7 +311,7 @@ export class DynamicMcpService {
             'mcp.tool.name': toolName,
             'mcp.transport': 'mcp',
             'mcp.server.id': serverId,
-          }, () => this.executeChain(chain, args, tools, auth, globalRequestHeaders, serverId, name));
+          }, () => this.executeChain(chain, args, tools, auth, globalRequestHeaders, serverId, name, connectionConfig, dbQueries));
           const durationMs = Date.now() - t0;
           this.executionLogs.log({ serverId, serverName: name, toolName, source: 'mcp', statusCode: result.isError ? 500 : 200, responseTimeMs: durationMs, isError: result.isError ?? false });
           this.recordToolMetric(toolName, durationMs, result.isError ? 'error' : 'ok', 'mcp', result.isError);
@@ -326,13 +335,13 @@ export class DynamicMcpService {
         return { content: [{ type: 'text' as const, text: `Unknown tool: ${toolName}` }], isError: true };
       }
 
-      if (!tool.endpointRef) {
-        this.logger.error(`Tool "${toolName}" has no endpointRef — data may be stale. Re-upload the spec.`);
+      if (!tool.endpointRef && !tool.executionRef) {
+        this.logger.error(`Tool "${toolName}" has no executionRef or endpointRef.`);
         const durationMs = Date.now() - t0;
-        this.executionLogs.log({ serverId, serverName: name, toolName, source: 'mcp', isError: true, statusCode: 500, errorMessage: 'endpointRef missing', responseTimeMs: durationMs });
-        this.captureMcpToolError(serverId, name, toolName, 'endpointRef missing', 'mcp', 500);
+        this.executionLogs.log({ serverId, serverName: name, toolName, source: 'mcp', isError: true, statusCode: 500, errorMessage: 'execution configuration missing', responseTimeMs: durationMs });
+        this.captureMcpToolError(serverId, name, toolName, 'execution configuration missing', 'mcp', 500);
         this.recordToolMetric(toolName, durationMs, 'configuration_error', 'mcp', true);
-        return { content: [{ type: 'text' as const, text: `Invalid internal configuration for "${toolName}". Re-upload the spec.` }], isError: true };
+        return { content: [{ type: 'text' as const, text: `Invalid execution configuration for "${toolName}".` }], isError: true };
       }
 
       const validationErrors = validateToolArgs(args, tool.inputSchema);
@@ -369,6 +378,14 @@ export class DynamicMcpService {
           'mcp.server.id': serverId,
         }, async () => {
         const effectiveArgs = this.injectTenantParams(args, tool, tenantConfig, queryParams);
+        if (tool.executionRef) {
+          const rawResult = await this.executeDataSourceTool(tool.executionRef, effectiveArgs, connectionConfig, dbQueries);
+          const result = this.mapDataSourceResult(rawResult, responseConfig, tool.outputSchema);
+          const durationMs = Date.now() - t0;
+          this.executionLogs.log({ serverId, serverName: name, toolName, source: 'mcp', statusCode: 200, responseTimeMs: durationMs, isError: false, requestPayload: effectiveArgs, responsePayload: rawResult });
+          this.recordToolMetric(toolName, durationMs, 'ok', 'mcp', false);
+          return result;
+        }
         let httpReq = buildRequest(effectiveArgs, tool.endpointRef, globalRequestHeaders);
         httpReq = await applyAuth(httpReq, auth);
         this.logger.log(`→ HTTP ${httpReq.method} ${httpReq.url}`);
@@ -529,6 +546,8 @@ export class DynamicMcpService {
     globalRequestHeaders: Record<string, string> = {},
     serverId = '',
     serverName = '',
+    connectionConfig?: DbConnectionConfig,
+    dbQueries: DbQuery[] = [],
   ): Promise<McpToolResult> {
     const stepOutputs = new Map<string, unknown>();
 
@@ -553,6 +572,12 @@ export class DynamicMcpService {
       }
 
       try {
+        if (tool.executionRef) {
+          const rawResult = await this.executeDataSourceTool(tool.executionRef, stepArgs, connectionConfig, dbQueries);
+          stepOutputs.set(step.id, rawResult);
+          continue;
+        }
+        if (!tool.endpointRef) throw new Error(`Tool "${tool.name}" has no execution configuration.`);
         let httpReq = buildRequest(stepArgs, tool.endpointRef, globalRequestHeaders);
         httpReq = await applyAuth(httpReq, auth);
         const httpRes = await this.executeObservedRequest(httpReq);
@@ -585,9 +610,10 @@ export class DynamicMcpService {
     args: Record<string, unknown>,
   ): Promise<McpToolResult> {
     const project = await this.getProjectData(serverId);
-    const { tools: allTools, auth: rawAuth, name, secrets, globalRequestHeaders, responseConfig } = project;
+    const { tools: allTools, auth: rawAuth, name, secrets, globalRequestHeaders, responseConfig, connectionConfig: rawConnectionConfig, dbQueries } = project;
     serverId = project.serverId;
     const auth = resolveSecretRefs(rawAuth, secrets);
+    const connectionConfig = rawConnectionConfig ? resolveSecretRefsInValue(rawConnectionConfig, secrets) : undefined;
 
     const rawTool = allTools.find((t) => t.name === toolName);
     if (!rawTool || rawTool.enabled === false) throw new NotFoundException(`Tool "${toolName}" not found.`);
@@ -614,6 +640,15 @@ export class DynamicMcpService {
         'mcp.transport': 'direct',
         'mcp.server.id': serverId,
       }, async () => {
+      if (tool.executionRef) {
+        const rawResult = await this.executeDataSourceTool(tool.executionRef, args, connectionConfig, dbQueries);
+        const result = this.mapDataSourceResult(rawResult, responseConfig, tool.outputSchema);
+        const durationMs = Date.now() - t0;
+        this.executionLogs.log({ serverId, serverName: name, toolName, source: 'direct', statusCode: 200, responseTimeMs: durationMs, isError: false, responsePayload: rawResult });
+        this.recordToolMetric(toolName, durationMs, 'ok', 'direct', false);
+        return result;
+      }
+      if (!tool.endpointRef) throw new Error(`Tool "${toolName}" has no execution configuration.`);
       let httpReq = buildRequest(args, tool.endpointRef, globalRequestHeaders);
       httpReq = await applyAuth(httpReq, auth);
       const httpRes = await this.executeObservedRequest(httpReq);
@@ -638,6 +673,36 @@ export class DynamicMcpService {
         : `Error: ${errorMsg}`;
       return { content: [{ type: 'text', text: msg }], isError: true };
     }
+  }
+
+  private async executeDataSourceTool(
+    executionRef: ExecutionRef,
+    args: Record<string, unknown>,
+    connectionConfig: DbConnectionConfig | undefined,
+    dbQueries: DbQuery[],
+  ): Promise<unknown> {
+    if (!connectionConfig) throw new Error('No connection config found for this tool.');
+    if (executionRef.type === 'db') {
+      const query = dbQueries.find((candidate) => candidate.id === executionRef.dbQueryId);
+      if (!query) throw new Error(`Data-source operation "${executionRef.dbQueryId}" not found.`);
+      return executeDbQuery(query, args, connectionConfig);
+    }
+    return executeWithRef(executionRef, args, connectionConfig);
+  }
+
+  private mapDataSourceResult(
+    rawResult: unknown,
+    responseConfig: ResponseMapperConfig,
+    outputSchema?: JsonSchema,
+  ): McpToolResult & { structuredContent?: unknown } {
+    const result = mapResponse({
+      status: 200,
+      statusText: 'OK',
+      contentType: 'application/json',
+      body: JSON.stringify(rawResult),
+      headers: {},
+    }, responseConfig);
+    return outputSchema ? { ...result, structuredContent: rawResult } : result;
   }
 
   private recordToolMetric(toolName: string, durationMs: number, status: string, transport: string, isError?: boolean): void {

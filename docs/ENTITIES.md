@@ -143,8 +143,8 @@ Fields:
 | `availabilityWindow` | object | yes | Time-window access control. |
 | `alertConfig` | object | yes | Error threshold and notification config. |
 | `tenantConfig` | object | yes | Multi-tenant parameter injection config. |
-| `connectionConfig` | `DbConnectionConfig` | no | Present in the entity and repository contract. |
-| `dbQueries` | `DbQuery[]` | no | Legacy storage for data-source operations. Each entry can include `parameters`, `inputSchema`, and `outputSchema` so it can be exposed as an MCP Tool or Resource. |
+| `connectionConfig` | `DbConnectionConfig` | no | Data-source connection fields. Sensitive strings may be stored as `{{secret:NAME}}` references and are resolved with owner-scoped vault values only immediately before adapter execution. |
+| `dbQueries` | `DbQuery[]` | no | Legacy storage for data-source operations. Each operation is synchronized to a generated Tool through an `executionRef` and can include `parameters`, `inputSchema`, and `outputSchema`. |
 | `createdAt` | Date | generated | |
 | `updatedAt` | Date | generated | |
 
@@ -152,6 +152,7 @@ Persistence note:
 
 - Server templates are REST templates and must create servers with the `source:rest` tag.
 - Data-source operations should carry `inputSchema` and `outputSchema`; generated MCP Tools should inherit those schemas when available.
+- Keep secret references in persisted connection configuration; do not replace them with resolved vault values in repository records or API responses.
 
 ## AI Provider
 

@@ -31,3 +31,6 @@ Thumbs.db
 coverage/
 **/.cache/
 **/.history/
+
+# Local database
+api/database.sqlite
