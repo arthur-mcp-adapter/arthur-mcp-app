@@ -16,6 +16,8 @@ Frontend duplication optimization is progressing through a phased extraction pla
 
 ## Latest Changes
 
+- Aligned the Operation editor with the established frontend pattern by replacing its centered MUI Dialog with the shared right-side `BaseDialogLayout` drawer, including a fixed header, scrollable form, and fixed action footer.
+- Enabled every source already modeled in `/servers/new` and persisted the source-specific connection payload for SQL, MongoDB, Redis, DynamoDB, Elasticsearch, Snowflake, and Firestore. Runtime adapters remain explicitly unavailable where not yet implemented or installed.
 - Completed the data-source integration foundation and backend SQL dispatch/tool synchronization.
 - Enabled PostgreSQL, MySQL, and MariaDB in `/servers/new` for users with `servers_manage_connection` and persisted their connection configuration.
 - Added focused tests for secret resolution, permissions, and operation-to-Tool synchronization; backend build and frontend type-check pass.

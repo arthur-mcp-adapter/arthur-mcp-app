@@ -193,7 +193,8 @@ Entry points:
 
 Frontend behavior:
 
-- PostgreSQL, MySQL, and MariaDB can be selected in the creation wizard by users with both `servers_create` and `servers_manage_connection`; the wizard persists the supplied connection configuration after creating the server.
+- All source cards modeled by the creation wizard are selectable. Database, NoSQL, and cloud sources require both `servers_create` and `servers_manage_connection`, and their source-specific connection configuration is persisted after server creation.
+- Enabling creation does not imply that every runtime adapter is installed: sources without an implemented adapter or direct driver fail tests/execution with an explicit unavailable-driver message while retaining their saved configuration.
 - Data-source servers show an Operations navigation item instead of API Endpoints. Authorized users can save/test the connection, introspect the schema, create/edit/delete parameterized SQL Operations, and test new or saved Operations.
 - Every saved Operation is synchronized to an MCP Tool. The Tools tab supports invoking these data-source Tools without assuming an HTTP endpoint exists.
 - Operation input parameters behave like GET query parameters: callers provide values used as variables in the execution definition.

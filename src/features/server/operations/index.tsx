@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import {
-  Alert, Box, Button, Chip, CircularProgress, Dialog, DialogActions, DialogContent,
-  DialogTitle, FormControlLabel, Grid, IconButton, MenuItem, Paper, Select, Switch,
+  Alert, Box, Button, Chip, CircularProgress, FormControlLabel, Grid, IconButton, MenuItem, Paper, Select, Switch,
   TextField, Typography,
 } from '@mui/material'
 import { IconDatabase, IconEdit, IconPlus, IconRefresh, IconTrash } from '@tabler/icons-react'
 import { useTranslation } from 'react-i18next'
 import api from '../../../api'
+import { BaseDialogLayout } from '../../../components'
 import type { DbConnectionConfig, DbQuery, DbQueryParameter } from '../types'
 
 interface OperationsTabProps {
@@ -174,9 +174,19 @@ export function OperationsTab({ projectId, sourceType, initialConnection, initia
       </Paper>)}
     </Paper>
 
-    <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} fullWidth maxWidth="md">
-      <DialogTitle>{editing ? t('operations.editOperation') : t('operations.newOperation')}</DialogTitle>
-      <DialogContent dividers><Box display="flex" flexDirection="column" gap={2}>
+    <BaseDialogLayout
+      open={dialogOpen}
+      onClose={() => setDialogOpen(false)}
+      title={editing ? t('operations.editOperation') : t('operations.newOperation')}
+      titleIcon={<IconDatabase size={20} />}
+      description={t('operations.editorDescription')}
+      width={720}
+      footer={<>
+        <Button onClick={() => setDialogOpen(false)}>{t('action.cancel', { ns: 'common' })}</Button>
+        <Button variant="contained" onClick={saveOperation} disabled={savingOperation || !draft.name.trim() || !draft.query?.trim()}>{savingOperation ? t('status.saving') : t('action.save', { ns: 'common' })}</Button>
+      </>}
+    >
+      <Box display="flex" flexDirection="column" gap={2}>
         {error && <Alert severity="error">{error}</Alert>}
         <TextField autoFocus required label={t('operations.name')} value={draft.name} onChange={(e) => setDraft({ ...draft, name: e.target.value })} />
         <TextField label={t('operations.description')} value={draft.description ?? ''} onChange={(e) => setDraft({ ...draft, description: e.target.value })} />
@@ -192,8 +202,7 @@ export function OperationsTab({ projectId, sourceType, initialConnection, initia
         <TextField label={t('operations.testArgs')} multiline minRows={3} value={testArgs} onChange={(e) => setTestArgs(e.target.value)} helperText={t('operations.testArgsHint')} />
         <Button variant="outlined" onClick={runOperation} disabled={testingOperation || !draft.query?.trim()}>{testingOperation ? t('action.executing') : t('operations.testOperation')}</Button>
         {testResult && <Box component="pre" sx={{ p: 1.5, bgcolor: 'action.hover', borderRadius: 1, overflow: 'auto', fontSize: 12 }}>{testResult}</Box>}
-      </Box></DialogContent>
-      <DialogActions><Button onClick={() => setDialogOpen(false)}>{t('action.cancel', { ns: 'common' })}</Button><Button variant="contained" onClick={saveOperation} disabled={savingOperation || !draft.name.trim() || !draft.query?.trim()}>{savingOperation ? t('status.saving') : t('action.save', { ns: 'common' })}</Button></DialogActions>
-    </Dialog>
+      </Box>
+    </BaseDialogLayout>
   </Box>
 }
