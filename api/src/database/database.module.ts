@@ -4,6 +4,7 @@ import type { DataSourceOptions } from 'typeorm';
 
 import { parseDatabaseUri } from './database-uri';
 import { InitialTypeormSchema1700000000000 } from './migrations/1700000000000-InitialTypeormSchema';
+import { RenameCamelCaseColumnsToSnakeCase1700000000001 } from './migrations/1700000000001-RenameCamelCaseColumnsToSnakeCase';
 
 import { UserEntity } from '../users/user.entity';
 import { SwaggerProjectEntity } from '../swagger/swagger-project.entity';
@@ -41,6 +42,7 @@ const TYPEORM_ENTITIES = [
 
 const TYPEORM_MIGRATIONS = [
   InitialTypeormSchema1700000000000,
+  RenameCamelCaseColumnsToSnakeCase1700000000001,
 ];
 
 function buildTypeOrmOptions(): DataSourceOptions {

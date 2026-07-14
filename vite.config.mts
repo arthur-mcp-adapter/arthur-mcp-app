@@ -5,6 +5,9 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 5173,
+    watch: {
+      ignored: ['**/api_repository/**'],
+    },
     proxy: {
       '/api': 'http://localhost:3000',
       '/mcp/': 'http://localhost:3000',

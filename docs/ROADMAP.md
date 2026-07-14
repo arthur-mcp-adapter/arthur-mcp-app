@@ -80,6 +80,7 @@ This file should be updated when task state changes. It does not replace issues 
 
 ## Done
 
+- [x] Fixed `SQLITE_ERROR: no such column` API startup crashes caused by an already-applied migration (`1700000000000-InitialTypeormSchema.ts`) having been edited in place to rename columns to snake_case: added migration `1700000000001-RenameCamelCaseColumnsToSnakeCase.ts` (idempotent, per-table rename) plus a passing test. See `docs/HANDOFF.md` for details and the "never edit an already-applied migration" lesson.
 - [x] Generated template-oriented API integration research from `APIs.json`: `APIs/MANUAL.md` indexes all 1,608 entries and `APIs/entries/` contains one numbered workspace per API, with source links, authentication interpretation, endpoint evidence, tool/parameter worksheets, response/operations checks, and a JSON candidate shaped like `public/catalogs/api/zendesk.json`. Empty `Auth` values are treated as no authentication; documentation URLs are never silently promoted to runtime endpoints; 37 identifier matches are marked for review against existing templates.
 - [x] Enforced single-export named frontend modules, `index.ts`-only aggregation, named React implementations, and `index.ts`/`index.css` coverage in all 185 source directories.
 - [x] Completed the frontend file organization migration: 249 isolated contract files, focused utility/hook/constant modules, pure `index.ts` barrels, and an enforced `check:frontend-structure` gate.
