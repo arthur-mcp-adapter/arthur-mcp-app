@@ -1,0 +1,62 @@
+{
+  "id": "nager-date",
+  "name": "Nager.Date",
+  "tagline": "Look up public holidays worldwide",
+  "description": "List public holidays for a country and year, get the next upcoming public holidays for a country, and list supported countries.",
+  "category": "Calendar",
+  "color": "#2563EB",
+  "emoji": "📅",
+  "baseUrl": "https://date.nager.at/api/v3",
+  "auth": {
+    "type": "none",
+    "hint": "Nager.Date is a free, unauthenticated API; no credential is required."
+  },
+  "signupUrl": "https://date.nager.at/",
+  "docsUrl": "https://date.nager.at/Api",
+  "tools": [
+    {
+      "name": "list_public_holidays",
+      "description": "List all public holidays for a country in a given year.",
+      "method": "GET",
+      "path": "/PublicHolidays/{year}/{countryCode}",
+      "params": [
+        {
+          "name": "year",
+          "in": "path",
+          "required": true,
+          "type": "integer",
+          "description": "Year to list holidays for."
+        },
+        {
+          "name": "countryCode",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "ISO 3166-1 alpha-2 country code, such as US."
+        }
+      ]
+    },
+    {
+      "name": "list_next_public_holidays",
+      "description": "List the next upcoming public holidays for a country from today.",
+      "method": "GET",
+      "path": "/NextPublicHolidays/{countryCode}",
+      "params": [
+        {
+          "name": "countryCode",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "ISO 3166-1 alpha-2 country code, such as US."
+        }
+      ]
+    },
+    {
+      "name": "list_available_countries",
+      "description": "List countries supported by the public holidays endpoints.",
+      "method": "GET",
+      "path": "/AvailableCountries",
+      "params": []
+    }
+  ]
+}

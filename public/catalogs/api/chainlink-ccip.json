@@ -1,0 +1,40 @@
+{
+  "id": "chainlink-ccip",
+  "name": "Chainlink",
+  "tagline": "Query Chainlink CCIP activity",
+  "description": "List CCIP-supported blockchain networks and track the status and details of a cross-chain message.",
+  "category": "Blockchain",
+  "color": "#375BD2",
+  "emoji": "🔗",
+  "baseUrl": "https://api.ccip.chain.link/v2",
+  "auth": {
+    "type": "none",
+    "hint": "The selected CCIP query endpoints are public and require no API key."
+  },
+  "signupUrl": "https://docs.chain.link/ccip/tools/api/",
+  "docsUrl": "https://docs.chain.link/ccip/tools/api/",
+  "tools": [
+    {
+      "name": "list_chains",
+      "description": "List blockchain networks supported by the CCIP API.",
+      "method": "GET",
+      "path": "/chains",
+      "params": []
+    },
+    {
+      "name": "get_message",
+      "description": "Retrieve the current status and details of a CCIP cross-chain message.",
+      "method": "GET",
+      "path": "/messages/{messageId}",
+      "params": [
+        {
+          "name": "messageId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "CCIP message ID obtained from a ccipSend transaction log or the message search endpoint."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "id": "clarifai",
+  "name": "Clarifai",
+  "tagline": "Run models and manage AI applications and inputs",
+  "description": "Invoke Clarifai models and inspect models in an application through the v2 REST API. Use a Personal Access Token for Clarifai-owned or cross-application resources, or an app-specific key for resources confined to that app.",
+  "category": "AI",
+  "color": "#6E40C9",
+  "emoji": "🧠",
+  "baseUrl": "https://api.clarifai.com",
+  "auth": {
+    "type": "api-key",
+    "hint": "Send Authorization: Key <PAT_OR_APP_KEY>. Store the complete value including the Key prefix if the Arthur authentication configuration does not add it automatically.",
+    "keyName": "Authorization",
+    "keyIn": "header"
+  },
+  "signupUrl": "https://clarifai.com/signup",
+  "docsUrl": "https://docs.clarifai.com/resources/api-overview/",
+  "tools": [
+    {
+      "name": "predict_with_model",
+      "description": "Send one or more image, text, audio, or video inputs to a model version and return its structured prediction outputs.",
+      "method": "POST",
+      "path": "/v2/models/{model_id}/versions/{version_id}/outputs",
+      "params": [
+        {
+          "name": "model_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Clarifai model identifier."
+        },
+        {
+          "name": "version_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Model version identifier."
+        },
+        {
+          "name": "inputs",
+          "in": "body",
+          "required": true,
+          "type": "array",
+          "description": "One or more Clarifai input objects in the image, text, audio, or video format required by the selected model."
+        }
+      ]
+    },
+    {
+      "name": "list_models",
+      "description": "List models in a Clarifai application with details about their latest versions.",
+      "method": "GET",
+      "path": "/v2/users/{user_id}/apps/{app_id}/models",
+      "params": [
+        {
+          "name": "user_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Owner of the application; use clarifai for Clarifai-owned public models."
+        },
+        {
+          "name": "app_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Application identifier; use main for Clarifai's public model application."
+        }
+      ]
+    }
+  ]
+}

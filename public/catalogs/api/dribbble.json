@@ -1,0 +1,47 @@
+{
+  "id": "dribbble",
+  "name": "Dribbble",
+  "tagline": "Read an authenticated Dribbble profile and shots",
+  "description": "Retrieve the authenticated Dribbble member and their published shots.",
+  "category": "Art & Design",
+  "color": "#EA4C89",
+  "emoji": "🏀",
+  "baseUrl": "https://api.dribbble.com/v2",
+  "auth": {
+    "type": "bearer",
+    "hint": "Register a Dribbble OAuth application, authorize the public scope, and store the resulting access token."
+  },
+  "signupUrl": "https://dribbble.com/account/applications/new",
+  "docsUrl": "https://developer.dribbble.com/v2/",
+  "tools": [
+    {
+      "name": "get_authenticated_user",
+      "description": "Return the member represented by the OAuth token.",
+      "method": "GET",
+      "path": "/user",
+      "params": []
+    },
+    {
+      "name": "list_user_shots",
+      "description": "List shots owned by the authenticated member.",
+      "method": "GET",
+      "path": "/user/shots",
+      "params": [
+        {
+          "name": "page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Result page."
+        },
+        {
+          "name": "per_page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Results per page, up to 100 where supported."
+        }
+      ]
+    }
+  ]
+}

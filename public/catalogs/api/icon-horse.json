@@ -1,0 +1,33 @@
+{
+  "id": "icon-horse",
+  "name": "Icon Horse",
+  "tagline": "Fetch the best favicon for a website",
+  "description": "Retrieve Icon Horse's best available icon or fallback for a fully qualified domain name.",
+  "category": "Art & Design",
+  "color": "#1F2937",
+  "emoji": "🐴",
+  "baseUrl": "https://icon.horse",
+  "auth": {
+    "type": "none",
+    "hint": "No authentication is required for basic icon retrieval; Pro options require an optional key and are excluded."
+  },
+  "signupUrl": "https://icon.horse/",
+  "docsUrl": "https://icon.horse/usage",
+  "tools": [
+    {
+      "name": "get_website_icon",
+      "description": "Return the best available icon or fallback image for a hostname.",
+      "method": "GET",
+      "path": "/icon/{hostname}",
+      "params": [
+        {
+          "name": "hostname",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Fully qualified domain name such as wikipedia.org."
+        }
+      ]
+    }
+  ]
+}

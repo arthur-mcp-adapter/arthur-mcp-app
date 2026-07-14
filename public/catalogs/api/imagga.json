@@ -1,0 +1,54 @@
+{
+  "id": "imagga",
+  "name": "Imagga",
+  "tagline": "Tag objects, scenes, and concepts in images",
+  "description": "Analyze an image URL or a previously uploaded image with Imagga V2 and return recognized tags with localized labels and confidence scores.",
+  "category": "AI",
+  "color": "#F05A28",
+  "emoji": "🖼️",
+  "baseUrl": "https://api.imagga.com/v2",
+  "auth": {
+    "type": "basic",
+    "hint": "Use the Imagga API key as the Basic-auth username and API secret as the password. Store the credential pair in Arthur MCP Secrets."
+  },
+  "signupUrl": "https://imagga.com/auth/signup",
+  "docsUrl": "https://docs.imagga.com/",
+  "tools": [
+    {
+      "name": "tag_image",
+      "description": "Analyze an image by URL or upload identifier and return detected objects, scenes, and concepts with confidence scores.",
+      "method": "GET",
+      "path": "/tags",
+      "params": [
+        {
+          "name": "image_url",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Public URL of the image to analyze; provide either image_url or image_upload_id."
+        },
+        {
+          "name": "image_upload_id",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Identifier returned by an earlier Imagga upload; provide either this value or image_url."
+        },
+        {
+          "name": "language",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Language code for returned tag names; defaults to en."
+        },
+        {
+          "name": "threshold",
+          "in": "query",
+          "required": false,
+          "type": "number",
+          "description": "Minimum confidence threshold from 0 through 100."
+        }
+      ]
+    }
+  ]
+}

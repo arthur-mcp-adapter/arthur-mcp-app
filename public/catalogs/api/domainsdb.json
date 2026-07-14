@@ -1,0 +1,118 @@
+{
+  "id": "domainsdb",
+  "name": "Domainsdb.info",
+  "tagline": "Search registered domain records",
+  "description": "Search the registered-domain database by name, zone, country, or DNS record values, and search domains within a specific top-level domain zone.",
+  "category": "Business",
+  "color": "#0F766E",
+  "emoji": "🌐",
+  "baseUrl": "https://api.domainsdb.info/v1",
+  "auth": {
+    "type": "bearer",
+    "hint": "Register at domainsdb.info to obtain an API key, then send it as an Authorization: Bearer <key> header."
+  },
+  "signupUrl": "https://domainsdb.info/",
+  "docsUrl": "https://domainsdb.info/docs",
+  "tools": [
+    {
+      "name": "search_domains",
+      "description": "Search the domains database with name, zone, country, status, and DNS record filters.",
+      "method": "GET",
+      "path": "/domains/search",
+      "params": [
+        {
+          "name": "domain",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Substring the domain name must include."
+        },
+        {
+          "name": "zone",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Top-level domain zone to restrict results to, such as com or org."
+        },
+        {
+          "name": "country",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Hosting country code to filter results."
+        },
+        {
+          "name": "isDead",
+          "in": "query",
+          "required": false,
+          "type": "boolean",
+          "description": "Whether to include dead/expired domains; defaults to not dead."
+        },
+        {
+          "name": "A",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "A DNS record value the domain must include."
+        },
+        {
+          "name": "NS",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "NS DNS record value the domain must include."
+        },
+        {
+          "name": "page",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Opaque search page token to request the next page of results."
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Results per page; defaults to 50."
+        }
+      ]
+    },
+    {
+      "name": "search_tld_domains",
+      "description": "Search registered domains within one specific top-level domain zone.",
+      "method": "GET",
+      "path": "/domains/tld/{zone_id}/search",
+      "params": [
+        {
+          "name": "zone_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "TLD zone identifier, such as com or io."
+        },
+        {
+          "name": "domain",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Substring the domain name must include."
+        },
+        {
+          "name": "page",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Opaque search page token to request the next page of results."
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Results per page; defaults to 50."
+        }
+      ]
+    }
+  ]
+}

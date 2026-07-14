@@ -1,0 +1,87 @@
+{
+  "id": "dialogflow",
+  "name": "Dialogflow",
+  "tagline": "Detect intents and manage conversational agents",
+  "description": "Send end-user expressions to a Dialogflow ES agent and receive matched intents, parameters, actions, and configured responses. Requires a Google Cloud project, the Dialogflow API, IAM permissions, and an OAuth access token.",
+  "category": "AI",
+  "color": "#FF9800",
+  "emoji": "💬",
+  "baseUrl": "https://dialogflow.googleapis.com",
+  "auth": {
+    "type": "bearer",
+    "hint": "Authenticate with a Google OAuth access token from Application Default Credentials, a service account, or gcloud. The caller needs appropriate Dialogflow IAM roles and cloud-platform or dialogflow scope."
+  },
+  "signupUrl": "https://console.cloud.google.com/",
+  "docsUrl": "https://docs.cloud.google.com/dialogflow/es/docs/reference/rest/v2-overview",
+  "tools": [
+    {
+      "name": "detect_intent",
+      "description": "Send one conversational turn to a Dialogflow ES agent and return the matched intent, extracted parameters, action, and fulfillment response.",
+      "method": "POST",
+      "path": "/v2/projects/{project_id}/agent/sessions/{session_id}:detectIntent",
+      "params": [
+        {
+          "name": "project_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Google Cloud project containing the Dialogflow ES agent."
+        },
+        {
+          "name": "session_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Caller-generated conversation session ID, at most 36 bytes; do not reuse concurrently."
+        },
+        {
+          "name": "query_input",
+          "originalName": "query_input",
+          "in": "body",
+          "required": true,
+          "type": "object",
+          "description": "Dialogflow query input, such as a text object containing text and language_code."
+        },
+        {
+          "name": "x-goog-user-project",
+          "originalName": "x-goog-user-project",
+          "in": "header",
+          "required": false,
+          "type": "string",
+          "description": "Quota/billing project used by Google REST examples when authenticating with user credentials."
+        }
+      ]
+    },
+    {
+      "name": "list_intents",
+      "description": "List intents configured for the Dialogflow ES agent in a Google Cloud project.",
+      "method": "GET",
+      "path": "/v2/projects/{project_id}/agent/intents",
+      "params": [
+        {
+          "name": "project_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Google Cloud project containing the Dialogflow ES agent."
+        },
+        {
+          "name": "pageSize",
+          "originalName": "pageSize",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Maximum intents to return; confirm current limits in the endpoint reference."
+        },
+        {
+          "name": "pageToken",
+          "originalName": "pageToken",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Continuation token from a previous list response."
+        }
+      ]
+    }
+  ]
+}

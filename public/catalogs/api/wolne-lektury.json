@@ -1,0 +1,76 @@
+{
+  "id": "wolne-lektury",
+  "name": "Wolne Lektury",
+  "tagline": "Browse Polish public-domain literature",
+  "description": "Discover Wolne Lektury ebooks, audiobooks, authors, genres, themes, and detailed work metadata.",
+  "category": "Books",
+  "color": "#B45309",
+  "emoji": "📚",
+  "baseUrl": "https://wolnelektury.pl/api",
+  "auth": {
+    "type": "none",
+    "hint": "No API key is required for the documented public GET endpoints."
+  },
+  "signupUrl": "https://wolnelektury.pl/",
+  "docsUrl": "https://wolnelektury.pl/api/",
+  "tools": [
+    {
+      "name": "list_books",
+      "description": "List all works in the Wolne Lektury catalog.",
+      "method": "GET",
+      "path": "/books/",
+      "params": []
+    },
+    {
+      "name": "get_book",
+      "description": "Retrieve detailed metadata for one work by slug.",
+      "method": "GET",
+      "path": "/books/{slug}/",
+      "params": [
+        {
+          "name": "slug",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Work slug from a list result href."
+        }
+      ]
+    },
+    {
+      "name": "list_audiobooks",
+      "description": "List works with audiobook resources.",
+      "method": "GET",
+      "path": "/audiobooks/",
+      "params": []
+    },
+    {
+      "name": "list_authors",
+      "description": "List authors represented in the catalog.",
+      "method": "GET",
+      "path": "/authors/",
+      "params": []
+    },
+    {
+      "name": "get_author",
+      "description": "Retrieve one author and linked catalog data by slug.",
+      "method": "GET",
+      "path": "/authors/{slug}/",
+      "params": [
+        {
+          "name": "slug",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Author slug from a list result href."
+        }
+      ]
+    },
+    {
+      "name": "list_themes",
+      "description": "List literary motifs and themes.",
+      "method": "GET",
+      "path": "/themes/",
+      "params": []
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "id": "placebear",
+  "name": "PlaceBear",
+  "tagline": "Generate bear placeholder images",
+  "description": "Retrieve a bear placeholder JPEG at requested pixel dimensions.",
+  "category": "Animals",
+  "color": "#92400E",
+  "emoji": "🐻",
+  "baseUrl": "https://placebear.com",
+  "auth": {
+    "type": "none",
+    "hint": "No authentication is required."
+  },
+  "signupUrl": "https://placebear.com/",
+  "docsUrl": "https://placebear.com/",
+  "tools": [
+    {
+      "name": "get_bear_image",
+      "description": "Return a bear image resized to the requested width and height.",
+      "method": "GET",
+      "path": "/{width}/{height}",
+      "params": [
+        {
+          "name": "width",
+          "in": "path",
+          "required": true,
+          "type": "integer",
+          "description": "Image width in pixels."
+        },
+        {
+          "name": "height",
+          "in": "path",
+          "required": true,
+          "type": "integer",
+          "description": "Image height in pixels."
+        }
+      ]
+    }
+  ]
+}

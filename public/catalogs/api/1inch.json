@@ -1,0 +1,78 @@
+{
+  "id": "1inch",
+  "name": "1inch",
+  "tagline": "Get DEX swap quotes and token prices",
+  "description": "Get a 1inch Classic Swap quote between two tokens on a chain, and look up current spot prices for tokens on a chain.",
+  "category": "Cryptocurrency",
+  "color": "#1B314F",
+  "emoji": "🦄",
+  "baseUrl": "https://api.1inch.com",
+  "auth": {
+    "type": "bearer",
+    "hint": "Create an application and API key in the 1inch Developer Portal and send it as Authorization: Bearer <API_KEY>.",
+    "keyName": "authorization",
+    "keyIn": "header"
+  },
+  "signupUrl": "https://business.1inch.com/portal",
+  "docsUrl": "https://business.1inch.com/portal/documentation",
+  "tools": [
+    {
+      "name": "get_swap_quote",
+      "description": "Get a Classic Swap quote for converting one token to another on a given chain.",
+      "method": "GET",
+      "path": "/swap/v6.0/{chain}/quote",
+      "params": [
+        {
+          "name": "chain",
+          "in": "path",
+          "required": true,
+          "type": "integer",
+          "description": "EVM chain ID, such as 1 for Ethereum mainnet."
+        },
+        {
+          "name": "src",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Contract address of the token to swap from."
+        },
+        {
+          "name": "dst",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Contract address of the token to swap to."
+        },
+        {
+          "name": "amount",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Amount to swap, in the source token's smallest unit (wei)."
+        }
+      ]
+    },
+    {
+      "name": "get_token_prices",
+      "description": "Get current spot prices (in wei) for one or more tokens on a chain.",
+      "method": "GET",
+      "path": "/price/v1.1/{chain}/{addresses}",
+      "params": [
+        {
+          "name": "chain",
+          "in": "path",
+          "required": true,
+          "type": "integer",
+          "description": "EVM chain ID, such as 1 for Ethereum mainnet."
+        },
+        {
+          "name": "addresses",
+          "in": "path",
+          "required": false,
+          "type": "string",
+          "description": "Comma-separated token contract addresses; omit to return whitelisted token prices."
+        }
+      ]
+    }
+  ]
+}

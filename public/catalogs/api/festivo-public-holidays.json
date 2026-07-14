@@ -1,0 +1,63 @@
+{
+  "id": "festivo-public-holidays",
+  "name": "Festivo Public Holidays",
+  "tagline": "Look up global and city-level public holidays",
+  "description": "List public holidays and observances for a country and year, with optional month, day, and regional subdivision filters.",
+  "category": "Calendar",
+  "color": "#16A34A",
+  "emoji": "🎉",
+  "baseUrl": "https://api.getfestivo.com/v3",
+  "auth": {
+    "type": "api-key",
+    "hint": "Create a Festivo account to get an API key and send it in the X-API-Key header (a legacy api_key query parameter is also accepted for backward compatibility).",
+    "keyName": "X-API-Key",
+    "keyIn": "header"
+  },
+  "signupUrl": "https://getfestivo.com/",
+  "docsUrl": "https://getfestivo.com/docs/api-reference",
+  "tools": [
+    {
+      "name": "list_public_holidays",
+      "description": "List public holidays and observances for a country and year, with optional date and regional filters.",
+      "method": "GET",
+      "path": "/public-holidays/list",
+      "params": [
+        {
+          "name": "country",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "ISO 3166-1 alpha-2 country code, such as GB or US."
+        },
+        {
+          "name": "year",
+          "in": "query",
+          "required": true,
+          "type": "integer",
+          "description": "Calendar year to list holidays for."
+        },
+        {
+          "name": "month",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Month from 1 through 12 to narrow results."
+        },
+        {
+          "name": "day",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Day of month to narrow results."
+        },
+        {
+          "name": "regions",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "ISO subdivision or city code, such as IT-MILAN, to filter to a specific region or city; requires a Builder plan or higher."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "id": "the-color-api",
+  "name": "The Color",
+  "tagline": "Identify colors and generate schemes",
+  "description": "Convert a hexadecimal color into named color data or generate a related color scheme.",
+  "category": "Art & Design",
+  "color": "#2563EB",
+  "emoji": "🎨",
+  "baseUrl": "https://www.thecolorapi.com",
+  "auth": {
+    "type": "none",
+    "hint": "No API key is required."
+  },
+  "signupUrl": "https://www.thecolorapi.com/",
+  "docsUrl": "https://www.thecolorapi.com/docs",
+  "tools": [
+    {
+      "name": "identify_color",
+      "description": "Get conversions, a matched name, contrast information, and image links for a hexadecimal color.",
+      "method": "GET",
+      "path": "/id",
+      "params": [
+        {
+          "name": "hex",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Valid hexadecimal color code without the leading hash, for example 0047AB."
+        }
+      ]
+    },
+    {
+      "name": "generate_scheme",
+      "description": "Generate a color scheme from a hexadecimal seed color.",
+      "method": "GET",
+      "path": "/scheme",
+      "params": [
+        {
+          "name": "hex",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Valid hexadecimal seed color without the leading hash."
+        },
+        {
+          "name": "mode",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Scheme mode: monochrome, monochrome-dark, monochrome-light, analogic, complement, analogic-complement, triad, or quad; defaults to monochrome."
+        },
+        {
+          "name": "count",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of colors to return; defaults to 5."
+        }
+      ]
+    }
+  ]
+}

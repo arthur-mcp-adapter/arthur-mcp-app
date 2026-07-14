@@ -1,0 +1,47 @@
+{
+  "id": "nekosbest",
+  "name": "NekosBest",
+  "tagline": "Retrieve safe anime images and GIFs",
+  "description": "Return one to twenty anime images or GIFs from a selected NEKOSBEST category with creator metadata.",
+  "category": "Anime",
+  "color": "#DB2777",
+  "emoji": "🌸",
+  "baseUrl": "https://nekos.best/api/v2",
+  "auth": {
+    "type": "none",
+    "hint": "No key is required. Supply a truthful application-identifying User-Agent tool parameter."
+  },
+  "signupUrl": "https://nekos.best/",
+  "docsUrl": "https://docs.nekos.best/getting-started/api-endpoints.html",
+  "tools": [
+    {
+      "name": "get_category_media",
+      "description": "Return random media from a supported category.",
+      "method": "GET",
+      "path": "/{category}",
+      "params": [
+        {
+          "name": "category",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Supported image or GIF category such as neko or hug."
+        },
+        {
+          "name": "amount",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of results from 1 through 20."
+        },
+        {
+          "name": "User-Agent",
+          "in": "header",
+          "required": true,
+          "type": "string",
+          "description": "Unique application name plus contact URL or email, as required by provider policy."
+        }
+      ]
+    }
+  ]
+}

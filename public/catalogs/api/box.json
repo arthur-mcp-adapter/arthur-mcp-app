@@ -1,0 +1,133 @@
+{
+  "id": "box",
+  "name": "Box",
+  "tagline": "Browse and search Box content",
+  "description": "List items in a Box folder, get details for a file, and search for files, folders, or web links across the account.",
+  "category": "Cloud Storage & File Sharing",
+  "color": "#0061D5",
+  "emoji": "📦",
+  "baseUrl": "https://api.box.com/2.0",
+  "auth": {
+    "type": "bearer",
+    "hint": "Create a Box app, complete OAuth 2.0 (or Client Credentials Grant for server-to-server access), and send the resulting access token as Authorization: Bearer <ACCESS_TOKEN>."
+  },
+  "signupUrl": "https://account.box.com/signup/n/personal",
+  "docsUrl": "https://developer.box.com/reference/",
+  "tools": [
+    {
+      "name": "list_folder_items",
+      "description": "List the files, folders, and web links contained in a Box folder.",
+      "method": "GET",
+      "path": "/folders/{folder_id}/items",
+      "params": [
+        {
+          "name": "folder_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Folder identifier; use 0 for the root folder."
+        },
+        {
+          "name": "fields",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Comma-separated list of item attributes to include in the response."
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Maximum items per page; up to 1000."
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Zero-based offset of the first item to return; defaults to 0."
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Secondary sort attribute: id, name, date, or size."
+        },
+        {
+          "name": "direction",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Sort direction: ASC or DESC."
+        }
+      ]
+    },
+    {
+      "name": "get_file_info",
+      "description": "Retrieve metadata for a Box file by its ID.",
+      "method": "GET",
+      "path": "/files/{file_id}",
+      "params": [
+        {
+          "name": "file_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Box file identifier."
+        },
+        {
+          "name": "fields",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Comma-separated list of file attributes to include in the response."
+        }
+      ]
+    },
+    {
+      "name": "search_content",
+      "description": "Search for files, folders, or web links across the account by query text and optional filters.",
+      "method": "GET",
+      "path": "/search",
+      "params": [
+        {
+          "name": "query",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Search text matched against item names, descriptions, and file content; supports AND/OR/NOT operators and quoted exact matches."
+        },
+        {
+          "name": "type",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Restrict results to file, folder, or web_link."
+        },
+        {
+          "name": "file_extensions",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Comma-separated file extensions (without dots) to restrict results to."
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Maximum results per page; default 30, maximum 200."
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Zero-based starting position; values beyond 10,000 are rejected."
+        }
+      ]
+    }
+  ]
+}

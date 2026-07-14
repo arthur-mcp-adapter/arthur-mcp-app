@@ -1468,6 +1468,2910 @@
         "get_document",
         "Get a single document from an Appwrite collection by its document ID."
       ]
+    },
+    {
+      "id": "1inch",
+      "name": "1inch",
+      "tagline": "Get DEX swap quotes and token prices",
+      "description": "Get a 1inch Classic Swap quote between two tokens on a chain, and look up current spot prices for tokens on a chain.",
+      "category": "Cryptocurrency",
+      "color": "#1B314F",
+      "emoji": "🦄",
+      "authType": "bearer",
+      "toolCount": 2,
+      "docsUrl": "https://business.1inch.com/portal/documentation",
+      "searchTerms": [
+        "get_swap_quote",
+        "Get a Classic Swap quote for converting one token to another on a given chain.",
+        "get_token_prices",
+        "Get current spot prices (in wei) for one or more tokens on a chain."
+      ]
+    },
+    {
+      "id": "abstract-public-holidays",
+      "name": "Abstract Public Holidays",
+      "tagline": "Look up public, regional, and religious holidays worldwide",
+      "description": "Retrieve national, regional, and religious holidays for a country, optionally filtered by year, month, day, or holiday type.",
+      "category": "Calendar",
+      "color": "#3B82F6",
+      "emoji": "📅",
+      "authType": "api-key",
+      "toolCount": 1,
+      "docsUrl": "https://www.abstractapi.com/holidays-api",
+      "searchTerms": [
+        "list_holidays",
+        "List public, regional, and religious holidays for a country, optionally filtered by date or holiday type."
+      ]
+    },
+    {
+      "id": "abuseipdb",
+      "name": "AbuseIPDB",
+      "tagline": "Check IP addresses for reported abuse",
+      "description": "Inspect an IPv4 or IPv6 address against AbuseIPDB reports and confidence data.",
+      "category": "Anti-Malware",
+      "color": "#DC2626",
+      "emoji": "🛡️",
+      "authType": "api-key",
+      "toolCount": 1,
+      "docsUrl": "https://docs.abuseipdb.com/",
+      "searchTerms": [
+        "check_ip_address",
+        "Return abuse reports and confidence information for an IP address."
+      ]
+    },
+    {
+      "id": "ai-ml-api",
+      "name": "AI/ML API",
+      "tagline": "Access multiple AI models through one OpenAI-compatible API",
+      "description": "Generate chat completions with models from multiple providers through AI/ML API's OpenAI-compatible REST interface. Requires an AI/ML API key and available account credit.",
+      "category": "AI",
+      "color": "#111827",
+      "emoji": "🤖",
+      "authType": "bearer",
+      "toolCount": 1,
+      "docsUrl": "https://docs.aimlapi.com/quickstart/setting-up",
+      "searchTerms": [
+        "create_chat_completion",
+        "Send a conversation to a selected AI model and return the generated assistant message plus token usage."
+      ]
+    },
+    {
+      "id": "al-quran-cloud",
+      "name": "Quran Cloud",
+      "tagline": "Read Quran verses, surahs, and editions",
+      "description": "Discover available Quran editions and retrieve individual ayahs or complete surahs in a selected text, translation, tafsir, transliteration, or recitation edition.",
+      "category": "Books",
+      "color": "#15803D",
+      "emoji": "📖",
+      "authType": "none",
+      "toolCount": 4,
+      "docsUrl": "https://alquran.cloud/api",
+      "searchTerms": [
+        "list_editions",
+        "List available Quran editions, optionally filtering by type, format, or language.",
+        "get_ayah",
+        "Retrieve one ayah in a selected edition.",
+        "get_surah",
+        "Retrieve a complete surah in a selected edition.",
+        "get_random_ayah",
+        "Retrieve a randomly selected ayah in the default Uthmani edition."
+      ]
+    },
+    {
+      "id": "alienvault-otx",
+      "name": "AlienVault Open Threat Exchange (OTX)",
+      "tagline": "Investigate threat indicators with OTX",
+      "description": "Retrieve the general Open Threat Exchange intelligence known for an IPv4 indicator.",
+      "category": "Anti-Malware",
+      "color": "#16A34A",
+      "emoji": "🛰️",
+      "authType": "api-key",
+      "toolCount": 1,
+      "docsUrl": "https://otx.alienvault.com/api",
+      "searchTerms": [
+        "get_ipv4_intelligence",
+        "Return general OTX threat intelligence for an IPv4 address."
+      ]
+    },
+    {
+      "id": "anime-news-network",
+      "name": "AnimeNewsNetwork",
+      "tagline": "Look up Anime News Network encyclopedia titles",
+      "description": "Retrieve Anime News Network encyclopedia metadata for an anime identifier as XML.",
+      "category": "Anime",
+      "color": "#2563EB",
+      "emoji": "📰",
+      "authType": "none",
+      "toolCount": 1,
+      "docsUrl": "https://www.animenewsnetwork.com/encyclopedia/api.php",
+      "searchTerms": [
+        "get_anime",
+        "Return the ANN Encyclopedia XML record for an anime identifier."
+      ]
+    },
+    {
+      "id": "api-bible",
+      "name": "The Bible",
+      "tagline": "Browse Bible translations and scripture",
+      "description": "Discover available Bible translations and retrieve their books, chapters, and verses through API.Bible.",
+      "category": "Books",
+      "color": "#1D4ED8",
+      "emoji": "📖",
+      "authType": "api-key",
+      "toolCount": 3,
+      "docsUrl": "https://docs.api.bible/",
+      "searchTerms": [
+        "list_bibles",
+        "List Bible translations available to the account.",
+        "list_books",
+        "List books available in one Bible.",
+        "get_book",
+        "Retrieve one book and optionally its chapters."
+      ]
+    },
+    {
+      "id": "art-institute-chicago",
+      "name": "Art Institute of Chicago",
+      "tagline": "Search the Art Institute of Chicago collection",
+      "description": "Search artwork records and select the fields needed for display, attribution, and IIIF image construction.",
+      "category": "Art & Design",
+      "color": "#B50938",
+      "emoji": "🎨",
+      "authType": "none",
+      "toolCount": 1,
+      "docsUrl": "https://api.artic.edu/docs/",
+      "searchTerms": [
+        "search_artworks",
+        "Search artwork records by free text with pagination and field selection."
+      ]
+    },
+    {
+      "id": "art-search",
+      "name": "Art Search",
+      "tagline": "Search museum artworks with semantic queries",
+      "description": "Search Art Search's aggregated artwork catalog by natural-language query.",
+      "category": "Art & Design",
+      "color": "#7C3AED",
+      "emoji": "🖼️",
+      "authType": "api-key",
+      "toolCount": 1,
+      "docsUrl": "https://artsearch.io/docs/",
+      "searchTerms": [
+        "search_artworks",
+        "Search aggregated museum artwork records."
+      ]
+    },
+    {
+      "id": "azure-devops-health",
+      "name": "Azure DevOps Health",
+      "tagline": "Inspect Azure resource and service health",
+      "description": "List current resource availability across an Azure resource group and review service health events affecting a subscription.",
+      "category": "Continuous Integration",
+      "color": "#0078D4",
+      "emoji": "🩺",
+      "authType": "bearer",
+      "toolCount": 2,
+      "docsUrl": "https://learn.microsoft.com/en-us/rest/api/resourcehealth/",
+      "searchTerms": [
+        "list_resource_group_health",
+        "List the current Resource Health availability status for resources in one Azure resource group.",
+        "list_service_health_events",
+        "List Azure service health events visible in a subscription."
+      ]
+    },
+    {
+      "id": "bhagavad-gita-telugu",
+      "name": "Bhagavad Gita telugu",
+      "tagline": "Read Bhagavad Gita verses in four languages",
+      "description": "Retrieve Bhagavad Gita verses by chapter and verse number or by their serial verse number.",
+      "category": "Books",
+      "color": "#F59E0B",
+      "emoji": "📜",
+      "authType": "none",
+      "toolCount": 2,
+      "docsUrl": "https://gita-api.vercel.app/docs",
+      "searchTerms": [
+        "get_verse",
+        "Retrieve one Bhagavad Gita verse using its chapter and within-chapter verse numbers.",
+        "get_verse_by_serial",
+        "Retrieve one Bhagavad Gita verse using its serial number across the text."
+      ]
+    },
+    {
+      "id": "bhagavad-gita",
+      "name": "Bhagavad Gita",
+      "tagline": "Read Bhagavad Gita chapters and verses",
+      "description": "List Bhagavad Gita chapters and retrieve a chapter or individual verse with translations and commentaries.",
+      "category": "Books",
+      "color": "#F97316",
+      "emoji": "🕉️",
+      "authType": "api-key",
+      "toolCount": 3,
+      "docsUrl": "https://api.bhagavadgita.io/docs",
+      "searchTerms": [
+        "list_chapters",
+        "List Bhagavad Gita chapters in chapter order.",
+        "get_chapter",
+        "Retrieve one Bhagavad Gita chapter by number.",
+        "get_verse",
+        "Retrieve one verse with its translations and commentaries."
+      ]
+    },
+    {
+      "id": "bible-api",
+      "name": "Bible-api",
+      "tagline": "Retrieve Bible passages and chapters",
+      "description": "Look up user-entered Bible passages, browse a chapter in a selected translation, or request a random verse.",
+      "category": "Books",
+      "color": "#7C3AED",
+      "emoji": "📖",
+      "authType": "none",
+      "toolCount": 3,
+      "docsUrl": "https://bible-api.com/",
+      "searchTerms": [
+        "get_passage",
+        "Retrieve a Bible verse or passage using a human-readable reference.",
+        "get_chapter",
+        "Retrieve all verses in one chapter using precise translation and book identifiers.",
+        "get_random_verse",
+        "Retrieve a random verse from a translation."
+      ]
+    },
+    {
+      "id": "big-book-api",
+      "name": "Big Book",
+      "tagline": "Search and recommend books",
+      "description": "Search a catalog of millions of books, retrieve detailed book records, find similar titles, and look up authors.",
+      "category": "Books",
+      "color": "#2563EB",
+      "emoji": "📘",
+      "authType": "api-key",
+      "toolCount": 4,
+      "docsUrl": "https://bigbookapi.com/docs/",
+      "searchTerms": [
+        "search_books",
+        "Semantically search and filter books by text, publication year, rating, genre, author, ISBN, and other criteria.",
+        "get_book",
+        "Retrieve the complete available record for one book by its Big Book API ID.",
+        "find_similar_books",
+        "Find books similar to a selected book.",
+        "search_authors",
+        "Search for authors by a full or partial name and return their IDs."
+      ]
+    },
+    {
+      "id": "binance",
+      "name": "Binance",
+      "tagline": "Explore Binance Spot market data",
+      "description": "Inspect Spot symbols and exchange rules, retrieve current and average prices, view order books, and query candlestick history from Binance's public REST API.",
+      "category": "Cryptocurrency",
+      "color": "#F3BA2F",
+      "emoji": "🪙",
+      "authType": "none",
+      "toolCount": 5,
+      "docsUrl": "https://developers.binance.com/en/docs/catalog/core-trading-spot-trading/api/rest-api/market",
+      "searchTerms": [
+        "get_exchange_info",
+        "Retrieve current Spot exchange rules, rate-limit definitions, and symbol information.",
+        "get_symbol_price",
+        "Retrieve the latest price for one symbol, multiple symbols, or all symbols.",
+        "get_average_price",
+        "Retrieve the current moving average price for a Spot symbol.",
+        "get_order_book",
+        "Retrieve current bid and ask depth for a Spot symbol.",
+        "get_klines",
+        "Retrieve candlestick bars for a Spot symbol and interval."
+      ]
+    },
+    {
+      "id": "bitrise",
+      "name": "Bitrise",
+      "tagline": "Inspect Bitrise apps and CI builds",
+      "description": "List accessible Bitrise applications, inspect app details, and review filtered build histories and individual build results.",
+      "category": "Continuous Integration",
+      "color": "#683D87",
+      "emoji": "🚀",
+      "authType": "api-key",
+      "toolCount": 4,
+      "docsUrl": "https://api-docs.bitrise.io/",
+      "searchTerms": [
+        "list_apps",
+        "List applications accessible to the authenticated Bitrise account or Workspace token.",
+        "get_app",
+        "Get details for one Bitrise application.",
+        "list_builds",
+        "List and filter builds for a Bitrise application.",
+        "get_build",
+        "Get the full recorded details for one Bitrise build."
+      ]
+    },
+    {
+      "id": "blockscout",
+      "name": "Blockscout",
+      "tagline": "Explore EVM chains with Blockscout",
+      "description": "Retrieve enriched address details and transaction history across Blockscout-supported EVM chains.",
+      "category": "Blockchain",
+      "color": "#2563EB",
+      "emoji": "🔭",
+      "authType": "api-key",
+      "toolCount": 2,
+      "docsUrl": "https://docs.blockscout.com/devs/pro-api",
+      "searchTerms": [
+        "get_address",
+        "Retrieve enriched information about an address on a supported EVM chain.",
+        "list_address_transactions",
+        "List decoded transactions for an address on a supported EVM chain."
+      ]
+    },
+    {
+      "id": "box",
+      "name": "Box",
+      "tagline": "Browse and search Box content",
+      "description": "List items in a Box folder, get details for a file, and search for files, folders, or web links across the account.",
+      "category": "Cloud Storage & File Sharing",
+      "color": "#0061D5",
+      "emoji": "📦",
+      "authType": "bearer",
+      "toolCount": 3,
+      "docsUrl": "https://developer.box.com/reference/",
+      "searchTerms": [
+        "list_folder_items",
+        "List the files, folders, and web links contained in a Box folder.",
+        "get_file_info",
+        "Retrieve metadata for a Box file by its ID.",
+        "search_content",
+        "Search for files, folders, or web links across the account by query text and optional filters."
+      ]
+    },
+    {
+      "id": "bscscan",
+      "name": "Bscscan",
+      "tagline": "Query BNB Smart Chain activity",
+      "description": "Retrieve BNB balances and normal transaction history through the current unified Etherscan API V2 successor to BscScan's legacy API.",
+      "category": "Blockchain",
+      "color": "#F0B90B",
+      "emoji": "⛓️",
+      "authType": "api-key",
+      "toolCount": 2,
+      "docsUrl": "https://docs.etherscan.io/v2-migration",
+      "searchTerms": [
+        "get_bnb_balance",
+        "Retrieve the current native BNB balance for a BNB Smart Chain address.",
+        "list_bnb_transactions",
+        "List normal transactions for a BNB Smart Chain address."
+      ]
+    },
+    {
+      "id": "calendarific",
+      "name": "Calendarific",
+      "tagline": "Look up worldwide public holidays",
+      "description": "List public, local, religious, and observance holidays for a country and year, and look up supported countries.",
+      "category": "Calendar",
+      "color": "#F97316",
+      "emoji": "📆",
+      "authType": "api-key",
+      "toolCount": 2,
+      "docsUrl": "https://calendarific.com/api-documentation",
+      "searchTerms": [
+        "list_holidays",
+        "List holidays for a country and year, optionally narrowed by month, day, region, or holiday type.",
+        "list_countries",
+        "List countries and ISO codes supported by the holidays endpoint."
+      ]
+    },
+    {
+      "id": "cape-sandbox",
+      "name": "CAPEsandbox",
+      "tagline": "Inspect CAPE malware-analysis tasks",
+      "description": "List malware-analysis tasks from the official hosted CAPE Sandbox service.",
+      "category": "Anti-Malware",
+      "color": "#7C3AED",
+      "emoji": "🧪",
+      "authType": "api-key",
+      "toolCount": 1,
+      "docsUrl": "https://capev2.readthedocs.io/en/latest/usage/api.html",
+      "searchTerms": [
+        "list_analysis_tasks",
+        "Return CAPE analysis tasks with optional limit and offset path segments."
+      ]
+    },
+    {
+      "id": "cataas",
+      "name": "Cataas",
+      "tagline": "Find cat images and tags",
+      "description": "Retrieve paginated cat-image metadata and the available tag vocabulary from the public Cat as a Service API.",
+      "category": "Animals",
+      "color": "#F59E0B",
+      "emoji": "🐈",
+      "authType": "none",
+      "toolCount": 2,
+      "docsUrl": "https://cataas.com/doc.html",
+      "searchTerms": [
+        "list_cats",
+        "List cat-image metadata with optional tag filtering and pagination.",
+        "list_tags",
+        "Return the tags available for filtering cat images."
+      ]
+    },
+    {
+      "id": "chainlink-ccip",
+      "name": "Chainlink",
+      "tagline": "Query Chainlink CCIP activity",
+      "description": "List CCIP-supported blockchain networks and track the status and details of a cross-chain message.",
+      "category": "Blockchain",
+      "color": "#375BD2",
+      "emoji": "🔗",
+      "authType": "none",
+      "toolCount": 2,
+      "docsUrl": "https://docs.chain.link/ccip/tools/api/",
+      "searchTerms": [
+        "list_chains",
+        "List blockchain networks supported by the CCIP API.",
+        "get_message",
+        "Retrieve the current status and details of a CCIP cross-chain message."
+      ]
+    },
+    {
+      "id": "chatwith",
+      "name": "Chatwith",
+      "tagline": "Manage and query custom website-trained chatbots",
+      "description": "List and manage Chatwith chatbots, inspect account details, and send questions to a chatbot. Requires a paid Chatwith plan and an API key from account settings.",
+      "category": "AI",
+      "color": "#6C5CE7",
+      "emoji": "💬",
+      "authType": "bearer",
+      "toolCount": 4,
+      "docsUrl": "https://api-docs.chatwith.tools/quick-start",
+      "searchTerms": [
+        "get_current_user",
+        "Return account information for the user associated with the supplied Chatwith API token.",
+        "list_chatbots",
+        "List the authenticated user's chatbots and their current configuration metadata.",
+        "get_chatbot",
+        "Get one chatbot by UUID, including its model, prompt, display settings, and status fields.",
+        "send_chatbot_message",
+        "Send a question to a chatbot and return its answer; optionally continue a UUID4 conversation and request a non-streaming JSON response."
+      ]
+    },
+    {
+      "id": "circleci",
+      "name": "CircleCI",
+      "tagline": "Inspect CircleCI pipelines and workflows",
+      "description": "List project pipelines, retrieve individual pipeline details, and inspect the workflows and jobs produced by CircleCI runs.",
+      "category": "Continuous Integration",
+      "color": "#343434",
+      "emoji": "🔄",
+      "authType": "api-key",
+      "toolCount": 4,
+      "docsUrl": "https://circleci.com/docs/api/v2/",
+      "searchTerms": [
+        "list_project_pipelines",
+        "List pipelines for a CircleCI project.",
+        "get_pipeline",
+        "Get one CircleCI pipeline by UUID.",
+        "list_pipeline_workflows",
+        "List workflows belonging to a CircleCI pipeline.",
+        "list_workflow_jobs",
+        "List jobs belonging to a CircleCI workflow."
+      ]
+    },
+    {
+      "id": "clarifai",
+      "name": "Clarifai",
+      "tagline": "Run models and manage AI applications and inputs",
+      "description": "Invoke Clarifai models and inspect models in an application through the v2 REST API. Use a Personal Access Token for Clarifai-owned or cross-application resources, or an app-specific key for resources confined to that app.",
+      "category": "AI",
+      "color": "#6E40C9",
+      "emoji": "🧠",
+      "authType": "api-key",
+      "toolCount": 2,
+      "docsUrl": "https://docs.clarifai.com/resources/api-overview/",
+      "searchTerms": [
+        "predict_with_model",
+        "Send one or more image, text, audio, or video inputs to a model version and return its structured prediction outputs.",
+        "list_models",
+        "List models in a Clarifai application with details about their latest versions."
+      ]
+    },
+    {
+      "id": "clerk",
+      "name": "Clerk",
+      "tagline": "Manage users in a Clerk instance",
+      "description": "List, search, and retrieve users from a Clerk application through the Backend API.",
+      "category": "Authentication & Authorization",
+      "color": "#6C47FF",
+      "emoji": "🔐",
+      "authType": "bearer",
+      "toolCount": 2,
+      "docsUrl": "https://clerk.com/docs/reference/backend-api",
+      "searchTerms": [
+        "list_users",
+        "List or search users in the Clerk instance.",
+        "get_user",
+        "Retrieve one Clerk user by identifier."
+      ]
+    },
+    {
+      "id": "cohere",
+      "name": "Cohere",
+      "tagline": "Generate, embed, and rerank text with Cohere models",
+      "description": "Use Cohere's v2 API for conversational generation, semantic embeddings, and document reranking. Requires a Cohere API key sent as a bearer token.",
+      "category": "AI",
+      "color": "#39594D",
+      "emoji": "✨",
+      "authType": "bearer",
+      "toolCount": 3,
+      "docsUrl": "https://docs.cohere.com/v2/reference/about",
+      "searchTerms": [
+        "create_chat",
+        "Generate an assistant response from chronological user, assistant, system, or tool messages and return content, finish reason, and token usage.",
+        "rerank_documents",
+        "Rank supplied documents by relevance to a query and return their indexes and relevance scores in descending order.",
+        "create_embeddings",
+        "Convert text or image inputs into embeddings for semantic search, classification, clustering, and retrieval."
+      ]
+    },
+    {
+      "id": "colormagic",
+      "name": "ColorMagic",
+      "tagline": "Search community color palettes",
+      "description": "Find ColorMagic palettes by tags or free text and retrieve their colors and metadata.",
+      "category": "Art & Design",
+      "color": "#EC4899",
+      "emoji": "🎨",
+      "authType": "none",
+      "toolCount": 1,
+      "docsUrl": "https://colormagic.app/api",
+      "searchTerms": [
+        "search_color_palettes",
+        "Search palettes by tag or descriptive text."
+      ]
+    },
+    {
+      "id": "colourlovers",
+      "name": "ColourLovers",
+      "tagline": "Explore COLOURlovers colors and palettes",
+      "description": "Search community-created color palettes by keywords, hue, and popularity with JSON output.",
+      "category": "Art & Design",
+      "color": "#E11D48",
+      "emoji": "🌈",
+      "authType": "none",
+      "toolCount": 1,
+      "docsUrl": "https://www.colourlovers.com/api",
+      "searchTerms": [
+        "search_palettes",
+        "Search COLOURlovers palettes with optional filtering and pagination."
+      ]
+    },
+    {
+      "id": "companydata",
+      "name": "CompanyData.com",
+      "tagline": "Search worldwide company registry data",
+      "description": "Search and export company records from official trade registers worldwide, and look up supported city names for location filtering.",
+      "category": "Business",
+      "color": "#1D4ED8",
+      "emoji": "🏢",
+      "authType": "api-key",
+      "toolCount": 3,
+      "docsUrl": "https://docs.companydata.com/",
+      "searchTerms": [
+        "search_companies",
+        "Search for companies worldwide by name, location, or classification.",
+        "export_companies",
+        "Export full company profiles matching search criteria, with fields depending on the account's purchased package.",
+        "search_cities",
+        "Look up supported exact city names for use in company search and export location filters."
+      ]
+    },
+    {
+      "id": "companyenrich",
+      "name": "CompanyEnrich",
+      "tagline": "Enrich companies from their domains",
+      "description": "Retrieve current firmographic, financial, location, technology, workforce, and social data for a business domain.",
+      "category": "Business",
+      "color": "#2563EB",
+      "emoji": "🏢",
+      "authType": "bearer",
+      "toolCount": 1,
+      "docsUrl": "https://docs.companyenrich.com/docs/getting-started",
+      "searchTerms": [
+        "enrich_company",
+        "Enrich one company by its domain name."
+      ]
+    },
+    {
+      "id": "cooper-hewitt",
+      "name": "Cooper Hewitt",
+      "tagline": "Search the Cooper Hewitt design collection",
+      "description": "Search objects in the Cooper Hewitt, Smithsonian Design Museum collection.",
+      "category": "Art & Design",
+      "color": "#000000",
+      "emoji": "🏛️",
+      "authType": "api-key",
+      "toolCount": 1,
+      "docsUrl": "https://collection.cooperhewitt.org/api/",
+      "searchTerms": [
+        "search_collection_objects",
+        "Search objects in the Cooper Hewitt collection."
+      ]
+    },
+    {
+      "id": "corbado",
+      "name": "Corbado",
+      "tagline": "Inspect Corbado users and passkeys",
+      "description": "List users and their registered passkey credentials through the Corbado Backend API.",
+      "category": "Authentication & Authorization",
+      "color": "#0F766E",
+      "emoji": "🔑",
+      "authType": "basic",
+      "toolCount": 2,
+      "docsUrl": "https://docs.corbado.com/api-reference/overview",
+      "searchTerms": [
+        "list_users",
+        "List project users with optional status, identifier, sorting, and pagination filters.",
+        "list_user_passkeys",
+        "List passkey credentials registered for a project user."
+      ]
+    },
+    {
+      "id": "covalent-goldrush",
+      "name": "Covalent",
+      "tagline": "Query multichain wallet data",
+      "description": "Retrieve token balances on one blockchain and discover activity for an address across supported chains with the Covalent GoldRush API.",
+      "category": "Blockchain",
+      "color": "#F97316",
+      "emoji": "🪙",
+      "authType": "bearer",
+      "toolCount": 2,
+      "docsUrl": "https://goldrush.dev/docs/api-reference",
+      "searchTerms": [
+        "get_token_balances",
+        "Get native and fungible-token balances, spot prices, and metadata for an address on one chain.",
+        "get_address_activity",
+        "Find the supported chains on which a wallet address has activity."
+      ]
+    },
+    {
+      "id": "crossref",
+      "name": "Crossref Metadata Search",
+      "tagline": "Search scholarly metadata, DOIs, journals, and funders indexed by Crossref",
+      "description": "Query Crossref's open bibliographic database for journal articles, books, and other scholarly works, including DOIs, authors, publishers, licenses, and citation counts. No account or credential is required for standard public access.",
+      "category": "Books",
+      "color": "#4F5858",
+      "emoji": "🎓",
+      "authType": "none",
+      "toolCount": 5,
+      "docsUrl": "https://github.com/CrossRef/rest-api-doc",
+      "searchTerms": [
+        "search_works",
+        "Search Crossref's full catalog of scholarly works by free-text query, returning matching DOIs, titles, authors, and publication metadata.",
+        "get_work",
+        "Retrieve full bibliographic metadata for a single scholarly work by its DOI.",
+        "list_journal_works",
+        "List scholarly works published in a specific journal identified by ISSN.",
+        "get_funder",
+        "Retrieve metadata for a funding organization registered in Crossref's Funder Registry, identified by its Funder ID.",
+        "get_member",
+        "Retrieve metadata for a Crossref member (publisher), identified by its member ID."
+      ]
+    },
+    {
+      "id": "customgpt-ai",
+      "name": "CustomGPT.ai",
+      "tagline": "Manage and query retrieval-augmented AI agents",
+      "description": "List CustomGPT agents, create conversations, and query an agent grounded in its configured knowledge sources. The API calls agents projects in endpoint paths for backward compatibility.",
+      "category": "AI",
+      "color": "#6C47FF",
+      "emoji": "💬",
+      "authType": "bearer",
+      "toolCount": 3,
+      "docsUrl": "https://docs.customgpt.ai/reference/quickstart-guide",
+      "searchTerms": [
+        "list_agents",
+        "List CustomGPT agents, represented as projects in the API, using the API's paginated project collection.",
+        "create_conversation",
+        "Create a named conversation for an agent and return the session identifier used for later messages.",
+        "send_agent_message",
+        "Send a prompt in an existing agent conversation and return the grounded assistant answer and related response data."
+      ]
+    },
+    {
+      "id": "danbooru-anime",
+      "name": "Danbooru Anime",
+      "tagline": "Search Danbooru anime artwork posts",
+      "description": "Search public Danbooru posts by tags and page controls without exposing account credentials.",
+      "category": "Anime",
+      "color": "#F59E0B",
+      "emoji": "🎨",
+      "authType": "none",
+      "toolCount": 1,
+      "docsUrl": "https://danbooru.donmai.us/wiki_pages/help:api",
+      "searchTerms": [
+        "search_posts",
+        "Search public Danbooru image posts by tags."
+      ]
+    },
+    {
+      "id": "ddownload",
+      "name": "ddownload",
+      "tagline": "Manage files and folders on DDownload cloud storage",
+      "description": "Retrieve account information, obtain an upload session, list and inspect files, and manage folders on a DDownload account.",
+      "category": "Cloud Storage & File Sharing",
+      "color": "#F97316",
+      "emoji": "⬇️",
+      "authType": "api-key",
+      "toolCount": 6,
+      "docsUrl": "https://ddownload.com/api",
+      "searchTerms": [
+        "get_account_info",
+        "Retrieve account details including storage and traffic usage.",
+        "get_upload_server",
+        "Obtain an upload URL and session ID to upload a new file; a new session must be requested for every upload.",
+        "list_files",
+        "List uploaded files with pagination.",
+        "get_file_info",
+        "Get metadata for a specific file by its file code.",
+        "create_folder",
+        "Create a new folder, optionally inside a parent folder.",
+        "list_folder",
+        "List the subfolders and files inside a folder."
+      ]
+    },
+    {
+      "id": "dialogflow",
+      "name": "Dialogflow",
+      "tagline": "Detect intents and manage conversational agents",
+      "description": "Send end-user expressions to a Dialogflow ES agent and receive matched intents, parameters, actions, and configured responses. Requires a Google Cloud project, the Dialogflow API, IAM permissions, and an OAuth access token.",
+      "category": "AI",
+      "color": "#FF9800",
+      "emoji": "💬",
+      "authType": "bearer",
+      "toolCount": 2,
+      "docsUrl": "https://docs.cloud.google.com/dialogflow/es/docs/reference/rest/v2-overview",
+      "searchTerms": [
+        "detect_intent",
+        "Send one conversational turn to a Dialogflow ES agent and return the matched intent, extracted parameters, action, and fulfillment response.",
+        "list_intents",
+        "List intents configured for the Dialogflow ES agent in a Google Cloud project."
+      ]
+    },
+    {
+      "id": "digidates",
+      "name": "DigiDates",
+      "tagline": "Calculate dates, ages, and countdowns",
+      "description": "Calculate a person's age, count down to a target date, and compute calendar week numbers from date strings.",
+      "category": "Calendar",
+      "color": "#2563EB",
+      "emoji": "📅",
+      "authType": "none",
+      "toolCount": 4,
+      "docsUrl": "https://digidates.de/en/docs/openapi.yaml",
+      "searchTerms": [
+        "get_age",
+        "Calculate the age in years, and in a years/months/days breakdown, for a given birth date.",
+        "get_countdown",
+        "Calculate the countdown in days, and in a years/months/days breakdown, to a target date.",
+        "get_week_number",
+        "Get the ISO calendar week number for a given date.",
+        "check_leap_year",
+        "Determine whether a given year is a leap year."
+      ]
+    },
+    {
+      "id": "dog-api",
+      "name": "Dogs",
+      "tagline": "Explore dog breeds, groups, and facts",
+      "description": "List dog breeds with paginated metadata and retrieve small sets of dog facts from the current Dog API V2.",
+      "category": "Animals",
+      "color": "#2563EB",
+      "emoji": "🐶",
+      "authType": "none",
+      "toolCount": 2,
+      "docsUrl": "https://dogapi.dog/docs/api-v2",
+      "searchTerms": [
+        "list_breeds",
+        "List dog breeds and their descriptive, lifespan, weight, and hypoallergenic metadata.",
+        "list_facts",
+        "Return one to five dog facts in JSON:API format."
+      ]
+    },
+    {
+      "id": "dog-ceo",
+      "name": "Dog Pics",
+      "tagline": "Retrieve random dog pictures",
+      "description": "Get random dog-image URLs across all breeds or for a selected breed from the public Dog CEO image catalog.",
+      "category": "Animals",
+      "color": "#8B5E3C",
+      "emoji": "🐕",
+      "authType": "none",
+      "toolCount": 2,
+      "docsUrl": "https://dog.ceo/dog-api/documentation/",
+      "searchTerms": [
+        "get_random_dog",
+        "Return one random dog image URL from the full catalog.",
+        "get_random_breed_dog",
+        "Return one random dog image URL for a selected breed."
+      ]
+    },
+    {
+      "id": "domainsdb",
+      "name": "Domainsdb.info",
+      "tagline": "Search registered domain records",
+      "description": "Search the registered-domain database by name, zone, country, or DNS record values, and search domains within a specific top-level domain zone.",
+      "category": "Business",
+      "color": "#0F766E",
+      "emoji": "🌐",
+      "authType": "bearer",
+      "toolCount": 2,
+      "docsUrl": "https://domainsdb.info/docs",
+      "searchTerms": [
+        "search_domains",
+        "Search the domains database with name, zone, country, status, and DNS record filters.",
+        "search_tld_domains",
+        "Search registered domains within one specific top-level domain zone."
+      ]
+    },
+    {
+      "id": "dragon-ball",
+      "name": "Dragon Ball",
+      "tagline": "Explore Dragon Ball characters and planets",
+      "description": "List Dragon Ball characters with pagination and optional name, gender, race, or affiliation filters.",
+      "category": "Anime",
+      "color": "#F97316",
+      "emoji": "🐉",
+      "authType": "none",
+      "toolCount": 1,
+      "docsUrl": "https://web.dragonball-api.com/documentation",
+      "searchTerms": [
+        "list_characters",
+        "List and filter Dragon Ball characters."
+      ]
+    },
+    {
+      "id": "dribbble",
+      "name": "Dribbble",
+      "tagline": "Read an authenticated Dribbble profile and shots",
+      "description": "Retrieve the authenticated Dribbble member and their published shots.",
+      "category": "Art & Design",
+      "color": "#EA4C89",
+      "emoji": "🏀",
+      "authType": "bearer",
+      "toolCount": 2,
+      "docsUrl": "https://developer.dribbble.com/v2/",
+      "searchTerms": [
+        "get_authenticated_user",
+        "Return the member represented by the OAuth token.",
+        "list_user_shots",
+        "List shots owned by the authenticated member."
+      ]
+    },
+    {
+      "id": "dropbox",
+      "name": "Dropbox",
+      "tagline": "Browse and search Dropbox metadata",
+      "description": "Inspect the current Dropbox account, retrieve file or folder metadata, traverse folders with cursor pagination, and search Dropbox content metadata.",
+      "category": "Cloud Storage & File Sharing",
+      "color": "#0061FF",
+      "emoji": "📦",
+      "authType": "bearer",
+      "toolCount": 5,
+      "docsUrl": "https://www.dropbox.com/developers/documentation/http/documentation",
+      "searchTerms": [
+        "get_current_account",
+        "Return details for the Dropbox account associated with the access token.",
+        "get_metadata",
+        "Return metadata for a file or folder by path, file ID, or revision.",
+        "list_folder",
+        "List files and folders under a Dropbox path and obtain a cursor for additional pages or later changes.",
+        "continue_folder_listing",
+        "Continue a folder listing using the cursor returned by list_folder or a prior continuation.",
+        "search_files",
+        "Search Dropbox file and folder metadata for a query."
+      ]
+    },
+    {
+      "id": "ebird",
+      "name": "eBird",
+      "tagline": "Find recent bird observations by region",
+      "description": "Retrieve recent eBird observations for a country, subnational region, or supported location code with time-window and result controls.",
+      "category": "Animals",
+      "color": "#3A7D44",
+      "emoji": "🐦",
+      "authType": "api-key",
+      "toolCount": 1,
+      "docsUrl": "https://documenter.getpostman.com/view/664302/S1ENwy59",
+      "searchTerms": [
+        "list_recent_observations",
+        "Return recent bird observations within an eBird region."
+      ]
+    },
+    {
+      "id": "ec2-shop",
+      "name": "EC2.shop API",
+      "tagline": "Compare current AWS EC2 prices",
+      "description": "Query EC2.shop for AWS EC2 instance specifications, on-demand pricing, monthly estimates, and spot prices with region, filter, and sort controls.",
+      "category": "Continuous Integration",
+      "color": "#FF9900",
+      "emoji": "☁️",
+      "authType": "none",
+      "toolCount": 1,
+      "docsUrl": "https://github.com/yeo/ec2.shop",
+      "searchTerms": [
+        "list_ec2_prices",
+        "List and compare AWS EC2 instance specifications and prices."
+      ]
+    },
+    {
+      "id": "eden",
+      "name": "Eden",
+      "tagline": "Call multiple AI providers through one compatible API",
+      "description": "Generate chat completions and discover available models through Eden AI's V3 unified API. Requires an Eden AI bearer token and a model identifier supported by the account.",
+      "category": "AI",
+      "color": "#0B6BFF",
+      "emoji": "🌐",
+      "authType": "bearer",
+      "toolCount": 2,
+      "docsUrl": "https://www.edenai.co/docs/v3/quickstart/first-llm-call",
+      "searchTerms": [
+        "list_models",
+        "List model identifiers available through Eden AI V3 for use in later inference requests.",
+        "create_chat_completion",
+        "Send a message history to an Eden AI model and return an OpenAI-compatible chat completion with choices and usage data."
+      ]
+    },
+    {
+      "id": "emojihub",
+      "name": "EmojiHub",
+      "tagline": "Search and retrieve emoji metadata",
+      "description": "Search EmojiHub by emoji name and receive HTML entity and Unicode representations.",
+      "category": "Art & Design",
+      "color": "#F59E0B",
+      "emoji": "😀",
+      "authType": "none",
+      "toolCount": 2,
+      "docsUrl": "https://github.com/cheatsnake/emojihub",
+      "searchTerms": [
+        "search_emojis",
+        "Search emojis by name.",
+        "get_random_emoji",
+        "Return one random emoji record."
+      ]
+    },
+    {
+      "id": "etherscan",
+      "name": "Etherscan",
+      "tagline": "Explore EVM balances and transactions",
+      "description": "Query native balances and normal transaction histories across Etherscan-supported EVM networks.",
+      "category": "Blockchain",
+      "color": "#21325B",
+      "emoji": "🔎",
+      "authType": "api-key",
+      "toolCount": 3,
+      "docsUrl": "https://docs.etherscan.io/getting-started",
+      "searchTerms": [
+        "get_native_balance",
+        "Retrieve the native token balance for an address on one supported network.",
+        "list_normal_transactions",
+        "List normal transactions for an address on one supported network.",
+        "get_contract_execution_status",
+        "Retrieve the execution status and error description for a contract transaction."
+      ]
+    },
+    {
+      "id": "europeana",
+      "name": "Europeana",
+      "tagline": "Search European cultural heritage records",
+      "description": "Search Europeana metadata and media records by text with refinement and pagination controls.",
+      "category": "Art & Design",
+      "color": "#0A72CC",
+      "emoji": "🏺",
+      "authType": "api-key",
+      "toolCount": 1,
+      "docsUrl": "https://europeana.atlassian.net/wiki/spaces/EF/pages/2385739812",
+      "searchTerms": [
+        "search_cultural_records",
+        "Search Europeana cultural-heritage records."
+      ]
+    },
+    {
+      "id": "festivo-public-holidays",
+      "name": "Festivo Public Holidays",
+      "tagline": "Look up global and city-level public holidays",
+      "description": "List public holidays and observances for a country and year, with optional month, day, and regional subdivision filters.",
+      "category": "Calendar",
+      "color": "#16A34A",
+      "emoji": "🎉",
+      "authType": "api-key",
+      "toolCount": 1,
+      "docsUrl": "https://getfestivo.com/docs/api-reference",
+      "searchTerms": [
+        "list_public_holidays",
+        "List public holidays and observances for a country and year, with optional date and regional filters."
+      ]
+    },
+    {
+      "id": "freelancer",
+      "name": "Freelancer",
+      "tagline": "Search freelance projects, view details, and manage bids on Freelancer.com",
+      "description": "Search and manage freelance projects, bids, and jobs on Freelancer.com. Requires an OAuth2 access token issued from a registered Freelancer.com developer application, sent as a Freelancer-OAuth-V1 header.",
+      "category": "Business",
+      "color": "#29B2FE",
+      "emoji": "💼",
+      "authType": "api-key",
+      "toolCount": 5,
+      "docsUrl": "https://developers.freelancer.com",
+      "searchTerms": [
+        "search_active_projects",
+        "Search currently active projects open for bidding by keyword.",
+        "get_project",
+        "Retrieve full details for a single project by its numeric ID.",
+        "list_bids",
+        "List bids, optionally filtered by project IDs, with pagination.",
+        "place_project_bid",
+        "Place a bid on a project as the authenticated freelancer.",
+        "get_jobs",
+        "Retrieve job/skill category definitions used to tag and search projects."
+      ]
+    },
+    {
+      "id": "ganjoor",
+      "name": "Ganjoor",
+      "tagline": "Read classic Persian poetry, poets, and Hafez fortunes",
+      "description": "Retrieve Ganjoor's catalog of classical Persian poets, categories (books), and individual poems with verses, recitations, images, and songs. All documented read routes are anonymous and require no API key.",
+      "category": "Books",
+      "color": "#7C2D12",
+      "emoji": "🪶",
+      "authType": "none",
+      "toolCount": 6,
+      "docsUrl": "https://api.ganjoor.net/index.html",
+      "searchTerms": [
+        "list_poets",
+        "List published Ganjoor poets without their biography text.",
+        "get_poet",
+        "Retrieve one poet's profile by numeric identifier.",
+        "get_category",
+        "Retrieve one poetry book/category (and optionally its poems) by numeric identifier.",
+        "get_poem",
+        "Retrieve one poem by numeric identifier with verses and related content.",
+        "get_random_poem",
+        "Retrieve a random poem from a given poet.",
+        "get_hafez_faal",
+        "Get a random Hafez poem used as a traditional Persian fortune-telling reading (Faal-e Hafez)."
+      ]
+    },
+    {
+      "id": "gcore-storage",
+      "name": "Gcore Storage",
+      "tagline": "Provision and manage Gcore Object Storage buckets and access keys",
+      "description": "Create S3-compatible or SFTP storage resources, list available locations, and manage buckets and S3 access keys through Gcore's management REST API.",
+      "category": "Cloud Storage & File Sharing",
+      "color": "#FF4C00",
+      "emoji": "☁️",
+      "authType": "api-key",
+      "toolCount": 6,
+      "docsUrl": "https://docs.gcore.com/storage",
+      "searchTerms": [
+        "list_locations",
+        "List available storage locations, their type (s3_compatible or sftp), and endpoint addresses.",
+        "create_s3_storage",
+        "Create a new S3-compatible object storage resource in a given location.",
+        "list_buckets",
+        "List buckets within a storage resource.",
+        "create_bucket",
+        "Create a new bucket within a storage resource.",
+        "delete_bucket",
+        "Delete a bucket, permanently removing all of its data.",
+        "create_access_key",
+        "Create a new S3 access key and secret key for a storage resource, for example during key rotation."
+      ]
+    },
+    {
+      "id": "generate-ical",
+      "name": "Generate iCAL",
+      "tagline": "Generate downloadable iCalendar (.ics) files or shareable URLs from event details",
+      "description": "Create an iCalendar event file or a shareable iCalendar URL from event details (summary, description, organizer, attendees, time, and optional recurrence). Requires an ApyHub API token.",
+      "category": "Calendar",
+      "color": "#6C5CE7",
+      "emoji": "🗓️",
+      "authType": "api-key",
+      "toolCount": 1,
+      "docsUrl": "https://apyhub.com/utility/generator-ical",
+      "searchTerms": [
+        "generate_ical_event",
+        "Generate an iCalendar event as a downloadable .ics file or as a shareable URL, with optional recurrence."
+      ]
+    },
+    {
+      "id": "getgenai-packaging-compliance",
+      "name": "GetGenAI (Packaging Compliance Review)",
+      "tagline": "Inspect packaging for compliance findings",
+      "description": "Run a selected GetGenAI inspector against structured packaging objects and product context.",
+      "category": "Art & Design",
+      "color": "#16A34A",
+      "emoji": "✅",
+      "authType": "bearer",
+      "toolCount": 1,
+      "docsUrl": "https://docs.getgen.ai/api",
+      "searchTerms": [
+        "inspect_packaging",
+        "Run a compliance inspector over packaging content."
+      ]
+    },
+    {
+      "id": "getotp",
+      "name": "GetOTP",
+      "tagline": "Send and verify one-time passwords",
+      "description": "Start SMS OTP verification flows, validate submitted codes, and inspect the templates and sender IDs configured for a GetOTP account.",
+      "category": "Authentication & Authorization",
+      "color": "#2563EB",
+      "emoji": "📲",
+      "authType": "api-key",
+      "toolCount": 4,
+      "docsUrl": "https://otp.dev/en/docs/",
+      "searchTerms": [
+        "send_sms_otp",
+        "Start an SMS OTP verification request for a phone number.",
+        "verify_otp",
+        "Check whether an OTP code is valid, optionally binding the check to its phone number.",
+        "list_templates",
+        "List message templates configured for the authenticated account.",
+        "list_senders",
+        "List custom sender IDs configured for the authenticated account."
+      ]
+    },
+    {
+      "id": "gladia",
+      "name": "Gladia",
+      "tagline": "Transcribe and analyze pre-recorded audio",
+      "description": "Create asynchronous speech-to-text jobs from accessible audio URLs and retrieve transcription results, metadata, diarization, subtitles, translations, and optional audio-intelligence outputs through Gladia V2.",
+      "category": "AI",
+      "color": "#7C3AED",
+      "emoji": "🎙️",
+      "authType": "api-key",
+      "toolCount": 2,
+      "docsUrl": "https://docs.gladia.io/api-reference",
+      "searchTerms": [
+        "create_pre_recorded_transcription",
+        "Create an asynchronous transcription job from a publicly reachable or previously uploaded audio URL and return the job identifier and result URL.",
+        "get_pre_recorded_transcription",
+        "Get a pre-recorded job's status, request parameters, file metadata, and completed transcription or audio-intelligence results."
+      ]
+    },
+    {
+      "id": "gmail",
+      "name": "Gmail",
+      "tagline": "Search and read Gmail mailbox data",
+      "description": "Inspect the authenticated Gmail user's mailbox profile, search and retrieve messages, and list mailbox labels through the official Gmail API.",
+      "category": "Business",
+      "color": "#EA4335",
+      "emoji": "✉️",
+      "authType": "bearer",
+      "toolCount": 4,
+      "docsUrl": "https://developers.google.com/workspace/gmail/api/reference/rest",
+      "searchTerms": [
+        "get_profile",
+        "Get the authenticated user's Gmail address, message and thread totals, and current mailbox history ID.",
+        "list_messages",
+        "List message IDs in a mailbox, optionally using Gmail search syntax and label filters.",
+        "get_message",
+        "Retrieve one Gmail message by its message ID.",
+        "list_labels",
+        "List all labels in the authenticated user's Gmail mailbox."
+      ]
+    },
+    {
+      "id": "google-analytics",
+      "name": "Google Analytics",
+      "tagline": "Explore and report on Google Analytics data",
+      "description": "Discover available Google Analytics dimensions and metrics, run core and realtime property reports, and check report-field compatibility.",
+      "category": "Business",
+      "color": "#E37400",
+      "emoji": "📈",
+      "authType": "bearer",
+      "toolCount": 4,
+      "docsUrl": "https://developers.google.com/analytics/devguides/reporting/data/v1/rest",
+      "searchTerms": [
+        "get_metadata",
+        "List dimensions, metrics, and comparisons available to reporting methods for a Google Analytics property.",
+        "run_report",
+        "Run a customized core report of event data for a Google Analytics property.",
+        "run_realtime_report",
+        "Run a customized report over recent realtime events for a Google Analytics property.",
+        "check_compatibility",
+        "Check whether proposed dimensions and metrics can be combined in a core report."
+      ]
+    },
+    {
+      "id": "google-books",
+      "name": "Google Books",
+      "tagline": "Search Google Books volumes",
+      "description": "Search public Google Books volumes by query and retrieve full metadata for one volume by ID.",
+      "category": "Books",
+      "color": "#4285F4",
+      "emoji": "📚",
+      "authType": "api-key",
+      "toolCount": 2,
+      "docsUrl": "https://developers.google.com/books/docs/v1/using",
+      "searchTerms": [
+        "search_volumes",
+        "Search public Google Books volumes by query.",
+        "get_volume",
+        "Retrieve full metadata for one Google Books volume by ID."
+      ]
+    },
+    {
+      "id": "google-calendar",
+      "name": "Google Calendar",
+      "tagline": "Browse Google calendars and events",
+      "description": "List calendars available to a Google user, browse events within a time range, and retrieve one event by its Calendar identifier.",
+      "category": "Calendar",
+      "color": "#4285F4",
+      "emoji": "📅",
+      "authType": "bearer",
+      "toolCount": 3,
+      "docsUrl": "https://developers.google.com/workspace/calendar/api/v3/reference",
+      "searchTerms": [
+        "list_calendars",
+        "List calendars on the authorized user's Google Calendar list.",
+        "list_events",
+        "List events from a Google calendar with optional time-window and pagination controls.",
+        "get_event",
+        "Retrieve one event from a Google calendar by its Calendar event identifier."
+      ]
+    },
+    {
+      "id": "google-drive",
+      "name": "Google Drive",
+      "tagline": "Search Google Drive file metadata",
+      "description": "Search and browse files available to a Google Drive user and retrieve metadata for a specific file without downloading its content.",
+      "category": "Cloud Storage & File Sharing",
+      "color": "#4285F4",
+      "emoji": "📁",
+      "authType": "bearer",
+      "toolCount": 2,
+      "docsUrl": "https://developers.google.com/workspace/drive/api/reference/rest/v3",
+      "searchTerms": [
+        "list_files",
+        "List or search Google Drive files and folders visible to the authorized user.",
+        "get_file_metadata",
+        "Retrieve metadata for one Google Drive file or folder without downloading its content."
+      ]
+    },
+    {
+      "id": "google-safe-browsing",
+      "name": "Google Safe Browsing",
+      "tagline": "Check URLs against Google Safe Browsing",
+      "description": "Search up to fifty URLs for malware, social-engineering, unwanted-software, and other known Safe Browsing threats.",
+      "category": "Anti-Malware",
+      "color": "#4285F4",
+      "emoji": "🔒",
+      "authType": "api-key",
+      "toolCount": 1,
+      "docsUrl": "https://developers.google.com/safe-browsing/reference/rest/v5/urls/search",
+      "searchTerms": [
+        "search_threat_urls",
+        "Check one or more URLs against Google's known threat expressions."
+      ]
+    },
+    {
+      "id": "gutendex",
+      "name": "Gutendex",
+      "tagline": "Search Project Gutenberg book metadata",
+      "description": "List and filter Project Gutenberg books by author, language, topic, or search text, and retrieve one book's metadata by ID.",
+      "category": "Books",
+      "color": "#92400E",
+      "emoji": "📕",
+      "authType": "none",
+      "toolCount": 2,
+      "docsUrl": "https://gutendex.com/",
+      "searchTerms": [
+        "list_books",
+        "List and filter Project Gutenberg books, ordered by popularity by default.",
+        "get_book",
+        "Retrieve one Project Gutenberg book's metadata by its ID."
+      ]
+    },
+    {
+      "id": "gyazo",
+      "name": "Gyazo",
+      "tagline": "Browse and search Gyazo captures",
+      "description": "List and retrieve a user's saved Gyazo captures, inspect the authenticated profile, and search capture metadata and OCR text.",
+      "category": "Cloud Storage & File Sharing",
+      "color": "#4A90E2",
+      "emoji": "📸",
+      "authType": "bearer",
+      "toolCount": 4,
+      "docsUrl": "https://gyazo.com/api/docs",
+      "searchTerms": [
+        "list_images",
+        "List captures saved by the authenticated Gyazo user.",
+        "get_image",
+        "Get one saved Gyazo capture and its available metadata and OCR information.",
+        "get_user",
+        "Get the authenticated Gyazo user's profile.",
+        "search_images",
+        "Search the authenticated user's saved Gyazo captures; this operation requires Gyazo Pro."
+      ]
+    },
+    {
+      "id": "harry-potter",
+      "name": "Harry Potter",
+      "tagline": "Look up Harry Potter books, characters, houses, and spells",
+      "description": "Retrieve structured data about Harry Potter books, characters, Hogwarts houses, and spells from a free, community-run REST API available in six languages. No account or API key is required.",
+      "category": "Books",
+      "color": "#7F1D1D",
+      "emoji": "⚡",
+      "authType": "none",
+      "toolCount": 4,
+      "docsUrl": "https://github.com/fedeperin/potterapi",
+      "searchTerms": [
+        "list_books",
+        "List Harry Potter books with title, original title, release date, description, page count, and cover image.",
+        "list_characters",
+        "List Harry Potter characters with full name, nickname, Hogwarts house, actor, and portrait image.",
+        "list_houses",
+        "List the four Hogwarts houses with founder, colors, animal, and emoji.",
+        "list_spells",
+        "List Harry Potter spells with their names and usage descriptions."
+      ]
+    },
+    {
+      "id": "harvard-art-museums",
+      "name": "Harvard Art Museums",
+      "tagline": "Explore Harvard Art Museums objects",
+      "description": "Search Harvard Art Museums collection objects by title and classification with field and pagination controls.",
+      "category": "Art & Design",
+      "color": "#A51C30",
+      "emoji": "🖌️",
+      "authType": "api-key",
+      "toolCount": 1,
+      "docsUrl": "https://github.com/harvardartmuseums/api-docs",
+      "searchTerms": [
+        "search_collection_objects",
+        "Search collection objects using documented object filters."
+      ]
+    },
+    {
+      "id": "hebrew-calendar",
+      "name": "Hebrew Calendar",
+      "tagline": "Jewish calendar, Hebrew date conversion, and Shabbat/holiday times",
+      "description": "Fetch Jewish holidays and calendar events, convert between Gregorian and Hebrew dates, and retrieve halachic times such as candle lighting and Havdalah for a location and date.",
+      "category": "Calendar",
+      "color": "#2563EB",
+      "emoji": "✡️",
+      "authType": "none",
+      "toolCount": 3,
+      "docsUrl": "https://www.hebcal.com/api-docs/",
+      "searchTerms": [
+        "get_jewish_calendar",
+        "Fetch Jewish calendar events and holidays for a given year, month, or date range.",
+        "convert_date",
+        "Convert a single date or date range between the Gregorian and Hebrew calendars.",
+        "get_zmanim",
+        "Fetch halachic times (zmanim), including Shabbat candle lighting and Havdalah, for a date and location."
+      ]
+    },
+    {
+      "id": "hol-registry-broker",
+      "name": "HOL Registry Broker",
+      "tagline": "Discover agents and MCP servers across registries",
+      "description": "Search the HOL Registry Broker for indexed AI agents and MCP servers, filter by registry, protocol, capability, verification, trust, and availability, and retrieve a selected agent's indexed profile.",
+      "category": "AI",
+      "color": "#00A6A6",
+      "emoji": "🔎",
+      "authType": "none",
+      "toolCount": 2,
+      "docsUrl": "https://hol.org/registry/docs",
+      "searchTerms": [
+        "search_agents",
+        "Search indexed agents and MCP servers using text plus registry, protocol, capability, trust, verification, availability, and pagination filters.",
+        "get_agent",
+        "Retrieve the indexed profile and available trust metadata for one Universal Agent Identifier returned by search."
+      ]
+    },
+    {
+      "id": "holiday-api",
+      "name": "Holidays",
+      "tagline": "Look up historical and current public holidays worldwide",
+      "description": "Retrieve public holidays and observances by country, year, month, or day, with optional search, language, and previous/upcoming holiday lookups.",
+      "category": "Calendar",
+      "color": "#F59E0B",
+      "emoji": "🏖️",
+      "authType": "api-key",
+      "toolCount": 1,
+      "docsUrl": "https://holidayapi.com/docs",
+      "searchTerms": [
+        "list_holidays",
+        "List public holidays and observances for a country, optionally filtered by year, month, day, or search term."
+      ]
+    },
+    {
+      "id": "http-cat",
+      "name": "HTTP Cat",
+      "tagline": "Get a cat image for an HTTP status",
+      "description": "Retrieve the HTTP Cat JPEG corresponding to a numeric HTTP response status code.",
+      "category": "Animals",
+      "color": "#F97316",
+      "emoji": "😿",
+      "authType": "none",
+      "toolCount": 1,
+      "docsUrl": "https://http.cat/",
+      "searchTerms": [
+        "get_status_cat",
+        "Return a JPEG cat image representing an HTTP status code."
+      ]
+    },
+    {
+      "id": "http-dog",
+      "name": "HTTP Dog",
+      "tagline": "Get dog media for an HTTP status",
+      "description": "Retrieve JSON metadata for the dog image associated with a numeric HTTP response status code.",
+      "category": "Animals",
+      "color": "#0EA5E9",
+      "emoji": "🐕",
+      "authType": "none",
+      "toolCount": 1,
+      "docsUrl": "https://http.dog/",
+      "searchTerms": [
+        "get_status_dog",
+        "Return JSON metadata for a dog representation of an HTTP status code."
+      ]
+    },
+    {
+      "id": "icon-horse",
+      "name": "Icon Horse",
+      "tagline": "Fetch the best favicon for a website",
+      "description": "Retrieve Icon Horse's best available icon or fallback for a fully qualified domain name.",
+      "category": "Art & Design",
+      "color": "#1F2937",
+      "emoji": "🐴",
+      "authType": "none",
+      "toolCount": 1,
+      "docsUrl": "https://icon.horse/usage",
+      "searchTerms": [
+        "get_website_icon",
+        "Return the best available icon or fallback image for a hostname."
+      ]
+    },
+    {
+      "id": "iconfinder",
+      "name": "Iconfinder",
+      "tagline": "Search the Magnific icon catalog",
+      "description": "Search and paginate the icon catalog that succeeded Iconfinder's developer API, with family and ordering filters.",
+      "category": "Art & Design",
+      "color": "#1A73E8",
+      "emoji": "🔎",
+      "authType": "api-key",
+      "toolCount": 1,
+      "docsUrl": "https://docs.magnific.com/api-reference/icons/icons-api",
+      "searchTerms": [
+        "search_icons",
+        "Search and filter icons in the current catalog."
+      ]
+    },
+    {
+      "id": "icons8",
+      "name": "Icons8",
+      "tagline": "Fetch Icons8 icons by name",
+      "description": "Retrieve a matching public Icons8 PNG by placing its normalized icon name in the URL.",
+      "category": "Art & Design",
+      "color": "#1FB141",
+      "emoji": "🧩",
+      "authType": "none",
+      "toolCount": 1,
+      "docsUrl": "https://img.icons8.com/",
+      "searchTerms": [
+        "get_icon",
+        "Fetch the most popular matching icon as a PNG image."
+      ]
+    },
+    {
+      "id": "imagga",
+      "name": "Imagga",
+      "tagline": "Tag objects, scenes, and concepts in images",
+      "description": "Analyze an image URL or a previously uploaded image with Imagga V2 and return recognized tags with localized labels and confidence scores.",
+      "category": "AI",
+      "color": "#F05A28",
+      "emoji": "🖼️",
+      "authType": "basic",
+      "toolCount": 1,
+      "docsUrl": "https://docs.imagga.com/",
+      "searchTerms": [
+        "tag_image",
+        "Analyze an image by URL or upload identifier and return detected objects, scenes, and concepts with confidence scores."
+      ]
+    },
+    {
+      "id": "imgbb",
+      "name": "Imgbb",
+      "tagline": "Upload and host images with ImgBB",
+      "description": "Upload an image (as base64 data or a source URL) to ImgBB and receive a hosted image URL, display URL, and delete URL. Requires a free ImgBB API key.",
+      "category": "Cloud Storage & File Sharing",
+      "color": "#2563EB",
+      "emoji": "🖼️",
+      "authType": "api-key",
+      "toolCount": 1,
+      "docsUrl": "https://api.imgbb.com/",
+      "searchTerms": [
+        "upload_image",
+        "Upload an image (base64-encoded data or a source URL) and return its hosted URLs."
+      ]
+    },
+    {
+      "id": "instatus",
+      "name": "Instatus",
+      "tagline": "Post and update incidents and maintenance on your status page",
+      "description": "Create, list, update, and delete incidents and scheduled maintenance windows on an Instatus status page.",
+      "category": "Business",
+      "color": "#7C3AED",
+      "emoji": "🟢",
+      "authType": "bearer",
+      "toolCount": 6,
+      "docsUrl": "https://instatus.com/help/api",
+      "searchTerms": [
+        "list_incidents",
+        "List incidents on a status page.",
+        "create_incident",
+        "Create a new incident on a status page.",
+        "update_incident",
+        "Update an existing incident, for example to add a new status update.",
+        "list_maintenances",
+        "List scheduled maintenance windows on a status page.",
+        "create_maintenance",
+        "Schedule a new maintenance window on a status page.",
+        "delete_maintenance",
+        "Delete a scheduled maintenance window."
+      ]
+    },
+    {
+      "id": "irisnet",
+      "name": "Irisnet",
+      "tagline": "Run configured AI checks on media and text",
+      "description": "Inspect license information, list saved AI configurations, and submit text to an Irisnet V2 configuration for immediate policy and detection results.",
+      "category": "AI",
+      "color": "#0057B8",
+      "emoji": "👁️",
+      "authType": "api-key",
+      "toolCount": 3,
+      "docsUrl": "https://api.irisnet.de/swagger-ui/index.html",
+      "searchTerms": [
+        "get_license_info",
+        "Return license information and account limits for the supplied Irisnet license key.",
+        "list_ai_configurations",
+        "List saved Irisnet AI configurations with their identifiers and configured prototypes.",
+        "check_text",
+        "Check text using a saved AI configuration and return summary, broken-rule, and detection details according to the requested detail level."
+      ]
+    },
+    {
+      "id": "isdayoff",
+      "name": "Non-Working Days",
+      "tagline": "Check working, non-working, short, and holiday days",
+      "description": "Determine whether a specific date, month, year, or custom date range is a working day, non-working day, shortened workday, or public holiday, with support for country code, six-day work weeks, and COVID-era exceptions.",
+      "category": "Calendar",
+      "color": "#DC2626",
+      "emoji": "🗓️",
+      "authType": "none",
+      "toolCount": 3,
+      "docsUrl": "https://isdayoff.ru/docs/",
+      "searchTerms": [
+        "get_day_status",
+        "Get the working/non-working/short/holiday status for one specific date.",
+        "get_period_data",
+        "Get day-status data for a specific day, month, year, or an arbitrary date range of up to 366 days.",
+        "check_leap_year",
+        "Check whether a given year is a leap year."
+      ]
+    },
+    {
+      "id": "iucn-red-list",
+      "name": "IUCN",
+      "tagline": "Retrieve IUCN Red List assessments",
+      "description": "Retrieve one IUCN Red List assessment by its assessment identifier through the current V4 conservation-data API.",
+      "category": "Animals",
+      "color": "#D20A2E",
+      "emoji": "🦏",
+      "authType": "bearer",
+      "toolCount": 1,
+      "docsUrl": "https://api.iucnredlist.org/api-docs/index.html",
+      "searchTerms": [
+        "get_assessment",
+        "Retrieve a Red List assessment including taxon, category, publication, distribution, and conservation fields."
+      ]
+    },
+    {
+      "id": "jikan",
+      "name": "Jikan",
+      "tagline": "Search anime with Jikan",
+      "description": "Search Jikan's read-only anime catalog with text, type, status, rating, ordering, and pagination controls.",
+      "category": "Anime",
+      "color": "#2E51A2",
+      "emoji": "⛩️",
+      "authType": "none",
+      "toolCount": 1,
+      "docsUrl": "https://docs.api.jikan.moe/",
+      "searchTerms": [
+        "search_anime",
+        "Search anime records and return paginated MyAnimeList-derived metadata."
+      ]
+    },
+    {
+      "id": "keen-io",
+      "name": "Keen IO",
+      "tagline": "Inspect event collections and analytics schemas",
+      "description": "List event collections and their inferred property schemas for a Keen project using a read-capable API key. Write and administrative operations require different key capabilities and should be added as separate reviewed tools.",
+      "category": "Data",
+      "color": "#00AEEF",
+      "emoji": "📊",
+      "authType": "api-key",
+      "toolCount": 1,
+      "docsUrl": "https://keen.io/docs/api/",
+      "searchTerms": [
+        "list_event_collections",
+        "Return event collections for a Keen project with their property schemas and sub-resource links."
+      ]
+    },
+    {
+      "id": "kitsu",
+      "name": "Kitsu",
+      "tagline": "Discover anime through Kitsu",
+      "description": "Search Kitsu anime records with JSON:API filters, sorting, and offset pagination.",
+      "category": "Anime",
+      "color": "#FD755C",
+      "emoji": "🎴",
+      "authType": "none",
+      "toolCount": 1,
+      "docsUrl": "https://kitsu.docs.apiary.io/",
+      "searchTerms": [
+        "search_anime",
+        "Search public Kitsu anime records."
+      ]
+    },
+    {
+      "id": "layer4",
+      "name": "Layer4",
+      "tagline": "Query Layer4 tokens and wallets",
+      "description": "List tokens in a Layer4 bucket, retrieve token details, and list workspace wallets.",
+      "category": "Blockchain",
+      "color": "#7C3AED",
+      "emoji": "🧱",
+      "authType": "api-key",
+      "toolCount": 3,
+      "docsUrl": "https://www.layer4.app/api-docs",
+      "searchTerms": [
+        "list_tokens",
+        "List tokens in a Layer4 bucket.",
+        "get_token",
+        "Retrieve one token from a Layer4 bucket.",
+        "list_wallets",
+        "List wallets in the workspace associated with the API key."
+      ]
+    },
+    {
+      "id": "lectserve",
+      "name": "LectServe",
+      "tagline": "Look up Anglican/ACNA and Revised Common Lectionary Bible readings by date",
+      "description": "Retrieve daily and Sunday lectionary Bible readings for the ACNA or Revised Common Lectionary traditions, for today, the upcoming Sunday, or any specific date. No account or API key is required.",
+      "category": "Calendar",
+      "color": "#7C3AED",
+      "emoji": "⛪",
+      "authType": "none",
+      "toolCount": 3,
+      "docsUrl": "https://www.lectserve.com/html/about",
+      "searchTerms": [
+        "get_today_lectionary",
+        "Get the daily and Sunday lectionary reading payload for today, relative to US Central Time.",
+        "get_upcoming_sunday_lectionary",
+        "Get the Sunday-only lectionary reading payload for the next upcoming Sunday relative to today.",
+        "get_lectionary_by_date",
+        "Get the daily and Sunday lectionary reading payload for a specific date."
+      ]
+    },
+    {
+      "id": "logo-dev",
+      "name": "Logo.dev",
+      "tagline": "Resolve company names to domains and fetch structured brand data",
+      "description": "Search brand names to candidate domains, fetch structured company/brand data (description, colors, socials, logo) by domain, and identify a merchant from a raw card-transaction descriptor. Requires a Logo.dev secret API key; some endpoints require a paid plan or early-access enablement.",
+      "category": "Business",
+      "color": "#6366F1",
+      "emoji": "🏷️",
+      "authType": "bearer",
+      "toolCount": 4,
+      "docsUrl": "https://www.logo.dev/docs/api-reference/introduction",
+      "searchTerms": [
+        "search_brands",
+        "Resolve a brand name to up to 10 candidate domains, sorted by popularity, each with a logo image URL.",
+        "describe_domain",
+        "Get structured brand data for a domain: name, description, brand colors, social profiles, and logo. Requires any paid plan.",
+        "get_brand_profile",
+        "Get a full brand profile for a domain: logo, brandmark, social banners, brand colors, description, and socials. Requires a Pro or Enterprise plan.",
+        "identify_merchant",
+        "Resolve a raw card-transaction descriptor to a merchant brand's name, domain, and logo. Early-access endpoint; requires enablement by Logo.dev sales."
+      ]
+    },
+    {
+      "id": "logokit",
+      "name": "LogoKit",
+      "tagline": "Fetch brand, stock, and cryptocurrency logos",
+      "description": "Retrieve logo images by company domain, stock exchange ticker, or cryptocurrency symbol, with configurable size and fallback behavior.",
+      "category": "Business",
+      "color": "#111827",
+      "emoji": "🖼️",
+      "authType": "api-key",
+      "toolCount": 3,
+      "docsUrl": "https://docs.logokit.com",
+      "searchTerms": [
+        "get_logo_by_domain",
+        "Retrieve a company logo image by its domain name.",
+        "get_logo_by_stock_ticker",
+        "Retrieve a company logo image by its stock exchange ticker symbol.",
+        "get_logo_by_crypto_symbol",
+        "Retrieve a cryptocurrency logo image by its symbol."
+      ]
+    },
+    {
+      "id": "logotypes",
+      "name": "Logotypes",
+      "tagline": "Retrieve brand logo metadata",
+      "description": "Look up structured logo variants and asset URLs by brand name from Logotypes.dev.",
+      "category": "Art & Design",
+      "color": "#111827",
+      "emoji": "🏷️",
+      "authType": "none",
+      "toolCount": 1,
+      "docsUrl": "https://logotypes.dev/",
+      "searchTerms": [
+        "get_logo_data",
+        "Return available logo variants and metadata for a named brand."
+      ]
+    },
+    {
+      "id": "lordicon",
+      "name": "Lordicon",
+      "tagline": "Search animated Lordicon assets",
+      "description": "List Lordicon animated icons by family and page using a registered API project token.",
+      "category": "Art & Design",
+      "color": "#7C3AED",
+      "emoji": "✨",
+      "authType": "bearer",
+      "toolCount": 1,
+      "docsUrl": "https://lordicon.com/docs/api/documentation",
+      "searchTerms": [
+        "list_icons",
+        "List available animated icons with temporary preview and download links."
+      ]
+    },
+    {
+      "id": "mailjet",
+      "name": "mailjet",
+      "tagline": "Send transactional email via Mailjet",
+      "description": "Send transactional emails using inline HTML/text content or a saved Mailjet template.",
+      "category": "Business",
+      "color": "#FF8C00",
+      "emoji": "✉️",
+      "authType": "basic",
+      "toolCount": 2,
+      "docsUrl": "https://dev.mailjet.com/email/guides/send-api-v31/",
+      "searchTerms": [
+        "send_email",
+        "Send one or more transactional email messages with inline HTML/text content.",
+        "send_template_email",
+        "Send a transactional email using a saved Mailjet template ID instead of inline content."
+      ]
+    },
+    {
+      "id": "maldatabase",
+      "name": "MalDatabase",
+      "tagline": "Download the MalDatabase daily malware feed",
+      "description": "Retrieve the current gzip-compressed MalDatabase malware feed for permitted internal or non-commercial use.",
+      "category": "Anti-Malware",
+      "color": "#111827",
+      "emoji": "🦠",
+      "authType": "api-key",
+      "toolCount": 1,
+      "docsUrl": "https://maldatabase.com/api-doc.html",
+      "searchTerms": [
+        "download_daily_feed",
+        "Download the gzip-compressed daily malware feed."
+      ]
+    },
+    {
+      "id": "malshare",
+      "name": "MalShare",
+      "tagline": "Inspect MalShare malware sample metadata",
+      "description": "Look up stored metadata for a malware sample by MD5, SHA-1, or SHA-256 hash.",
+      "category": "Anti-Malware",
+      "color": "#991B1B",
+      "emoji": "🧬",
+      "authType": "api-key",
+      "toolCount": 2,
+      "docsUrl": "https://malshare.com/doc.php",
+      "searchTerms": [
+        "get_sample_details",
+        "Return stored metadata for a malware sample hash.",
+        "get_daily_hashes",
+        "List malware sample hashes added during the past 24 hours."
+      ]
+    },
+    {
+      "id": "mangadex",
+      "name": "MangaDex",
+      "tagline": "Search the MangaDex catalog",
+      "description": "Search public MangaDex manga metadata with title, publication status, language, ordering, and offset pagination.",
+      "category": "Anime",
+      "color": "#FF6740",
+      "emoji": "📚",
+      "authType": "none",
+      "toolCount": 1,
+      "docsUrl": "https://api.mangadex.org/docs/",
+      "searchTerms": [
+        "search_manga",
+        "Search public MangaDex manga records."
+      ]
+    },
+    {
+      "id": "meowfacts",
+      "name": "MeowFacts",
+      "tagline": "Retrieve cat facts in multiple languages",
+      "description": "Return one or more cat facts, optionally selecting a fact identifier or a supported localization.",
+      "category": "Animals",
+      "color": "#EC4899",
+      "emoji": "🐈",
+      "authType": "none",
+      "toolCount": 1,
+      "docsUrl": "https://github.com/wh-iterabb-it/meowfacts",
+      "searchTerms": [
+        "get_cat_facts",
+        "Return cat facts with optional count, identifier, and language selection."
+      ]
+    },
+    {
+      "id": "messengerx-io",
+      "name": "MessengerX.io",
+      "tagline": "Send chatbot messages and manage user tags",
+      "description": "Send on-demand chatbot responses, attach personalization tags to users, and retrieve active tags through the MessengerX/Machaao messaging API.",
+      "category": "AI",
+      "color": "#5865F2",
+      "emoji": "💬",
+      "authType": "api-key",
+      "toolCount": 3,
+      "docsUrl": "https://messengerx.readthedocs.io/en/latest/",
+      "searchTerms": [
+        "send_message",
+        "Send an on-demand text or structured message to one or more MessengerX user identifiers.",
+        "tag_user",
+        "Add, update, or disable a personalization tag for a MessengerX user.",
+        "get_user_tags",
+        "Retrieve all active personalization tags for one MessengerX user."
+      ]
+    },
+    {
+      "id": "metropolitan-museum-of-art",
+      "name": "Metropolitan Museum of Art",
+      "tagline": "Search The Met collection",
+      "description": "Search The Metropolitan Museum of Art collection and retrieve public object identifiers.",
+      "category": "Art & Design",
+      "color": "#E4002B",
+      "emoji": "🏛️",
+      "authType": "none",
+      "toolCount": 1,
+      "docsUrl": "https://metmuseum.github.io/",
+      "searchTerms": [
+        "search_collection",
+        "Search collection object data and return matching object identifiers."
+      ]
+    },
+    {
+      "id": "mojoauth",
+      "name": "MojoAuth",
+      "tagline": "Send MojoAuth magic links",
+      "description": "Start passwordless email authentication by sending a MojoAuth magic link.",
+      "category": "Authentication & Authorization",
+      "color": "#7C3AED",
+      "emoji": "✉️",
+      "authType": "api-key",
+      "toolCount": 1,
+      "docsUrl": "https://docs.mojoauth.com/api-reference/send-magic-link-on-the-email",
+      "searchTerms": [
+        "send_magic_link",
+        "Send a passwordless authentication magic link to an email address."
+      ]
+    },
+    {
+      "id": "movebank",
+      "name": "Movebank",
+      "tagline": "Explore public animal tracking studies",
+      "description": "List public Movebank studies and selected study metadata through the direct-read service.",
+      "category": "Animals",
+      "color": "#0F766E",
+      "emoji": "🛰️",
+      "authType": "none",
+      "toolCount": 1,
+      "docsUrl": "https://github.com/movebank/movebank-api-doc/blob/master/movebank-api.md",
+      "searchTerms": [
+        "list_public_studies",
+        "List Movebank studies visible to the public, optionally restricting returned attributes."
+      ]
+    },
+    {
+      "id": "myanimelist",
+      "name": "MyAnimeList",
+      "tagline": "Browse MyAnimeList anime rankings",
+      "description": "Retrieve ranked anime entries from MyAnimeList with ranking type, page size, offset, and selected fields.",
+      "category": "Anime",
+      "color": "#2E51A2",
+      "emoji": "📺",
+      "authType": "api-key",
+      "toolCount": 1,
+      "docsUrl": "https://myanimelist.net/apiconfig/references/api/v2",
+      "searchTerms": [
+        "get_anime_ranking",
+        "Return a MyAnimeList anime ranking page."
+      ]
+    },
+    {
+      "id": "nager-date",
+      "name": "Nager.Date",
+      "tagline": "Look up public holidays worldwide",
+      "description": "List public holidays for a country and year, get the next upcoming public holidays for a country, and list supported countries.",
+      "category": "Calendar",
+      "color": "#2563EB",
+      "emoji": "📅",
+      "authType": "none",
+      "toolCount": 3,
+      "docsUrl": "https://date.nager.at/Api",
+      "searchTerms": [
+        "list_public_holidays",
+        "List all public holidays for a country in a given year.",
+        "list_next_public_holidays",
+        "List the next upcoming public holidays for a country from today.",
+        "list_available_countries",
+        "List countries supported by the public holidays endpoints."
+      ]
+    },
+    {
+      "id": "namedays-calendar",
+      "name": "Namedays Calendar",
+      "tagline": "Look up namedays by date or name",
+      "description": "Get today's namedays across countries, look up namedays for a specific day and month, and search which date a given name is celebrated on.",
+      "category": "Calendar",
+      "color": "#DB2777",
+      "emoji": "🎂",
+      "authType": "none",
+      "toolCount": 3,
+      "docsUrl": "https://nameday.abalin.net/docs/api",
+      "searchTerms": [
+        "get_today_namedays",
+        "Retrieve the namedays celebrated today across supported countries.",
+        "get_namedays_by_date",
+        "Retrieve the namedays celebrated on a specific day and month across supported countries.",
+        "search_nameday_by_name",
+        "Search all supported countries for the date a given name is celebrated."
+      ]
+    },
+    {
+      "id": "nekos-api",
+      "name": "Nekos API",
+      "tagline": "Find random tagged anime artwork",
+      "description": "Retrieve random anime images filtered by content rating, artists, included tags, excluded tags, and count.",
+      "category": "Anime",
+      "color": "#EC4899",
+      "emoji": "🐱",
+      "authType": "none",
+      "toolCount": 1,
+      "docsUrl": "https://nekosapi.com/docs/images/random",
+      "searchTerms": [
+        "get_random_images",
+        "Return random anime-image metadata with optional filters."
+      ]
+    },
+    {
+      "id": "nekosbest",
+      "name": "NekosBest",
+      "tagline": "Retrieve safe anime images and GIFs",
+      "description": "Return one to twenty anime images or GIFs from a selected NEKOSBEST category with creator metadata.",
+      "category": "Anime",
+      "color": "#DB2777",
+      "emoji": "🌸",
+      "authType": "none",
+      "toolCount": 1,
+      "docsUrl": "https://docs.nekos.best/getting-started/api-endpoints.html",
+      "searchTerms": [
+        "get_category_media",
+        "Return random media from a supported category."
+      ]
+    },
+    {
+      "id": "nekosia-api",
+      "name": "Nekosia API",
+      "tagline": "Retrieve filtered anime artwork",
+      "description": "Fetch random Nekosia artwork by category with tag, rating, count, and duplicate-avoidance controls.",
+      "category": "Anime",
+      "color": "#A855F7",
+      "emoji": "🐾",
+      "authType": "none",
+      "toolCount": 1,
+      "docsUrl": "https://nekosia.cat/documentation?page=endpoints",
+      "searchTerms": [
+        "get_category_images",
+        "Return random artwork from a selected safe anime category."
+      ]
+    },
+    {
+      "id": "nioleads",
+      "name": "NioLeads",
+      "tagline": "Find business emails by name and company domain",
+      "description": "Find a person's business email address from their name and company domain, and check your NioLeads account credit balance. Requires a NioLeads API key generated from the account's Integrations page.",
+      "category": "Business",
+      "color": "#2563EB",
+      "emoji": "📧",
+      "authType": "bearer",
+      "toolCount": 2,
+      "docsUrl": "https://nioleads.com/apidoc",
+      "searchTerms": [
+        "find_email",
+        "Find a business email address from a person's first name, last name, and company domain or name.",
+        "get_credits",
+        "Retrieve the current available credit balance for the authenticated NioLeads account."
+      ]
+    },
+    {
+      "id": "nlp-cloud",
+      "name": "NLP Cloud",
+      "tagline": "Summarize text with hosted NLP models",
+      "description": "Generate concise summaries from text using a selected NLP Cloud model through its model-scoped V1 REST API.",
+      "category": "AI",
+      "color": "#1E88E5",
+      "emoji": "🧠",
+      "authType": "bearer",
+      "toolCount": 1,
+      "docsUrl": "https://docs.nlpcloud.com/",
+      "searchTerms": [
+        "summarize_text",
+        "Summarize a block of text with a selected NLP Cloud model and return summary_text."
+      ]
+    },
+    {
+      "id": "nownodes",
+      "name": "Nownodes",
+      "tagline": "Explore Ethereum through NOWNodes",
+      "description": "Retrieve Ethereum address, block, and transaction data from the NOWNodes BlockBook REST API.",
+      "category": "Blockchain",
+      "color": "#FF5F1F",
+      "emoji": "⛓️",
+      "authType": "api-key",
+      "toolCount": 4,
+      "docsUrl": "https://nownodes.gitbook.io/eth-ethereum/ethereum-eth/mainnet/blockbook",
+      "searchTerms": [
+        "get_address",
+        "Retrieve confirmed and unconfirmed balances and transaction identifiers for an Ethereum address.",
+        "get_block",
+        "Retrieve block metadata and included transactions by height or hash.",
+        "get_transaction",
+        "Retrieve a BlockBook v2 transaction representation by transaction identifier.",
+        "get_balance_history",
+        "Retrieve received, sent, and self-sent balance history grouped by time interval."
+      ]
+    },
+    {
+      "id": "onedrive",
+      "name": "OneDrive",
+      "tagline": "Browse OneDrive files and storage",
+      "description": "Inspect the signed-in user's OneDrive metadata and browse files and folders without downloading or changing content.",
+      "category": "Cloud Storage & File Sharing",
+      "color": "#0078D4",
+      "emoji": "☁️",
+      "authType": "bearer",
+      "toolCount": 3,
+      "docsUrl": "https://learn.microsoft.com/en-us/graph/api/resources/onedrive?view=graph-rest-1.0",
+      "searchTerms": [
+        "get_my_drive",
+        "Retrieve metadata and storage quota information for the signed-in user's default OneDrive.",
+        "list_root_children",
+        "List files and folders directly under the signed-in user's OneDrive root folder.",
+        "list_item_children",
+        "List files and folders directly inside a OneDrive folder identified by its driveItem ID."
+      ]
+    },
+    {
+      "id": "openholidays",
+      "name": "OpenHolidays API",
+      "tagline": "Look up public and school holidays for many countries",
+      "description": "Retrieve public and school holidays, supported countries, subdivisions, and languages from the free, open-data OpenHolidays API. No account or API key is required.",
+      "category": "Calendar",
+      "color": "#16A34A",
+      "emoji": "📆",
+      "authType": "none",
+      "toolCount": 5,
+      "docsUrl": "https://www.openholidaysapi.org/en/",
+      "searchTerms": [
+        "list_public_holidays",
+        "List public holidays for a country within a date range, optionally scoped to a subdivision (state/province).",
+        "get_public_holidays_by_date",
+        "Get all public holidays across supported countries that fall on a specific date.",
+        "list_school_holidays",
+        "List school holidays for a country within a date range, optionally scoped to a subdivision or holiday group.",
+        "list_countries",
+        "List all countries supported by the API, with localized names.",
+        "list_subdivisions",
+        "List the administrative subdivisions (states, provinces, cantons) supported for a country."
+      ]
+    },
+    {
+      "id": "perspective",
+      "name": "Perspective",
+      "tagline": "Score comments for toxicity and harmful attributes",
+      "description": "Analyze text with Google's Perspective Comment Analyzer and return probability scores for requested attributes such as toxicity, insults, or threats.",
+      "category": "AI",
+      "color": "#4285F4",
+      "emoji": "🛡️",
+      "authType": "api-key",
+      "toolCount": 1,
+      "docsUrl": "https://developers.perspectiveapi.com/s/docs-get-started",
+      "searchTerms": [
+        "analyze_comment",
+        "Analyze comment text and return overall and optional span-level scores for requested Perspective attributes."
+      ]
+    },
+    {
+      "id": "php-noise",
+      "name": "PHP-Noise",
+      "tagline": "Generate a noise background image",
+      "description": "Generate a PNG noise texture from a hexadecimal or RGB base color and optional tiling controls.",
+      "category": "Art & Design",
+      "color": "#475569",
+      "emoji": "🌫️",
+      "authType": "none",
+      "toolCount": 1,
+      "docsUrl": "https://php-noise.com/",
+      "searchTerms": [
+        "generate_noise",
+        "Generate and return a PNG noise texture."
+      ]
+    },
+    {
+      "id": "picsart",
+      "name": "Picsart",
+      "tagline": "Generate images with Picsart AI",
+      "description": "Start a Picsart text-to-image inference and retrieve generated images by inference identifier.",
+      "category": "Art & Design",
+      "color": "#8B3DFF",
+      "emoji": "🖼️",
+      "authType": "api-key",
+      "toolCount": 2,
+      "docsUrl": "https://docs.picsart.io/reference/genai-text2image-1",
+      "searchTerms": [
+        "create_image",
+        "Start an asynchronous text-to-image inference.",
+        "get_image_result",
+        "Retrieve the status or generated images for an inference."
+      ]
+    },
+    {
+      "id": "pika-orshot",
+      "name": "Pika",
+      "tagline": "Render dynamic images with Orshot",
+      "description": "Render an Orshot Studio template as an image, PDF, or video with dynamic JSON modifications.",
+      "category": "Art & Design",
+      "color": "#F97316",
+      "emoji": "🎬",
+      "authType": "bearer",
+      "toolCount": 1,
+      "docsUrl": "https://orshot.com/docs/api-reference",
+      "searchTerms": [
+        "render_template",
+        "Render a Studio template with dynamic values and output options."
+      ]
+    },
+    {
+      "id": "pinata",
+      "name": "Pinata",
+      "tagline": "Manage IPFS-pinned files on Pinata",
+      "description": "List, retrieve, delete, and pin existing IPFS content by CID on Pinata's public or private IPFS network.",
+      "category": "Cloud Storage & File Sharing",
+      "color": "#6D28D9",
+      "emoji": "📌",
+      "authType": "bearer",
+      "toolCount": 4,
+      "docsUrl": "https://docs.pinata.cloud/",
+      "searchTerms": [
+        "list_files",
+        "List pinned files on a network, with optional filters.",
+        "get_file",
+        "Get details for a specific pinned file by its ID.",
+        "delete_file",
+        "Delete (unpin) a file by its ID.",
+        "pin_by_cid",
+        "Pin existing IPFS content to Pinata by its CID, without uploading binary data."
+      ]
+    },
+    {
+      "id": "placebear",
+      "name": "PlaceBear",
+      "tagline": "Generate bear placeholder images",
+      "description": "Retrieve a bear placeholder JPEG at requested pixel dimensions.",
+      "category": "Animals",
+      "color": "#92400E",
+      "emoji": "🐻",
+      "authType": "none",
+      "toolCount": 1,
+      "docsUrl": "https://placebear.com/",
+      "searchTerms": [
+        "get_bear_image",
+        "Return a bear image resized to the requested width and height."
+      ]
+    },
+    {
+      "id": "placedog",
+      "name": "PlaceDog",
+      "tagline": "Generate dog placeholder images",
+      "description": "Retrieve a dog placeholder JPEG at requested pixel dimensions.",
+      "category": "Animals",
+      "color": "#7C3AED",
+      "emoji": "🐕",
+      "authType": "none",
+      "toolCount": 1,
+      "docsUrl": "https://place.dog/",
+      "searchTerms": [
+        "get_dog_image",
+        "Return a dog image resized to the requested width and height."
+      ]
+    },
+    {
+      "id": "poetrydb",
+      "name": "PoetryDB",
+      "tagline": "Search and discover classic poetry",
+      "description": "List poets, search poems by title or author, and retrieve random poems from PoetryDB's public collection.",
+      "category": "Books",
+      "color": "#7C3AED",
+      "emoji": "🪶",
+      "authType": "none",
+      "toolCount": 4,
+      "docsUrl": "https://github.com/thundercomb/poetrydb#api-reference",
+      "searchTerms": [
+        "list_authors",
+        "List all authors represented in the PoetryDB collection.",
+        "search_poems_by_title",
+        "Find poems whose titles contain the supplied text.",
+        "search_poems_by_author",
+        "Find poems whose author names contain the supplied text.",
+        "get_random_poems",
+        "Retrieve a requested number of randomly selected poems."
+      ]
+    },
+    {
+      "id": "quip",
+      "name": "Quip",
+      "tagline": "Read Quip threads, folders, and messages",
+      "description": "Retrieve a Quip document/thread, list recently updated threads, search threads by text, get folder contents, and read thread messages.",
+      "category": "Cloud Storage & File Sharing",
+      "color": "#4A154B",
+      "emoji": "📝",
+      "authType": "bearer",
+      "toolCount": 5,
+      "docsUrl": "https://quip.com/dev/automation/documentation",
+      "searchTerms": [
+        "get_thread",
+        "Retrieve a Quip thread (document, spreadsheet, or chat) by ID.",
+        "list_recent_threads",
+        "List the authenticated user's recently updated threads.",
+        "search_threads",
+        "Search the authenticated user's threads by matching text.",
+        "get_folder",
+        "Retrieve a Quip folder and its children by ID.",
+        "get_messages",
+        "Retrieve the most recent chat messages for a thread."
+      ]
+    },
+    {
+      "id": "quran-api",
+      "name": "Quran-api",
+      "tagline": "Read Quran translations in many languages",
+      "description": "List editions and retrieve a Quran chapter or verse from hundreds of translations.",
+      "category": "Books",
+      "color": "#166534",
+      "emoji": "📗",
+      "authType": "none",
+      "toolCount": 3,
+      "docsUrl": "https://github.com/fawazahmed0/quran-api#readme",
+      "searchTerms": [
+        "list_editions",
+        "List all available editions.",
+        "get_chapter",
+        "Retrieve one chapter from an edition.",
+        "get_verse",
+        "Retrieve one verse from an edition and chapter."
+      ]
+    },
+    {
+      "id": "randomdog",
+      "name": "RandomDog",
+      "tagline": "Get a random dog media URL",
+      "description": "Retrieve metadata and a URL for a randomly selected dog image or video.",
+      "category": "Animals",
+      "color": "#2563EB",
+      "emoji": "🐶",
+      "authType": "none",
+      "toolCount": 1,
+      "docsUrl": "https://random.dog/woof.json",
+      "searchTerms": [
+        "get_random_dog",
+        "Return a random dog media URL and file size."
+      ]
+    },
+    {
+      "id": "randomduck",
+      "name": "RandomDuck",
+      "tagline": "Get random duck images",
+      "description": "Retrieve a random duck image or GIF URL with optional media-type selection.",
+      "category": "Animals",
+      "color": "#EAB308",
+      "emoji": "🦆",
+      "authType": "none",
+      "toolCount": 1,
+      "docsUrl": "https://random-d.uk/api",
+      "searchTerms": [
+        "get_random_duck",
+        "Return a random duck media URL and attribution message."
+      ]
+    },
+    {
+      "id": "randomfox",
+      "name": "RandomFox",
+      "tagline": "Get a random fox image",
+      "description": "Retrieve a random fox image URL and its source page.",
+      "category": "Animals",
+      "color": "#EA580C",
+      "emoji": "🦊",
+      "authType": "none",
+      "toolCount": 1,
+      "docsUrl": "https://randomfox.ca/floof/",
+      "searchTerms": [
+        "get_random_fox",
+        "Return a random fox image URL and source link."
+      ]
+    },
+    {
+      "id": "rescuegroups",
+      "name": "RescueGroups",
+      "tagline": "Search adoptable rescue animals",
+      "description": "Search public adoptable dog records through RescueGroups.org with optional related breed, organization, location, and picture data.",
+      "category": "Animals",
+      "color": "#DC2626",
+      "emoji": "🏠",
+      "authType": "api-key",
+      "toolCount": 1,
+      "docsUrl": "https://userguide.rescuegroups.org/spaces/APIDG/pages/8192120/API+Developers+Guide+Home",
+      "searchTerms": [
+        "search_dogs",
+        "Search public adoptable dog records and optionally include related resources."
+      ]
+    },
+    {
+      "id": "rijksmuseum",
+      "name": "Rijksmuseum",
+      "tagline": "Search the Rijksmuseum collection",
+      "description": "Search Rijksmuseum collection objects by creator, title, type, material, date, and image availability.",
+      "category": "Art & Design",
+      "color": "#111111",
+      "emoji": "🖌️",
+      "authType": "none",
+      "toolCount": 1,
+      "docsUrl": "https://data.rijksmuseum.nl/docs/search",
+      "searchTerms": [
+        "search_collection",
+        "Search collection object identifiers using Linked Art filters."
+      ]
+    },
+    {
+      "id": "roboflow-universe",
+      "name": "Roboflow Universe",
+      "tagline": "Run hosted computer-vision model inference",
+      "description": "Run a Roboflow object-detection model against a hosted image URL and return JSON predictions containing classes, confidence, and bounding boxes.",
+      "category": "AI",
+      "color": "#6706CE",
+      "emoji": "👁️",
+      "authType": "api-key",
+      "toolCount": 1,
+      "docsUrl": "https://docs.roboflow.com/deploy/serverless-hosted-api-v2/use-with-the-rest-api",
+      "searchTerms": [
+        "run_object_detection",
+        "Run a selected Roboflow model version against a remotely hosted image and return JSON object-detection predictions."
+      ]
+    },
+    {
+      "id": "shikimori",
+      "name": "Shikimori",
+      "tagline": "Search the Shikimori anime catalog",
+      "description": "Search public Shikimori anime records by text with status, season, score, ordering, and pagination filters.",
+      "category": "Anime",
+      "color": "#1F2937",
+      "emoji": "🎌",
+      "authType": "none",
+      "toolCount": 1,
+      "docsUrl": "https://shikimori.one/api/doc",
+      "searchTerms": [
+        "search_anime",
+        "Search public Shikimori anime records."
+      ]
+    },
+    {
+      "id": "smartsheet",
+      "name": "Smartsheet",
+      "tagline": "Read and update Smartsheet sheets, columns, reports, and users",
+      "description": "List and retrieve Smartsheet sheets and reports, add columns to a sheet, and list account users. Requires a Smartsheet personal API access token (Business or Enterprise plan) or an OAuth2 access token.",
+      "category": "Business",
+      "color": "#003059",
+      "emoji": "📊",
+      "authType": "bearer",
+      "toolCount": 5,
+      "docsUrl": "https://developers.smartsheet.com/api/smartsheet/openapi/",
+      "searchTerms": [
+        "list_sheets",
+        "List all sheets the authenticated user has access to, with an abbreviated summary for each.",
+        "get_sheet",
+        "Retrieve a single sheet's full details, including rows, columns, and metadata.",
+        "add_column",
+        "Add a new column to a sheet.",
+        "list_reports",
+        "List all reports the authenticated user has access to.",
+        "list_users",
+        "List all users in the authenticated user's Smartsheet organization."
+      ]
+    },
+    {
+      "id": "steem",
+      "name": "Steem",
+      "tagline": "Read Steem blockchain and social content",
+      "description": "Query Steem posts, ranked social feeds, blocks, and live blockchain properties through the public JSON-RPC API.",
+      "category": "Blockchain",
+      "color": "#171FC9",
+      "emoji": "🌊",
+      "authType": "none",
+      "toolCount": 4,
+      "docsUrl": "https://developers.steem.io/apidefinitions/",
+      "searchTerms": [
+        "get_post_content",
+        "Retrieve one Steem post or comment by author and permlink.",
+        "get_ranked_posts",
+        "Get ranked Steem posts by feed sort, tag, and optional observing account.",
+        "get_block",
+        "Retrieve a Steem block by block number.",
+        "get_chain_properties",
+        "Retrieve current dynamic global properties for the Steem blockchain."
+      ]
+    },
+    {
+      "id": "stephen-king",
+      "name": "Stephen King",
+      "tagline": "Explore Stephen King books and characters",
+      "description": "Browse Stephen King's books, short stories, and villains and retrieve individual records with linked relationships.",
+      "category": "Books",
+      "color": "#991B1B",
+      "emoji": "📕",
+      "authType": "none",
+      "toolCount": 4,
+      "docsUrl": "https://stephen-king-api.onrender.com/docs",
+      "searchTerms": [
+        "list_books",
+        "List Stephen King books.",
+        "get_book",
+        "Retrieve one book by ID.",
+        "list_short_stories",
+        "List Stephen King short stories.",
+        "list_villains",
+        "List villains and links to their associated works."
+      ]
+    },
+    {
+      "id": "stytch",
+      "name": "Stytch",
+      "tagline": "Search and retrieve Stytch users",
+      "description": "Search the users in a live Stytch Consumer project and retrieve individual user profiles.",
+      "category": "Authentication & Authorization",
+      "color": "#F97316",
+      "emoji": "🪪",
+      "authType": "basic",
+      "toolCount": 2,
+      "docsUrl": "https://stytch.com/docs/api-reference/consumer/api/overview",
+      "searchTerms": [
+        "search_users",
+        "Search or list users in the Stytch project.",
+        "get_user",
+        "Get information about one Stytch user."
+      ]
+    },
+    {
+      "id": "summarize-text-with-ai",
+      "name": "Summarize Text with AI",
+      "tagline": "Summarize web content with AI",
+      "description": "Generate a concise, optionally translated summary of an accessible webpage URL with configurable output length through ApyHub's AI Summarize API.",
+      "category": "AI",
+      "color": "#6C5CE7",
+      "emoji": "📝",
+      "authType": "api-key",
+      "toolCount": 1,
+      "docsUrl": "https://apyhub.com/utility/ai-summarize",
+      "searchTerms": [
+        "summarize_url",
+        "Summarize an accessible webpage or document URL and return the generated summary text."
+      ]
+    },
+    {
+      "id": "the-cat-api",
+      "name": "Cats",
+      "tagline": "Search cat images by breed and category",
+      "description": "Search The Cat API image catalog with optional breed, category, result-count, and ordering filters.",
+      "category": "Animals",
+      "color": "#6B7280",
+      "emoji": "🐱",
+      "authType": "api-key",
+      "toolCount": 1,
+      "docsUrl": "https://docs.thecatapi.com/api-reference/images/images-search",
+      "searchTerms": [
+        "search_images",
+        "Search cat images and return image URLs plus associated metadata."
+      ]
+    },
+    {
+      "id": "the-color-api",
+      "name": "The Color",
+      "tagline": "Identify colors and generate schemes",
+      "description": "Convert a hexadecimal color into named color data or generate a related color scheme.",
+      "category": "Art & Design",
+      "color": "#2563EB",
+      "emoji": "🎨",
+      "authType": "none",
+      "toolCount": 2,
+      "docsUrl": "https://www.thecolorapi.com/docs",
+      "searchTerms": [
+        "identify_color",
+        "Get conversions, a matched name, contrast information, and image links for a hexadecimal color.",
+        "generate_scheme",
+        "Generate a color scheme from a hexadecimal seed color."
+      ]
+    },
+    {
+      "id": "the-dog-api",
+      "name": "The Dog",
+      "tagline": "Search dog images and breed metadata",
+      "description": "Search TheDogAPI image catalog with optional breed, media, pagination, and ordering filters.",
+      "category": "Animals",
+      "color": "#1D4ED8",
+      "emoji": "🐕",
+      "authType": "api-key",
+      "toolCount": 1,
+      "docsUrl": "https://docs.thedogapi.com/",
+      "searchTerms": [
+        "search_images",
+        "Search dog images and return URLs with available breed metadata."
+      ]
+    },
+    {
+      "id": "trace-moe",
+      "name": "Trace Moe",
+      "tagline": "Identify an anime scene from an image URL",
+      "description": "Search trace.moe with a publicly reachable screenshot URL and return likely anime, episode, and timestamp matches.",
+      "category": "Anime",
+      "color": "#3B82F6",
+      "emoji": "🔍",
+      "authType": "none",
+      "toolCount": 1,
+      "docsUrl": "https://soruly.github.io/trace.moe-api/",
+      "searchTerms": [
+        "search_scene",
+        "Identify an anime scene from a remotely hosted screenshot URL."
+      ]
+    },
+    {
+      "id": "travis-ci",
+      "name": "Travis CI",
+      "tagline": "Inspect and control Travis CI repositories and builds",
+      "description": "Look up a Travis CI repository, list and inspect its builds, and restart or cancel a build. Requires a Travis CI API token generated via the Travis CLI or account profile page.",
+      "category": "Continuous Integration",
+      "color": "#3EAAAF",
+      "emoji": "🔄",
+      "authType": "api-key",
+      "toolCount": 5,
+      "docsUrl": "https://developer.travis-ci.com/",
+      "searchTerms": [
+        "get_repository",
+        "Retrieve a Travis CI repository's details by its owner/name slug.",
+        "list_builds",
+        "List builds for a repository, with optional filtering and sorting.",
+        "get_build",
+        "Retrieve a single build by its ID.",
+        "restart_build",
+        "Restart a completed or canceled build.",
+        "cancel_build",
+        "Cancel an active build and its associated jobs."
+      ]
+    },
+    {
+      "id": "uk-bank-holidays",
+      "name": "UK Bank Holidays",
+      "tagline": "UK bank holidays for England/Wales, Scotland, and Northern Ireland",
+      "description": "Retrieve the official list of upcoming and recent UK bank holidays for each of the three UK divisions, including whether bunting is traditionally flown.",
+      "category": "Calendar",
+      "color": "#1D70B8",
+      "emoji": "🇬🇧",
+      "authType": "none",
+      "toolCount": 1,
+      "docsUrl": "https://www.gov.uk/bank-holidays",
+      "searchTerms": [
+        "list_bank_holidays",
+        "List UK bank holidays for England and Wales, Scotland, and Northern Ireland."
+      ]
+    },
+    {
+      "id": "unplugg",
+      "name": "Unplugg",
+      "tagline": "Forecast seasonal time-series data",
+      "description": "Submit equally spaced or resampleable time-series observations to Unplugg and receive an asynchronous forecast through a webhook callback.",
+      "category": "AI",
+      "color": "#2E7D32",
+      "emoji": "📈",
+      "authType": "api-key",
+      "toolCount": 1,
+      "docsUrl": "https://unplu.gg/test_api.html",
+      "searchTerms": [
+        "create_forecast",
+        "Submit historical time-series observations and a webhook URL, returning a job ID before the completed forecast is delivered asynchronously."
+      ]
+    },
+    {
+      "id": "urlhaus",
+      "name": "URLhaus",
+      "tagline": "Retrieve recent malicious URLs from URLhaus",
+      "description": "List recently reported malware-distribution URLs from the URLhaus community feed.",
+      "category": "Anti-Malware",
+      "color": "#B91C1C",
+      "emoji": "🚨",
+      "authType": "api-key",
+      "toolCount": 1,
+      "docsUrl": "https://urlhaus-api.abuse.ch/",
+      "searchTerms": [
+        "list_recent_malicious_urls",
+        "Return the most recently added URLhaus records."
+      ]
+    },
+    {
+      "id": "urlscan-io",
+      "name": "URLScan.io",
+      "tagline": "Search public urlscan.io scan results",
+      "description": "Search public website scan metadata using urlscan.io's documented Elasticsearch-style query syntax.",
+      "category": "Anti-Malware",
+      "color": "#2563EB",
+      "emoji": "🔎",
+      "authType": "none",
+      "toolCount": 1,
+      "docsUrl": "https://urlscan.io/docs/api/",
+      "searchTerms": [
+        "search_public_scans",
+        "Search public urlscan.io results and retrieve high-level scan metadata."
+      ]
+    },
+    {
+      "id": "verisys-antivirus-api",
+      "name": "Verisys Antivirus API",
+      "tagline": "Scan remote files for malware",
+      "description": "Ask Verisys to fetch a remote file URL and return synchronous malware findings without uploading binary content through Arthur MCP.",
+      "category": "Anti-Malware",
+      "color": "#0F766E",
+      "emoji": "🛡️",
+      "authType": "api-key",
+      "toolCount": 1,
+      "docsUrl": "https://docs.av.ionxsolutions.com/introduction",
+      "searchTerms": [
+        "scan_remote_file",
+        "Synchronously scan a remotely hosted file for malware."
+      ]
+    },
+    {
+      "id": "virustotal",
+      "name": "VirusTotal",
+      "tagline": "Retrieve VirusTotal file reports",
+      "description": "Look up VirusTotal's existing analysis report for a file hash without uploading file content.",
+      "category": "Anti-Malware",
+      "color": "#394EFF",
+      "emoji": "🧫",
+      "authType": "api-key",
+      "toolCount": 1,
+      "docsUrl": "https://docs.virustotal.com/reference/file-info",
+      "searchTerms": [
+        "get_file_report",
+        "Retrieve an existing VirusTotal File object by hash."
+      ]
+    },
+    {
+      "id": "waifu-im",
+      "name": "Waifu.im",
+      "tagline": "Search curated anime-style images",
+      "description": "Browse Waifu.im images with safety, tag, animation, orientation, size, ordering, and pagination controls.",
+      "category": "Anime",
+      "color": "#EC4899",
+      "emoji": "🖼️",
+      "authType": "none",
+      "toolCount": 1,
+      "docsUrl": "https://www.waifu.im/docs",
+      "searchTerms": [
+        "search_images",
+        "Return a paginated collection of accepted Waifu.im images matching optional filters."
+      ]
+    },
+    {
+      "id": "waifu-it",
+      "name": "Waifu.it",
+      "tagline": "Retrieve anime characters and facts",
+      "description": "Find a random or named waifu character and retrieve random anime facts through Waifu.it API V4.",
+      "category": "Anime",
+      "color": "#A855F7",
+      "emoji": "🌸",
+      "authType": "api-key",
+      "toolCount": 2,
+      "docsUrl": "https://docs.waifu.it/rest-api/start",
+      "searchTerms": [
+        "search_waifu",
+        "Return a random waifu or search by character or anime name.",
+        "get_anime_fact",
+        "Return a random anime-related fact."
+      ]
+    },
+    {
+      "id": "watchdata",
+      "name": "Watchdata",
+      "tagline": "Query Ethereum through WatchData",
+      "description": "Read Ethereum balances, blocks, and transactions through WatchData's hosted JSON-RPC API.",
+      "category": "Blockchain",
+      "color": "#6C5CE7",
+      "emoji": "👁️",
+      "authType": "api-key",
+      "toolCount": 3,
+      "docsUrl": "https://docs.watchdata.io/blockchain-apis/ethereum-api",
+      "searchTerms": [
+        "get_balance",
+        "Retrieve an Ethereum account balance at a selected block state.",
+        "get_block",
+        "Retrieve an Ethereum block by number or block-state tag.",
+        "get_transaction",
+        "Retrieve an Ethereum transaction by its transaction hash."
+      ]
+    },
+    {
+      "id": "wizard-world",
+      "name": "Wizard World",
+      "tagline": "Explore the Wizarding World",
+      "description": "Browse Wizarding World elixirs, houses, spells, ingredients, creatures, and wizards.",
+      "category": "Books",
+      "color": "#7C3AED",
+      "emoji": "🪄",
+      "authType": "none",
+      "toolCount": 5,
+      "docsUrl": "https://wizard-world-api.herokuapp.com/swagger/index.html",
+      "searchTerms": [
+        "list_elixirs",
+        "List elixirs, optionally filtering by name, ingredient, inventor, or manufacturer.",
+        "get_elixir",
+        "Retrieve one elixir by UUID.",
+        "list_houses",
+        "List Hogwarts houses.",
+        "list_spells",
+        "List spells, optionally filtering by name or incantation.",
+        "list_wizards",
+        "List wizards, optionally filtering by first or last name."
+      ]
+    },
+    {
+      "id": "wolframalpha",
+      "name": "WolframAlpha",
+      "tagline": "Answer computational questions with Wolfram|Alpha",
+      "description": "Send a natural-language computational query to the Wolfram|Alpha LLM API and receive a concise text result optimized for language-model consumption.",
+      "category": "AI",
+      "color": "#DD1100",
+      "emoji": "🧮",
+      "authType": "bearer",
+      "toolCount": 1,
+      "docsUrl": "https://products.wolframalpha.com/llm-api/documentation",
+      "searchTerms": [
+        "answer_query",
+        "Return Wolfram|Alpha computational knowledge formatted for use by a language model."
+      ]
+    },
+    {
+      "id": "wolne-lektury",
+      "name": "Wolne Lektury",
+      "tagline": "Browse Polish public-domain literature",
+      "description": "Discover Wolne Lektury ebooks, audiobooks, authors, genres, themes, and detailed work metadata.",
+      "category": "Books",
+      "color": "#B45309",
+      "emoji": "📚",
+      "authType": "none",
+      "toolCount": 6,
+      "docsUrl": "https://wolnelektury.pl/api/",
+      "searchTerms": [
+        "list_books",
+        "List all works in the Wolne Lektury catalog.",
+        "get_book",
+        "Retrieve detailed metadata for one work by slug.",
+        "list_audiobooks",
+        "List works with audiobook resources.",
+        "list_authors",
+        "List authors represented in the catalog.",
+        "get_author",
+        "Retrieve one author and linked catalog data by slug.",
+        "list_themes",
+        "List literary motifs and themes."
+      ]
+    },
+    {
+      "id": "word-cloud",
+      "name": "Word Cloud",
+      "tagline": "Generate word clouds from text",
+      "description": "Create a word-cloud image from text with configurable dimensions, colors, font, language, stop words, scale, and capitalization.",
+      "category": "Art & Design",
+      "color": "#7C3AED",
+      "emoji": "☁️",
+      "authType": "api-key",
+      "toolCount": 1,
+      "docsUrl": "https://wordcloudapi.com/getting-started/",
+      "searchTerms": [
+        "create_word_cloud",
+        "Generate a base64-encoded word-cloud image from supplied text and optional visual settings."
+      ]
+    },
+    {
+      "id": "worms",
+      "name": "WoRMS",
+      "tagline": "Resolve authoritative marine species names",
+      "description": "Search the World Register of Marine Species for taxonomic records matching a scientific name.",
+      "category": "Animals",
+      "color": "#0077B6",
+      "emoji": "🐚",
+      "authType": "none",
+      "toolCount": 1,
+      "docsUrl": "https://www.marinespecies.org/rest/",
+      "searchTerms": [
+        "search_species",
+        "Find WoRMS Aphia records matching a scientific name."
+      ]
+    },
+    {
+      "id": "xcolors",
+      "name": "xColors",
+      "tagline": "Generate and convert colors",
+      "description": "Generate random colors and convert values among HEX, RGB, and HSL color models.",
+      "category": "Art & Design",
+      "color": "#EC4899",
+      "emoji": "🌈",
+      "authType": "none",
+      "toolCount": 4,
+      "docsUrl": "https://x-colors.yurace.pro/",
+      "searchTerms": [
+        "generate_random_color",
+        "Generate one or more random colors in HEX, RGB, and HSL formats.",
+        "generate_color_shade",
+        "Generate random colors constrained by hue and optional lightness type.",
+        "convert_hex_to_rgb",
+        "Convert a hexadecimal color value to RGB.",
+        "convert_rgb_to_hex",
+        "Convert an RGB color value to hexadecimal."
+      ]
+    },
+    {
+      "id": "xeno-canto",
+      "name": "xeno-canto",
+      "tagline": "Search wildlife sound recordings",
+      "description": "Search Xeno-canto bird and wildlife recordings with its documented query language and pagination.",
+      "category": "Animals",
+      "color": "#15803D",
+      "emoji": "🎶",
+      "authType": "api-key",
+      "toolCount": 1,
+      "docsUrl": "https://xeno-canto.org/explore/api",
+      "searchTerms": [
+        "search_recordings",
+        "Search wildlife sound recordings using Xeno-canto query terms."
+      ]
     }
   ]
 }

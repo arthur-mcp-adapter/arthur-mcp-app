@@ -1,0 +1,27 @@
+{
+  "id": "urlhaus",
+  "name": "URLhaus",
+  "tagline": "Retrieve recent malicious URLs from URLhaus",
+  "description": "List recently reported malware-distribution URLs from the URLhaus community feed.",
+  "category": "Anti-Malware",
+  "color": "#B91C1C",
+  "emoji": "🚨",
+  "baseUrl": "https://urlhaus-api.abuse.ch/v1",
+  "auth": {
+    "type": "api-key",
+    "hint": "Obtain a free abuse.ch Auth-Key and send it in the Auth-Key header.",
+    "keyName": "Auth-Key",
+    "keyIn": "header"
+  },
+  "signupUrl": "https://auth.abuse.ch/",
+  "docsUrl": "https://urlhaus-api.abuse.ch/",
+  "tools": [
+    {
+      "name": "list_recent_malicious_urls",
+      "description": "Return the most recently added URLhaus records.",
+      "method": "GET",
+      "path": "/urls/recent/",
+      "params": []
+    }
+  ]
+}

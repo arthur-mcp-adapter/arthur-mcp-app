@@ -1,0 +1,78 @@
+{
+  "id": "picsart",
+  "name": "Picsart",
+  "tagline": "Generate images with Picsart AI",
+  "description": "Start a Picsart text-to-image inference and retrieve generated images by inference identifier.",
+  "category": "Art & Design",
+  "color": "#8B3DFF",
+  "emoji": "🖼️",
+  "baseUrl": "https://genai-api.picsart.io",
+  "auth": {
+    "type": "api-key",
+    "hint": "Create a Picsart API key and send it in the X-Picsart-API-Key header.",
+    "keyName": "X-Picsart-API-Key",
+    "keyIn": "header"
+  },
+  "signupUrl": "https://console.picsart.io/",
+  "docsUrl": "https://docs.picsart.io/reference/genai-text2image-1",
+  "tools": [
+    {
+      "name": "create_image",
+      "description": "Start an asynchronous text-to-image inference.",
+      "method": "POST",
+      "path": "/v1/text2image",
+      "params": [
+        {
+          "name": "prompt",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Image-generation prompt."
+        },
+        {
+          "name": "width",
+          "in": "body",
+          "required": false,
+          "type": "number",
+          "description": "Desired width from 64 to 1024."
+        },
+        {
+          "name": "height",
+          "in": "body",
+          "required": false,
+          "type": "number",
+          "description": "Desired height from 64 to 1024."
+        },
+        {
+          "name": "count",
+          "in": "body",
+          "required": false,
+          "type": "number",
+          "description": "Number of images from 1 to 10."
+        },
+        {
+          "name": "model",
+          "in": "body",
+          "required": false,
+          "type": "string",
+          "description": "Optional supported AIR model URN."
+        }
+      ]
+    },
+    {
+      "name": "get_image_result",
+      "description": "Retrieve the status or generated images for an inference.",
+      "method": "GET",
+      "path": "/v1/text2image/inferences/{inference_id}",
+      "params": [
+        {
+          "name": "inference_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Inference identifier returned by image creation."
+        }
+      ]
+    }
+  ]
+}

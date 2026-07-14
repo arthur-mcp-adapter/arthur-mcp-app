@@ -1,0 +1,76 @@
+{
+  "id": "covalent-goldrush",
+  "name": "Covalent",
+  "tagline": "Query multichain wallet data",
+  "description": "Retrieve token balances on one blockchain and discover activity for an address across supported chains with the Covalent GoldRush API.",
+  "category": "Blockchain",
+  "color": "#F97316",
+  "emoji": "🪙",
+  "baseUrl": "https://api.covalenthq.com/v1",
+  "auth": {
+    "type": "bearer",
+    "hint": "Create a GoldRush API key and send it as the bearer token. GoldRush keys begin with cqt_ or ckey_."
+  },
+  "signupUrl": "https://goldrush.dev/",
+  "docsUrl": "https://goldrush.dev/docs/api-reference",
+  "tools": [
+    {
+      "name": "get_token_balances",
+      "description": "Get native and fungible-token balances, spot prices, and metadata for an address on one chain.",
+      "method": "GET",
+      "path": "/{chainName}/address/{walletAddress}/balances_v2",
+      "params": [
+        {
+          "name": "chainName",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Supported chain name or chain ID, for example eth-mainnet."
+        },
+        {
+          "name": "walletAddress",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Wallet address or supported ENS, RNS, Lens Handle, or Unstoppable Domain."
+        },
+        {
+          "name": "quote-currency",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Fiat quote currency such as USD, EUR, GBP, JPY, or another documented supported value."
+        },
+        {
+          "name": "no-spam",
+          "in": "query",
+          "required": false,
+          "type": "boolean",
+          "description": "Remove suspected spam tokens when true."
+        }
+      ]
+    },
+    {
+      "name": "get_address_activity",
+      "description": "Find the supported chains on which a wallet address has activity.",
+      "method": "GET",
+      "path": "/address/{walletAddress}/activity",
+      "params": [
+        {
+          "name": "walletAddress",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Wallet address or a supported resolvable domain."
+        },
+        {
+          "name": "testnets",
+          "in": "query",
+          "required": false,
+          "type": "boolean",
+          "description": "Include testnet activity when true; defaults to false."
+        }
+      ]
+    }
+  ]
+}

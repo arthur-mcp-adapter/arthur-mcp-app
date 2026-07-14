@@ -1,0 +1,35 @@
+{
+  "id": "alienvault-otx",
+  "name": "AlienVault Open Threat Exchange (OTX)",
+  "tagline": "Investigate threat indicators with OTX",
+  "description": "Retrieve the general Open Threat Exchange intelligence known for an IPv4 indicator.",
+  "category": "Anti-Malware",
+  "color": "#16A34A",
+  "emoji": "🛰️",
+  "baseUrl": "https://otx.alienvault.com/api/v1",
+  "auth": {
+    "type": "api-key",
+    "hint": "Copy the API key from your OTX account and send it in the X-OTX-API-KEY header.",
+    "keyName": "X-OTX-API-KEY",
+    "keyIn": "header"
+  },
+  "signupUrl": "https://otx.alienvault.com/accounts/signup",
+  "docsUrl": "https://otx.alienvault.com/api",
+  "tools": [
+    {
+      "name": "get_ipv4_intelligence",
+      "description": "Return general OTX threat intelligence for an IPv4 address.",
+      "method": "GET",
+      "path": "/indicators/IPv4/{address}/general",
+      "params": [
+        {
+          "name": "address",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "IPv4 address to investigate."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "id": "cooper-hewitt",
+  "name": "Cooper Hewitt",
+  "tagline": "Search the Cooper Hewitt design collection",
+  "description": "Search objects in the Cooper Hewitt, Smithsonian Design Museum collection.",
+  "category": "Art & Design",
+  "color": "#000000",
+  "emoji": "🏛️",
+  "baseUrl": "https://api.collection.cooperhewitt.org",
+  "auth": {
+    "type": "api-key",
+    "hint": "Create a Cooper Hewitt API key/access token and send the token in the access_token query parameter.",
+    "keyName": "access_token",
+    "keyIn": "query"
+  },
+  "signupUrl": "https://collection.cooperhewitt.org/api/keys/register/",
+  "docsUrl": "https://collection.cooperhewitt.org/api/",
+  "tools": [
+    {
+      "name": "search_collection_objects",
+      "description": "Search objects in the Cooper Hewitt collection.",
+      "method": "GET",
+      "path": "/rest/",
+      "params": [
+        {
+          "name": "method",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Use cooperhewitt.search.objects for this operation."
+        },
+        {
+          "name": "query",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Collection object search text."
+        },
+        {
+          "name": "page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Result page."
+        },
+        {
+          "name": "per_page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Results per page."
+        }
+      ]
+    }
+  ]
+}

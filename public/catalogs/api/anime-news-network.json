@@ -1,0 +1,33 @@
+{
+  "id": "anime-news-network",
+  "name": "AnimeNewsNetwork",
+  "tagline": "Look up Anime News Network encyclopedia titles",
+  "description": "Retrieve Anime News Network encyclopedia metadata for an anime identifier as XML.",
+  "category": "Anime",
+  "color": "#2563EB",
+  "emoji": "📰",
+  "baseUrl": "https://cdn.animenewsnetwork.com/encyclopedia",
+  "auth": {
+    "type": "none",
+    "hint": "No authentication is required; cache results and provide source attribution."
+  },
+  "signupUrl": "https://www.animenewsnetwork.com/encyclopedia/api.php",
+  "docsUrl": "https://www.animenewsnetwork.com/encyclopedia/api.php",
+  "tools": [
+    {
+      "name": "get_anime",
+      "description": "Return the ANN Encyclopedia XML record for an anime identifier.",
+      "method": "GET",
+      "path": "/api.xml",
+      "params": [
+        {
+          "name": "anime",
+          "in": "query",
+          "required": true,
+          "type": "integer",
+          "description": "Anime News Network encyclopedia identifier."
+        }
+      ]
+    }
+  ]
+}

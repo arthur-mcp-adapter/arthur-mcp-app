@@ -1,0 +1,47 @@
+{
+  "id": "nlp-cloud",
+  "name": "NLP Cloud",
+  "tagline": "Summarize text with hosted NLP models",
+  "description": "Generate concise summaries from text using a selected NLP Cloud model through its model-scoped V1 REST API.",
+  "category": "AI",
+  "color": "#1E88E5",
+  "emoji": "🧠",
+  "baseUrl": "https://api.nlpcloud.io/v1",
+  "auth": {
+    "type": "bearer",
+    "hint": "Create an NLP Cloud token and send it as Authorization: Bearer <TOKEN>. The official API also accepts the Token scheme; Arthur MCP uses bearer for compatibility."
+  },
+  "signupUrl": "https://nlpcloud.com/home/register",
+  "docsUrl": "https://docs.nlpcloud.com/",
+  "tools": [
+    {
+      "name": "summarize_text",
+      "description": "Summarize a block of text with a selected NLP Cloud model and return summary_text.",
+      "method": "POST",
+      "path": "/{model_name}/summarization",
+      "params": [
+        {
+          "name": "model_name",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "NLP Cloud model identifier that supports summarization."
+        },
+        {
+          "name": "text",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Text to summarize, within the selected model's context limit."
+        },
+        {
+          "name": "size",
+          "in": "body",
+          "required": false,
+          "type": "string",
+          "description": "Summary size: small or large; defaults to small and is not supported by every model."
+        }
+      ]
+    }
+  ]
+}

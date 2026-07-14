@@ -18,6 +18,149 @@ Frontend duplication optimization is progressing through a phased extraction pla
 
 ## Latest Changes
 
+- Published staged API audit candidates into the production template catalog:
+  - Added `scripts/publish-api-templates.mjs`, which copies documented final candidates from `api_repository/final-apis/` into `public/catalogs/api/<id>.json` plus matching `index.json` summaries, skipping any `id` or `name` already present in production.
+  - Ran it once: published 158 new API templates (159 copied, minus 1 duplicate), bringing the production API catalog from 69 to 227 templates.
+  - Found and removed one true duplicate: `open-library` (new) and `openlibrary` (pre-existing) are the same real provider (openlibrary.org); kept the pre-existing `openlibrary` and deleted the redundant file/index entry. The script now also checks `name` (not just `id`) to prevent this going forward.
+  - Validated with `npm run check:template-catalogs` (227 API templates, 90 prompt templates valid) and `npm run type-check` (frontend structure + catalogs + `tsc --noEmit`), both passing.
+  - Noted in `docs/DESIGN_PATTERNS.md` and `docs/ROADMAP.md` that the audit staging tree (`APIs/`, `APIs.json`) has been relocated to `api_repository/` by other concurrent parallel-audit sessions; did not otherwise touch that in-progress research state.
+  - Multiple other Claude Code sessions were confirmed (by the user) to be running the same `process.md` audit concurrently (different worker/coordinator strategies); this session's own spawned workers (`claude-worker-A/B/C`) stayed strictly in worker mode and were fully wound down (no orphaned claims) before this publish step.
+  - `api/database.sqlite` was not touched.
+- Executed the popularity-first API audit prompt and advanced the contiguous checkpoint from `0130` through `0232`:
+  - Audited 102 additional source entries as 64 documented, 18 partial, 9 blocked, 9 inactive, and 2 non-API; persisted totals are now 232 reviewed, 162 suitable, and 70 not currently suitable.
+  - Generated 64 additional final candidates, including Google Books, Gmail, Google Analytics, Google Calendar, Google Drive, Dropbox, Box, OneDrive, Square, CircleCI, Travis CI, 1inch, and Binance.
+  - Preserved incompatible but active services as partial, including The Graph, Mailchimp, Trello, Apache Superset, Databricks, Alchemy Ethereum, and Smash, instead of exposing unsafe hostname, multi-secret, path-secret, GraphQL, or binary-transfer workarounds.
+  - Popularity workers also staged 38 validated out-of-order results, including GitHub, GitLab, Docker Hub, Firebase, Google Docs/Sheets/Slides/Keep, Stripe, Google Maps, Airtable, Asana, ClickUp, Jira, Notion, Netlify, npm, Coinbase, Wikipedia, and Yelp. These remain isolated until preceding source-order gaps are complete.
+  - Recovered orphaned claim directories only after confirming their owners were absent, preserved every recovery under `APIs/research/runtime/failed/`, and retained all completed claim/result evidence.
+  - Regenerated all 1,608 manuals, synchronized the 232-row audit index and 162 final candidates, and left the next contiguous gap at `0233`.
+  - No credentialed or mutating provider operation was executed, and `api/database.sqlite` was not touched.
+- Updated `APIs/process.md` so unaudited famous APIs are researched first:
+  - The default worker strategy now ranks globally established and broadly adopted APIs ahead of lower-profile entries, using official adoption evidence when prominence is unclear and `APIs.json` order as the deterministic tie-breaker.
+  - The intended four-agent topology is now two popularity-first workers, one continuity worker, and one coordinator; the continuity lane advances the smallest pending order so consolidated artifacts remain compatible with the existing contiguous validators and generators.
+  - Popularity changes only research order. Every catalog entry still requires an audit, runtime facts still require official sources, and suitability continues to use the existing documented/partial/blocked/inactive/non-API classifications.
+  - Updated the API research staging pattern and roadmap. No application behavior, database, dependency, permission, or user-facing flow changed.
+- Advanced the parallel full-catalog API audit through entry `0130`:
+  - Classified entries `0121`–`0130` as 6 documented, 3 partial, and 1 inactive, adding final candidates for Blockscout, BscScan through Etherscan V2, Chainlink CCIP, Covalent GoldRush, Etherscan, and Layer4.
+  - Kept Bitquery partial because its core interface is GraphQL/streaming, Chainpoint partial because no stable provider-operated HTTPS gateway exists, and GetBlock partial because its secret must be embedded in the URL path.
+  - Recorded Warrant as inactive after the legacy hosted runtime disappeared following its WorkOS acquisition; the open-source self-hosted project does not supply one shared production base URL.
+  - Persisted totals are now 130 reviewed, 98 suitable, and 32 not currently suitable; the next entry is `0131`.
+  - No credentialed or mutating provider operation was executed, and `api/database.sqlite` was not touched.
+- Advanced the uninterrupted full-catalog API audit through entry `0120` using three parallel claim-based research workers and coordinator-only consolidation:
+  - Classified entries `0111`–`0120` as 8 documented and 2 partial, adding final candidates for The Color API, Word Cloud, xColors, Clerk, Corbado, GetOTP, MojoAuth, and Stytch.
+  - Kept Auth0 partial because its Management API base URL is tenant-specific; kept Kinde partial because it additionally requires a form-encoded client-credential token exchange.
+  - Confirmed atomic claims prevented duplicate work while per-entry runtime results allowed source review before ordered consolidation.
+  - Persisted totals are now 120 reviewed, 92 suitable, and 28 not currently suitable; the next entry is `0121`.
+  - No credentialed or mutating provider operation was executed, and `api/database.sqlite` was not touched.
+- Updated `APIs/process.md` for safe parallel official-source research:
+  - The same prompt now defaults each parallel assistant to worker mode and reserves coordinator mode for explicit assignment.
+  - Workers atomically claim one order at a time with an order-specific directory, persist one isolated JSON result per entry, and never edit consolidated research, generators, manuals, audit indexes, final templates, or shared documentation.
+  - A single coordinator validates and merges only the longest contiguous staged result sequence, then regenerates and validates all downstream artifacts.
+  - Claim recovery now requires evidence that the owner is inactive; claim age alone cannot authorize duplicate research, and orphan history is preserved under `failed/`.
+- Advanced the uninterrupted full-catalog API audit through entry `0110`:
+  - Classified entries `0101`–`0110` as 9 documented and 1 partial, adding final candidates for Iconfinder's Magnific successor, Icons8, Logotypes.dev, Lordicon, The Met, PHP-Noise, Picsart, Pika's Orshot successor, and Rijksmuseum.
+  - Kept Noun Project partial because OAuth 1.0a request signing requires both a protected client key and secret, which the current single-auth template contract cannot represent safely.
+  - Corrected current lifecycle and authentication facts: Iconfinder now resolves to Magnific, Pika redirects to Orshot, and Rijksmuseum's current Search API requires no key.
+  - Persisted totals are now 110 reviewed, 84 suitable, and 26 not currently suitable; the next entry is `0111`.
+  - Regenerated all 1,608 manuals and validated all 84 final candidates; the full-catalog goal remains active.
+  - Public read-only checks succeeded for Icons8, Logotypes.dev, PHP-Noise, The Met, and Rijksmuseum; no credentialed provider operation was executed, and `api/database.sqlite` was not touched.
+- Advanced the uninterrupted full-catalog API audit through entry `0100`:
+  - Classified all entries `0091`–`0100` as documented and added final candidates for Art Search, ColorMagic, COLOURlovers, Cooper Hewitt, Dribbble, EmojiHub, Europeana, GetGenAI packaging compliance, Harvard Art Museums, and Icon Horse.
+  - Corrected Icon Horse's authentication model: basic favicon retrieval needs no key, while the optional key unlocks Pro customization.
+  - Persisted totals are now 100 reviewed, 75 suitable, and 25 not currently suitable; the next entry is `0101`.
+  - Regenerated all 1,608 manuals and validated all 75 final candidates; the full-catalog goal remains active.
+  - No credentialed provider operation was executed, and `api/database.sqlite` was not touched.
+- Advanced the uninterrupted full-catalog API audit through entry `0090`:
+  - Classified entries `0081`–`0090` as 6 documented, 2 blocked, and 2 partial.
+  - Added final candidates for MalShare, URLhaus, urlscan.io, Verisys Antivirus API, VirusTotal, and the Art Institute of Chicago.
+  - Kept MalwareBazaar and Scanii partial because their useful operations require form or multipart bodies; kept MetaCert and Web of Trust blocked because complete current public contracts were unavailable.
+  - Persisted totals are now 90 reviewed, 65 suitable, and 25 not currently suitable; the next entry is `0091`.
+  - Regenerated all 1,608 manuals and validated all 65 final candidates; the full-catalog goal remains active.
+  - No credentialed provider operation was executed, and `api/database.sqlite` was not touched.
+- Advanced the uninterrupted full-catalog API audit through entry `0080`:
+  - Classified entries `0071`–`0080` as 7 documented, 2 blocked, and 1 inactive.
+  - Added final candidates for Waifu.im, Waifu.it, AbuseIPDB, AlienVault OTX, CAPE Sandbox, Google Safe Browsing, and MalDatabase.
+  - Recorded Waifu.pics as inactive after its historical documentation redirected to an unrelated domain; kept Dymo API and FishFish blocked because no complete public raw REST contract could be verified.
+  - Persisted totals are now 80 reviewed, 59 suitable, and 21 not currently suitable; the next entry is `0081`.
+  - Regenerated all 1,608 manuals and validated all 59 final candidates; the full-catalog goal remains active.
+  - No credentialed provider operation was executed, and `api/database.sqlite` was not touched.
+- Advanced the uninterrupted full-catalog API audit through entry `0070`:
+  - Classified entries `0061`–`0070` as 9 documented and Mangapi as blocked because its marketplace listing lacks a public runtime contract.
+  - Added final candidates for Kitsu, MangaDex, MyAnimeList, Nekos API, NEKOSBEST, Nekosia, PokéAPI, Shikimori, and trace.moe.
+  - Persisted totals are now 70 reviewed, 52 suitable, and 18 not currently suitable; the next entry is `0071` (Waifu.im).
+  - Regenerated all manuals and validated all 52 final candidates; the full-catalog goal remains active.
+- Advanced the uninterrupted full-catalog API audit through entry `0060`:
+  - Classified entries `0051`–`0060` as 6 documented, 2 partial, 1 blocked, and 1 non-API.
+  - Added final candidates for WoRMS, Xeno-canto, Anime News Network, Danbooru, Dragon Ball API, and Jikan.
+  - Excluded AniDB's HTTP-only runtime, AniList's GraphQL-only contract, Anijam's non-API product, and Dattebayo's undocumented backend.
+  - Persisted totals are now 60 reviewed, 43 suitable, and 17 not currently suitable; the next entry is `0061` (Kitsu).
+  - Regenerated all manuals and validated all 43 final candidates; the full-catalog goal remains active.
+- Advanced the uninterrupted full-catalog API audit through entry `0050`:
+  - Classified entries `0041`–`0050` as 9 documented and 1 partial; Petfinder remains out of final candidates because its current public contract is GraphQL rather than REST.
+  - Added final candidates for MeowFacts, Movebank, PlaceBear, PlaceDog, RandomDog, RandomDuck, RandomFox, RescueGroups, and TheDogAPI.
+  - Persisted totals are now 50 reviewed, 37 suitable, and 13 not currently suitable; the next entry is `0051` (WoRMS).
+  - Regenerated all 1,608 manuals and validated all 37 final candidates; the full-catalog goal remains active.
+  - No credentialed provider operation was executed, and `api/database.sqlite` was not touched.
+- Advanced the uninterrupted full-catalog API audit through entry `0040`:
+  - Audited entries `0031`–`0040` from current official sources and classified 9 as documented and Cat Facts as inactive.
+  - Added final candidates for WolframAlpha, CATAAS, The Cat API, Dog CEO, Dog API, eBird, HTTP Cat, HTTP Dog, and IUCN Red List V4.
+  - Updated the persisted totals to 40 reviewed, 28 suitable, and 12 not currently suitable; the next entry is `0041` (MeowFacts).
+  - Regenerated all 1,608 manuals and validated all 28 final candidates. The full-catalog goal remains active and must continue without requesting user confirmation.
+  - No credentialed provider operation was executed, and `api/database.sqlite` was not touched.
+- Updated `APIs/process.md` so continuation is no longer limited to a 5–10-entry batch:
+  - A resumed assistant must process every pending entry through `1608` without asking for confirmation or handing control back at intermediate checkpoints.
+  - Intermediate checkpoints remain required for interruption safety and must be followed immediately by the next entry in the same run.
+  - Partial, blocked, inactive, and non-API decisions count as completed audit outcomes and do not stop catalog processing.
+  - Early termination is reserved for a genuine repository-wide blocker, a missing required capability, or an explicit user interruption.
+  - No application behavior, database, dependency, permission, or user-facing flow changed.
+- Strengthened `APIs/process.md` as a true interruption-safe resume prompt:
+  - It now derives the checkpoint from the longest contiguous prefix in `APIs/research/official-sources.json` instead of relying on chat history or a hard-coded entry number.
+  - It distinguishes a saved research record from a fully completed entry and reconciles manuals, final templates, audit rows, presentation mappings, roadmap, and handoff before advancing.
+  - It includes a read-only checkpoint command and recovery rules for invalid JSON, incomplete evidence, stale generated files, inconsistent documentation, and uncommitted work.
+  - With the current persisted state, the procedure resolves checkpoint `0030` and next entry `0031`.
+  - No application behavior, database, dependency, permission, or user-facing flow changed.
+- Continued the official-source API audit through the contiguous range `0001`–`0030` and added a reusable continuation prompt:
+  - Classified entries `0021`–`0030` as 7 documented, 1 blocked, and 2 partial.
+  - Promoted MessengerX.io, NLP Cloud, OpenAI, Perspective, Roboflow Universe, ApyHub AI Summarize, and Unplugg into individual YouTube-shaped files under `APIs/final-apis/`.
+  - Kept Machinetutors blocked because it does not publish a runtime contract; kept SkyBiometry partial because it requires two protected query credentials; kept Spam Hunter partial because it embeds the API key in the JSON body.
+  - Used current official OpenAI developer documentation for the Responses API after installing the official `openaiDeveloperDocs` MCP configuration; the current session required official-domain fallback until restart.
+  - Updated `APIs/audited.md` to 30 reviewed entries: 19 suitable and 11 not suitable for the current contract.
+  - Added `APIs/process.md`, a self-contained prompt that lets another AI assistant continue sequential research, classification, manual generation, final-template promotion, audit indexing, documentation, and validation without relying on conversation history.
+  - Made the final-template validator derive its expected file count from documented research records instead of a hard-coded total.
+  - No credentialed provider calls were made; `api/database.sqlite` and unrelated user changes were not touched.
+- Added `APIs/audited.md` as the concise decision index for the official-source audit completed through entry `0020`:
+  - Lists all 20 audited APIs in source order with a Yes/No suitability decision, research status, and short rationale.
+  - Records 12 APIs as suitable for the current Arthur MCP REST template contract and 8 as not suitable now.
+  - Defines “No” as a current-context decision so blocked and partial entries can be reconsidered when evidence or runtime capabilities change.
+  - Links the 12 suitable files in `APIs/final-apis/` and preserves `APIs/research/official-sources.json` as the detailed evidence source.
+  - No application behavior, persistence, dependency, permission, or user-facing flow changed.
+- Promoted every currently documented official-source API into an individual final candidate under `APIs/final-apis/`:
+  - Created 12 YouTube-shaped JSON templates: AI/ML API, Chatwith, Clarifai, Cohere, CustomGPT.ai, Dialogflow, Eden, Gladia, HOL Registry Broker, Imagga, Irisnet, and Keen IO.
+  - Each file contains the same ordered top-level contract as `public/catalogs/api/youtube.json`: identity, presentation, connection, authentication, signup/docs URLs, and tools.
+  - Research-only `evidenceUrl` data remains in `APIs/research/official-sources.json` and is intentionally excluded from the final candidates.
+  - Added `scripts/generate-final-api-templates.mjs` for deterministic promotion and `scripts/check-final-api-templates.mjs` for field order, HTTPS URLs, auth, filename/ID, tool, and parameter validation.
+  - Excluded all entries classified as partial, blocked, inactive, or non-API.
+  - These files are staged outside `public/catalogs/api/`; the production catalog and its index were not changed.
+  - No application behavior, dependency, database, permission, or user-facing flow changed.
+- Started the official-source verification pass for the ordered API research catalog:
+  - Added `APIs/research/official-sources.json` as the structured evidence overlay and completed a contiguous review of entries `0001` through `0020`.
+  - Current result: 12 documented candidates, 4 blocked entries, 2 inactive services, 1 partial integration, and 1 library classified as `non-api`.
+  - Official evidence now supplies base URLs, current authentication placement, selected high-value operations, parameters, lifecycle notes, errors, pagination, limits, and test status where the provider publishes them.
+  - Corrected source-catalog assumptions when official material differs, including OAuth for Dialogflow, public read operations for HOL Registry Broker, and Basic authentication for Imagga.
+  - Added `scripts/check-api-research.mjs` to enforce contiguous source order, HTTPS evidence, supported auth/method/parameter values, unique tools, and an official evidence URL for every selected tool.
+  - Enhanced `scripts/generate-api-manuals.mjs` to merge verified facts into all generated manuals and template candidate drafts, while marking blocked, inactive, and non-API entries as ineligible rather than fabricating runtime contracts.
+  - Live credential tests remain pending wherever the selected operation requires a provider account or secret; no credentials were requested or stored.
+  - No application behavior, dependency, persistence model, permission, or user-facing flow changed, and the pre-existing `api/database.sqlite` modification was not touched.
+- Added the ordered API integration documentation generated from the user-provided `APIs.json`:
+  - `APIs/MANUAL.md` indexes all 1,608 APIs in source order and links to one manual per entry under `APIs/entries/`.
+  - Numbered filenames (`0001` through `1608`) preserve ordering and disambiguate the 14 repeated API names.
+  - Every entry preserves its catalog snapshot, provider/documentation link, authentication interpretation, HTTPS/CORS notes, safe request scaffold, Arthur MCP integration checklist, and endpoint verification record.
+  - Expanded every entry into a template-oriented research workspace based on `public/catalogs/api/zendesk.json`, including all target identity/presentation/connection fields, tool and parameter worksheets, response/error/pagination/rate-limit evidence, and a JSON candidate draft.
+  - Defined a template-ready gate requiring verified official evidence, a tested base URL, supported auth mapping, useful tested tools, operational constraints, and removal of all `<PENDING_...>` placeholders.
+  - Detected 37 source entries whose normalized identifiers already exist in the 69-template API catalog; these are marked for review/merge rather than duplicate creation.
+  - The 649 entries with an empty `Auth` value are documented as requiring no authentication according to the catalog snapshot.
+  - Runtime base URLs remain explicitly marked as needing verification because `APIs.json` contains discovery links rather than a dedicated base-URL field; no endpoint was inferred or fabricated.
+  - Added `scripts/generate-api-manuals.mjs` so the documentation can be regenerated deterministically from `APIs.json`; it preserves existing entry files by default and requires `--force` for an intentional full rebuild.
+  - No application behavior, API endpoint, persistence model, dependency, user-facing flow, or permission changed.
 - Implemented the static frontend template catalog architecture selected from the software engineering review:
   - Replaced the 242,655-byte API/prompt TypeScript constants with two searchable static indexes and 159 individual JSON detail files under `public/catalogs/`.
   - API summaries retain card metadata and index tool names/descriptions; prompt summaries retain tags. Multi-token search is case/accent/separator insensitive.
@@ -424,6 +567,8 @@ Frontend duplication optimization is progressing through a phased extraction pla
 
 ## Validation
 
+- Popularity-first API audit prompt update: reviewed all priority/claim/consolidation references with `rg`; `git diff --check -- . ':!api/database.sqlite'` passed. Application tests were not run because only documentation and research workflow instructions changed.
+- API audit continuation through entry `0030`: `node scripts/check-api-research.mjs` passed for 30 contiguous records (19 documented, 5 blocked, 3 partial, 2 inactive, and 1 non-API); `node scripts/generate-api-manuals.mjs --force` regenerated all 1,608 ordered manuals; `node scripts/generate-final-api-templates.mjs` generated 19 candidates; `node scripts/check-final-api-templates.mjs` passed for all 19 candidates; `npm run check:template-catalogs` passed for the production catalog's 69 API and 90 prompt templates; `node --check` passed for all four audit/generation scripts; the audit index contains 30 rows (19 Yes and 11 No), filenames match template IDs, no final candidate contains `evidenceUrl` or `<PENDING_...>`, and `git diff --check -- . ':!api/database.sqlite'` passed.
 - Static template catalog implementation: `npm run type-check` passed, including frontend structure and validation of all 69 API plus 90 prompt index/detail records; the full `npm test` run passed with 14 files and 91 tests; `npm run build` passed and copied 70 API plus 91 prompt JSON assets. Preview-server smoke requests successfully loaded both indexes plus the GitHub and Executive Summary details. The final JavaScript has no matches for representative API/prompt catalog content; the API and prompt gallery chunks are now 9.08 kB and 7.79 kB respectively. The existing non-failing `@tabler/icons-react` large-barrel warning remains.
 - Frontend export/folder implementation: `npm run type-check` passed with the strengthened structural gate; the isolated full `npm test` rerun passed with 12 files and 88 tests; `npm run build` passed with only the existing non-failing `@tabler/icons-react` large-barrel warning. The initial test run executed in parallel with type-check had one Login timeout while the other 87 tests passed; it did not reproduce when run alone.
 - Documentation-only frontend export/folder planning: the new plan and roadmap references resolve, the directory audit recorded 185 folders with 142 missing `index.ts` and 184 missing `index.css`, the AST audit identified 9 named multi-export production modules, and `git diff --check --ignore-submodules=all` passed. Application type-check/tests/build were not rerun because no application code changed.
@@ -528,7 +673,7 @@ Frontend duplication optimization is progressing through a phased extraction pla
 
 ## Recommended Next Step
 
-Manually smoke-test `/templates`, `/prompts/templates`, and template-derived server cards through the development server, then commit the static catalog implementation together with its generated JSON assets and documentation. Keep it separate from the pre-existing backend/deploy/database/website changes, and continue using `git status --ignore-submodules=all` until the stale `.claude/worktrees` gitlinks are cleaned up intentionally.
+Continue the continuity lane at entry `0233` while popularity-first workers claim the most prominent unaudited providers. Consolidate only the longest source-order sequence, preserve the 38 staged famous-API results until their gaps close, and keep `api/database.sqlite` untouched.
 
 ## Points Of Attention
 

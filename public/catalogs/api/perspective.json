@@ -1,0 +1,63 @@
+{
+  "id": "perspective",
+  "name": "Perspective",
+  "tagline": "Score comments for toxicity and harmful attributes",
+  "description": "Analyze text with Google's Perspective Comment Analyzer and return probability scores for requested attributes such as toxicity, insults, or threats.",
+  "category": "AI",
+  "color": "#4285F4",
+  "emoji": "🛡️",
+  "baseUrl": "https://commentanalyzer.googleapis.com",
+  "auth": {
+    "type": "api-key",
+    "hint": "Enable Perspective API for a Google Cloud project and send its API key in the key query parameter.",
+    "keyName": "key",
+    "keyIn": "query"
+  },
+  "signupUrl": "https://developers.perspectiveapi.com/s/docs-get-started",
+  "docsUrl": "https://developers.perspectiveapi.com/s/docs-get-started",
+  "tools": [
+    {
+      "name": "analyze_comment",
+      "description": "Analyze comment text and return overall and optional span-level scores for requested Perspective attributes.",
+      "method": "POST",
+      "path": "/v1alpha1/comments:analyze",
+      "params": [
+        {
+          "name": "comment",
+          "in": "body",
+          "required": true,
+          "type": "object",
+          "description": "Comment TextEntry containing UTF-8 text and optional PLAIN_TEXT or HTML type."
+        },
+        {
+          "name": "requestedAttributes",
+          "in": "body",
+          "required": true,
+          "type": "object",
+          "description": "Map of attribute names to score configuration, for example TOXICITY with an empty configuration object."
+        },
+        {
+          "name": "languages",
+          "in": "body",
+          "required": false,
+          "type": "array",
+          "description": "ISO or BCP-47 languages; omit to request automatic language detection."
+        },
+        {
+          "name": "doNotStore",
+          "in": "body",
+          "required": false,
+          "type": "boolean",
+          "description": "Request automatic deletion of submitted comment and context after scoring."
+        },
+        {
+          "name": "spanAnnotations",
+          "in": "body",
+          "required": false,
+          "type": "boolean",
+          "description": "Request sub-comment span scores when supported by the selected model."
+        }
+      ]
+    }
+  ]
+}

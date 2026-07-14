@@ -1,0 +1,40 @@
+{
+  "id": "emojihub",
+  "name": "EmojiHub",
+  "tagline": "Search and retrieve emoji metadata",
+  "description": "Search EmojiHub by emoji name and receive HTML entity and Unicode representations.",
+  "category": "Art & Design",
+  "color": "#F59E0B",
+  "emoji": "😀",
+  "baseUrl": "https://emojihub.yurace.pro/api",
+  "auth": {
+    "type": "none",
+    "hint": "No authentication is required."
+  },
+  "signupUrl": "https://github.com/cheatsnake/emojihub",
+  "docsUrl": "https://github.com/cheatsnake/emojihub",
+  "tools": [
+    {
+      "name": "search_emojis",
+      "description": "Search emojis by name.",
+      "method": "GET",
+      "path": "/search",
+      "params": [
+        {
+          "name": "q",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Emoji name search text."
+        }
+      ]
+    },
+    {
+      "name": "get_random_emoji",
+      "description": "Return one random emoji record.",
+      "method": "GET",
+      "path": "/random",
+      "params": []
+    }
+  ]
+}

@@ -1,0 +1,91 @@
+{
+  "id": "gyazo",
+  "name": "Gyazo",
+  "tagline": "Browse and search Gyazo captures",
+  "description": "List and retrieve a user's saved Gyazo captures, inspect the authenticated profile, and search capture metadata and OCR text.",
+  "category": "Cloud Storage & File Sharing",
+  "color": "#4A90E2",
+  "emoji": "📸",
+  "baseUrl": "https://api.gyazo.com/api",
+  "auth": {
+    "type": "bearer",
+    "hint": "Register an application in the Gyazo developer dashboard, generate or obtain an OAuth 2.0 access token, and send it in the Authorization header as a Bearer token."
+  },
+  "signupUrl": "https://gyazo.com/api",
+  "docsUrl": "https://gyazo.com/api/docs",
+  "tools": [
+    {
+      "name": "list_images",
+      "description": "List captures saved by the authenticated Gyazo user.",
+      "method": "GET",
+      "path": "/images",
+      "params": [
+        {
+          "name": "page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "One-based page number; defaults to 1."
+        },
+        {
+          "name": "per_page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Captures per page from 1 to 100; defaults to 20."
+        }
+      ]
+    },
+    {
+      "name": "get_image",
+      "description": "Get one saved Gyazo capture and its available metadata and OCR information.",
+      "method": "GET",
+      "path": "/images/{image_id}",
+      "params": [
+        {
+          "name": "image_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Gyazo image identifier to retrieve."
+        }
+      ]
+    },
+    {
+      "name": "get_user",
+      "description": "Get the authenticated Gyazo user's profile.",
+      "method": "GET",
+      "path": "/users/me",
+      "params": []
+    },
+    {
+      "name": "search_images",
+      "description": "Search the authenticated user's saved Gyazo captures; this operation requires Gyazo Pro.",
+      "method": "GET",
+      "path": "/search",
+      "params": [
+        {
+          "name": "query",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Search query with a maximum length of 200 characters."
+        },
+        {
+          "name": "page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "One-based page number; defaults to 1."
+        },
+        {
+          "name": "per",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Results per page, up to 100; defaults to 20."
+        }
+      ]
+    }
+  ]
+}

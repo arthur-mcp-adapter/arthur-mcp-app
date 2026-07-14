@@ -1,0 +1,40 @@
+{
+  "id": "dog-ceo",
+  "name": "Dog Pics",
+  "tagline": "Retrieve random dog pictures",
+  "description": "Get random dog-image URLs across all breeds or for a selected breed from the public Dog CEO image catalog.",
+  "category": "Animals",
+  "color": "#8B5E3C",
+  "emoji": "🐕",
+  "baseUrl": "https://dog.ceo/api",
+  "auth": {
+    "type": "none",
+    "hint": "No authentication is required for public Dog CEO read endpoints."
+  },
+  "signupUrl": "https://dog.ceo/dog-api/",
+  "docsUrl": "https://dog.ceo/dog-api/documentation/",
+  "tools": [
+    {
+      "name": "get_random_dog",
+      "description": "Return one random dog image URL from the full catalog.",
+      "method": "GET",
+      "path": "/breeds/image/random",
+      "params": []
+    },
+    {
+      "name": "get_random_breed_dog",
+      "description": "Return one random dog image URL for a selected breed.",
+      "method": "GET",
+      "path": "/breed/{breed}/images/random",
+      "params": [
+        {
+          "name": "breed",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Dog CEO breed identifier."
+        }
+      ]
+    }
+  ]
+}

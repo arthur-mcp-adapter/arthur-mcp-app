@@ -1,0 +1,170 @@
+{
+  "id": "openholidays",
+  "name": "OpenHolidays API",
+  "tagline": "Look up public and school holidays for many countries",
+  "description": "Retrieve public and school holidays, supported countries, subdivisions, and languages from the free, open-data OpenHolidays API. No account or API key is required.",
+  "category": "Calendar",
+  "color": "#16A34A",
+  "emoji": "📆",
+  "baseUrl": "https://openholidaysapi.org",
+  "auth": {
+    "type": "none",
+    "hint": "No credential required. This is a free, open-data public API."
+  },
+  "signupUrl": "https://openholidaysapi.org/",
+  "docsUrl": "https://www.openholidaysapi.org/en/",
+  "tools": [
+    {
+      "name": "list_public_holidays",
+      "description": "List public holidays for a country within a date range, optionally scoped to a subdivision (state/province).",
+      "method": "GET",
+      "path": "/PublicHolidays",
+      "params": [
+        {
+          "name": "countryIsoCode",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "ISO 3166-1 country code, e.g. DE."
+        },
+        {
+          "name": "validFrom",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Start of the date range, e.g. 2026-01-01."
+        },
+        {
+          "name": "validTo",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "End of the date range, e.g. 2026-12-31 (maximum span is 3 years)."
+        },
+        {
+          "name": "languageIsoCode",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "ISO 639-1 language code for holiday names, e.g. EN."
+        },
+        {
+          "name": "subdivisionCode",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Subdivision code to scope results, e.g. DE-BE."
+        }
+      ]
+    },
+    {
+      "name": "get_public_holidays_by_date",
+      "description": "Get all public holidays across supported countries that fall on a specific date.",
+      "method": "GET",
+      "path": "/PublicHolidaysByDate",
+      "params": [
+        {
+          "name": "date",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Date of interest, e.g. 2026-12-25."
+        },
+        {
+          "name": "languageIsoCode",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "ISO 639-1 language code for holiday names, e.g. EN."
+        }
+      ]
+    },
+    {
+      "name": "list_school_holidays",
+      "description": "List school holidays for a country within a date range, optionally scoped to a subdivision or holiday group.",
+      "method": "GET",
+      "path": "/SchoolHolidays",
+      "params": [
+        {
+          "name": "countryIsoCode",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "ISO 3166-1 country code, e.g. DE."
+        },
+        {
+          "name": "validFrom",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Start of the date range, e.g. 2026-01-01."
+        },
+        {
+          "name": "validTo",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "End of the date range (maximum span is 3 years)."
+        },
+        {
+          "name": "languageIsoCode",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "ISO 639-1 language code for holiday names, e.g. EN."
+        },
+        {
+          "name": "subdivisionCode",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Subdivision code to scope results, e.g. DE-BE."
+        },
+        {
+          "name": "groupCode",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Holiday zone/group code to filter school holidays."
+        }
+      ]
+    },
+    {
+      "name": "list_countries",
+      "description": "List all countries supported by the API, with localized names.",
+      "method": "GET",
+      "path": "/Countries",
+      "params": [
+        {
+          "name": "languageIsoCode",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "ISO 639-1 language code for country names, e.g. EN."
+        }
+      ]
+    },
+    {
+      "name": "list_subdivisions",
+      "description": "List the administrative subdivisions (states, provinces, cantons) supported for a country.",
+      "method": "GET",
+      "path": "/Subdivisions",
+      "params": [
+        {
+          "name": "countryIsoCode",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "ISO 3166-1 country code, e.g. DE."
+        },
+        {
+          "name": "languageIsoCode",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "ISO 639-1 language code for subdivision names, e.g. EN."
+        }
+      ]
+    }
+  ]
+}

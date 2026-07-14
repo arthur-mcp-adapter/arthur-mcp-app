@@ -12,6 +12,18 @@ This file should be updated when task state changes. It does not replace issues 
 
 ## In Progress
 
+- [ ] Verify all generated API integration manuals against current official sources, prioritizing famous unaudited APIs while consolidating results in `APIs.json` order:
+  - [x] Add a structured official-source evidence overlay and validation script.
+  - [x] Complete the contiguous review for entries `0001` through `0232`.
+  - [x] Emit all 162 currently documented entries as individual YouTube-shaped candidates under `APIs/final-apis/`.
+  - [x] Add `APIs/audited.md` with the ordered Yes/No suitability decision for every reviewed entry.
+  - [x] Add `APIs/process.md` as the self-contained continuation prompt for other AI assistants.
+  - [x] Add a parallel worker protocol with atomic per-entry claims, isolated result files, stale-claim recovery, and coordinator-only consolidation.
+  - [x] Change worker selection to prioritize globally prominent, broadly adopted unaudited APIs, with a dedicated continuity lane and source-order tie-breaking.
+  - [ ] Keep the contiguous consolidation lane moving from entry `0233` while popularity-first workers audit the highest-priority remaining providers; 38 out-of-order results are currently staged, including GitHub, GitLab, Stripe, Google Maps, Google Workspace APIs, Airtable, Notion, Coinbase, and Wikipedia.
+  - [ ] Run credentialed smoke tests only when provider credentials are intentionally supplied.
+  - [x] Convert reviewed candidates into production catalog templates: added `scripts/publish-api-templates.mjs`, which copied 158 net-new documented candidates from `api_repository/final-apis/` into `public/catalogs/api/` (227 API templates total, up from 69), skipping one duplicate (`open-library`, already published as `openlibrary`). `npm run check:template-catalogs` and `npm run type-check` both pass.
+  - Note: the staging tree (`APIs/`, `APIs.json`) has been relocated to `api_repository/` by ongoing parallel audit sessions; further publish runs should read from that path (already reflected in `scripts/publish-api-templates.mjs`).
 - [x] Apply the static frontend template catalog plan (`docs/FRONTEND_TEMPLATE_CATALOG_PERSISTENCE_PLAN.md`):
   - [x] **Phase 0:** Record counts, source size, consumers, search behavior, and summary/detail field requirements.
   - [x] **Phase 1:** Convert 69 API and 90 prompt templates into searchable indexes plus 159 individual static detail files.
@@ -68,6 +80,7 @@ This file should be updated when task state changes. It does not replace issues 
 
 ## Done
 
+- [x] Generated template-oriented API integration research from `APIs.json`: `APIs/MANUAL.md` indexes all 1,608 entries and `APIs/entries/` contains one numbered workspace per API, with source links, authentication interpretation, endpoint evidence, tool/parameter worksheets, response/operations checks, and a JSON candidate shaped like `public/catalogs/api/zendesk.json`. Empty `Auth` values are treated as no authentication; documentation URLs are never silently promoted to runtime endpoints; 37 identifier matches are marked for review against existing templates.
 - [x] Enforced single-export named frontend modules, `index.ts`-only aggregation, named React implementations, and `index.ts`/`index.css` coverage in all 185 source directories.
 - [x] Completed the frontend file organization migration: 249 isolated contract files, focused utility/hook/constant modules, pure `index.ts` barrels, and an enforced `check:frontend-structure` gate.
 - [x] Audited frontend hardcoded user-facing terms that bypass i18n and documented findings/remediation priorities in `docs/FRONTEND_I18N_HARDCODED_AUDIT_2026-07-01.md`.

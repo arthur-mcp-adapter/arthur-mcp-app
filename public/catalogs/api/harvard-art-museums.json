@@ -1,0 +1,63 @@
+{
+  "id": "harvard-art-museums",
+  "name": "Harvard Art Museums",
+  "tagline": "Explore Harvard Art Museums objects",
+  "description": "Search Harvard Art Museums collection objects by title and classification with field and pagination controls.",
+  "category": "Art & Design",
+  "color": "#A51C30",
+  "emoji": "🖌️",
+  "baseUrl": "https://api.harvardartmuseums.org",
+  "auth": {
+    "type": "api-key",
+    "hint": "Request a Harvard Art Museums API key and send it in the apikey query parameter.",
+    "keyName": "apikey",
+    "keyIn": "query"
+  },
+  "signupUrl": "https://harvardartmuseums.org/collections/api",
+  "docsUrl": "https://github.com/harvardartmuseums/api-docs",
+  "tools": [
+    {
+      "name": "search_collection_objects",
+      "description": "Search collection objects using documented object filters.",
+      "method": "GET",
+      "path": "/object",
+      "params": [
+        {
+          "name": "title",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Object title search text."
+        },
+        {
+          "name": "classification",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Object classification such as Paintings."
+        },
+        {
+          "name": "fields",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Comma-separated fields to return."
+        },
+        {
+          "name": "page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Result page."
+        },
+        {
+          "name": "size",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Records per page."
+        }
+      ]
+    }
+  ]
+}

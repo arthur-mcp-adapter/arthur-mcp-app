@@ -1,0 +1,134 @@
+{
+  "id": "gmail",
+  "name": "Gmail",
+  "tagline": "Search and read Gmail mailbox data",
+  "description": "Inspect the authenticated Gmail user's mailbox profile, search and retrieve messages, and list mailbox labels through the official Gmail API.",
+  "category": "Business",
+  "color": "#EA4335",
+  "emoji": "✉️",
+  "baseUrl": "https://gmail.googleapis.com/gmail/v1",
+  "auth": {
+    "type": "bearer",
+    "hint": "Enable the Gmail API in a Google Cloud project, complete the OAuth 2.0 consent flow with the narrowest required Gmail scope, and provide the resulting access token as a Bearer token. Reading message content normally requires the restricted gmail.readonly scope and may trigger Google verification requirements."
+  },
+  "signupUrl": "https://console.cloud.google.com/",
+  "docsUrl": "https://developers.google.com/workspace/gmail/api/reference/rest",
+  "tools": [
+    {
+      "name": "get_profile",
+      "description": "Get the authenticated user's Gmail address, message and thread totals, and current mailbox history ID.",
+      "method": "GET",
+      "path": "/users/{userId}/profile",
+      "params": [
+        {
+          "name": "userId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "The user's email address, or the special value me for the authenticated user."
+        }
+      ]
+    },
+    {
+      "name": "list_messages",
+      "description": "List message IDs in a mailbox, optionally using Gmail search syntax and label filters.",
+      "method": "GET",
+      "path": "/users/{userId}/messages",
+      "params": [
+        {
+          "name": "userId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "The user's email address, or the special value me for the authenticated user."
+        },
+        {
+          "name": "maxResults",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Maximum messages to return; defaults to 100 and cannot exceed 500."
+        },
+        {
+          "name": "pageToken",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Token from nextPageToken for the next result page."
+        },
+        {
+          "name": "q",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "A Gmail search-box query; unavailable when authorized only with the gmail.metadata scope."
+        },
+        {
+          "name": "labelIds",
+          "in": "query",
+          "required": false,
+          "type": "array",
+          "description": "Label IDs that every returned message must match."
+        },
+        {
+          "name": "includeSpamTrash",
+          "in": "query",
+          "required": false,
+          "type": "boolean",
+          "description": "Whether to include messages from SPAM and TRASH; defaults to false."
+        }
+      ]
+    },
+    {
+      "name": "get_message",
+      "description": "Retrieve one Gmail message by its message ID.",
+      "method": "GET",
+      "path": "/users/{userId}/messages/{id}",
+      "params": [
+        {
+          "name": "userId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "The user's email address, or the special value me for the authenticated user."
+        },
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Message ID, normally obtained from list_messages."
+        },
+        {
+          "name": "format",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Response format: full, metadata, minimal, or raw."
+        },
+        {
+          "name": "metadataHeaders",
+          "in": "query",
+          "required": false,
+          "type": "array",
+          "description": "Headers to include when format is metadata."
+        }
+      ]
+    },
+    {
+      "name": "list_labels",
+      "description": "List all labels in the authenticated user's Gmail mailbox.",
+      "method": "GET",
+      "path": "/users/{userId}/labels",
+      "params": [
+        {
+          "name": "userId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "The user's email address, or the special value me for the authenticated user."
+        }
+      ]
+    }
+  ]
+}

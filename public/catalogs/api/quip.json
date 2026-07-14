@@ -1,0 +1,128 @@
+{
+  "id": "quip",
+  "name": "Quip",
+  "tagline": "Read Quip threads, folders, and messages",
+  "description": "Retrieve a Quip document/thread, list recently updated threads, search threads by text, get folder contents, and read thread messages.",
+  "category": "Cloud Storage & File Sharing",
+  "color": "#4A154B",
+  "emoji": "📝",
+  "baseUrl": "https://platform.quip.com/1",
+  "auth": {
+    "type": "bearer",
+    "hint": "Generate a Quip Personal Access Token (or complete OAuth 2.0) and send it as Authorization: Bearer <ACCESS_TOKEN>."
+  },
+  "signupUrl": "https://quip.com/",
+  "docsUrl": "https://quip.com/dev/automation/documentation",
+  "tools": [
+    {
+      "name": "get_thread",
+      "description": "Retrieve a Quip thread (document, spreadsheet, or chat) by ID.",
+      "method": "GET",
+      "path": "/threads/{id}",
+      "params": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Quip thread ID or secret path."
+        }
+      ]
+    },
+    {
+      "name": "list_recent_threads",
+      "description": "List the authenticated user's recently updated threads.",
+      "method": "GET",
+      "path": "/threads/recent",
+      "params": [
+        {
+          "name": "max_updated_usec",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Only return threads updated before this microsecond timestamp, for paging."
+        },
+        {
+          "name": "count",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Maximum number of threads to return."
+        }
+      ]
+    },
+    {
+      "name": "search_threads",
+      "description": "Search the authenticated user's threads by matching text.",
+      "method": "GET",
+      "path": "/threads/search",
+      "params": [
+        {
+          "name": "query",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Text to search for across thread titles and content."
+        },
+        {
+          "name": "count",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Maximum number of matching threads to return."
+        },
+        {
+          "name": "only_match_titles",
+          "in": "query",
+          "required": false,
+          "type": "boolean",
+          "description": "Restrict matching to thread titles only."
+        }
+      ]
+    },
+    {
+      "name": "get_folder",
+      "description": "Retrieve a Quip folder and its children by ID.",
+      "method": "GET",
+      "path": "/folders/{id}",
+      "params": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Quip folder ID."
+        }
+      ]
+    },
+    {
+      "name": "get_messages",
+      "description": "Retrieve the most recent chat messages for a thread.",
+      "method": "GET",
+      "path": "/messages/{thread_id}",
+      "params": [
+        {
+          "name": "thread_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Quip thread ID to read messages from."
+        },
+        {
+          "name": "max_created_usec",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Only return messages created before this microsecond timestamp, for paging."
+        },
+        {
+          "name": "count",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Maximum number of messages to return; maximum 100."
+        }
+      ]
+    }
+  ]
+}

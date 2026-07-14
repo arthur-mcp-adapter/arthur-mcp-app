@@ -1,0 +1,47 @@
+{
+  "id": "wolframalpha",
+  "name": "WolframAlpha",
+  "tagline": "Answer computational questions with Wolfram|Alpha",
+  "description": "Send a natural-language computational query to the Wolfram|Alpha LLM API and receive a concise text result optimized for language-model consumption.",
+  "category": "AI",
+  "color": "#DD1100",
+  "emoji": "🧮",
+  "baseUrl": "https://www.wolframalpha.com/api/v1",
+  "auth": {
+    "type": "bearer",
+    "hint": "Create a Wolfram|Alpha AppID and send it as Authorization: Bearer <APPID>. Store the AppID in Arthur MCP Secrets."
+  },
+  "signupUrl": "https://developer.wolframalpha.com/access",
+  "docsUrl": "https://products.wolframalpha.com/llm-api/documentation",
+  "tools": [
+    {
+      "name": "answer_query",
+      "description": "Return Wolfram|Alpha computational knowledge formatted for use by a language model.",
+      "method": "GET",
+      "path": "/llm-api",
+      "params": [
+        {
+          "name": "input",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Single-line natural-language or keyword computational query."
+        },
+        {
+          "name": "maxchars",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Maximum response character count; the documented default is 6800."
+        },
+        {
+          "name": "units",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Preferred unit system, such as metric or imperial."
+        }
+      ]
+    }
+  ]
+}

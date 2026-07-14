@@ -1,0 +1,25 @@
+{
+  "id": "uk-bank-holidays",
+  "name": "UK Bank Holidays",
+  "tagline": "UK bank holidays for England/Wales, Scotland, and Northern Ireland",
+  "description": "Retrieve the official list of upcoming and recent UK bank holidays for each of the three UK divisions, including whether bunting is traditionally flown.",
+  "category": "Calendar",
+  "color": "#1D70B8",
+  "emoji": "🇬🇧",
+  "baseUrl": "https://www.gov.uk",
+  "auth": {
+    "type": "none",
+    "hint": "This is a free, public GOV.UK open data feed and requires no registration, API key, or authentication."
+  },
+  "signupUrl": "https://www.gov.uk/bank-holidays",
+  "docsUrl": "https://www.gov.uk/bank-holidays",
+  "tools": [
+    {
+      "name": "list_bank_holidays",
+      "description": "List UK bank holidays for England and Wales, Scotland, and Northern Ireland.",
+      "method": "GET",
+      "path": "/bank-holidays.json",
+      "params": []
+    }
+  ]
+}

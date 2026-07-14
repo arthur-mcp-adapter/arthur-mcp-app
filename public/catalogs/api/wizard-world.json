@@ -1,0 +1,120 @@
+{
+  "id": "wizard-world",
+  "name": "Wizard World",
+  "tagline": "Explore the Wizarding World",
+  "description": "Browse Wizarding World elixirs, houses, spells, ingredients, creatures, and wizards.",
+  "category": "Books",
+  "color": "#7C3AED",
+  "emoji": "🪄",
+  "baseUrl": "https://wizard-world-api.herokuapp.com",
+  "auth": {
+    "type": "none",
+    "hint": "No API key is required for the documented read endpoints."
+  },
+  "signupUrl": "https://wizard-world-api.herokuapp.com/swagger/index.html",
+  "docsUrl": "https://wizard-world-api.herokuapp.com/swagger/index.html",
+  "tools": [
+    {
+      "name": "list_elixirs",
+      "description": "List elixirs, optionally filtering by name, ingredient, inventor, or manufacturer.",
+      "method": "GET",
+      "path": "/Elixirs",
+      "params": [
+        {
+          "name": "Name",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Elixir name filter."
+        },
+        {
+          "name": "Ingredient",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Ingredient name filter."
+        },
+        {
+          "name": "InventorFullName",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Inventor full-name filter."
+        },
+        {
+          "name": "Manufacturer",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Manufacturer filter."
+        }
+      ]
+    },
+    {
+      "name": "get_elixir",
+      "description": "Retrieve one elixir by UUID.",
+      "method": "GET",
+      "path": "/Elixirs/{id}",
+      "params": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Elixir UUID."
+        }
+      ]
+    },
+    {
+      "name": "list_houses",
+      "description": "List Hogwarts houses.",
+      "method": "GET",
+      "path": "/Houses",
+      "params": []
+    },
+    {
+      "name": "list_spells",
+      "description": "List spells, optionally filtering by name or incantation.",
+      "method": "GET",
+      "path": "/Spells",
+      "params": [
+        {
+          "name": "Name",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Spell name filter."
+        },
+        {
+          "name": "Incantation",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Spell incantation filter."
+        }
+      ]
+    },
+    {
+      "name": "list_wizards",
+      "description": "List wizards, optionally filtering by first or last name.",
+      "method": "GET",
+      "path": "/Wizards",
+      "params": [
+        {
+          "name": "FirstName",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "First-name filter."
+        },
+        {
+          "name": "LastName",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Last-name filter."
+        }
+      ]
+    }
+  ]
+}

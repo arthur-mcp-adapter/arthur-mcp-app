@@ -1,0 +1,91 @@
+{
+  "id": "bible-api",
+  "name": "Bible-api",
+  "tagline": "Retrieve Bible passages and chapters",
+  "description": "Look up user-entered Bible passages, browse a chapter in a selected translation, or request a random verse.",
+  "category": "Books",
+  "color": "#7C3AED",
+  "emoji": "📖",
+  "baseUrl": "https://bible-api.com",
+  "auth": {
+    "type": "none",
+    "hint": "No API key is required."
+  },
+  "signupUrl": "https://bible-api.com/",
+  "docsUrl": "https://bible-api.com/",
+  "tools": [
+    {
+      "name": "get_passage",
+      "description": "Retrieve a Bible verse or passage using a human-readable reference.",
+      "method": "GET",
+      "path": "/{passage}",
+      "params": [
+        {
+          "name": "passage",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "URL-encoded Bible reference such as john 3:16 or matt 25:31-33,46."
+        },
+        {
+          "name": "translation",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Supported translation identifier such as web or kjv; defaults to web."
+        },
+        {
+          "name": "single_chapter_book_matching",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Set to indifferent to interpret an ambiguous single-chapter book reference as a chapter or whole book."
+        }
+      ]
+    },
+    {
+      "name": "get_chapter",
+      "description": "Retrieve all verses in one chapter using precise translation and book identifiers.",
+      "method": "GET",
+      "path": "/data/{translation_id}/{book_id}/{chapter}",
+      "params": [
+        {
+          "name": "translation_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Translation identifier such as web or kjv."
+        },
+        {
+          "name": "book_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Book identifier such as GEN or JHN."
+        },
+        {
+          "name": "chapter",
+          "in": "path",
+          "required": true,
+          "type": "integer",
+          "description": "Chapter number."
+        }
+      ]
+    },
+    {
+      "name": "get_random_verse",
+      "description": "Retrieve a random verse from a translation.",
+      "method": "GET",
+      "path": "/data/{translation_id}/random",
+      "params": [
+        {
+          "name": "translation_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Translation identifier such as web or kjv."
+        }
+      ]
+    }
+  ]
+}

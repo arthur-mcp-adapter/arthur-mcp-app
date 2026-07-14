@@ -1,0 +1,70 @@
+{
+  "id": "poetrydb",
+  "name": "PoetryDB",
+  "tagline": "Search and discover classic poetry",
+  "description": "List poets, search poems by title or author, and retrieve random poems from PoetryDB's public collection.",
+  "category": "Books",
+  "color": "#7C3AED",
+  "emoji": "🪶",
+  "baseUrl": "https://poetrydb.org",
+  "auth": {
+    "type": "none",
+    "hint": "No API key is required."
+  },
+  "signupUrl": "https://poetrydb.org/",
+  "docsUrl": "https://github.com/thundercomb/poetrydb#api-reference",
+  "tools": [
+    {
+      "name": "list_authors",
+      "description": "List all authors represented in the PoetryDB collection.",
+      "method": "GET",
+      "path": "/author",
+      "params": []
+    },
+    {
+      "name": "search_poems_by_title",
+      "description": "Find poems whose titles contain the supplied text.",
+      "method": "GET",
+      "path": "/title/{title}",
+      "params": [
+        {
+          "name": "title",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Full or partial poem title; URL-encode spaces and other reserved characters."
+        }
+      ]
+    },
+    {
+      "name": "search_poems_by_author",
+      "description": "Find poems whose author names contain the supplied text.",
+      "method": "GET",
+      "path": "/author/{author}",
+      "params": [
+        {
+          "name": "author",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Full or partial author name; URL-encode spaces and other reserved characters."
+        }
+      ]
+    },
+    {
+      "name": "get_random_poems",
+      "description": "Retrieve a requested number of randomly selected poems.",
+      "method": "GET",
+      "path": "/random/{count}",
+      "params": [
+        {
+          "name": "count",
+          "in": "path",
+          "required": true,
+          "type": "integer",
+          "description": "Number of random poems to return."
+        }
+      ]
+    }
+  ]
+}

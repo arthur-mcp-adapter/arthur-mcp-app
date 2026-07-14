@@ -1,0 +1,107 @@
+{
+  "id": "layer4",
+  "name": "Layer4",
+  "tagline": "Query Layer4 tokens and wallets",
+  "description": "List tokens in a Layer4 bucket, retrieve token details, and list workspace wallets.",
+  "category": "Blockchain",
+  "color": "#7C3AED",
+  "emoji": "🧱",
+  "baseUrl": "https://www.layer4.app/api/v1",
+  "auth": {
+    "type": "api-key",
+    "hint": "Generate a bucket API key in the Layer4 web app and send it in the x-api-key header.",
+    "keyName": "x-api-key",
+    "keyIn": "header"
+  },
+  "signupUrl": "https://www.layer4.app/",
+  "docsUrl": "https://www.layer4.app/api-docs",
+  "tools": [
+    {
+      "name": "list_tokens",
+      "description": "List tokens in a Layer4 bucket.",
+      "method": "GET",
+      "path": "/buckets/{bucketId}/tokens",
+      "params": [
+        {
+          "name": "bucketId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Layer4 bucket identifier associated with the API key."
+        },
+        {
+          "name": "segmentId",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Optional segment identifier used to filter tokens."
+        },
+        {
+          "name": "page",
+          "in": "query",
+          "required": false,
+          "type": "number",
+          "description": "One-based pagination page number."
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "number",
+          "description": "Page size from 1 through 100."
+        }
+      ]
+    },
+    {
+      "name": "get_token",
+      "description": "Retrieve one token from a Layer4 bucket.",
+      "method": "GET",
+      "path": "/buckets/{bucketId}/tokens/{tokenId}",
+      "params": [
+        {
+          "name": "bucketId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Layer4 bucket identifier."
+        },
+        {
+          "name": "tokenId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Layer4 token identifier."
+        }
+      ]
+    },
+    {
+      "name": "list_wallets",
+      "description": "List wallets in the workspace associated with the API key.",
+      "method": "GET",
+      "path": "/wallets",
+      "params": [
+        {
+          "name": "status",
+          "in": "query",
+          "required": false,
+          "type": "array",
+          "description": "Optional wallet statuses: ACTIVE, PENDING, or DECLINED."
+        },
+        {
+          "name": "page",
+          "in": "query",
+          "required": false,
+          "type": "number",
+          "description": "One-based pagination page number."
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "number",
+          "description": "Page size from 1 through 100."
+        }
+      ]
+    }
+  ]
+}

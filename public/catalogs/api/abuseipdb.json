@@ -1,0 +1,49 @@
+{
+  "id": "abuseipdb",
+  "name": "AbuseIPDB",
+  "tagline": "Check IP addresses for reported abuse",
+  "description": "Inspect an IPv4 or IPv6 address against AbuseIPDB reports and confidence data.",
+  "category": "Anti-Malware",
+  "color": "#DC2626",
+  "emoji": "🛡️",
+  "baseUrl": "https://api.abuseipdb.com/api/v2",
+  "auth": {
+    "type": "api-key",
+    "hint": "Create an AbuseIPDB API key and send it in the Key header.",
+    "keyName": "Key",
+    "keyIn": "header"
+  },
+  "signupUrl": "https://www.abuseipdb.com/register",
+  "docsUrl": "https://docs.abuseipdb.com/",
+  "tools": [
+    {
+      "name": "check_ip_address",
+      "description": "Return abuse reports and confidence information for an IP address.",
+      "method": "GET",
+      "path": "/check",
+      "params": [
+        {
+          "name": "ipAddress",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "IPv4 or IPv6 address to inspect."
+        },
+        {
+          "name": "maxAgeInDays",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Maximum report age from 1 through 365 days; defaults to 30."
+        },
+        {
+          "name": "verbose",
+          "in": "query",
+          "required": false,
+          "type": "boolean",
+          "description": "Include verbose report and country data when true."
+        }
+      ]
+    }
+  ]
+}

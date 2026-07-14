@@ -1,0 +1,63 @@
+{
+  "id": "irisnet",
+  "name": "Irisnet",
+  "tagline": "Run configured AI checks on media and text",
+  "description": "Inspect license information, list saved AI configurations, and submit text to an Irisnet V2 configuration for immediate policy and detection results.",
+  "category": "AI",
+  "color": "#0057B8",
+  "emoji": "👁️",
+  "baseUrl": "https://api.irisnet.de",
+  "auth": {
+    "type": "api-key",
+    "hint": "Send the Irisnet license key in the LICENSE-KEY header and keep the key in Arthur MCP Secrets.",
+    "keyName": "LICENSE-KEY",
+    "keyIn": "header"
+  },
+  "signupUrl": "https://shop.airisprotect.com/",
+  "docsUrl": "https://api.irisnet.de/swagger-ui/index.html",
+  "tools": [
+    {
+      "name": "get_license_info",
+      "description": "Return license information and account limits for the supplied Irisnet license key.",
+      "method": "GET",
+      "path": "/v2/info",
+      "params": []
+    },
+    {
+      "name": "list_ai_configurations",
+      "description": "List saved Irisnet AI configurations with their identifiers and configured prototypes.",
+      "method": "GET",
+      "path": "/v2/config",
+      "params": []
+    },
+    {
+      "name": "check_text",
+      "description": "Check text using a saved AI configuration and return summary, broken-rule, and detection details according to the requested detail level.",
+      "method": "POST",
+      "path": "/v2/check-text/{configId}",
+      "params": [
+        {
+          "name": "configId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "UUID of a saved Irisnet configuration."
+        },
+        {
+          "name": "detail",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Response detail level up to 3; level 1 is the documented default."
+        },
+        {
+          "name": "data",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Text content to evaluate with the selected configuration."
+        }
+      ]
+    }
+  ]
+}

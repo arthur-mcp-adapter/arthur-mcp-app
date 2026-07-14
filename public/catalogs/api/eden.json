@@ -1,0 +1,75 @@
+{
+  "id": "eden",
+  "name": "Eden",
+  "tagline": "Call multiple AI providers through one compatible API",
+  "description": "Generate chat completions and discover available models through Eden AI's V3 unified API. Requires an Eden AI bearer token and a model identifier supported by the account.",
+  "category": "AI",
+  "color": "#0B6BFF",
+  "emoji": "🌐",
+  "baseUrl": "https://api.edenai.run/v3",
+  "auth": {
+    "type": "bearer",
+    "hint": "Create an Eden AI API token and send it as Authorization: Bearer <YOUR_API_KEY>. Store only the token value in Arthur MCP Secrets."
+  },
+  "signupUrl": "https://app.edenai.run/",
+  "docsUrl": "https://www.edenai.co/docs/v3/quickstart/first-llm-call",
+  "tools": [
+    {
+      "name": "list_models",
+      "description": "List model identifiers available through Eden AI V3 for use in later inference requests.",
+      "method": "GET",
+      "path": "/models",
+      "params": []
+    },
+    {
+      "name": "create_chat_completion",
+      "description": "Send a message history to an Eden AI model and return an OpenAI-compatible chat completion with choices and usage data.",
+      "method": "POST",
+      "path": "/chat/completions",
+      "params": [
+        {
+          "name": "model",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Eden AI model identifier returned by the models endpoint."
+        },
+        {
+          "name": "messages",
+          "in": "body",
+          "required": true,
+          "type": "array",
+          "description": "Conversation messages in chronological order, each containing a supported role and content."
+        },
+        {
+          "name": "stream",
+          "in": "body",
+          "required": false,
+          "type": "boolean",
+          "description": "Request a streamed response when true; use false for ordinary JSON tool execution."
+        },
+        {
+          "name": "temperature",
+          "in": "body",
+          "required": false,
+          "type": "number",
+          "description": "Sampling temperature from 0 through 2; the documented default is 1."
+        },
+        {
+          "name": "max_tokens",
+          "in": "body",
+          "required": false,
+          "type": "integer",
+          "description": "Maximum tokens to generate, subject to the selected model's limits."
+        },
+        {
+          "name": "fallbacks",
+          "in": "body",
+          "required": false,
+          "type": "array",
+          "description": "Up to three fallback model identifiers to try if the primary model is unavailable."
+        }
+      ]
+    }
+  ]
+}

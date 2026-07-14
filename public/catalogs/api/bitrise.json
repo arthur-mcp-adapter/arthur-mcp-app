@@ -1,0 +1,150 @@
+{
+  "id": "bitrise",
+  "name": "Bitrise",
+  "tagline": "Inspect Bitrise apps and CI builds",
+  "description": "List accessible Bitrise applications, inspect app details, and review filtered build histories and individual build results.",
+  "category": "Continuous Integration",
+  "color": "#683D87",
+  "emoji": "🚀",
+  "baseUrl": "https://api.bitrise.io/v0.1",
+  "auth": {
+    "type": "api-key",
+    "hint": "Create a Bitrise personal access token or Workspace API token and send the raw token value in the Authorization header.",
+    "keyName": "Authorization",
+    "keyIn": "header"
+  },
+  "signupUrl": "https://app.bitrise.io/users/sign_up",
+  "docsUrl": "https://api-docs.bitrise.io/",
+  "tools": [
+    {
+      "name": "list_apps",
+      "description": "List applications accessible to the authenticated Bitrise account or Workspace token.",
+      "method": "GET",
+      "path": "/apps",
+      "params": [
+        {
+          "name": "sort_by",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Sort applications by last_build_at or created_at."
+        },
+        {
+          "name": "next",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Slug of the first app to return on the next page."
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Maximum apps per page; defaults to and cannot exceed 50."
+        },
+        {
+          "name": "title",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Filter by application title."
+        },
+        {
+          "name": "project_type",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Filter by project type, such as ios or android."
+        }
+      ]
+    },
+    {
+      "name": "get_app",
+      "description": "Get details for one Bitrise application.",
+      "method": "GET",
+      "path": "/apps/{app-slug}",
+      "params": [
+        {
+          "name": "app-slug",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Application slug from list_apps or the Bitrise application URL."
+        }
+      ]
+    },
+    {
+      "name": "list_builds",
+      "description": "List and filter builds for a Bitrise application.",
+      "method": "GET",
+      "path": "/apps/{app-slug}/builds",
+      "params": [
+        {
+          "name": "app-slug",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Bitrise application slug."
+        },
+        {
+          "name": "branch",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Filter by the branch that was built."
+        },
+        {
+          "name": "workflow",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Filter by workflow name."
+        },
+        {
+          "name": "status",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Build status: 0 not finished, 1 successful, 2 failed, 3 aborted with failure, or 4 aborted with success."
+        },
+        {
+          "name": "next",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Slug of the first build to return on the next page."
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Maximum builds per page; defaults to and cannot exceed 50."
+        }
+      ]
+    },
+    {
+      "name": "get_build",
+      "description": "Get the full recorded details for one Bitrise build.",
+      "method": "GET",
+      "path": "/apps/{app-slug}/builds/{build-slug}",
+      "params": [
+        {
+          "name": "app-slug",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Bitrise application slug."
+        },
+        {
+          "name": "build-slug",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Build slug returned by list_builds or present in the build URL."
+        }
+      ]
+    }
+  ]
+}

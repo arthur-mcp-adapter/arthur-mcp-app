@@ -1,0 +1,54 @@
+{
+  "id": "cataas",
+  "name": "Cataas",
+  "tagline": "Find cat images and tags",
+  "description": "Retrieve paginated cat-image metadata and the available tag vocabulary from the public Cat as a Service API.",
+  "category": "Animals",
+  "color": "#F59E0B",
+  "emoji": "🐈",
+  "baseUrl": "https://cataas.com",
+  "auth": {
+    "type": "none",
+    "hint": "No authentication is required for the selected public read operations."
+  },
+  "signupUrl": "https://cataas.com/",
+  "docsUrl": "https://cataas.com/doc.html",
+  "tools": [
+    {
+      "name": "list_cats",
+      "description": "List cat-image metadata with optional tag filtering and pagination.",
+      "method": "GET",
+      "path": "/api/cats",
+      "params": [
+        {
+          "name": "tags",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Comma-separated tags used to filter cats."
+        },
+        {
+          "name": "skip",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of matching records to skip."
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Maximum number of cat records to return."
+        }
+      ]
+    },
+    {
+      "name": "list_tags",
+      "description": "Return the tags available for filtering cat images.",
+      "method": "GET",
+      "path": "/api/tags",
+      "params": []
+    }
+  ]
+}

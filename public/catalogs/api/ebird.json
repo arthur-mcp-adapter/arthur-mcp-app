@@ -1,0 +1,64 @@
+{
+  "id": "ebird",
+  "name": "eBird",
+  "tagline": "Find recent bird observations by region",
+  "description": "Retrieve recent eBird observations for a country, subnational region, or supported location code with time-window and result controls.",
+  "category": "Animals",
+  "color": "#3A7D44",
+  "emoji": "🐦",
+  "baseUrl": "https://api.ebird.org/v2",
+  "auth": {
+    "type": "api-key",
+    "hint": "Request a personal eBird API key and send it in the X-eBirdApiToken header.",
+    "keyName": "X-eBirdApiToken",
+    "keyIn": "header"
+  },
+  "signupUrl": "https://ebird.org/api/keygen",
+  "docsUrl": "https://documenter.getpostman.com/view/664302/S1ENwy59",
+  "tools": [
+    {
+      "name": "list_recent_observations",
+      "description": "Return recent bird observations within an eBird region.",
+      "method": "GET",
+      "path": "/data/obs/{region_code}/recent",
+      "params": [
+        {
+          "name": "region_code",
+          "originalName": "regionCode",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "eBird country, subnational, or location region code."
+        },
+        {
+          "name": "back",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of days back to search."
+        },
+        {
+          "name": "maxResults",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Maximum observation records to return."
+        },
+        {
+          "name": "detail",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Observation detail level, such as simple or full."
+        },
+        {
+          "name": "hotspot",
+          "in": "query",
+          "required": false,
+          "type": "boolean",
+          "description": "Restrict results to hotspot locations when true."
+        }
+      ]
+    }
+  ]
+}

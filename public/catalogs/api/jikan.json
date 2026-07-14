@@ -1,0 +1,75 @@
+{
+  "id": "jikan",
+  "name": "Jikan",
+  "tagline": "Search anime with Jikan",
+  "description": "Search Jikan's read-only anime catalog with text, type, status, rating, ordering, and pagination controls.",
+  "category": "Anime",
+  "color": "#2E51A2",
+  "emoji": "⛩️",
+  "baseUrl": "https://api.jikan.moe/v4",
+  "auth": {
+    "type": "none",
+    "hint": "No authentication is supported or required; Jikan is read-only and unofficial."
+  },
+  "signupUrl": "https://jikan.moe/",
+  "docsUrl": "https://docs.api.jikan.moe/",
+  "tools": [
+    {
+      "name": "search_anime",
+      "description": "Search anime records and return paginated MyAnimeList-derived metadata.",
+      "method": "GET",
+      "path": "/anime",
+      "params": [
+        {
+          "name": "q",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Free-text anime query."
+        },
+        {
+          "name": "page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Result page."
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Records per page."
+        },
+        {
+          "name": "type",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Anime type filter."
+        },
+        {
+          "name": "status",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Airing status filter."
+        },
+        {
+          "name": "order_by",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Field used for result ordering."
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "asc or desc sort direction."
+        }
+      ]
+    }
+  ]
+}

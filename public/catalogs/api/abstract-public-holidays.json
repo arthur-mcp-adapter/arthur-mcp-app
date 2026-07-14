@@ -1,0 +1,63 @@
+{
+  "id": "abstract-public-holidays",
+  "name": "Abstract Public Holidays",
+  "tagline": "Look up public, regional, and religious holidays worldwide",
+  "description": "Retrieve national, regional, and religious holidays for a country, optionally filtered by year, month, day, or holiday type.",
+  "category": "Calendar",
+  "color": "#3B82F6",
+  "emoji": "📅",
+  "baseUrl": "https://holidays.abstractapi.com",
+  "auth": {
+    "type": "api-key",
+    "hint": "Sign up at abstractapi.com for a Holidays API key and send it as the api_key query parameter.",
+    "keyName": "api_key",
+    "keyIn": "query"
+  },
+  "signupUrl": "https://app.abstractapi.com/users/signup",
+  "docsUrl": "https://www.abstractapi.com/holidays-api",
+  "tools": [
+    {
+      "name": "list_holidays",
+      "description": "List public, regional, and religious holidays for a country, optionally filtered by date or holiday type.",
+      "method": "GET",
+      "path": "/v1/",
+      "params": [
+        {
+          "name": "country",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Two-letter country code, for example SG for Singapore."
+        },
+        {
+          "name": "year",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Year to retrieve holidays for; supports historical and future dates from 1 AD through 2050 and beyond."
+        },
+        {
+          "name": "month",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Month number to filter results."
+        },
+        {
+          "name": "day",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Day number to filter results."
+        },
+        {
+          "name": "type",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Holiday classification filter, for example National."
+        }
+      ]
+    }
+  ]
+}

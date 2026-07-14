@@ -1,0 +1,108 @@
+{
+  "id": "ddownload",
+  "name": "ddownload",
+  "tagline": "Manage files and folders on DDownload cloud storage",
+  "description": "Retrieve account information, obtain an upload session, list and inspect files, and manage folders on a DDownload account.",
+  "category": "Cloud Storage & File Sharing",
+  "color": "#F97316",
+  "emoji": "⬇️",
+  "baseUrl": "https://api-v2.ddownload.com/api",
+  "auth": {
+    "type": "api-key",
+    "hint": "Generate an API key from Affiliate -> Settings -> API on ddownload.com and send it as the key query parameter.",
+    "keyName": "key",
+    "keyIn": "query"
+  },
+  "signupUrl": "https://ddownload.com/",
+  "docsUrl": "https://ddownload.com/api",
+  "tools": [
+    {
+      "name": "get_account_info",
+      "description": "Retrieve account details including storage and traffic usage.",
+      "method": "GET",
+      "path": "/account/info",
+      "params": []
+    },
+    {
+      "name": "get_upload_server",
+      "description": "Obtain an upload URL and session ID to upload a new file; a new session must be requested for every upload.",
+      "method": "POST",
+      "path": "/upload/server",
+      "params": []
+    },
+    {
+      "name": "list_files",
+      "description": "List uploaded files with pagination.",
+      "method": "GET",
+      "path": "/file/list",
+      "params": [
+        {
+          "name": "page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Page number to retrieve."
+        },
+        {
+          "name": "per_page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of files to return per page."
+        }
+      ]
+    },
+    {
+      "name": "get_file_info",
+      "description": "Get metadata for a specific file by its file code.",
+      "method": "GET",
+      "path": "/file/info",
+      "params": [
+        {
+          "name": "file_code",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "The file's unique code."
+        }
+      ]
+    },
+    {
+      "name": "create_folder",
+      "description": "Create a new folder, optionally inside a parent folder.",
+      "method": "GET",
+      "path": "/folder/create",
+      "params": [
+        {
+          "name": "name",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Name of the new folder."
+        },
+        {
+          "name": "parent_id",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "ID of the parent folder to create the new folder inside."
+        }
+      ]
+    },
+    {
+      "name": "list_folder",
+      "description": "List the subfolders and files inside a folder.",
+      "method": "GET",
+      "path": "/folder/list",
+      "params": [
+        {
+          "name": "fld_id",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "ID of the folder to list; omit for the root folder."
+        }
+      ]
+    }
+  ]
+}

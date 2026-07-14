@@ -1,0 +1,47 @@
+{
+  "id": "getgenai-packaging-compliance",
+  "name": "GetGenAI (Packaging Compliance Review)",
+  "tagline": "Inspect packaging for compliance findings",
+  "description": "Run a selected GetGenAI inspector against structured packaging objects and product context.",
+  "category": "Art & Design",
+  "color": "#16A34A",
+  "emoji": "✅",
+  "baseUrl": "https://api.getgen.ai/api",
+  "auth": {
+    "type": "bearer",
+    "hint": "Obtain a GetGenAI workspace API key and send it as Authorization: Bearer <KEY>."
+  },
+  "signupUrl": "https://www.getgen.ai/build",
+  "docsUrl": "https://docs.getgen.ai/api",
+  "tools": [
+    {
+      "name": "inspect_packaging",
+      "description": "Run a compliance inspector over packaging content.",
+      "method": "POST",
+      "path": "/inspect",
+      "params": [
+        {
+          "name": "inspector_id",
+          "in": "body",
+          "required": true,
+          "type": "integer",
+          "description": "Inspector identifier selected for the review."
+        },
+        {
+          "name": "objects",
+          "in": "body",
+          "required": true,
+          "type": "array",
+          "description": "Packaging objects containing types and content such as hosted image URLs."
+        },
+        {
+          "name": "ctx",
+          "in": "body",
+          "required": false,
+          "type": "object",
+          "description": "Product context such as product_type."
+        }
+      ]
+    }
+  ]
+}

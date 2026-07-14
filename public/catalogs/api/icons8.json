@@ -1,0 +1,33 @@
+{
+  "id": "icons8",
+  "name": "Icons8",
+  "tagline": "Fetch Icons8 icons by name",
+  "description": "Retrieve a matching public Icons8 PNG by placing its normalized icon name in the URL.",
+  "category": "Art & Design",
+  "color": "#1FB141",
+  "emoji": "🧩",
+  "baseUrl": "https://img.icons8.com",
+  "auth": {
+    "type": "none",
+    "hint": "No credential is required; comply with Icons8 attribution or licensing terms."
+  },
+  "signupUrl": "https://icons8.com/pricing",
+  "docsUrl": "https://img.icons8.com/",
+  "tools": [
+    {
+      "name": "get_icon",
+      "description": "Fetch the most popular matching icon as a PNG image.",
+      "method": "GET",
+      "path": "/{icon_name}",
+      "params": [
+        {
+          "name": "icon_name",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Icon name, using a hyphen or underscore between words."
+        }
+      ]
+    }
+  ]
+}

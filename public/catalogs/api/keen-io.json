@@ -1,0 +1,43 @@
+{
+  "id": "keen-io",
+  "name": "Keen IO",
+  "tagline": "Inspect event collections and analytics schemas",
+  "description": "List event collections and their inferred property schemas for a Keen project using a read-capable API key. Write and administrative operations require different key capabilities and should be added as separate reviewed tools.",
+  "category": "Data",
+  "color": "#00AEEF",
+  "emoji": "📊",
+  "baseUrl": "https://api.keen.io/3.0",
+  "auth": {
+    "type": "api-key",
+    "hint": "Send an appropriate Keen project key in the Authorization header. Use a Read Key for this read-only candidate and never expose the Master Key to clients.",
+    "keyName": "Authorization",
+    "keyIn": "header"
+  },
+  "signupUrl": "https://keen.io/",
+  "docsUrl": "https://keen.io/docs/api/",
+  "tools": [
+    {
+      "name": "list_event_collections",
+      "description": "Return event collections for a Keen project with their property schemas and sub-resource links.",
+      "method": "GET",
+      "path": "/projects/{project_id}/events",
+      "params": [
+        {
+          "name": "project_id",
+          "originalName": "PROJECT_ID",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Keen project identifier that owns the event collections."
+        },
+        {
+          "name": "include_schema",
+          "in": "query",
+          "required": false,
+          "type": "boolean",
+          "description": "Include collection property schemas; defaults to true."
+        }
+      ]
+    }
+  ]
+}

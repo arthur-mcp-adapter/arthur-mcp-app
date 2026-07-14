@@ -1,0 +1,99 @@
+{
+  "id": "google-books",
+  "name": "Google Books",
+  "tagline": "Search Google Books volumes",
+  "description": "Search public Google Books volumes by query and retrieve full metadata for one volume by ID.",
+  "category": "Books",
+  "color": "#4285F4",
+  "emoji": "📚",
+  "baseUrl": "https://www.googleapis.com/books/v1",
+  "auth": {
+    "type": "api-key",
+    "hint": "Create a Google Cloud API key with the Books API enabled and send it in the key query parameter.",
+    "keyName": "key",
+    "keyIn": "query"
+  },
+  "signupUrl": "https://console.cloud.google.com/",
+  "docsUrl": "https://developers.google.com/books/docs/v1/using",
+  "tools": [
+    {
+      "name": "search_volumes",
+      "description": "Search public Google Books volumes by query.",
+      "method": "GET",
+      "path": "/volumes",
+      "params": [
+        {
+          "name": "q",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Full-text search query; supports field prefixes such as intitle: and inauthor:."
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Restrict results: partial, full, free-ebooks, paid-ebooks, or ebooks."
+        },
+        {
+          "name": "maxResults",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of results to return, from 0 through 40."
+        },
+        {
+          "name": "startIndex",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Zero-based index of the first result to return, for pagination."
+        },
+        {
+          "name": "orderBy",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Sort order: relevance or newest."
+        },
+        {
+          "name": "langRestrict",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Restrict results to a language code, such as en."
+        },
+        {
+          "name": "printType",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Restrict to all, books, or magazines."
+        }
+      ]
+    },
+    {
+      "name": "get_volume",
+      "description": "Retrieve full metadata for one Google Books volume by ID.",
+      "method": "GET",
+      "path": "/volumes/{volumeId}",
+      "params": [
+        {
+          "name": "volumeId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Google Books volume identifier, as returned by a volume search."
+        },
+        {
+          "name": "projection",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "full for all volume fields or lite for a reduced field set."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "id": "dog-api",
+  "name": "Dogs",
+  "tagline": "Explore dog breeds, groups, and facts",
+  "description": "List dog breeds with paginated metadata and retrieve small sets of dog facts from the current Dog API V2.",
+  "category": "Animals",
+  "color": "#2563EB",
+  "emoji": "🐶",
+  "baseUrl": "https://dogapi.dog/api/v2",
+  "auth": {
+    "type": "none",
+    "hint": "No API key is currently required for the public V2 API."
+  },
+  "signupUrl": "https://dogapi.dog/",
+  "docsUrl": "https://dogapi.dog/docs/api-v2",
+  "tools": [
+    {
+      "name": "list_breeds",
+      "description": "List dog breeds and their descriptive, lifespan, weight, and hypoallergenic metadata.",
+      "method": "GET",
+      "path": "/breeds",
+      "params": [
+        {
+          "name": "page[number]",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "One-based page number."
+        },
+        {
+          "name": "page[size]",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Page size from 1 through 1000."
+        }
+      ]
+    },
+    {
+      "name": "list_facts",
+      "description": "Return one to five dog facts in JSON:API format.",
+      "method": "GET",
+      "path": "/facts",
+      "params": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of facts, from 1 through 5; defaults to 1."
+        }
+      ]
+    }
+  ]
+}

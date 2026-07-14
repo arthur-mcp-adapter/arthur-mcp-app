@@ -1,0 +1,165 @@
+{
+  "id": "freelancer",
+  "name": "Freelancer",
+  "tagline": "Search freelance projects, view details, and manage bids on Freelancer.com",
+  "description": "Search and manage freelance projects, bids, and jobs on Freelancer.com. Requires an OAuth2 access token issued from a registered Freelancer.com developer application, sent as a Freelancer-OAuth-V1 header.",
+  "category": "Business",
+  "color": "#29B2FE",
+  "emoji": "💼",
+  "baseUrl": "https://www.freelancer.com/api/projects/0.1",
+  "auth": {
+    "type": "api-key",
+    "hint": "Register an app and complete the OAuth2 flow at the Freelancer.com developer portal to obtain an access token, then send it as the Freelancer-OAuth-V1 header value (not Authorization: Bearer).",
+    "keyName": "Freelancer-OAuth-V1",
+    "keyIn": "header"
+  },
+  "signupUrl": "https://developers.freelancer.com/",
+  "docsUrl": "https://developers.freelancer.com",
+  "tools": [
+    {
+      "name": "search_active_projects",
+      "description": "Search currently active projects open for bidding by keyword.",
+      "method": "GET",
+      "path": "/projects/active",
+      "params": [
+        {
+          "name": "query",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Free-text search query, e.g. \"logo design\"."
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Maximum number of projects to return (SDK default is 10)."
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of projects to skip for pagination."
+        }
+      ]
+    },
+    {
+      "name": "get_project",
+      "description": "Retrieve full details for a single project by its numeric ID.",
+      "method": "GET",
+      "path": "/projects/{project_id}",
+      "params": [
+        {
+          "name": "project_id",
+          "in": "path",
+          "required": true,
+          "type": "integer",
+          "description": "Numeric ID of the project."
+        }
+      ]
+    },
+    {
+      "name": "list_bids",
+      "description": "List bids, optionally filtered by project IDs, with pagination.",
+      "method": "GET",
+      "path": "/bids",
+      "params": [
+        {
+          "name": "projects[]",
+          "in": "query",
+          "required": false,
+          "type": "array",
+          "description": "One or more project IDs to filter bids by."
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Maximum number of bids to return (SDK default is 10)."
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of bids to skip for pagination."
+        }
+      ]
+    },
+    {
+      "name": "place_project_bid",
+      "description": "Place a bid on a project as the authenticated freelancer.",
+      "method": "POST",
+      "path": "/bids",
+      "params": [
+        {
+          "name": "project_id",
+          "in": "body",
+          "required": true,
+          "type": "integer",
+          "description": "ID of the project to bid on."
+        },
+        {
+          "name": "bidder_id",
+          "in": "body",
+          "required": true,
+          "type": "integer",
+          "description": "User ID of the bidding freelancer (the authenticated account)."
+        },
+        {
+          "name": "description",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Bid proposal text."
+        },
+        {
+          "name": "amount",
+          "in": "body",
+          "required": true,
+          "type": "number",
+          "description": "Bid amount in the project's currency."
+        },
+        {
+          "name": "period",
+          "in": "body",
+          "required": true,
+          "type": "integer",
+          "description": "Proposed delivery period in days."
+        },
+        {
+          "name": "milestone_percentage",
+          "in": "body",
+          "required": true,
+          "type": "number",
+          "description": "Percentage of the amount requested as an initial milestone."
+        }
+      ]
+    },
+    {
+      "name": "get_jobs",
+      "description": "Retrieve job/skill category definitions used to tag and search projects.",
+      "method": "GET",
+      "path": "/jobs",
+      "params": [
+        {
+          "name": "jobs[]",
+          "in": "query",
+          "required": false,
+          "type": "array",
+          "description": "One or more job/skill category IDs to retrieve."
+        },
+        {
+          "name": "lang",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Language code for localized job names, e.g. en."
+        }
+      ]
+    }
+  ]
+}

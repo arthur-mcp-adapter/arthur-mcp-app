@@ -1,0 +1,35 @@
+{
+  "id": "maldatabase",
+  "name": "MalDatabase",
+  "tagline": "Download the MalDatabase daily malware feed",
+  "description": "Retrieve the current gzip-compressed MalDatabase malware feed for permitted internal or non-commercial use.",
+  "category": "Anti-Malware",
+  "color": "#111827",
+  "emoji": "🦠",
+  "baseUrl": "https://api.maldatabase.com",
+  "auth": {
+    "type": "api-key",
+    "hint": "Send the MalDatabase API key as the raw Authorization header value. Review the provider's non-commercial-use restriction.",
+    "keyName": "Authorization",
+    "keyIn": "header"
+  },
+  "signupUrl": "https://maldatabase.com/",
+  "docsUrl": "https://maldatabase.com/api-doc.html",
+  "tools": [
+    {
+      "name": "download_daily_feed",
+      "description": "Download the gzip-compressed daily malware feed.",
+      "method": "GET",
+      "path": "/download",
+      "params": [
+        {
+          "name": "Accept-Encoding",
+          "in": "header",
+          "required": false,
+          "type": "string",
+          "description": "Use gzip, deflate to request compressed transfer as shown by the provider."
+        }
+      ]
+    }
+  ]
+}

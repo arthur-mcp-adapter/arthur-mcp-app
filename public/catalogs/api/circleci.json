@@ -1,0 +1,101 @@
+{
+  "id": "circleci",
+  "name": "CircleCI",
+  "tagline": "Inspect CircleCI pipelines and workflows",
+  "description": "List project pipelines, retrieve individual pipeline details, and inspect the workflows and jobs produced by CircleCI runs.",
+  "category": "Continuous Integration",
+  "color": "#343434",
+  "emoji": "🔄",
+  "baseUrl": "https://circleci.com/api/v2",
+  "auth": {
+    "type": "api-key",
+    "hint": "Create a CircleCI personal API token and send it in the Circle-Token header. Personal tokens support API v2 and carry the user's read/write permissions.",
+    "keyName": "Circle-Token",
+    "keyIn": "header"
+  },
+  "signupUrl": "https://circleci.com/signup/",
+  "docsUrl": "https://circleci.com/docs/api/v2/",
+  "tools": [
+    {
+      "name": "list_project_pipelines",
+      "description": "List pipelines for a CircleCI project.",
+      "method": "GET",
+      "path": "/project/{project-slug}/pipeline",
+      "params": [
+        {
+          "name": "project-slug",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Project slug in vcs-slug/org-name/repo-name form; GitHub App and GitLab projects use circleci plus organization and project IDs."
+        },
+        {
+          "name": "branch",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Filter pipelines by VCS branch name."
+        },
+        {
+          "name": "page-token",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Token from next_page_token for the next page."
+        }
+      ]
+    },
+    {
+      "name": "get_pipeline",
+      "description": "Get one CircleCI pipeline by UUID.",
+      "method": "GET",
+      "path": "/pipeline/{pipeline-id}",
+      "params": [
+        {
+          "name": "pipeline-id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Unique pipeline UUID."
+        }
+      ]
+    },
+    {
+      "name": "list_pipeline_workflows",
+      "description": "List workflows belonging to a CircleCI pipeline.",
+      "method": "GET",
+      "path": "/pipeline/{pipeline-id}/workflow",
+      "params": [
+        {
+          "name": "pipeline-id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Unique pipeline UUID."
+        },
+        {
+          "name": "page-token",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Token from next_page_token for the next page."
+        }
+      ]
+    },
+    {
+      "name": "list_workflow_jobs",
+      "description": "List jobs belonging to a CircleCI workflow.",
+      "method": "GET",
+      "path": "/workflow/{id}/job",
+      "params": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Unique workflow UUID."
+        }
+      ]
+    }
+  ]
+}

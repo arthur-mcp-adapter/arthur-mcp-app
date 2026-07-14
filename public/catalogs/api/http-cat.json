@@ -1,0 +1,33 @@
+{
+  "id": "http-cat",
+  "name": "HTTP Cat",
+  "tagline": "Get a cat image for an HTTP status",
+  "description": "Retrieve the HTTP Cat JPEG corresponding to a numeric HTTP response status code.",
+  "category": "Animals",
+  "color": "#F97316",
+  "emoji": "😿",
+  "baseUrl": "https://http.cat",
+  "auth": {
+    "type": "none",
+    "hint": "No authentication is required."
+  },
+  "signupUrl": "https://http.cat/",
+  "docsUrl": "https://http.cat/",
+  "tools": [
+    {
+      "name": "get_status_cat",
+      "description": "Return a JPEG cat image representing an HTTP status code.",
+      "method": "GET",
+      "path": "/{status_code}.jpg",
+      "params": [
+        {
+          "name": "status_code",
+          "in": "path",
+          "required": true,
+          "type": "integer",
+          "description": "Supported three-digit HTTP or provider-listed status code."
+        }
+      ]
+    }
+  ]
+}

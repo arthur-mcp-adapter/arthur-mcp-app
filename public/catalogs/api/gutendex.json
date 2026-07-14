@@ -1,0 +1,111 @@
+{
+  "id": "gutendex",
+  "name": "Gutendex",
+  "tagline": "Search Project Gutenberg book metadata",
+  "description": "List and filter Project Gutenberg books by author, language, topic, or search text, and retrieve one book's metadata by ID.",
+  "category": "Books",
+  "color": "#92400E",
+  "emoji": "📕",
+  "baseUrl": "https://gutendex.com",
+  "auth": {
+    "type": "none",
+    "hint": "Gutendex is a public, unauthenticated API; no credential is required."
+  },
+  "signupUrl": "https://gutendex.com/",
+  "docsUrl": "https://gutendex.com/",
+  "tools": [
+    {
+      "name": "list_books",
+      "description": "List and filter Project Gutenberg books, ordered by popularity by default.",
+      "method": "GET",
+      "path": "/books/",
+      "params": [
+        {
+          "name": "search",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Space-separated, case-insensitive words to search in author names and book titles."
+        },
+        {
+          "name": "languages",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Comma-separated two-character language codes, such as en or fr,fi."
+        },
+        {
+          "name": "topic",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Case-insensitive key phrase to search in bookshelves or subjects."
+        },
+        {
+          "name": "copyright",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Comma-separated copyright filters: true, false, or null."
+        },
+        {
+          "name": "ids",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Comma-separated Project Gutenberg ID numbers to restrict results to."
+        },
+        {
+          "name": "mime_type",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "MIME type prefix, such as text/ or text/html, to filter available formats."
+        },
+        {
+          "name": "author_year_start",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Include books with at least one author alive at or after this year (negative for BCE)."
+        },
+        {
+          "name": "author_year_end",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Include books with at least one author alive at or before this year (negative for BCE)."
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Sort order: ascending, descending, or popular (default) by Project Gutenberg ID or download count."
+        },
+        {
+          "name": "page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "One-based page number for paginated results."
+        }
+      ]
+    },
+    {
+      "name": "get_book",
+      "description": "Retrieve one Project Gutenberg book's metadata by its ID.",
+      "method": "GET",
+      "path": "/books/{id}/",
+      "params": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "integer",
+          "description": "Project Gutenberg ID number of the book."
+        }
+      ]
+    }
+  ]
+}

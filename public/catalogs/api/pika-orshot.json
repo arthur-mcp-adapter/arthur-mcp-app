@@ -1,0 +1,61 @@
+{
+  "id": "pika-orshot",
+  "name": "Pika",
+  "tagline": "Render dynamic images with Orshot",
+  "description": "Render an Orshot Studio template as an image, PDF, or video with dynamic JSON modifications.",
+  "category": "Art & Design",
+  "color": "#F97316",
+  "emoji": "🎬",
+  "baseUrl": "https://api.orshot.com/v1",
+  "auth": {
+    "type": "bearer",
+    "hint": "Create an Orshot API key and send it as a Bearer token."
+  },
+  "signupUrl": "https://orshot.com/signup",
+  "docsUrl": "https://orshot.com/docs/api-reference",
+  "tools": [
+    {
+      "name": "render_template",
+      "description": "Render a Studio template with dynamic values and output options.",
+      "method": "POST",
+      "path": "/studio/render",
+      "params": [
+        {
+          "name": "templateId",
+          "in": "body",
+          "required": true,
+          "type": "integer",
+          "description": "Studio template identifier."
+        },
+        {
+          "name": "modifications",
+          "in": "body",
+          "required": false,
+          "type": "object",
+          "description": "Dynamic values keyed by template parameter ID."
+        },
+        {
+          "name": "response",
+          "in": "body",
+          "required": false,
+          "type": "object",
+          "description": "Output type, format, scale, and size options."
+        },
+        {
+          "name": "pdfOptions",
+          "in": "body",
+          "required": false,
+          "type": "object",
+          "description": "Optional PDF output controls."
+        },
+        {
+          "name": "videoOptions",
+          "in": "body",
+          "required": false,
+          "type": "object",
+          "description": "Optional video output controls."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,122 @@
+{
+  "id": "getotp",
+  "name": "GetOTP",
+  "tagline": "Send and verify one-time passwords",
+  "description": "Start SMS OTP verification flows, validate submitted codes, and inspect the templates and sender IDs configured for a GetOTP account.",
+  "category": "Authentication & Authorization",
+  "color": "#2563EB",
+  "emoji": "📲",
+  "baseUrl": "https://api.otp.dev/v1",
+  "auth": {
+    "type": "api-key",
+    "hint": "Create a GetOTP account, copy the API key from the GetOTP dashboard, and send it in the X-OTP-Key header.",
+    "keyName": "X-OTP-Key",
+    "keyIn": "header"
+  },
+  "signupUrl": "https://dashboard.otp.dev/",
+  "docsUrl": "https://otp.dev/en/docs/",
+  "tools": [
+    {
+      "name": "send_sms_otp",
+      "description": "Start an SMS OTP verification request for a phone number.",
+      "method": "POST",
+      "path": "/verifications",
+      "params": [
+        {
+          "name": "data",
+          "in": "body",
+          "required": true,
+          "type": "object",
+          "description": "SMS verification object. Include channel set to sms, sender, phone with country code and digits only, template UUID, and exactly one of code_length or code; optional payload must be a string. Codes are numeric and 4 to 8 characters."
+        }
+      ]
+    },
+    {
+      "name": "verify_otp",
+      "description": "Check whether an OTP code is valid, optionally binding the check to its phone number.",
+      "method": "GET",
+      "path": "/verifications",
+      "params": [
+        {
+          "name": "code",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "OTP code sent to the user."
+        },
+        {
+          "name": "phone",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Phone number used for the OTP request, including country code and digits only."
+        }
+      ]
+    },
+    {
+      "name": "list_templates",
+      "description": "List message templates configured for the authenticated account.",
+      "method": "GET",
+      "path": "/templates",
+      "params": [
+        {
+          "name": "filter[status]",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Template status: COMPLETED, IN_PROCESS, or CANCELED."
+        },
+        {
+          "name": "filter[name]",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Template-name prefix filter."
+        },
+        {
+          "name": "page_size",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Number of templates to return; defaults to 10 and has a maximum of 1000."
+        },
+        {
+          "name": "page_token",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Token from a pagination link for the previous or next page."
+        }
+      ]
+    },
+    {
+      "name": "list_senders",
+      "description": "List custom sender IDs configured for the authenticated account.",
+      "method": "GET",
+      "path": "/senders",
+      "params": [
+        {
+          "name": "filter[status]",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Sender status: Pending, Available, Rejected, or Canceled."
+        },
+        {
+          "name": "page_size",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Number of senders to return; defaults to 10 and has a maximum of 1000."
+        },
+        {
+          "name": "page_token",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Token from a pagination link for the previous or next page."
+        }
+      ]
+    }
+  ]
+}

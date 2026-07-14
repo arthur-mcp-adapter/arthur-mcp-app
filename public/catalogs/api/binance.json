@@ -1,0 +1,184 @@
+{
+  "id": "binance",
+  "name": "Binance",
+  "tagline": "Explore Binance Spot market data",
+  "description": "Inspect Spot symbols and exchange rules, retrieve current and average prices, view order books, and query candlestick history from Binance's public REST API.",
+  "category": "Cryptocurrency",
+  "color": "#F3BA2F",
+  "emoji": "🪙",
+  "baseUrl": "https://api.binance.com/api/v3",
+  "auth": {
+    "type": "none",
+    "hint": "The selected public Spot market-data endpoints use security type NONE and do not require an API key. Binance still applies IP-based request weights and rate limits."
+  },
+  "signupUrl": "https://accounts.binance.com/register",
+  "docsUrl": "https://developers.binance.com/en/docs/catalog/core-trading-spot-trading/api/rest-api/market",
+  "tools": [
+    {
+      "name": "get_exchange_info",
+      "description": "Retrieve current Spot exchange rules, rate-limit definitions, and symbol information.",
+      "method": "GET",
+      "path": "/exchangeInfo",
+      "params": [
+        {
+          "name": "symbol",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Optional single symbol such as BTCUSDT; do not combine with symbols, permissions, or symbolStatus."
+        },
+        {
+          "name": "symbols",
+          "in": "query",
+          "required": false,
+          "type": "array",
+          "description": "Optional JSON array of symbols; do not combine with symbol, permissions, or symbolStatus."
+        },
+        {
+          "name": "permissions",
+          "in": "query",
+          "required": false,
+          "type": "array",
+          "description": "Optional symbol-permission filter such as [\"SPOT\"]; do not combine with symbol or symbols."
+        },
+        {
+          "name": "showPermissionSets",
+          "in": "query",
+          "required": false,
+          "type": "boolean",
+          "description": "Whether symbol permissionSets should be populated; defaults to true."
+        },
+        {
+          "name": "symbolStatus",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Optional status filter: TRADING, HALT, or BREAK; do not combine with symbol or symbols."
+        }
+      ]
+    },
+    {
+      "name": "get_symbol_price",
+      "description": "Retrieve the latest price for one symbol, multiple symbols, or all symbols.",
+      "method": "GET",
+      "path": "/ticker/price",
+      "params": [
+        {
+          "name": "symbol",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Optional single symbol such as BTCUSDT; do not combine with symbols."
+        },
+        {
+          "name": "symbols",
+          "in": "query",
+          "required": false,
+          "type": "array",
+          "description": "Optional JSON array of symbols; do not combine with symbol."
+        },
+        {
+          "name": "symbolStatus",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Optional trading-status filter: TRADING, HALT, or BREAK."
+        }
+      ]
+    },
+    {
+      "name": "get_average_price",
+      "description": "Retrieve the current moving average price for a Spot symbol.",
+      "method": "GET",
+      "path": "/avgPrice",
+      "params": [
+        {
+          "name": "symbol",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Spot symbol such as BTCUSDT."
+        }
+      ]
+    },
+    {
+      "name": "get_order_book",
+      "description": "Retrieve current bid and ask depth for a Spot symbol.",
+      "method": "GET",
+      "path": "/depth",
+      "params": [
+        {
+          "name": "symbol",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Spot symbol such as BTCUSDT."
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Depth entries to return; defaults to 100 and is capped at 5,000, with higher values consuming more request weight."
+        },
+        {
+          "name": "symbolStatus",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Optional trading-status filter: TRADING, HALT, or BREAK."
+        }
+      ]
+    },
+    {
+      "name": "get_klines",
+      "description": "Retrieve candlestick bars for a Spot symbol and interval.",
+      "method": "GET",
+      "path": "/klines",
+      "params": [
+        {
+          "name": "symbol",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Spot symbol such as BTCUSDT."
+        },
+        {
+          "name": "interval",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Case-sensitive interval: 1s; 1m, 3m, 5m, 15m, 30m; 1h, 2h, 4h, 6h, 8h, 12h; 1d, 3d; 1w; or 1M."
+        },
+        {
+          "name": "startTime",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Optional inclusive UTC start timestamp in milliseconds."
+        },
+        {
+          "name": "endTime",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Optional inclusive UTC end timestamp in milliseconds."
+        },
+        {
+          "name": "timeZone",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Timezone used to interpret kline intervals, from -12:00 through +14:00; defaults to UTC."
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of candlesticks; defaults to 500 and is capped at 1,000."
+        }
+      ]
+    }
+  ]
+}

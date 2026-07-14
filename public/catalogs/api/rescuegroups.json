@@ -1,0 +1,42 @@
+{
+  "id": "rescuegroups",
+  "name": "RescueGroups",
+  "tagline": "Search adoptable rescue animals",
+  "description": "Search public adoptable dog records through RescueGroups.org with optional related breed, organization, location, and picture data.",
+  "category": "Animals",
+  "color": "#DC2626",
+  "emoji": "🏠",
+  "baseUrl": "https://api.rescuegroups.org/v5/public",
+  "auth": {
+    "type": "api-key",
+    "hint": "Request a RescueGroups.org API key and send it in the Authorization header.",
+    "keyName": "Authorization",
+    "keyIn": "header"
+  },
+  "signupUrl": "https://rescuegroups.org/services/request-an-api-key/",
+  "docsUrl": "https://userguide.rescuegroups.org/spaces/APIDG/pages/8192120/API+Developers+Guide+Home",
+  "tools": [
+    {
+      "name": "search_dogs",
+      "description": "Search public adoptable dog records and optionally include related resources.",
+      "method": "POST",
+      "path": "/animals/search/dogs",
+      "params": [
+        {
+          "name": "include",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Comma-separated related resources such as breeds, locations, orgs, and pictures."
+        },
+        {
+          "name": "data",
+          "in": "body",
+          "required": false,
+          "type": "object",
+          "description": "JSON:API search filters, sorting, and pagination document."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "id": "waifu-it",
+  "name": "Waifu.it",
+  "tagline": "Retrieve anime characters and facts",
+  "description": "Find a random or named waifu character and retrieve random anime facts through Waifu.it API V4.",
+  "category": "Anime",
+  "color": "#A855F7",
+  "emoji": "🌸",
+  "baseUrl": "https://waifu.it/api/v4",
+  "auth": {
+    "type": "api-key",
+    "hint": "Obtain a free Waifu.it token and send its raw value in the Authorization header.",
+    "keyName": "Authorization",
+    "keyIn": "header"
+  },
+  "signupUrl": "https://waifu.it/",
+  "docsUrl": "https://docs.waifu.it/rest-api/start",
+  "tools": [
+    {
+      "name": "search_waifu",
+      "description": "Return a random waifu or search by character or anime name.",
+      "method": "GET",
+      "path": "/waifu",
+      "params": [
+        {
+          "name": "name",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Character name; omit it for a random selection."
+        },
+        {
+          "name": "anime",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Anime title used to select a matching character."
+        }
+      ]
+    },
+    {
+      "name": "get_anime_fact",
+      "description": "Return a random anime-related fact.",
+      "method": "GET",
+      "path": "/fact",
+      "params": []
+    }
+  ]
+}

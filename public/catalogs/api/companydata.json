@@ -1,0 +1,156 @@
+{
+  "id": "companydata",
+  "name": "CompanyData.com",
+  "tagline": "Search worldwide company registry data",
+  "description": "Search and export company records from official trade registers worldwide, and look up supported city names for location filtering.",
+  "category": "Business",
+  "color": "#1D4ED8",
+  "emoji": "🏢",
+  "baseUrl": "https://app.companydata.com/api",
+  "auth": {
+    "type": "api-key",
+    "hint": "Request a CompanyData.com/BoldData API key and send it in the x-api-key header.",
+    "keyName": "x-api-key",
+    "keyIn": "header"
+  },
+  "signupUrl": "https://companydata.com/",
+  "docsUrl": "https://docs.companydata.com/",
+  "tools": [
+    {
+      "name": "search_companies",
+      "description": "Search for companies worldwide by name, location, or classification.",
+      "method": "GET",
+      "path": "/company/search",
+      "params": [
+        {
+          "name": "search",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Company name to search for."
+        },
+        {
+          "name": "countryCode",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Comma-separated ISO country codes to restrict results to."
+        },
+        {
+          "name": "cityName",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Exact city name; use the search_cities tool to find supported values."
+        },
+        {
+          "name": "sic4Digits",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Comma-separated 4-digit SIC industry classification codes."
+        },
+        {
+          "name": "statusCode",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "0 for single location, 1 for headquarters, 2 for branch; comma-separated."
+        },
+        {
+          "name": "page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "One-based page number; standard pagination supports up to 10,000 records total."
+        },
+        {
+          "name": "pageSize",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Records per page, typically 100 through 1000."
+        }
+      ]
+    },
+    {
+      "name": "export_companies",
+      "description": "Export full company profiles matching search criteria, with fields depending on the account's purchased package.",
+      "method": "GET",
+      "path": "/company/export",
+      "params": [
+        {
+          "name": "export",
+          "in": "query",
+          "required": true,
+          "type": "boolean",
+          "description": "Must be true to request full export fields instead of basic search fields."
+        },
+        {
+          "name": "search",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Company name to search for."
+        },
+        {
+          "name": "countryCode",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Comma-separated ISO country codes to restrict results to."
+        },
+        {
+          "name": "nationalId",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Official trade-registry registration number."
+        },
+        {
+          "name": "page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "One-based page number; standard pagination supports up to 10,000 records total."
+        },
+        {
+          "name": "pageSize",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Records per page, typically 100 through 1000."
+        }
+      ]
+    },
+    {
+      "name": "search_cities",
+      "description": "Look up supported exact city names for use in company search and export location filters.",
+      "method": "GET",
+      "path": "/cities",
+      "params": [
+        {
+          "name": "search",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Partial city name to match."
+        },
+        {
+          "name": "countries",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "ISO country code filter."
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Maximum results to return; defaults to 100."
+        }
+      ]
+    }
+  ]
+}

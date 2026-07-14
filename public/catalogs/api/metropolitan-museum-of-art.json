@@ -1,0 +1,61 @@
+{
+  "id": "metropolitan-museum-of-art",
+  "name": "Metropolitan Museum of Art",
+  "tagline": "Search The Met collection",
+  "description": "Search The Metropolitan Museum of Art collection and retrieve public object identifiers.",
+  "category": "Art & Design",
+  "color": "#E4002B",
+  "emoji": "🏛️",
+  "baseUrl": "https://collectionapi.metmuseum.org/public/collection/v1",
+  "auth": {
+    "type": "none",
+    "hint": "No authentication is required."
+  },
+  "signupUrl": "https://www.metmuseum.org/",
+  "docsUrl": "https://metmuseum.github.io/",
+  "tools": [
+    {
+      "name": "search_collection",
+      "description": "Search collection object data and return matching object identifiers.",
+      "method": "GET",
+      "path": "/search",
+      "params": [
+        {
+          "name": "q",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Search term."
+        },
+        {
+          "name": "hasImages",
+          "in": "query",
+          "required": false,
+          "type": "boolean",
+          "description": "Limit results by image availability."
+        },
+        {
+          "name": "title",
+          "in": "query",
+          "required": false,
+          "type": "boolean",
+          "description": "Search specifically in object titles."
+        },
+        {
+          "name": "tags",
+          "in": "query",
+          "required": false,
+          "type": "boolean",
+          "description": "Search subject keyword tags."
+        },
+        {
+          "name": "departmentId",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Limit results to a department identifier."
+        }
+      ]
+    }
+  ]
+}

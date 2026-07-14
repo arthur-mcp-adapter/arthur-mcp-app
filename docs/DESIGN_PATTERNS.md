@@ -594,6 +594,48 @@ Rules:
 - Static catalog data must not contain credentials or secrets and must not be treated as a permission boundary.
 - Prefer this pattern over browser databases for small read-only catalogs; introduce persistence only when editing, synchronization, offline mutation, or relational queries become real requirements.
 
+### API Template Research Staging
+
+Pattern: unverified third-party API directory records are documented in an ordered research layer before they can become executable static templates.
+
+Examples:
+
+- `APIs/MANUAL.md` is the ordered index for the source records in `APIs.json`.
+- `APIs/process.md` is the self-contained continuation prompt for another AI assistant.
+- `APIs/entries/<order>-<api-name>.md` is the research workspace for one possible integration.
+- `APIs/research/official-sources.json` stores reviewed facts and evidence separately from generated prose.
+- `APIs/research/runtime/claims/<order>/` is an atomic, per-entry ownership marker for parallel research workers; `results/<order>.json` stages one complete isolated result.
+- `APIs/final-apis/<id>.json` stores one YouTube-shaped final candidate for each research entry classified as `documented`.
+- `public/catalogs/api/zendesk.json` is the reference shape for a finished API template detail.
+- `scripts/generate-api-manuals.mjs` creates the research workspaces and preserves existing entry files by default.
+- `scripts/check-api-research.mjs` validates contiguous source order, official HTTPS evidence, supported template values, tool uniqueness, and per-tool evidence links.
+- `scripts/generate-final-api-templates.mjs` promotes only documented research records into final candidate files; `scripts/check-final-api-templates.mjs` validates their shape against the API template contract.
+- `scripts/publish-api-templates.mjs` copies staged final candidates into `public/catalogs/api/<id>.json` plus a matching `index.json` summary, skipping any `id` or `name` that already exists in the production catalog; run `npm run check:template-catalogs` afterward.
+
+Note: the staging tree originally rooted at `APIs/` (including `APIs.json`) has since been relocated to `api_repository/` by ongoing parallel audit work; treat `api_repository/` as the current path for every example above.
+
+Rules:
+
+- Treat a source `Link` as a discovery location, not as a runtime base URL, unless current official documentation explicitly identifies it as the API root.
+- Preserve source order and source metadata so research and review remain traceable.
+- Record template identity, presentation, connection, authentication, signup/docs links, tools, and parameters explicitly before conversion.
+- Require evidence for the production base URL, version, authentication placement, scopes, endpoint method/path, and parameter definitions.
+- Prioritize unaudited APIs from famous, broadly adopted providers for parallel research, using current official adoption evidence when prominence is unclear and source order as the deterministic tie-breaker. Popularity affects research order, not suitability classification or the requirement to review the full catalog.
+- Keep one continuity worker on the smallest pending source order so popularity-first research does not indefinitely stall the contiguous checkpoint. Classify each reviewed entry as `documented`, `partial`, `blocked`, `inactive`, or `non-api`.
+- Parallelize provider research through atomic order-specific directory claims, never through a shared read-modify-write number list. Workers stage isolated per-entry results and must not edit consolidated or generated artifacts.
+- Use one explicit coordinator to validate staged results and append only the longest contiguous sequence to `official-sources.json`; out-of-order results remain staged until every preceding order exists.
+- Never reclaim another worker's order based on age alone. Confirm that the owner is inactive, preserve orphaned claim history under `failed/`, and only then make the order claimable again.
+- Treat provider documentation, provider-owned machine-readable specifications, and the provider's own source repository as primary evidence; marketplace pages alone do not justify inventing hidden runtime details.
+- Record response shape, common errors, pagination, rate limits, idempotency, lifecycle, verification date, and evidence URLs even when the current template contract does not store each item directly.
+- Prefer three to six high-value, tested tools over mechanically copying every upstream endpoint.
+- Use the current supported template enums for authentication, HTTP methods, parameter locations, and parameter types; unresolved mappings remain pending rather than being guessed.
+- Entries that map to an existing template ID must be reviewed and merged instead of creating a duplicate detail file.
+- Before publishing a staged final candidate into `public/catalogs/api/`, check both `id` and `name` against the existing catalog; the same real provider can be independently re-researched under a different `id` (e.g. `openlibrary` vs. `open-library`), and only one detail file may exist per provider.
+- A research JSON scaffold containing `<PENDING_...>` values is not valid catalog data and must never be copied into `public/catalogs/api/` unchanged.
+- Final candidates omit research-only evidence fields, use filenames matching their safe IDs, and retain exactly one API template per JSON file.
+- `partial`, `blocked`, `inactive`, and `non-api` records must not be emitted into `APIs/final-apis/`.
+- Regenerate research files with `--force` only when intentionally discarding manual verification work.
+
 ### Shared Feedback Components
 
 Pattern: common feedback UI lives in reusable components.

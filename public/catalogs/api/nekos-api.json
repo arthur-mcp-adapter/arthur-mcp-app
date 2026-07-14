@@ -1,0 +1,61 @@
+{
+  "id": "nekos-api",
+  "name": "Nekos API",
+  "tagline": "Find random tagged anime artwork",
+  "description": "Retrieve random anime images filtered by content rating, artists, included tags, excluded tags, and count.",
+  "category": "Anime",
+  "color": "#EC4899",
+  "emoji": "🐱",
+  "baseUrl": "https://api.nekosapi.com",
+  "auth": {
+    "type": "none",
+    "hint": "No authentication is required for the selected public endpoint."
+  },
+  "signupUrl": "https://nekosapi.com/",
+  "docsUrl": "https://nekosapi.com/docs/images/random",
+  "tools": [
+    {
+      "name": "get_random_images",
+      "description": "Return random anime-image metadata with optional filters.",
+      "method": "GET",
+      "path": "/v4/images/random",
+      "params": [
+        {
+          "name": "rating",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Comma-delimited ratings such as safe or suggestive."
+        },
+        {
+          "name": "artist",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Comma-delimited artist identifiers."
+        },
+        {
+          "name": "tags",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Comma-delimited required tags."
+        },
+        {
+          "name": "without_tags",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Comma-delimited excluded tags."
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of images from 1 through 100."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "id": "digidates",
+  "name": "DigiDates",
+  "tagline": "Calculate dates, ages, and countdowns",
+  "description": "Calculate a person's age, count down to a target date, and compute calendar week numbers from date strings.",
+  "category": "Calendar",
+  "color": "#2563EB",
+  "emoji": "📅",
+  "baseUrl": "https://digidates.de/api/v1",
+  "auth": {
+    "type": "none",
+    "hint": "DigiDates is a free, unauthenticated API; no credential is required."
+  },
+  "signupUrl": "https://digidates.de/",
+  "docsUrl": "https://digidates.de/en/docs/openapi.yaml",
+  "tools": [
+    {
+      "name": "get_age",
+      "description": "Calculate the age in years, and in a years/months/days breakdown, for a given birth date.",
+      "method": "GET",
+      "path": "/age/{date}",
+      "params": [
+        {
+          "name": "date",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Birth date, such as 1970-01-01."
+        }
+      ]
+    },
+    {
+      "name": "get_countdown",
+      "description": "Calculate the countdown in days, and in a years/months/days breakdown, to a target date.",
+      "method": "GET",
+      "path": "/countdown/{date}",
+      "params": [
+        {
+          "name": "date",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Target date to count down to, such as 2024-12-31."
+        }
+      ]
+    },
+    {
+      "name": "get_week_number",
+      "description": "Get the ISO calendar week number for a given date.",
+      "method": "GET",
+      "path": "/week",
+      "params": [
+        {
+          "name": "date",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Date to get the week number of, such as 1970-01-01."
+        }
+      ]
+    },
+    {
+      "name": "check_leap_year",
+      "description": "Determine whether a given year is a leap year.",
+      "method": "GET",
+      "path": "/leapyear",
+      "params": [
+        {
+          "name": "year",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Year to check, such as 1970."
+        }
+      ]
+    }
+  ]
+}

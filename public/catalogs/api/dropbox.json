@@ -1,0 +1,169 @@
+{
+  "id": "dropbox",
+  "name": "Dropbox",
+  "tagline": "Browse and search Dropbox metadata",
+  "description": "Inspect the current Dropbox account, retrieve file or folder metadata, traverse folders with cursor pagination, and search Dropbox content metadata.",
+  "category": "Cloud Storage & File Sharing",
+  "color": "#0061FF",
+  "emoji": "📦",
+  "baseUrl": "https://api.dropboxapi.com/2",
+  "auth": {
+    "type": "bearer",
+    "hint": "Create a scoped app in the Dropbox App Console, complete the OAuth 2.0 flow, and provide its user access token. Enable account_info.read for account details and files.metadata.read for the selected file metadata operations."
+  },
+  "signupUrl": "https://www.dropbox.com/developers/apps",
+  "docsUrl": "https://www.dropbox.com/developers/documentation/http/documentation",
+  "tools": [
+    {
+      "name": "get_current_account",
+      "description": "Return details for the Dropbox account associated with the access token.",
+      "method": "POST",
+      "path": "/users/get_current_account",
+      "params": []
+    },
+    {
+      "name": "get_metadata",
+      "description": "Return metadata for a file or folder by path, file ID, or revision.",
+      "method": "POST",
+      "path": "/files/get_metadata",
+      "params": [
+        {
+          "name": "path",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Path, file or folder ID, or revision identifying the item."
+        },
+        {
+          "name": "include_media_info",
+          "in": "body",
+          "required": false,
+          "type": "boolean",
+          "description": "Whether to include deprecated media information for files."
+        },
+        {
+          "name": "include_deleted",
+          "in": "body",
+          "required": false,
+          "type": "boolean",
+          "description": "Whether to return DeletedMetadata when the referenced path has been deleted."
+        },
+        {
+          "name": "include_has_explicit_shared_members",
+          "in": "body",
+          "required": false,
+          "type": "boolean",
+          "description": "Whether file metadata should indicate explicit shared members."
+        }
+      ]
+    },
+    {
+      "name": "list_folder",
+      "description": "List files and folders under a Dropbox path and obtain a cursor for additional pages or later changes.",
+      "method": "POST",
+      "path": "/files/list_folder",
+      "params": [
+        {
+          "name": "path",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Folder path; use an empty string for the app or account root."
+        },
+        {
+          "name": "recursive",
+          "in": "body",
+          "required": false,
+          "type": "boolean",
+          "description": "Whether to include all descendants instead of only immediate children."
+        },
+        {
+          "name": "include_media_info",
+          "in": "body",
+          "required": false,
+          "type": "boolean",
+          "description": "Whether to include deprecated media information for files."
+        },
+        {
+          "name": "include_deleted",
+          "in": "body",
+          "required": false,
+          "type": "boolean",
+          "description": "Whether deleted entries should be included."
+        },
+        {
+          "name": "include_mounted_folders",
+          "in": "body",
+          "required": false,
+          "type": "boolean",
+          "description": "Whether mounted folders should be traversed."
+        },
+        {
+          "name": "limit",
+          "in": "body",
+          "required": false,
+          "type": "integer",
+          "description": "Approximate maximum number of entries in the response page."
+        },
+        {
+          "name": "shared_link",
+          "in": "body",
+          "required": false,
+          "type": "object",
+          "description": "Optional shared-link context used to list a linked folder."
+        }
+      ]
+    },
+    {
+      "name": "continue_folder_listing",
+      "description": "Continue a folder listing using the cursor returned by list_folder or a prior continuation.",
+      "method": "POST",
+      "path": "/files/list_folder/continue",
+      "params": [
+        {
+          "name": "cursor",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Cursor returned by list_folder or the previous list_folder/continue response."
+        }
+      ]
+    },
+    {
+      "name": "search_files",
+      "description": "Search Dropbox file and folder metadata for a query.",
+      "method": "POST",
+      "path": "/files/search_v2",
+      "params": [
+        {
+          "name": "query",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Search string, with a minimum length of one character."
+        },
+        {
+          "name": "options",
+          "in": "body",
+          "required": false,
+          "type": "object",
+          "description": "Optional search configuration including path, maximum results, file status, extension filters, category filters, and filename-only matching."
+        },
+        {
+          "name": "match_field_options",
+          "in": "body",
+          "required": false,
+          "type": "object",
+          "description": "Optional configuration for additional match fields in returned results."
+        },
+        {
+          "name": "include_highlights",
+          "in": "body",
+          "required": false,
+          "type": "boolean",
+          "description": "Whether matches should include highlighted fragments."
+        }
+      ]
+    }
+  ]
+}

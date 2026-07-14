@@ -1,0 +1,176 @@
+{
+  "id": "harry-potter",
+  "name": "Harry Potter",
+  "tagline": "Look up Harry Potter books, characters, houses, and spells",
+  "description": "Retrieve structured data about Harry Potter books, characters, Hogwarts houses, and spells from a free, community-run REST API available in six languages. No account or API key is required.",
+  "category": "Books",
+  "color": "#7F1D1D",
+  "emoji": "⚡",
+  "baseUrl": "https://potterapi-fedeperin.vercel.app",
+  "auth": {
+    "type": "none",
+    "hint": "No credential required. This is a free public API with no account or API key."
+  },
+  "signupUrl": "https://github.com/fedeperin/potterapi",
+  "docsUrl": "https://github.com/fedeperin/potterapi",
+  "tools": [
+    {
+      "name": "list_books",
+      "description": "List Harry Potter books with title, original title, release date, description, page count, and cover image.",
+      "method": "GET",
+      "path": "/{lang}/books",
+      "params": [
+        {
+          "name": "lang",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Language code: en, es, fr, it, pt, or uk."
+        },
+        {
+          "name": "index",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Return only the single item at this index in the full list."
+        },
+        {
+          "name": "max",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Crop the returned list to this many items."
+        },
+        {
+          "name": "page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "When used with max, the page of results to start cropping from."
+        },
+        {
+          "name": "search",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Search across all book fields and return the best matches, e.g. \"Chamber of Secrets\"."
+        }
+      ]
+    },
+    {
+      "name": "list_characters",
+      "description": "List Harry Potter characters with full name, nickname, Hogwarts house, actor, and portrait image.",
+      "method": "GET",
+      "path": "/{lang}/characters",
+      "params": [
+        {
+          "name": "lang",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Language code: en, es, fr, it, pt, or uk."
+        },
+        {
+          "name": "index",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Return only the single item at this index in the full list."
+        },
+        {
+          "name": "max",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Crop the returned list to this many items."
+        },
+        {
+          "name": "page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "When used with max, the page of results to start cropping from."
+        },
+        {
+          "name": "search",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Search across all character fields and return the best matches, e.g. \"Weasley\"."
+        }
+      ]
+    },
+    {
+      "name": "list_houses",
+      "description": "List the four Hogwarts houses with founder, colors, animal, and emoji.",
+      "method": "GET",
+      "path": "/{lang}/houses",
+      "params": [
+        {
+          "name": "lang",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Language code: en, es, fr, it, pt, or uk."
+        },
+        {
+          "name": "index",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Return only the single item at this index in the full list."
+        },
+        {
+          "name": "search",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Search across all house fields and return the best matches, e.g. \"Gryffindor\"."
+        }
+      ]
+    },
+    {
+      "name": "list_spells",
+      "description": "List Harry Potter spells with their names and usage descriptions.",
+      "method": "GET",
+      "path": "/{lang}/spells",
+      "params": [
+        {
+          "name": "lang",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Language code: en, es, fr, it, pt, or uk."
+        },
+        {
+          "name": "index",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Return only the single item at this index in the full list."
+        },
+        {
+          "name": "max",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Crop the returned list to this many items."
+        },
+        {
+          "name": "page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "When used with max, the page of results to start cropping from."
+        },
+        {
+          "name": "search",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Search across all spell fields and return the best matches, e.g. \"Expelliarmus\"."
+        }
+      ]
+    }
+  ]
+}

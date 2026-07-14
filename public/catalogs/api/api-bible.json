@@ -1,0 +1,107 @@
+{
+  "id": "api-bible",
+  "name": "The Bible",
+  "tagline": "Browse Bible translations and scripture",
+  "description": "Discover available Bible translations and retrieve their books, chapters, and verses through API.Bible.",
+  "category": "Books",
+  "color": "#1D4ED8",
+  "emoji": "📖",
+  "baseUrl": "https://rest.api.bible/v1",
+  "auth": {
+    "type": "api-key",
+    "hint": "Create an API.Bible account, copy the key from the dashboard, and send it in the api-key header.",
+    "keyName": "api-key",
+    "keyIn": "header"
+  },
+  "signupUrl": "https://api.bible/",
+  "docsUrl": "https://docs.api.bible/",
+  "tools": [
+    {
+      "name": "list_bibles",
+      "description": "List Bible translations available to the account.",
+      "method": "GET",
+      "path": "/bibles",
+      "params": [
+        {
+          "name": "language",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "ISO 639-3 language code."
+        },
+        {
+          "name": "abbreviation",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Bible abbreviation to search for."
+        },
+        {
+          "name": "name",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Bible name to search for."
+        },
+        {
+          "name": "include-full-details",
+          "in": "query",
+          "required": false,
+          "type": "boolean",
+          "description": "Include copyright and promotional details."
+        }
+      ]
+    },
+    {
+      "name": "list_books",
+      "description": "List books available in one Bible.",
+      "method": "GET",
+      "path": "/bibles/{bibleId}/books",
+      "params": [
+        {
+          "name": "bibleId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Bible identifier returned by list_bibles."
+        },
+        {
+          "name": "include-chapters",
+          "in": "query",
+          "required": false,
+          "type": "boolean",
+          "description": "Include chapter information; defaults to false."
+        }
+      ]
+    },
+    {
+      "name": "get_book",
+      "description": "Retrieve one book and optionally its chapters.",
+      "method": "GET",
+      "path": "/bibles/{bibleId}/books/{bookId}",
+      "params": [
+        {
+          "name": "bibleId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Bible identifier."
+        },
+        {
+          "name": "bookId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Three-character book code such as GEN or MRK."
+        },
+        {
+          "name": "include-chapters",
+          "in": "query",
+          "required": false,
+          "type": "boolean",
+          "description": "Include chapter information; defaults to false."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,156 @@
+{
+  "id": "smartsheet",
+  "name": "Smartsheet",
+  "tagline": "Read and update Smartsheet sheets, columns, reports, and users",
+  "description": "List and retrieve Smartsheet sheets and reports, add columns to a sheet, and list account users. Requires a Smartsheet personal API access token (Business or Enterprise plan) or an OAuth2 access token.",
+  "category": "Business",
+  "color": "#003059",
+  "emoji": "📊",
+  "baseUrl": "https://api.smartsheet.com/2.0",
+  "auth": {
+    "type": "bearer",
+    "hint": "Generate a personal API access token from your Smartsheet account (Personal Settings > API Access) and send it as Authorization: Bearer <YOUR_ACCESS_TOKEN>. OAuth2 access tokens obtained via the full authorization flow work the same way."
+  },
+  "signupUrl": "https://app.smartsheet.com/b/signup",
+  "docsUrl": "https://developers.smartsheet.com/api/smartsheet/openapi/",
+  "tools": [
+    {
+      "name": "list_sheets",
+      "description": "List all sheets the authenticated user has access to, with an abbreviated summary for each.",
+      "method": "GET",
+      "path": "/sheets",
+      "params": [
+        {
+          "name": "page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Page number to retrieve (1-based)."
+        },
+        {
+          "name": "pageSize",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of sheets to return per page (default 100)."
+        },
+        {
+          "name": "modifiedSince",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "ISO 8601 timestamp; only return sheets modified on or after this date and time."
+        }
+      ]
+    },
+    {
+      "name": "get_sheet",
+      "description": "Retrieve a single sheet's full details, including rows, columns, and metadata.",
+      "method": "GET",
+      "path": "/sheets/{sheetId}",
+      "params": [
+        {
+          "name": "sheetId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "ID of the sheet to retrieve."
+        }
+      ]
+    },
+    {
+      "name": "add_column",
+      "description": "Add a new column to a sheet.",
+      "method": "POST",
+      "path": "/sheets/{sheetId}/columns",
+      "params": [
+        {
+          "name": "sheetId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "ID of the sheet to add the column to."
+        },
+        {
+          "name": "title",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Column name."
+        },
+        {
+          "name": "type",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Column type, e.g. TEXT_NUMBER, DATE, CHECKBOX, or PICKLIST."
+        },
+        {
+          "name": "index",
+          "in": "body",
+          "required": false,
+          "type": "integer",
+          "description": "Position where the column should be inserted."
+        }
+      ]
+    },
+    {
+      "name": "list_reports",
+      "description": "List all reports the authenticated user has access to.",
+      "method": "GET",
+      "path": "/reports",
+      "params": [
+        {
+          "name": "page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Page number to retrieve (1-based)."
+        },
+        {
+          "name": "pageSize",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of reports to return per page (default 100)."
+        },
+        {
+          "name": "modifiedSince",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "ISO 8601 timestamp; only return reports modified on or after this date and time."
+        }
+      ]
+    },
+    {
+      "name": "list_users",
+      "description": "List all users in the authenticated user's Smartsheet organization.",
+      "method": "GET",
+      "path": "/users",
+      "params": [
+        {
+          "name": "page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Page number to retrieve (1-based)."
+        },
+        {
+          "name": "pageSize",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of users to return per page (default 100)."
+        },
+        {
+          "name": "includeAll",
+          "in": "query",
+          "required": false,
+          "type": "boolean",
+          "description": "Return all results in a single page, ignoring pagination."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,84 @@
+{
+  "id": "lectserve",
+  "name": "LectServe",
+  "tagline": "Look up Anglican/ACNA and Revised Common Lectionary Bible readings by date",
+  "description": "Retrieve daily and Sunday lectionary Bible readings for the ACNA or Revised Common Lectionary traditions, for today, the upcoming Sunday, or any specific date. No account or API key is required.",
+  "category": "Calendar",
+  "color": "#7C3AED",
+  "emoji": "⛪",
+  "baseUrl": "https://www.lectserve.com",
+  "auth": {
+    "type": "none",
+    "hint": "No credential required. This is a free public API maintained by an individual developer."
+  },
+  "signupUrl": "https://www.lectserve.com/",
+  "docsUrl": "https://www.lectserve.com/html/about",
+  "tools": [
+    {
+      "name": "get_today_lectionary",
+      "description": "Get the daily and Sunday lectionary reading payload for today, relative to US Central Time.",
+      "method": "GET",
+      "path": "/today",
+      "params": [
+        {
+          "name": "lect",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Sunday/Red-Letter lectionary tradition to use: acna (default) or rcl."
+        },
+        {
+          "name": "dailyLect",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Daily lectionary variant: acna-sec (civil calendar, default) or acna-xian (liturgical calendar)."
+        }
+      ]
+    },
+    {
+      "name": "get_upcoming_sunday_lectionary",
+      "description": "Get the Sunday-only lectionary reading payload for the next upcoming Sunday relative to today.",
+      "method": "GET",
+      "path": "/sunday",
+      "params": [
+        {
+          "name": "lect",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Sunday lectionary tradition to use: acna (default) or rcl."
+        }
+      ]
+    },
+    {
+      "name": "get_lectionary_by_date",
+      "description": "Get the daily and Sunday lectionary reading payload for a specific date.",
+      "method": "GET",
+      "path": "/date/{date}",
+      "params": [
+        {
+          "name": "date",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Date in yyyy-mm-dd format, e.g. 2026-12-25."
+        },
+        {
+          "name": "lect",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Sunday/Red-Letter lectionary tradition to use: acna (default) or rcl."
+        },
+        {
+          "name": "dailyLect",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Daily lectionary variant: acna-sec (civil calendar, default) or acna-xian (liturgical calendar)."
+        }
+      ]
+    }
+  ]
+}

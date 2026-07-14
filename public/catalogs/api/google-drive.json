@@ -1,0 +1,97 @@
+{
+  "id": "google-drive",
+  "name": "Google Drive",
+  "tagline": "Search Google Drive file metadata",
+  "description": "Search and browse files available to a Google Drive user and retrieve metadata for a specific file without downloading its content.",
+  "category": "Cloud Storage & File Sharing",
+  "color": "#4285F4",
+  "emoji": "📁",
+  "baseUrl": "https://www.googleapis.com/drive/v3",
+  "auth": {
+    "type": "bearer",
+    "hint": "Enable Google Drive API in a Google Cloud project, complete OAuth 2.0 consent, and provide an access token with the drive.metadata.readonly scope."
+  },
+  "signupUrl": "https://console.cloud.google.com/",
+  "docsUrl": "https://developers.google.com/workspace/drive/api/reference/rest/v3",
+  "tools": [
+    {
+      "name": "list_files",
+      "description": "List or search Google Drive files and folders visible to the authorized user.",
+      "method": "GET",
+      "path": "/files",
+      "params": [
+        {
+          "name": "q",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Drive search query, such as trashed = false or a name, MIME type, parent, ownership, or modified-time condition."
+        },
+        {
+          "name": "pageSize",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Maximum files per page; values above 1000 are coerced to 1000."
+        },
+        {
+          "name": "pageToken",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Token from nextPageToken selecting the next result page."
+        },
+        {
+          "name": "orderBy",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Comma-separated sort keys, optionally followed by desc, such as modifiedTime desc or name_natural."
+        },
+        {
+          "name": "driveId",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Shared-drive identifier to search when using the drive corpus."
+        },
+        {
+          "name": "includeItemsFromAllDrives",
+          "in": "query",
+          "required": false,
+          "type": "boolean",
+          "description": "Whether results can include items from both My Drive and shared drives."
+        }
+      ]
+    },
+    {
+      "name": "get_file_metadata",
+      "description": "Retrieve metadata for one Google Drive file or folder without downloading its content.",
+      "method": "GET",
+      "path": "/files/{fileId}",
+      "params": [
+        {
+          "name": "fileId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Identifier of the Drive file or folder."
+        },
+        {
+          "name": "supportsAllDrives",
+          "in": "query",
+          "required": false,
+          "type": "boolean",
+          "description": "Whether the requesting application supports both My Drive and shared-drive items."
+        },
+        {
+          "name": "includeLabels",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Comma-separated label IDs whose metadata should be included in labelInfo."
+        }
+      ]
+    }
+  ]
+}
