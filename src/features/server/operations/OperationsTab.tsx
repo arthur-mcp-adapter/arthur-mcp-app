@@ -8,29 +8,10 @@ import { useTranslation } from 'react-i18next'
 import api from '../../../api'
 import { BaseDialogLayout } from '../../../components'
 import type { DbConnectionConfig, DbQuery, DbQueryParameter } from '../types'
-
-interface OperationsTabProps {
-  projectId: string
-  sourceType: string
-  initialConnection?: DbConnectionConfig
-  initialOperations?: DbQuery[]
-  onChange: (connection: DbConnectionConfig, operations: DbQuery[]) => void
-}
-
-const DEFAULT_PORT: Record<string, number> = { postgresql: 5432, mysql: 3306, mariadb: 3306 }
-const EMPTY_OPERATION: Omit<DbQuery, 'id'> = {
-  name: '', description: '', sourceType: 'postgresql', query: '', resultMode: 'rows', parameters: [],
-}
-
-function schemaFrom(parameters: DbQueryParameter[]) {
-  return {
-    type: 'object',
-    properties: Object.fromEntries(parameters.filter((p) => p.name.trim()).map((p) => [p.name.trim(), {
-      type: p.type, ...(p.description?.trim() ? { description: p.description.trim() } : {}),
-    }])),
-    required: parameters.filter((p) => p.required && p.name.trim()).map((p) => p.name.trim()),
-  }
-}
+import type { OperationsTabProps } from './operationsTabProps.interface'
+import { DEFAULT_PORT } from './defaultPort.constant'
+import { EMPTY_OPERATION } from './emptyOperation.constant'
+import { schemaFrom } from './schemaFrom.util'
 
 export function OperationsTab({ projectId, sourceType, initialConnection, initialOperations = [], onChange }: OperationsTabProps) {
   const { t } = useTranslation('serverDetail')

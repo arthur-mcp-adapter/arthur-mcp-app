@@ -40,3 +40,6 @@ api/database.sqlite
 
 # Production secret values (pushed to the cluster out-of-band, never committed)
 deploy/production.env
+
+# Local MCP server config (contains server host/user details)
+.mcp.json
