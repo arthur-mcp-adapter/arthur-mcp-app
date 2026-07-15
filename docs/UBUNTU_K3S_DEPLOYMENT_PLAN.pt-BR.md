@@ -385,7 +385,7 @@ Modelo:
 Secrets iniciais:
 
 - `JWT_SECRET` (hoje só assina/verifica os tokens OAuth emitidos para clientes MCP de terceiros — não é mais a sessão de login do usuário, ver `docs/DESIGN_PATTERNS.md`);
-- `DATABASE_URI` — connection string do PostgreSQL do próprio projeto Supabase (`postgres://...supabase.co:.../postgres?sslmode=require` ou a connection string do pooler), não de um provedor de banco separado;
+- `DATABASE_URI` — connection string do PostgreSQL do próprio projeto Supabase (direta ou do pooler), não de um provedor de banco separado. **Atenção ao sufixo TLS**: com o driver `pg` atual, `?sslmode=require` sozinho passou a *verificar* a cadeia de certificados e rejeita o certificado do pooler do Supabase ("self-signed certificate"); a forma que funciona é `?uselibpqcompat=true&sslmode=require` (semântica libpq clássica, TLS sem verificação de CA — coerente com o `rejectUnauthorized: false` que `api/src/database/database.module.ts` aplica). Validado em produção em 2026-07-15;
 - `SUPABASE_URL`, `SUPABASE_JWKS_URL`, `SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY` — obrigatórios, a aplicação não sobe sem eles (`api/src/config/env.validation.ts`). `SUPABASE_SECRET_KEY` é a service-role key e precisa do mesmo tratamento que os outros secrets; `SUPABASE_URL`/`SUPABASE_PUBLISHABLE_KEY` também são necessários no build/runtime do **frontend** como `VITE_SUPABASE_URL`/`VITE_SUPABASE_PUBLISHABLE_KEY` (não são secretos — a publishable key é pública por design — mas precisam estar disponíveis como build args da imagem do frontend, não só no Secret do backend);
 - credenciais SMTP;
 - credenciais de observabilidade externa, se houver.
