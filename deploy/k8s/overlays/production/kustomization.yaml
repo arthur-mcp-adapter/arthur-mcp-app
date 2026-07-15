@@ -1,0 +1,12 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: arthur-mcp
+resources:
+  - ../../base
+  - ingress.yaml
+  - middleware-redirect-https.yaml
+  - network-policy.yaml
+images:
+  - name: ghcr.io/arthur-mcp-adapter/arthur-mcp-app
+    # Promotion workflow updates this tag to the immutable sha-<commit> tag.
+    newTag: main

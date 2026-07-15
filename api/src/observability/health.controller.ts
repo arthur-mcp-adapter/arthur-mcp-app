@@ -1,5 +1,7 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, ServiceUnavailableException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { InjectDataSource } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
 
 interface HealthResponse {
   status: 'ok';
@@ -11,15 +13,28 @@ interface HealthResponse {
 
 @Controller()
 export class HealthController {
-  constructor(private readonly configService: ConfigService) {}
+  constructor(
+    private readonly configService: ConfigService,
+    @InjectDataSource() private readonly dataSource: DataSource,
+  ) {}
 
   @Get('health')
   health(): HealthResponse {
     return this.response();
   }
 
+  // Readiness gates rolling updates: it must only pass once the database is
+  // reachable, otherwise Kubernetes routes traffic to a pod that cannot serve.
   @Get('ready')
-  ready(): HealthResponse {
+  async ready(): Promise<HealthResponse> {
+    if (!this.dataSource.isInitialized) {
+      throw new ServiceUnavailableException('database connection not initialized');
+    }
+    try {
+      await this.dataSource.query('SELECT 1');
+    } catch {
+      throw new ServiceUnavailableException('database connection unavailable');
+    }
     return this.response();
   }
 

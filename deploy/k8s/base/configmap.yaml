@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: arthur-mcp-config
+data:
+  SERVICE_NAME: arthur-mcp-adapter
+  CORS_ORIGIN: https://app.arthurmcp.io

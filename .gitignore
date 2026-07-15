@@ -3,6 +3,10 @@ node_modules/
 client/node_modules/
 package-lock.json
 
+# API repository
+api_repository/
+/scripts/
+
 # Build output
 dist/
 client/dist/
@@ -34,3 +38,6 @@ coverage/
 
 # Local database
 api/database.sqlite
+
+# Production secret values (pushed to the cluster out-of-band, never committed)
+deploy/production.env

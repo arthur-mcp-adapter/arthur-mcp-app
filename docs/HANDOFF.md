@@ -4,7 +4,7 @@ Update this file at the end of each work session. The goal is to let Codex or Cl
 
 ## Last Agent
 
-Codex
+Claude Code
 
 ## Current State
 
@@ -14,8 +14,47 @@ The shared context protocol now includes Claude Code specialist agents, backend 
 
 Frontend duplication optimization is progressing through a phased extraction plan. Phases 1-7 are complete: `BaseListCard`, `useListPageLogic`, `useCopyToClipboard`, `BaseDialogLayout`, `useDetailPageNav`, shared feature types, and `useAsyncFeedback` are in place, with the most repetitive drawer, detail-nav, snackbar, and page-local entity shapes now centralized. Frontend specialists are now explicitly prepared to use Feature-Driven Architecture, Atomic Design, and controlled barrel exports. `docs/FRONTEND_ARCHITECTURE_PLAN.md` defines the incremental migration plan; its first implementation slice is complete with feature/shared `index.tsx` barrels and Atomic Design component folders.
 
+`docs/FRONTEND_FILE_ORGANIZATION_PLAN.md` is now fully implemented. Production contracts and component props are isolated in 249 `name.kind.ts` files, top-level non-rendering helpers and hooks have left React modules, shared/feature utilities have one responsibility per file, constants are focused, and pure barrels use `index.ts`. Authentication/permissions is the reference slice. `npm run type-check` now begins with an AST structural gate so the convention cannot silently regress.
+
+`docs/FRONTEND_EXPORT_AND_FOLDER_CONVENTION_PLAN.md` is also fully implemented. Named frontend modules export exactly one symbol, only pure `index.ts` files aggregate exports, React implementations use matching named `.tsx` files, no `index.tsx` remains, and all 185 directories below `src/` contain `index.ts` and `index.css`.
+
+Supabase Auth is now the sole identity provider (Phases 1-4 of the identity migration are complete; Phase 5 — dropping the legacy `users`/`password_resets` tables — and Phase 6 — collapsing `DATABASE_URI` to Postgres-only — are explicitly **not started**, pending the operational prerequisites below). This overrides `docs/SUPABASE_ADOPTION_PLAN.md`'s original Phase 6 deferral by explicit user decision — see the override note at the top of that document.
+
 ## Latest Changes
 
+- Executed the first production slice of `docs/UBUNTU_K3S_DEPLOYMENT_PLAN.pt-BR.md` against the Ubuntu VPS at `64.176.25.55` (Vultr, Ubuntu 26.04, domain `app.arthurmcp.io` — DNS record created, still propagating):
+  - **Plan doc updated first**: the database is the Supabase-managed PostgreSQL of the same project already used for Auth (config-only change — `DATABASE_URI` already supports `postgres://` via TypeORM), replacing all "external PostgreSQL provider" wording; also documented the 443→Traefik→Service→3000 port chain (Vite's 5173 is dev-only) and the PgBouncer/prepared-statements caveat.
+  - **Server (Fase 1, partial)**: ufw now allows 80/443 (plus K3s pod/service CIDRs per K3s docs); Docker Engine 29.6.1 + Buildx installed from the official repo. **Deliberately not done, hard user boundary: no Linux user, SSH, or sudoers changes — the user handles all OS-user hardening themselves.**
+  - **Image (Fase 2)**: Dockerfile now uses `npm ci`, prunes backend devDependencies after build, sets `NODE_ENV=production`, runs as the non-root `node` user (with `/app/data` chowned), adds OCI labels (`GIT_SHA`/`VERSION` args) and `ARG`/`ENV` for `VITE_SUPABASE_URL`/`VITE_SUPABASE_PUBLISHABLE_KEY` in the frontend stage. Validated locally: builds, runs as `node`, `/health` and `/ready` return 200.
+  - **`/ready` now checks the database** (`api/src/observability/health.controller.ts`): injects the TypeORM `DataSource`, requires `isInitialized` + a successful `SELECT 1`, throws 503 otherwise; `/health`/`/live` unchanged (process-liveness only). Spec extended for ok/uninitialized/query-failure paths (8 tests pass). No permission decision needed — these stay intentionally public infrastructure probes.
+  - **CI/CD (Fases 3-4)**: `.github/workflows/ci.yml` (frontend type-check/test/build, backend test/build, container build + `/ready` smoke test, minimal `GITHUB_TOKEN` permissions, PR concurrency cancel) and `.github/workflows/publish-image.yml` (on CI success on `main`: builds once, pushes `ghcr.io/arthur-mcp-adapter/arthur-mcp-app:sha-<sha>` + `:main`, VITE build args from repo variables, digest in run summary).
+  - **Cluster (Fases 5, 6, 8, 9)**: K3s v1.36.2+k3s1 installed (stable channel), node Ready, default Traefik serving 80/443; Kustomize manifests under `deploy/k8s/` (base: namespace/service-account/configmap/deployment/service with RollingUpdate maxSurge 1/maxUnavailable 0, probes on `/live`+`/ready`, non-root security context, preStop sleep 5; production overlay: Traefik Ingress with cert-manager annotation + HTTPS-redirect Middleware, NetworkPolicy, image tag pin) — server-side dry-run validated against the cluster; cert-manager v1.21.0 with `letsencrypt-staging`/`letsencrypt-prod` ClusterIssuers (both Ready, HTTP-01 via Traefik); Flux controllers installed with a read-only `GitRepository` (public repo, no deploy key) + `Kustomization` targeting `deploy/k8s/overlays/production` with a health check on the Deployment.
+  - **Pending to go live**: push these files to `main` (Flux currently errors with "kustomization path not found", expected until pushed); create GitHub repo variables `VITE_SUPABASE_URL`/`VITE_SUPABASE_PUBLISHABLE_KEY`; make the GHCR package public after first publish; create the `arthur-mcp-secrets` Secret in namespace `arthur-mcp` (values via gitignored `deploy/production.env`, never committed — `.gitignore` rule added); wait for DNS propagation, then the Ingress TLS certificate issues itself. SOPS/age is the documented upgrade path; the first iteration uses out-of-band cluster Secrets (the plan's allowed option B).
+
+- Fixed two issues found by live manual testing right after the identity migration above, plus required email confirmation on signup:
+  - **`GET /users/me` 404'd** — `UsersModule` was never directly imported into `AppModule`; it only got mounted before because `AuthModule` imported it (needed by the old `SupabaseAuthService` → `UsersService` dependency, removed in the migration above). Fixed by importing `UsersModule` directly in `app.module.ts`. Added a permanent regression test (`api/test/app.e2e-spec.ts`, `GET /users/me` without a token must be `401`, not `404`) since the existing e2e suite never exercised this route and unit tests don't boot the full module graph.
+  - **Local dev had no `VITE_SUPABASE_URL`/`VITE_SUPABASE_PUBLISHABLE_KEY`** — `src/supabaseClient.ts` was silently falling back to its `http://localhost` placeholder (added so `createClient()` never throws when unconfigured, e.g. in tests), so calls like `resetPasswordForEmail` were hitting a non-existent local endpoint. Added a root `.env` (gitignored, already covered by the existing bare `.env` rule) with the same `SUPABASE_URL`/`SUPABASE_PUBLISHABLE_KEY` values already in `api/.env`, `VITE_`-prefixed.
+  - **Signup now requires email confirmation** (explicit user request): switched `src/pages/Signup` from the backend-provisioning flow to a plain client-side `supabase.auth.signUp({ email, password, options: { data: { username }, emailRedirectTo } })`. Deleted the now-unnecessary `POST /auth/signup` endpoint and `SignupSchema` from `AuthController` (confirmed via `node_modules/@supabase/auth-js`'s own JSDoc that the Admin API's `createUser()` — which the old endpoint used — "will not send a confirmation email", making it fundamentally incompatible with a confirm-before-login requirement; standard client-side `signUp()` is Supabase's only method that actually sends one). Reasoned out that `app_metadata.role` doesn't need to be set at signup at all: it already defaults to `admin` when absent (see `SupabaseAuthService`, added in the migration above for OAuth signups), matching this app's existing every-account-is-admin behavior — so removing the backend round trip closes a code path rather than leaving a gap. Requires enabling "Confirm email" for the Email provider in the Supabase dashboard (not app code) — flagged, not done by this session. `data.session` is null from `signUp()` until confirmed, so the Signup page now shows a "check your email" state (new `hint.checkEmailToConfirm` locale key) instead of navigating in immediately.
+  - Updated `docs/FLOWS.md`'s Authentication section and `docs/ENTITIES.md`'s Identity section accordingly; noted both `/oauth-callback` and `/reset-password` must be in the Supabase project's Redirect URLs allow-list for every environment.
+  - Validated: `tsc --noEmit` clean (both), backend `jest --runInBand` same 2 pre-existing unrelated failures (41/42 suites), new `GET /users/me` e2e regression test passes (401), frontend `vitest run` 91/91.
+
+- Made Supabase Auth the sole identity provider across frontend and backend (Phases 1-4 of a 6-phase plan; Phase 5's table drop and Phase 6's DB driver collapse are deliberately not started — see "Recommended Next Step"). This supersedes the prior session's partial Supabase linking work (which only added unreachable verify-only code, see the entry below it).
+  - **Frontend** (`src/`): added `src/supabaseClient.ts` (`@supabase/supabase-js` browser client) and `src/supabaseConfigured.constant.ts`. Rewrote `Login`, `Signup`, `ForgotPassword`, `ResetPassword`, `OAuthCallback`, `SocialAuthButtons`, and `Profile`'s `MyProfileTab` to call Supabase directly (`signInWithPassword`, `resetPasswordForEmail`, `updateUser`, `signInWithOAuth`) instead of the old `/auth/*` endpoints; login is now email-based, not username-based. `AuthProvider` now derives `me`/`localStorage['token']` from `supabase.auth.onAuthStateChange()` (fires immediately with the current session, then on every sign-in/out/refresh) instead of a synchronous `localStorage` read — this also required fixing `App.tsx`'s `RequireAuth` to gate on `AuthContext`'s `loading`/`me` instead of reading `localStorage` directly, since the token is now populated asynchronously and the old synchronous read would have flash-redirected already-logged-in users to `/login` on every hard refresh. `api.ts`'s 401 handler and `logout()` both now also call `supabase.auth.signOut()` (not just clear the mirrored token), or Supabase's own session store would resurrect it.
+  - **Backend signup** (`api/src/auth/`): trimmed `AuthController` to `GET /auth/providers` (`{ selfHosted }` only) and `POST /auth/signup` — the one call that must stay server-side, since only the service-role key may set the `app_metadata.role` claim. Deleted `AuthService`, `LocalStrategy`/`LocalAuthGuard`, `GoogleStrategy`/`GoogleAuthGuard`, `GithubStrategy`/`GithubAuthGuard`, and (once nothing needed Passport's `jwt` strategy anymore) `JwtStrategy`. `SupabaseAdminService.linkUser()` now accepts an `appMetadata` param and patches it on the "already registered" fallback branch too (a real gap in the prior session's version, which only set it on first creation).
+  - **Guard rewrite** (`api/src/auth/jwt.guard.ts`, `supabase-auth.service.ts`): `JwtAuthGuard` no longer extends Passport's `AuthGuard('jwt')` with a try/catch Supabase fallback — it's a plain guard that calls `SupabaseAuthService.tryAuthenticate()` directly and 401s if null. `SupabaseAuthService` no longer depends on `UsersService`/mirrors into the local table; it maps Supabase JWT claims straight to `RequestUser { userId, username, email, role }`, reading `role` from `app_metadata.role` (default `'admin'` when absent, which matters for brand-new Google/GitHub-via-Supabase signups this backend never provisions). `UsersController`'s `GET /users/me` is now composed entirely from `req.user` claims + a role→permissions lookup, no DB read; `PATCH /users/me` is deleted (Profile edits go straight to Supabase now).
+  - **MCP-client OAuth** (`api/src/oauth/`): the third-party-MCP-client login form (`/oauth/server/:serverId/authorize`) switched from local bcrypt validation to a Supabase password grant (`oauth.service.ts`'s `validateUser` now calls `supabase.auth.signInWithPassword` with the publishable key), and its field renamed `username` → `email`. This was a real "would otherwise silently break" risk once local password auth was removed — flagged and fixed rather than left as debt.
+  - **Env validation**: `SUPABASE_URL`/`SUPABASE_JWKS_URL`/`SUPABASE_PUBLISHABLE_KEY`/`SUPABASE_SECRET_KEY` are now required (the app fails fast at boot if unset, instead of silently 401-ing every request); `GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET`/`GITHUB_CLIENT_ID`/`GITHUB_CLIENT_SECRET` removed from both `env.validation.ts` and `api/.env.example` (Google/GitHub sign-in is Supabase's own native OAuth now, configured in the Supabase dashboard, not app env vars).
+  - Removed now-unused dependencies: `@nestjs/passport`, `@nestjs/jwt`, `passport`, `passport-jwt`, `passport-local`, `passport-google-oauth20`, `passport-github2` (+ their `@types/*`) from `api/package.json`.
+  - `UsersService`/`UserEntity`/`user.repository.ts` and `PasswordResetEntity`/its repository are now legacy — kept only so the Supabase backfill script (`backfillSupabaseLinks()`, extended this session to also set `app_metadata.role` from each user's real local role, including patching the fallback branch) can run once against production before Phase 5 drops both tables in a follow-up migration.
+  - Test impact: deleted `auth.service.spec.ts`; rewrote `auth.controller.spec.ts`, `oauth.service.spec.ts` (mocks `@supabase/supabase-js`'s `signInWithPassword`), `env.validation.spec.ts` (added required Supabase vars to its `baseConfig`), and the frontend's `Login.test.tsx`/`api.test.ts`/`context.test.tsx` (mock `src/supabaseClient.ts`/`onAuthStateChange` instead of the old `/auth/*` endpoints). Added `test/setup.ts` fake Supabase env vars so the e2e suite still boots.
+  - Documentation: added `docs/ENTITIES.md`'s "Identity (Supabase Auth)" section and marked `User`/`Password Reset` legacy; added `docs/FLOWS.md`'s "Authentication (Supabase)" section and reworded the JWT-secret-rotation blast-radius note; updated `docs/DESIGN_PATTERNS.md`'s `UsersController`/`JwtAuthGuard`/`JWT_SECRET` entries; added the override note to `docs/SUPABASE_ADOPTION_PLAN.md`; updated `AGENTS.md`'s stack/structure lines and `api/.env.example`.
+  - Deliberately **not done** this session (see "Recommended Next Step"): Phase 5 (drop `users`/`password_resets` via migration — blocked on running the extended backfill in production and communicating the mandatory one-time password reset to existing users first) and Phase 6 (collapse `DATABASE_URI` to Postgres-only, drop SQLite/MySQL support).
+- Fixed Supabase user linking, which previously existed only as unreachable code: `SupabaseAuthService` (added in `a0afe56`) only *verifies* an inbound Supabase-issued JWT, but nothing in the app (no frontend Supabase client, no backend endpoint) ever produces one, so no user's `supabase_id` was ever populated.
+  - Added `api/src/auth/supabase-admin.service.ts` (`SupabaseAdminService`), which provisions the corresponding Supabase Auth user via the Admin API (service-role `SUPABASE_SECRET_KEY`) and returns its id. No-op when `SUPABASE_URL`/`SUPABASE_SECRET_KEY` aren't set. Registered as a provider/export on the (global) `AuthModule`.
+  - Wired it into `UsersService.create()` (registration — links with the plaintext password before it's hashed and discarded) and into the "create new account" branch of `UsersService.findOrCreateFromOAuth()` (Google/GitHub signup — links without a password). The Supabase-provider branch of `findOrCreateFromOAuth` is untouched: `profile.id` there is already the real Supabase user id from the verified JWT.
+  - Added `IUserRepository.findWithoutSupabaseId()` / `TypeOrmUserRepository` implementation, `UsersService.backfillSupabaseLinks()`, and a one-off `api/src/scripts/backfill-supabase-users.ts` (`npm run backfill:supabase-users --prefix api`) to link every pre-existing account.
+  - Documented the two independent Supabase Auth code paths (verify-only vs. provision-and-link) in `api/.env.example` and `docs/ENTITIES.md`.
+  - Note: superseded by the entry above — this session's work made the local mirror/table itself legacy, not just its linking mechanism.
 - Aligned the Operation editor with the established frontend pattern by replacing its centered MUI Dialog with the shared right-side `BaseDialogLayout` drawer, including a fixed header, scrollable form, and fixed action footer.
 - Enabled every source already modeled in `/servers/new` and persisted the source-specific connection payload for SQL, MongoDB, Redis, DynamoDB, Elasticsearch, Snowflake, and Firestore. Runtime adapters remain explicitly unavailable where not yet implemented or installed.
 - Completed the data-source integration foundation and backend SQL dispatch/tool synchronization.
@@ -32,6 +71,202 @@ Frontend duplication optimization is progressing through a phased extraction pla
 - Updated the Claude Code specialist registry in both `AGENTS.md` and `.claude/agents/README.md`:
   - Modernized `devops-expert` for the current Arthur MCP stack and operational workflow.
   - Added `kubernetes-expert` for manifests, Helm/Kustomize, workloads, networking, policies, storage, observability, and cluster operations.
+- Fixed `SQLITE_ERROR: no such column` crashes at API startup (`UserEntity.created_at`, `ErrorTrackingProviderEntity.project_name`, etc.):
+  - Root cause: commit `2e99fd9` ("fix entities") renamed every column in the already-applied baseline migration (`1700000000000-InitialTypeormSchema.ts`) from camelCase to snake_case **in place**, instead of adding a new migration. Any database that had already run that migration under its old camelCase definition (its `migrations` tracking table already marks it as applied) never re-runs it, so it silently keeps the old camelCase physical columns forever while entities/current migration source expect snake_case.
+  - Added `api/src/database/migrations/1700000000001-RenameCamelCaseColumnsToSnakeCase.ts`: an idempotent migration that renames the legacy camelCase columns to snake_case per table (`users`, `swagger_projects`, `settings`, `password_resets`, `prompts`, `secrets`, `roles`, `error_tracking_providers`, `ai_providers`), skipping any column that's already renamed or a table that doesn't exist. Registered it in `api/src/database/database.module.ts`'s `TYPEORM_MIGRATIONS`.
+  - Added `api/src/database/migrations/rename-camelcase-columns-to-snake-case.spec.ts` verifying the rename, its idempotency (running `up()` twice doesn't throw), and the reverse `down()`.
+  - Validated: `npm test --prefix api -- rename-camelcase-columns-to-snake-case.spec.ts initial-typeorm-schema.spec.ts` (2 passed), `npx tsc -p api/tsconfig.json --noEmit` (clean), `npm test --prefix api` (39/41 suites, 252/255 tests passed — the 2 pre-existing failures in `dynamic-mcp/response-mapper.spec.ts` and `observability/tracing/tracing.service.spec.ts` are unrelated to this change, confirmed by code inspection: neither touches database/entities/migrations).
+  - Lesson for future migrations: never edit an already-applied migration's column definitions in place; add a new migration instead (the existing `1700000000000-InitialTypeormSchema.ts` should be treated as frozen going forward).
+  - Also found and resolved a stray pre-existing local git stash (`stash@{0}: WIP on develop: 1abf4e7 fix vercel deploy`, containing only an old `api/database.sqlite` snapshot from July 1) that surfaced as a merge conflict during an unrelated `git stash` test-isolation attempt; resolved by keeping the current/live `api/database.sqlite` content. The stash entry itself was left in place (not dropped) since it predates this session — the user may want to inspect/drop it manually.
+- Published staged API audit candidates into the production template catalog:
+  - Added `scripts/publish-api-templates.mjs`, which copies documented final candidates from `api_repository/final-apis/` into `public/catalogs/api/<id>.json` plus matching `index.json` summaries, skipping any `id` or `name` already present in production.
+  - Ran it once: published 158 new API templates (159 copied, minus 1 duplicate), bringing the production API catalog from 69 to 227 templates.
+  - Found and removed one true duplicate: `open-library` (new) and `openlibrary` (pre-existing) are the same real provider (openlibrary.org); kept the pre-existing `openlibrary` and deleted the redundant file/index entry. The script now also checks `name` (not just `id`) to prevent this going forward.
+  - Validated with `npm run check:template-catalogs` (227 API templates, 90 prompt templates valid) and `npm run type-check` (frontend structure + catalogs + `tsc --noEmit`), both passing.
+  - Noted in `docs/DESIGN_PATTERNS.md` and `docs/ROADMAP.md` that the audit staging tree (`APIs/`, `APIs.json`) has been relocated to `api_repository/` by other concurrent parallel-audit sessions; did not otherwise touch that in-progress research state.
+  - Multiple other Claude Code sessions were confirmed (by the user) to be running the same `process.md` audit concurrently (different worker/coordinator strategies); this session's own spawned workers (`claude-worker-A/B/C`) stayed strictly in worker mode and were fully wound down (no orphaned claims) before this publish step.
+  - `api/database.sqlite` was not touched.
+- Executed the popularity-first API audit prompt and advanced the contiguous checkpoint from `0130` through `0232`:
+  - Audited 102 additional source entries as 64 documented, 18 partial, 9 blocked, 9 inactive, and 2 non-API; persisted totals are now 232 reviewed, 162 suitable, and 70 not currently suitable.
+  - Generated 64 additional final candidates, including Google Books, Gmail, Google Analytics, Google Calendar, Google Drive, Dropbox, Box, OneDrive, Square, CircleCI, Travis CI, 1inch, and Binance.
+  - Preserved incompatible but active services as partial, including The Graph, Mailchimp, Trello, Apache Superset, Databricks, Alchemy Ethereum, and Smash, instead of exposing unsafe hostname, multi-secret, path-secret, GraphQL, or binary-transfer workarounds.
+  - Popularity workers also staged 38 validated out-of-order results, including GitHub, GitLab, Docker Hub, Firebase, Google Docs/Sheets/Slides/Keep, Stripe, Google Maps, Airtable, Asana, ClickUp, Jira, Notion, Netlify, npm, Coinbase, Wikipedia, and Yelp. These remain isolated until preceding source-order gaps are complete.
+  - Recovered orphaned claim directories only after confirming their owners were absent, preserved every recovery under `APIs/research/runtime/failed/`, and retained all completed claim/result evidence.
+  - Regenerated all 1,608 manuals, synchronized the 232-row audit index and 162 final candidates, and left the next contiguous gap at `0233`.
+  - No credentialed or mutating provider operation was executed, and `api/database.sqlite` was not touched.
+- Updated `APIs/process.md` so unaudited famous APIs are researched first:
+  - The default worker strategy now ranks globally established and broadly adopted APIs ahead of lower-profile entries, using official adoption evidence when prominence is unclear and `APIs.json` order as the deterministic tie-breaker.
+  - The intended four-agent topology is now two popularity-first workers, one continuity worker, and one coordinator; the continuity lane advances the smallest pending order so consolidated artifacts remain compatible with the existing contiguous validators and generators.
+  - Popularity changes only research order. Every catalog entry still requires an audit, runtime facts still require official sources, and suitability continues to use the existing documented/partial/blocked/inactive/non-API classifications.
+  - Updated the API research staging pattern and roadmap. No application behavior, database, dependency, permission, or user-facing flow changed.
+- Advanced the parallel full-catalog API audit through entry `0130`:
+  - Classified entries `0121`–`0130` as 6 documented, 3 partial, and 1 inactive, adding final candidates for Blockscout, BscScan through Etherscan V2, Chainlink CCIP, Covalent GoldRush, Etherscan, and Layer4.
+  - Kept Bitquery partial because its core interface is GraphQL/streaming, Chainpoint partial because no stable provider-operated HTTPS gateway exists, and GetBlock partial because its secret must be embedded in the URL path.
+  - Recorded Warrant as inactive after the legacy hosted runtime disappeared following its WorkOS acquisition; the open-source self-hosted project does not supply one shared production base URL.
+  - Persisted totals are now 130 reviewed, 98 suitable, and 32 not currently suitable; the next entry is `0131`.
+  - No credentialed or mutating provider operation was executed, and `api/database.sqlite` was not touched.
+- Advanced the uninterrupted full-catalog API audit through entry `0120` using three parallel claim-based research workers and coordinator-only consolidation:
+  - Classified entries `0111`–`0120` as 8 documented and 2 partial, adding final candidates for The Color API, Word Cloud, xColors, Clerk, Corbado, GetOTP, MojoAuth, and Stytch.
+  - Kept Auth0 partial because its Management API base URL is tenant-specific; kept Kinde partial because it additionally requires a form-encoded client-credential token exchange.
+  - Confirmed atomic claims prevented duplicate work while per-entry runtime results allowed source review before ordered consolidation.
+  - Persisted totals are now 120 reviewed, 92 suitable, and 28 not currently suitable; the next entry is `0121`.
+  - No credentialed or mutating provider operation was executed, and `api/database.sqlite` was not touched.
+- Updated `APIs/process.md` for safe parallel official-source research:
+  - The same prompt now defaults each parallel assistant to worker mode and reserves coordinator mode for explicit assignment.
+  - Workers atomically claim one order at a time with an order-specific directory, persist one isolated JSON result per entry, and never edit consolidated research, generators, manuals, audit indexes, final templates, or shared documentation.
+  - A single coordinator validates and merges only the longest contiguous staged result sequence, then regenerates and validates all downstream artifacts.
+  - Claim recovery now requires evidence that the owner is inactive; claim age alone cannot authorize duplicate research, and orphan history is preserved under `failed/`.
+- Advanced the uninterrupted full-catalog API audit through entry `0110`:
+  - Classified entries `0101`–`0110` as 9 documented and 1 partial, adding final candidates for Iconfinder's Magnific successor, Icons8, Logotypes.dev, Lordicon, The Met, PHP-Noise, Picsart, Pika's Orshot successor, and Rijksmuseum.
+  - Kept Noun Project partial because OAuth 1.0a request signing requires both a protected client key and secret, which the current single-auth template contract cannot represent safely.
+  - Corrected current lifecycle and authentication facts: Iconfinder now resolves to Magnific, Pika redirects to Orshot, and Rijksmuseum's current Search API requires no key.
+  - Persisted totals are now 110 reviewed, 84 suitable, and 26 not currently suitable; the next entry is `0111`.
+  - Regenerated all 1,608 manuals and validated all 84 final candidates; the full-catalog goal remains active.
+  - Public read-only checks succeeded for Icons8, Logotypes.dev, PHP-Noise, The Met, and Rijksmuseum; no credentialed provider operation was executed, and `api/database.sqlite` was not touched.
+- Advanced the uninterrupted full-catalog API audit through entry `0100`:
+  - Classified all entries `0091`–`0100` as documented and added final candidates for Art Search, ColorMagic, COLOURlovers, Cooper Hewitt, Dribbble, EmojiHub, Europeana, GetGenAI packaging compliance, Harvard Art Museums, and Icon Horse.
+  - Corrected Icon Horse's authentication model: basic favicon retrieval needs no key, while the optional key unlocks Pro customization.
+  - Persisted totals are now 100 reviewed, 75 suitable, and 25 not currently suitable; the next entry is `0101`.
+  - Regenerated all 1,608 manuals and validated all 75 final candidates; the full-catalog goal remains active.
+  - No credentialed provider operation was executed, and `api/database.sqlite` was not touched.
+- Advanced the uninterrupted full-catalog API audit through entry `0090`:
+  - Classified entries `0081`–`0090` as 6 documented, 2 blocked, and 2 partial.
+  - Added final candidates for MalShare, URLhaus, urlscan.io, Verisys Antivirus API, VirusTotal, and the Art Institute of Chicago.
+  - Kept MalwareBazaar and Scanii partial because their useful operations require form or multipart bodies; kept MetaCert and Web of Trust blocked because complete current public contracts were unavailable.
+  - Persisted totals are now 90 reviewed, 65 suitable, and 25 not currently suitable; the next entry is `0091`.
+  - Regenerated all 1,608 manuals and validated all 65 final candidates; the full-catalog goal remains active.
+  - No credentialed provider operation was executed, and `api/database.sqlite` was not touched.
+- Advanced the uninterrupted full-catalog API audit through entry `0080`:
+  - Classified entries `0071`–`0080` as 7 documented, 2 blocked, and 1 inactive.
+  - Added final candidates for Waifu.im, Waifu.it, AbuseIPDB, AlienVault OTX, CAPE Sandbox, Google Safe Browsing, and MalDatabase.
+  - Recorded Waifu.pics as inactive after its historical documentation redirected to an unrelated domain; kept Dymo API and FishFish blocked because no complete public raw REST contract could be verified.
+  - Persisted totals are now 80 reviewed, 59 suitable, and 21 not currently suitable; the next entry is `0081`.
+  - Regenerated all 1,608 manuals and validated all 59 final candidates; the full-catalog goal remains active.
+  - No credentialed provider operation was executed, and `api/database.sqlite` was not touched.
+- Advanced the uninterrupted full-catalog API audit through entry `0070`:
+  - Classified entries `0061`–`0070` as 9 documented and Mangapi as blocked because its marketplace listing lacks a public runtime contract.
+  - Added final candidates for Kitsu, MangaDex, MyAnimeList, Nekos API, NEKOSBEST, Nekosia, PokéAPI, Shikimori, and trace.moe.
+  - Persisted totals are now 70 reviewed, 52 suitable, and 18 not currently suitable; the next entry is `0071` (Waifu.im).
+  - Regenerated all manuals and validated all 52 final candidates; the full-catalog goal remains active.
+- Advanced the uninterrupted full-catalog API audit through entry `0060`:
+  - Classified entries `0051`–`0060` as 6 documented, 2 partial, 1 blocked, and 1 non-API.
+  - Added final candidates for WoRMS, Xeno-canto, Anime News Network, Danbooru, Dragon Ball API, and Jikan.
+  - Excluded AniDB's HTTP-only runtime, AniList's GraphQL-only contract, Anijam's non-API product, and Dattebayo's undocumented backend.
+  - Persisted totals are now 60 reviewed, 43 suitable, and 17 not currently suitable; the next entry is `0061` (Kitsu).
+  - Regenerated all manuals and validated all 43 final candidates; the full-catalog goal remains active.
+- Advanced the uninterrupted full-catalog API audit through entry `0050`:
+  - Classified entries `0041`–`0050` as 9 documented and 1 partial; Petfinder remains out of final candidates because its current public contract is GraphQL rather than REST.
+  - Added final candidates for MeowFacts, Movebank, PlaceBear, PlaceDog, RandomDog, RandomDuck, RandomFox, RescueGroups, and TheDogAPI.
+  - Persisted totals are now 50 reviewed, 37 suitable, and 13 not currently suitable; the next entry is `0051` (WoRMS).
+  - Regenerated all 1,608 manuals and validated all 37 final candidates; the full-catalog goal remains active.
+  - No credentialed provider operation was executed, and `api/database.sqlite` was not touched.
+- Advanced the uninterrupted full-catalog API audit through entry `0040`:
+  - Audited entries `0031`–`0040` from current official sources and classified 9 as documented and Cat Facts as inactive.
+  - Added final candidates for WolframAlpha, CATAAS, The Cat API, Dog CEO, Dog API, eBird, HTTP Cat, HTTP Dog, and IUCN Red List V4.
+  - Updated the persisted totals to 40 reviewed, 28 suitable, and 12 not currently suitable; the next entry is `0041` (MeowFacts).
+  - Regenerated all 1,608 manuals and validated all 28 final candidates. The full-catalog goal remains active and must continue without requesting user confirmation.
+  - No credentialed provider operation was executed, and `api/database.sqlite` was not touched.
+- Updated `APIs/process.md` so continuation is no longer limited to a 5–10-entry batch:
+  - A resumed assistant must process every pending entry through `1608` without asking for confirmation or handing control back at intermediate checkpoints.
+  - Intermediate checkpoints remain required for interruption safety and must be followed immediately by the next entry in the same run.
+  - Partial, blocked, inactive, and non-API decisions count as completed audit outcomes and do not stop catalog processing.
+  - Early termination is reserved for a genuine repository-wide blocker, a missing required capability, or an explicit user interruption.
+  - No application behavior, database, dependency, permission, or user-facing flow changed.
+- Strengthened `APIs/process.md` as a true interruption-safe resume prompt:
+  - It now derives the checkpoint from the longest contiguous prefix in `APIs/research/official-sources.json` instead of relying on chat history or a hard-coded entry number.
+  - It distinguishes a saved research record from a fully completed entry and reconciles manuals, final templates, audit rows, presentation mappings, roadmap, and handoff before advancing.
+  - It includes a read-only checkpoint command and recovery rules for invalid JSON, incomplete evidence, stale generated files, inconsistent documentation, and uncommitted work.
+  - With the current persisted state, the procedure resolves checkpoint `0030` and next entry `0031`.
+  - No application behavior, database, dependency, permission, or user-facing flow changed.
+- Continued the official-source API audit through the contiguous range `0001`–`0030` and added a reusable continuation prompt:
+  - Classified entries `0021`–`0030` as 7 documented, 1 blocked, and 2 partial.
+  - Promoted MessengerX.io, NLP Cloud, OpenAI, Perspective, Roboflow Universe, ApyHub AI Summarize, and Unplugg into individual YouTube-shaped files under `APIs/final-apis/`.
+  - Kept Machinetutors blocked because it does not publish a runtime contract; kept SkyBiometry partial because it requires two protected query credentials; kept Spam Hunter partial because it embeds the API key in the JSON body.
+  - Used current official OpenAI developer documentation for the Responses API after installing the official `openaiDeveloperDocs` MCP configuration; the current session required official-domain fallback until restart.
+  - Updated `APIs/audited.md` to 30 reviewed entries: 19 suitable and 11 not suitable for the current contract.
+  - Added `APIs/process.md`, a self-contained prompt that lets another AI assistant continue sequential research, classification, manual generation, final-template promotion, audit indexing, documentation, and validation without relying on conversation history.
+  - Made the final-template validator derive its expected file count from documented research records instead of a hard-coded total.
+  - No credentialed provider calls were made; `api/database.sqlite` and unrelated user changes were not touched.
+- Added `APIs/audited.md` as the concise decision index for the official-source audit completed through entry `0020`:
+  - Lists all 20 audited APIs in source order with a Yes/No suitability decision, research status, and short rationale.
+  - Records 12 APIs as suitable for the current Arthur MCP REST template contract and 8 as not suitable now.
+  - Defines “No” as a current-context decision so blocked and partial entries can be reconsidered when evidence or runtime capabilities change.
+  - Links the 12 suitable files in `APIs/final-apis/` and preserves `APIs/research/official-sources.json` as the detailed evidence source.
+  - No application behavior, persistence, dependency, permission, or user-facing flow changed.
+- Promoted every currently documented official-source API into an individual final candidate under `APIs/final-apis/`:
+  - Created 12 YouTube-shaped JSON templates: AI/ML API, Chatwith, Clarifai, Cohere, CustomGPT.ai, Dialogflow, Eden, Gladia, HOL Registry Broker, Imagga, Irisnet, and Keen IO.
+  - Each file contains the same ordered top-level contract as `public/catalogs/api/youtube.json`: identity, presentation, connection, authentication, signup/docs URLs, and tools.
+  - Research-only `evidenceUrl` data remains in `APIs/research/official-sources.json` and is intentionally excluded from the final candidates.
+  - Added `scripts/generate-final-api-templates.mjs` for deterministic promotion and `scripts/check-final-api-templates.mjs` for field order, HTTPS URLs, auth, filename/ID, tool, and parameter validation.
+  - Excluded all entries classified as partial, blocked, inactive, or non-API.
+  - These files are staged outside `public/catalogs/api/`; the production catalog and its index were not changed.
+  - No application behavior, dependency, database, permission, or user-facing flow changed.
+- Started the official-source verification pass for the ordered API research catalog:
+  - Added `APIs/research/official-sources.json` as the structured evidence overlay and completed a contiguous review of entries `0001` through `0020`.
+  - Current result: 12 documented candidates, 4 blocked entries, 2 inactive services, 1 partial integration, and 1 library classified as `non-api`.
+  - Official evidence now supplies base URLs, current authentication placement, selected high-value operations, parameters, lifecycle notes, errors, pagination, limits, and test status where the provider publishes them.
+  - Corrected source-catalog assumptions when official material differs, including OAuth for Dialogflow, public read operations for HOL Registry Broker, and Basic authentication for Imagga.
+  - Added `scripts/check-api-research.mjs` to enforce contiguous source order, HTTPS evidence, supported auth/method/parameter values, unique tools, and an official evidence URL for every selected tool.
+  - Enhanced `scripts/generate-api-manuals.mjs` to merge verified facts into all generated manuals and template candidate drafts, while marking blocked, inactive, and non-API entries as ineligible rather than fabricating runtime contracts.
+  - Live credential tests remain pending wherever the selected operation requires a provider account or secret; no credentials were requested or stored.
+  - No application behavior, dependency, persistence model, permission, or user-facing flow changed, and the pre-existing `api/database.sqlite` modification was not touched.
+- Added the ordered API integration documentation generated from the user-provided `APIs.json`:
+  - `APIs/MANUAL.md` indexes all 1,608 APIs in source order and links to one manual per entry under `APIs/entries/`.
+  - Numbered filenames (`0001` through `1608`) preserve ordering and disambiguate the 14 repeated API names.
+  - Every entry preserves its catalog snapshot, provider/documentation link, authentication interpretation, HTTPS/CORS notes, safe request scaffold, Arthur MCP integration checklist, and endpoint verification record.
+  - Expanded every entry into a template-oriented research workspace based on `public/catalogs/api/zendesk.json`, including all target identity/presentation/connection fields, tool and parameter worksheets, response/error/pagination/rate-limit evidence, and a JSON candidate draft.
+  - Defined a template-ready gate requiring verified official evidence, a tested base URL, supported auth mapping, useful tested tools, operational constraints, and removal of all `<PENDING_...>` placeholders.
+  - Detected 37 source entries whose normalized identifiers already exist in the 69-template API catalog; these are marked for review/merge rather than duplicate creation.
+  - The 649 entries with an empty `Auth` value are documented as requiring no authentication according to the catalog snapshot.
+  - Runtime base URLs remain explicitly marked as needing verification because `APIs.json` contains discovery links rather than a dedicated base-URL field; no endpoint was inferred or fabricated.
+  - Added `scripts/generate-api-manuals.mjs` so the documentation can be regenerated deterministically from `APIs.json`; it preserves existing entry files by default and requires `--force` for an intentional full rebuild.
+  - No application behavior, API endpoint, persistence model, dependency, user-facing flow, or permission changed.
+- Implemented the static frontend template catalog architecture selected from the software engineering review:
+  - Replaced the 242,655-byte API/prompt TypeScript constants with two searchable static indexes and 159 individual JSON detail files under `public/catalogs/`.
+  - API summaries retain card metadata and index tool names/descriptions; prompt summaries retain tags. Multi-token search is case/accent/separator insensitive.
+  - Added the `src/features/templates/` boundary with isolated summary/state contracts, cached index/detail loaders, normalized search utilities, and React hooks.
+  - Migrated both galleries to skeleton/error/retry states, summary search, per-card detail loading, and non-destructive detail errors while preserving create/apply behavior.
+  - Changed template-derived server icons to consume the lightweight API summary index only when tagged servers exist, with the existing generic source fallback.
+  - Removed embedded catalog/category constants and now-unused template parameter builders.
+  - Added `scripts/check-template-catalogs.mjs`; catalog validation runs in `type-check` and automatically before builds.
+  - Added English/Portuguese catalog-loading errors, focused loader/search/source/payload tests, and synchronized the plan, roadmap, design patterns, flows, commands, and handoff.
+  - No backend code, schema, endpoint, dependency, or permission contract changed. Existing `templates_use` and `prompts_create` decisions remain authoritative.
+- Completed all phases of `docs/FRONTEND_EXPORT_AND_FOLDER_CONVENTION_PLAN.md` without changing product behavior or styling:
+  - Removed the multi-export `AuthContext.tsx` facade; `context/auth/AuthProvider.tsx` now exports only `AuthProvider`, while `context/auth/index.ts` owns the auth public API.
+  - Replaced the Server Navigation and Color Mode compatibility facades with single-export provider files and directory barrels.
+  - Removed type/constant re-exports from named hook and component implementations, split theme definitions and template datasets, and separated the reusable MCP docs content/page plus public field/stat components.
+  - Migrated all 87 React `index.tsx` implementations to matching named `.tsx` files and created pure `index.ts` barrels.
+  - Added `index.ts` and `index.css` to all 185 directories under `src/`; non-visual CSS entries remain intentionally empty and are not imported at runtime.
+  - Extended `scripts/check-frontend-structure.mjs` to require directory entry files, exactly one export per named production module, re-exports only in `index.ts`, pure barrels, and no `index.tsx`.
+  - Preserved separate lazy chunks for the large API and prompt template datasets with deliberate direct imports, avoiding an initial combined 193 kB shared data chunk.
+  - Updated current architecture plans, design patterns, AGENTS guidance, and the React/frontend/software engineering/software architecture specialist files.
+  - `npm run type-check`, all 88 frontend tests, and `npm run build` passed. The first parallel test run had one Login timeout from resource contention; the isolated full rerun passed.
+- Added `docs/FRONTEND_EXPORT_AND_FOLDER_CONVENTION_PLAN.md` as a corrective follow-up to the completed frontend file organization refactor:
+  - Recorded that `AuthContext.tsx` currently exports/re-exports 7 symbols and must become a single-export `AuthProvider.tsx`, with aggregation only in `context/auth/index.ts`.
+  - Audited 185 frontend directories: 142 lacked `index.ts`, 184 lacked `index.css`, and 87 used `index.tsx` as their implementation entry point.
+  - Identified 9 named production modules with multiple exports.
+  - Defined the literal target that every directory under `src/` contains `index.ts` and `index.css`, including intentionally empty files for non-public/non-visual directories.
+  - Defined component/page migration to named `.tsx` implementations, single-export named modules, controlled `index.ts` aggregation, CSS ownership, phased validation, circular dependency safeguards, rollback, and automated enforcement.
+  - Updated `docs/ROADMAP.md`; no source, behavior, style, route, API, copy, auth, or permission change was made.
+- Completed all phases of `docs/FRONTEND_FILE_ORGANIZATION_PLAN.md` without changing UI behavior, routes, API contracts, copy, or permissions:
+  - Extracted every production interface, enum, type alias, class, page contract, and component props shape into an individual lower-camel `name.kind.ts` module.
+  - Reorganized auth into isolated contracts, constants, context, hook, and permission/role decisions while preserving the existing `AuthContext.tsx` public facade and all fallback behavior.
+  - Replaced generic feature `types.ts` files with individual contracts and controlled `types/index.ts` exports.
+  - Split shared and feature utilities by action, including MCP parsing, formatting, validation, URLs, source classification, endpoint builders, observability environment serialization, template builders, schema extraction, factories, and role decisions.
+  - Consolidated four duplicate MCP response parsers into the shared parser.
+  - Moved top-level React-module constants to focused `.constant.ts` files and hooks to `.hook.ts` files; closure-based state handlers remain within their owning component.
+  - Renamed 20 JSX-free component/feature barrels from `index.tsx` to `index.ts`.
+  - Added `scripts/check-frontend-structure.mjs` and `npm run check:frontend-structure`; `npm run type-check` now runs the structural gate before TypeScript.
+  - Updated `AGENTS.md`, `docs/DESIGN_PATTERNS.md`, both frontend architecture plans, the organization plan, and the roadmap. `docs/FLOWS.md`, locales, entities, backend code, and permissions were unaffected because behavior did not change.
+  - Stale gitlinks under `.claude/worktrees` still make plain `git status` fail; use `git status --ignore-submodules=all` in this workspace. No Git metadata or user-owned work was changed.
+- Added `docs/FRONTEND_FILE_ORGANIZATION_PLAN.md` after a read-only frontend audit using the requested React, frontend, software engineering, and software architecture perspectives:
+  - Recorded 85 named declarations embedded in 38 production `.tsx` files, 41 declarations in generic `types.ts` files, and 20 JSX-free `index.tsx` barrels.
+  - Defined isolated contract naming such as `permission.enum.ts` and `userPermissions.interface.ts`.
+  - Defined focused utility naming and ownership, including `utils/userPermissionRole.role.ts` for role decisions.
+  - Documented the React exception for closure-based inline handlers while prohibiting top-level non-rendering helpers in component files.
+  - Added dependency-aware migration phases, validation, rollback, risks, enforcement, acceptance criteria, and an explicit no-permission-change decision.
+  - Added the phased work to `docs/ROADMAP.md`; no source files, tests, permissions, routes, copy, or behavior changed.
+  - `git status --short` could not run because the repository worktree metadata references a removed `/home/alexandre/Documents/projects/mcp-convert/mcp/.git/worktrees/...` path. No automatic Git metadata repair was attempted.
 - Added HTML preview support to the authenticated Resource execute panel:
   - `ResourceTestPanel` now detects HTML responses from resource execution by MIME type or content shape.
   - HTML responses render in a sandboxed iframe preview block while the raw response remains visible below.
@@ -273,7 +508,7 @@ Frontend duplication optimization is progressing through a phased extraction pla
   - `src/components/organisms/index.tsx`
   - `src/components/templates/index.tsx`
 - Added feature `index.tsx` barrels for `server`, `prompts`, `secrets`, and `settings`, including server subfeatures.
-- Moved `SecretAutocomplete` into `src/features/secrets/SecretAutocomplete/index.tsx`.
+- Moved `SecretAutocomplete` into `src/features/secrets/SecretAutocomplete/SecretAutocomplete.tsx`.
 - Moved route pages into `src/pages/<PageName>/index.tsx`.
 - Moved page tests into their page folders:
   - `src/pages/Login/Login.test.tsx`
@@ -392,6 +627,13 @@ Frontend duplication optimization is progressing through a phased extraction pla
 
 ## Validation
 
+- Popularity-first API audit prompt update: reviewed all priority/claim/consolidation references with `rg`; `git diff --check -- . ':!api/database.sqlite'` passed. Application tests were not run because only documentation and research workflow instructions changed.
+- API audit continuation through entry `0030`: `node scripts/check-api-research.mjs` passed for 30 contiguous records (19 documented, 5 blocked, 3 partial, 2 inactive, and 1 non-API); `node scripts/generate-api-manuals.mjs --force` regenerated all 1,608 ordered manuals; `node scripts/generate-final-api-templates.mjs` generated 19 candidates; `node scripts/check-final-api-templates.mjs` passed for all 19 candidates; `npm run check:template-catalogs` passed for the production catalog's 69 API and 90 prompt templates; `node --check` passed for all four audit/generation scripts; the audit index contains 30 rows (19 Yes and 11 No), filenames match template IDs, no final candidate contains `evidenceUrl` or `<PENDING_...>`, and `git diff --check -- . ':!api/database.sqlite'` passed.
+- Static template catalog implementation: `npm run type-check` passed, including frontend structure and validation of all 69 API plus 90 prompt index/detail records; the full `npm test` run passed with 14 files and 91 tests; `npm run build` passed and copied 70 API plus 91 prompt JSON assets. Preview-server smoke requests successfully loaded both indexes plus the GitHub and Executive Summary details. The final JavaScript has no matches for representative API/prompt catalog content; the API and prompt gallery chunks are now 9.08 kB and 7.79 kB respectively. The existing non-failing `@tabler/icons-react` large-barrel warning remains.
+- Frontend export/folder implementation: `npm run type-check` passed with the strengthened structural gate; the isolated full `npm test` rerun passed with 12 files and 88 tests; `npm run build` passed with only the existing non-failing `@tabler/icons-react` large-barrel warning. The initial test run executed in parallel with type-check had one Login timeout while the other 87 tests passed; it did not reproduce when run alone.
+- Documentation-only frontend export/folder planning: the new plan and roadmap references resolve, the directory audit recorded 185 folders with 142 missing `index.ts` and 184 missing `index.css`, the AST audit identified 9 named multi-export production modules, and `git diff --check --ignore-submodules=all` passed. Application type-check/tests/build were not rerun because no application code changed.
+- Frontend file organization implementation: `npm run type-check` passed with the new AST structural gate; `npm test` passed with 12 files and 88 tests; `npm run build` passed with the existing non-failing `@tabler/icons-react` large-barrel warning. Focused auth, endpoint utility, observability environment, and template tests also passed during migration.
+- Documentation-only frontend organization planning: the new plan exists, roadmap/handoff references resolve, an AST audit confirmed the recorded declaration counts, and the Markdown trailing-whitespace check passed. Application type-check/tests/build were not run because no application code changed.
 - `npm run type-check` passed after adding Vercel URL configuration and `VITE_API_URL` support.
 - `npm run build` passed after adding root `vercel.json`; Vite reported non-failing warnings about the large `@tabler/icons-react` barrel and chunk size.
 - Not run for the README rewrite because it only changed documentation.
@@ -488,10 +730,26 @@ Frontend duplication optimization is progressing through a phased extraction pla
 - Not run for the `gof-expert` and `solid-expert` agent documentation change because no application code changed.
 - Not run for the frontend specialist architecture guidance update because only agent and documentation files changed.
 - Not run for `docs/FRONTEND_ARCHITECTURE_PLAN.md` because it is a documentation-only planning change.
+- `npx tsc -p api/tsconfig.json --noEmit` passed after adding Supabase user-provisioning (`SupabaseAdminService`, `UsersService` wiring, `findWithoutSupabaseId`, the backfill script). Needed one adjustment: `@supabase/supabase-js`'s `listUsers()` return type resolves the callback parameter of `.find()` to `never` when called directly on the union result under this project's `strictNullChecks: false`; worked around by assigning `.data.users` to an explicitly-typed local variable before calling `.find()`.
+- `npx jest users.service.spec.ts auth.service.spec.ts auth.controller.spec.ts --prefix api --runInBand` passed with 4 suites and 57 tests, including new coverage for Supabase linking on registration, on Google/GitHub signup, and for `backfillSupabaseLinks()`.
+- `npx jest --prefix api --runInBand` (full suite) passed 40 of 42 suites (258/262 tests); the 2 failing suites (`dynamic-mcp/response-mapper.spec.ts`, `observability/tracing/tracing.service.spec.ts`) are the same pre-existing failures already documented above as unrelated to auth/users/database code.
+- `npx tsc -p api/tsconfig.json --noEmit` passed after each of the identity-migration phases (thin signup endpoint, MCP-client Supabase password grant, Supabase-only guard rewrite).
+- `npx jest --prefix api --runInBand` after the full identity migration: 41 of 42 suites passed (243-247 tests across phases, growing as tests were added/rewritten); same 2 pre-existing failures as above, confirmed unrelated (`dynamic-mcp/` and `observability/tracing/` have zero diff from this work).
+- `npm run test:e2e --prefix api` after the migration: 6 of 7 tests failed, but confirmed environmental, not a regression — this sandbox has no network access (`curl` to `jsonplaceholder.typicode.com`, which `EXTERNAL_API_BASE_URL` points the e2e demo server at, times out on DNS resolution) and `src/dynamic-mcp/` has zero diff from this session's changes. Added `test/setup.ts` fake `SUPABASE_*` env vars so the app still boots under `ConfigModule.forRoot({ validate: validateEnv })` now that they're required — the app booted fine; only the network-dependent demo-tool assertions failed.
+- `npx tsc --noEmit` (frontend) passed clean after each frontend phase.
+- `npx vitest run` (frontend, full suite) passed 91/91 tests across 14 files after the Supabase Auth SDK cutover (rewrote `api.test.ts`, `Login.test.tsx`, `context.test.tsx` to mock `src/supabaseClient.ts`/`onAuthStateChange` instead of the old endpoints).
+- `npm run type-check` (frontend structural gate) reported 16 pre-existing violations unrelated to this session (`src/features/server/operations`, and `SocialAuthButtons`/`OAuthCallback`/`Signup` already being flat `index.tsx` without a named-file+barrel split before this session touched their contents) — confirmed pre-existing by reading each file before editing; not fixed, to avoid mixing an unrelated structural refactor into this change. The one violation this session actually introduced (`src/supabaseClient.ts` exporting two symbols) was fixed by splitting `supabaseConfigured` into its own `src/supabaseConfigured.constant.ts`.
 
 ## Recommended Next Step
 
-Deploy to a Render free instance and verify `/health`, `/ready`, `/live`, `/metrics`, structured logs, and cold-start behavior, then continue `docs/FRONTEND_ARCHITECTURE_PLAN.md` with Phase 2.
+**Do not run the Phase 5 table-drop migration yet.** Before it's safe:
+1. Run `npm run backfill:supabase-users --prefix api` against production (now sets `app_metadata.role` from each user's real local role, not just `supabase_id`) so every pre-existing account's role claim is correct once the local `users` table is gone.
+2. Communicate the mandatory one-time password reset to existing users (bcrypt hashes can't be imported into Supabase — see `docs/FLOWS.md`'s Authentication section) before removing the ability to fall back to old behavior.
+3. Enable Google/GitHub OAuth providers in the Supabase dashboard if those sign-in buttons should actually work in production (they render whenever Supabase is configured, regardless).
+4. Enable "Confirm email" for the Email provider in the Supabase dashboard (Authentication → Providers), and add `<origin>/oauth-callback` + `<origin>/reset-password` to Redirect URLs for every environment (local dev, staging, production) — signup/OAuth/password-reset links silently fail without this.
+5. Then implement Phase 5 (new migration dropping `users`/`password_resets`, delete `UsersService`/`UserEntity`/`PasswordResetEntity` and their repositories, remove the backfill script) and separately Phase 6 (collapse `DATABASE_URI` to Postgres-only) — both detailed in the approved plan this session worked from.
+
+Separately, continue the continuity lane at entry `0233` while popularity-first workers claim the most prominent unaudited providers. Consolidate only the longest source-order sequence, preserve the 38 staged famous-API results until their gaps close, and keep `api/database.sqlite` untouched.
 
 ## Points Of Attention
 
