@@ -22,6 +22,12 @@ Supabase Auth is now the sole identity provider (Phases 1-4 of the identity migr
 
 ## Latest Changes
 
+- Deployed the user's full local work (Supabase identity migration UI/backend, previously uncommitted — production was serving the upstream-inherited login) after the user committed it as `6c124a9`:
+  - Fixed the 16 frontend structure-gate violations that commit introduced (`e46fe76`): `Signup`, `OAuthCallback`, `SocialAuthButtons`, and `features/server/operations` renamed from `index.tsx` to named `.tsx` files with `index.ts` barrels + `index.css`; `operations` additionally extracted `OperationsTabProps` (`.interface.ts`), `DEFAULT_PORT`/`EMPTY_OPERATION` (`.constant.ts`), and `schemaFrom` (`.util.ts`). No behavior change; importers unaffected (barrels re-export). Validated: `npm run type-check` clean, `npm test` 91/91.
+  - Stopped tracking `.mcp.json` in the public repo (exposes server host/user; **it remains in git history permanently** — the SSH host is key-auth'd, but consider tightening password auth/firewall on the host, user-managed).
+  - Set `imagePullPolicy: Always` on the Deployment (`586ae92`): Kubernetes defaults to `IfNotPresent` for the mutable `:main` tag, so nodes silently kept stale images. Remove once promotion pins immutable `sha-` tags.
+  - Verified live after the zero-downtime rolling update: `/api/auth/providers` responds (Supabase-era backend), served bundle's `supabaseClient` chunk contains the production Supabase URL (VITE build args from repo secrets working), single pod `1/1 Ready`.
+
 - Executed the first production slice of `docs/UBUNTU_K3S_DEPLOYMENT_PLAN.pt-BR.md` against the Ubuntu VPS at `64.176.25.55` (Vultr, Ubuntu 26.04, domain `app.arthurmcp.io` — DNS record created, still propagating):
   - **Plan doc updated first**: the database is the Supabase-managed PostgreSQL of the same project already used for Auth (config-only change — `DATABASE_URI` already supports `postgres://` via TypeORM), replacing all "external PostgreSQL provider" wording; also documented the 443→Traefik→Service→3000 port chain (Vite's 5173 is dev-only) and the PgBouncer/prepared-statements caveat.
   - **Server (Fase 1, partial)**: ufw now allows 80/443 (plus K3s pod/service CIDRs per K3s docs); Docker Engine 29.6.1 + Buildx installed from the official repo. **Deliberately not done, hard user boundary: no Linux user, SSH, or sudoers changes — the user handles all OS-user hardening themselves.**
