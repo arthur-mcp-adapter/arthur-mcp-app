@@ -27,6 +27,10 @@ spec:
       containers:
         - name: app
           image: ghcr.io/arthur-mcp-adapter/arthur-mcp-app:main
+          # The :main tag is mutable; without Always the node reuses its cached
+          # image and deploys silently ship stale code. Remove when promotion
+          # pins immutable sha- tags in the overlay.
+          imagePullPolicy: Always
           ports:
             - name: http
               containerPort: 3000
