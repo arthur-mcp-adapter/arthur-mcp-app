@@ -1,0 +1,14 @@
+{
+  "id": "cold-outreach",
+  "name": "Cold Outreach Email",
+  "tagline": "Write personalized cold emails that get replies",
+  "description": "Creates compelling, personalized cold outreach emails with high-converting subject lines and CTAs.",
+  "category": "Sales",
+  "emoji": "🎣",
+  "tags": [
+    "sales",
+    "outreach",
+    "email"
+  ],
+  "content": "Write a cold outreach email.\n\n**Sender:** {{sender}}\n**Company:** {{our_company}}\n**Prospect:** {{prospect}}\n**Prospect company:** {{prospect_company}}\n**Role:** {{prospect_role}}\n**Value proposition:** {{value_prop}}\n**Specific hook/trigger:** {{trigger}} (e.g., recent news, mutual connection, their job posting)\n**CTA:** {{cta}}\n\nGuidelines:\n- Subject line: specific, intriguing, personalized (under 50 chars)\n- First line: personalized to them (not \"I hope this email finds you well\")\n- Body: focus on their pain/outcome, not our features\n- Social proof: one relevant customer or stat\n- CTA: low friction (15-min call, quick question), not \"buy now\"\n- Length: under 150 words\n\nGenerate 3 variants (different angles/hooks)."
+}

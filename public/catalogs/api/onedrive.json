@@ -1,0 +1,112 @@
+{
+  "id": "onedrive",
+  "name": "OneDrive",
+  "tagline": "Browse OneDrive files and storage",
+  "description": "Inspect the signed-in user's OneDrive metadata and browse files and folders without downloading or changing content.",
+  "category": "Cloud Storage & File Sharing",
+  "color": "#0078D4",
+  "emoji": "☁️",
+  "baseUrl": "https://graph.microsoft.com/v1.0",
+  "auth": {
+    "type": "bearer",
+    "hint": "Register an application with Microsoft Entra ID, complete a delegated OAuth 2.0 flow, and provide a Microsoft Graph access token with the Files.Read permission."
+  },
+  "signupUrl": "https://portal.azure.com/",
+  "docsUrl": "https://learn.microsoft.com/en-us/graph/api/resources/onedrive?view=graph-rest-1.0",
+  "tools": [
+    {
+      "name": "get_my_drive",
+      "description": "Retrieve metadata and storage quota information for the signed-in user's default OneDrive.",
+      "method": "GET",
+      "path": "/me/drive",
+      "params": [
+        {
+          "name": "$select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Comma-separated drive properties to return, such as id,name,driveType,webUrl,quota."
+        }
+      ]
+    },
+    {
+      "name": "list_root_children",
+      "description": "List files and folders directly under the signed-in user's OneDrive root folder.",
+      "method": "GET",
+      "path": "/me/drive/root/children",
+      "params": [
+        {
+          "name": "$select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Comma-separated driveItem properties to return, such as id,name,size,file,folder,webUrl."
+        },
+        {
+          "name": "$top",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Requested number of driveItems in the response page; the service controls the effective page size."
+        },
+        {
+          "name": "$skipToken",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Opaque continuation token for a subsequent page when supplied by Microsoft Graph."
+        },
+        {
+          "name": "$orderby",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "OData ordering expression supported by the list-children operation."
+        }
+      ]
+    },
+    {
+      "name": "list_item_children",
+      "description": "List files and folders directly inside a OneDrive folder identified by its driveItem ID.",
+      "method": "GET",
+      "path": "/me/drive/items/{item_id}/children",
+      "params": [
+        {
+          "name": "item_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Unique driveItem identifier of the folder whose children should be listed."
+        },
+        {
+          "name": "$select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Comma-separated driveItem properties to return."
+        },
+        {
+          "name": "$top",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Requested number of driveItems in the response page; the service controls the effective page size."
+        },
+        {
+          "name": "$skipToken",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Opaque continuation token for a subsequent page when supplied by Microsoft Graph."
+        },
+        {
+          "name": "$orderby",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "OData ordering expression supported by the list-children operation."
+        }
+      ]
+    }
+  ]
+}

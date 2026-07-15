@@ -1,0 +1,75 @@
+{
+  "id": "rijksmuseum",
+  "name": "Rijksmuseum",
+  "tagline": "Search the Rijksmuseum collection",
+  "description": "Search Rijksmuseum collection objects by creator, title, type, material, date, and image availability.",
+  "category": "Art & Design",
+  "color": "#111111",
+  "emoji": "🖌️",
+  "baseUrl": "https://data.rijksmuseum.nl",
+  "auth": {
+    "type": "none",
+    "hint": "No API key is required for the current Search API."
+  },
+  "signupUrl": "https://data.rijksmuseum.nl/",
+  "docsUrl": "https://data.rijksmuseum.nl/docs/search",
+  "tools": [
+    {
+      "name": "search_collection",
+      "description": "Search collection object identifiers using Linked Art filters.",
+      "method": "GET",
+      "path": "/search/collection",
+      "params": [
+        {
+          "name": "creator",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Creator name, such as Rembrandt van Rijn."
+        },
+        {
+          "name": "title",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Object title text."
+        },
+        {
+          "name": "type",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Object type, such as painting."
+        },
+        {
+          "name": "material",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Object material, such as canvas."
+        },
+        {
+          "name": "creationDate",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Creation year or wildcard period."
+        },
+        {
+          "name": "imageAvailable",
+          "in": "query",
+          "required": false,
+          "type": "boolean",
+          "description": "Limit by digital reproduction availability."
+        },
+        {
+          "name": "pageToken",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Opaque token from the next result link."
+        }
+      ]
+    }
+  ]
+}

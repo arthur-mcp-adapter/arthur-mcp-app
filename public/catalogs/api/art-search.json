@@ -1,0 +1,35 @@
+{
+  "id": "art-search",
+  "name": "Art Search",
+  "tagline": "Search museum artworks with semantic queries",
+  "description": "Search Art Search's aggregated artwork catalog by natural-language query.",
+  "category": "Art & Design",
+  "color": "#7C3AED",
+  "emoji": "🖼️",
+  "baseUrl": "https://api.artsearch.io",
+  "auth": {
+    "type": "api-key",
+    "hint": "Create a free Art Search key and send it in the x-api-key header.",
+    "keyName": "x-api-key",
+    "keyIn": "header"
+  },
+  "signupUrl": "https://artsearch.io/console/",
+  "docsUrl": "https://artsearch.io/docs/",
+  "tools": [
+    {
+      "name": "search_artworks",
+      "description": "Search aggregated museum artwork records.",
+      "method": "GET",
+      "path": "/artworks",
+      "params": [
+        {
+          "name": "query",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Artwork search text, such as an artist, medium, style, or subject."
+        }
+      ]
+    }
+  ]
+}

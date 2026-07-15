@@ -1,0 +1,40 @@
+{
+  "id": "placedog",
+  "name": "PlaceDog",
+  "tagline": "Generate dog placeholder images",
+  "description": "Retrieve a dog placeholder JPEG at requested pixel dimensions.",
+  "category": "Animals",
+  "color": "#7C3AED",
+  "emoji": "🐕",
+  "baseUrl": "https://place.dog",
+  "auth": {
+    "type": "none",
+    "hint": "No authentication is required."
+  },
+  "signupUrl": "https://place.dog/",
+  "docsUrl": "https://place.dog/",
+  "tools": [
+    {
+      "name": "get_dog_image",
+      "description": "Return a dog image resized to the requested width and height.",
+      "method": "GET",
+      "path": "/{width}/{height}",
+      "params": [
+        {
+          "name": "width",
+          "in": "path",
+          "required": true,
+          "type": "integer",
+          "description": "Image width in pixels."
+        },
+        {
+          "name": "height",
+          "in": "path",
+          "required": true,
+          "type": "integer",
+          "description": "Image height in pixels."
+        }
+      ]
+    }
+  ]
+}

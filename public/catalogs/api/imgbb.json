@@ -1,0 +1,49 @@
+{
+  "id": "imgbb",
+  "name": "Imgbb",
+  "tagline": "Upload and host images with ImgBB",
+  "description": "Upload an image (as base64 data or a source URL) to ImgBB and receive a hosted image URL, display URL, and delete URL. Requires a free ImgBB API key.",
+  "category": "Cloud Storage & File Sharing",
+  "color": "#2563EB",
+  "emoji": "🖼️",
+  "baseUrl": "https://api.imgbb.com",
+  "auth": {
+    "type": "api-key",
+    "hint": "Get a free API key from your ImgBB account (api.imgbb.com), sent as the key query parameter on every request.",
+    "keyName": "key",
+    "keyIn": "query"
+  },
+  "signupUrl": "https://imgbb.com/signup",
+  "docsUrl": "https://api.imgbb.com/",
+  "tools": [
+    {
+      "name": "upload_image",
+      "description": "Upload an image (base64-encoded data or a source URL) and return its hosted URLs.",
+      "method": "POST",
+      "path": "/1/upload",
+      "params": [
+        {
+          "name": "image",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Image content as a base64-encoded string, or a URL pointing to an image to fetch and host (maximum 32 MB)."
+        },
+        {
+          "name": "name",
+          "in": "body",
+          "required": false,
+          "type": "string",
+          "description": "Optional filename for the uploaded image."
+        },
+        {
+          "name": "expiration",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Seconds until the image is automatically deleted; between 60 and 15552000."
+        }
+      ]
+    }
+  ]
+}

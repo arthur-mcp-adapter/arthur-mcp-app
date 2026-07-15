@@ -1,0 +1,14 @@
+{
+  "id": "influencer-brief",
+  "name": "Influencer Brief",
+  "tagline": "Create detailed briefs for influencer partnerships",
+  "description": "Produces comprehensive influencer briefs with campaign goals, content requirements, and dos and don'ts.",
+  "category": "Social Media",
+  "emoji": "🌟",
+  "tags": [
+    "social media",
+    "influencer",
+    "marketing"
+  ],
+  "content": "Create an influencer campaign brief.\n\n**Brand:** {{brand}}\n**Product/Campaign:** {{campaign}}\n**Influencer:** {{influencer}}\n**Platform(s):** {{platforms}}\n**Campaign dates:** {{dates}}\n**Budget/Compensation:** {{compensation}}\n**Deliverables:** {{deliverables}} (e.g., 2 posts, 5 stories, 1 reel)\n\n## Campaign Overview\n## Brand Background\n## Campaign Goal & KPIs\n## Target Audience\n## Messaging & Key Points\n(3-5 talking points to include)\n## Creative Direction\n(Tone, aesthetics, do's)\n## Content Requirements\n| Deliverable | Format | Due Date | Caption Length | Required Tags |\n|------------|--------|---------|---------------|--------------|\n## Mandatory Disclosures\n(#ad, #sponsored, FTC requirements)\n## Approval Process\n## Do's and Don'ts\n## Contact"
+}

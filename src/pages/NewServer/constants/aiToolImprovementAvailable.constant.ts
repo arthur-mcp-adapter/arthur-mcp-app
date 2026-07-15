@@ -1,0 +1,1 @@
+export const AI_TOOL_IMPROVEMENT_AVAILABLE = false

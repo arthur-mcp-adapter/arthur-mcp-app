@@ -1,0 +1,47 @@
+{
+  "id": "meowfacts",
+  "name": "MeowFacts",
+  "tagline": "Retrieve cat facts in multiple languages",
+  "description": "Return one or more cat facts, optionally selecting a fact identifier or a supported localization.",
+  "category": "Animals",
+  "color": "#EC4899",
+  "emoji": "🐈",
+  "baseUrl": "https://meowfacts.herokuapp.com",
+  "auth": {
+    "type": "none",
+    "hint": "No authentication is required."
+  },
+  "signupUrl": "https://github.com/wh-iterabb-it/meowfacts",
+  "docsUrl": "https://github.com/wh-iterabb-it/meowfacts",
+  "tools": [
+    {
+      "name": "get_cat_facts",
+      "description": "Return cat facts with optional count, identifier, and language selection.",
+      "method": "GET",
+      "path": "/",
+      "params": [
+        {
+          "name": "count",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of facts to return."
+        },
+        {
+          "name": "id",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Specific fact identifier or ordering position."
+        },
+        {
+          "name": "lang",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Supported locale code such as eng-us or por-br."
+        }
+      ]
+    }
+  ]
+}

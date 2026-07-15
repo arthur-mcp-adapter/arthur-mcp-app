@@ -1,11 +1,11 @@
 import { describe, it, expect } from 'vitest'
 import {
-  ENVIRONMENT_CONTROLS,
   defaultEnvironmentValues,
   formatEnvironmentValue,
   mergeEnvironmentValues,
   serializeEnvironmentValues,
-} from './environment-controls'
+} from './utils'
+import { ENVIRONMENT_CONTROLS } from './environmentControls.constant'
 
 describe('observability environment controls', () => {
   it('builds defaults from every declared control', () => {

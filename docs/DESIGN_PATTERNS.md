@@ -30,8 +30,7 @@ Pattern: controllers handle HTTP concerns; services own business behavior.
 
 Examples:
 
-- `UsersController` handles route decorators, request data, response status, and audit logging calls.
-- `UsersService` owns password hashing, uniqueness checks, user updates, and not-found behavior.
+- `UsersController` handles route decorators, request data, and response status. `GET /users/me` is composed entirely from the verified Supabase JWT claims on `req.user` plus a role→permissions lookup — no database read, no `UsersService` involved. (`UsersService`/`UserEntity` are legacy, pending removal — see `docs/ENTITIES.md`.)
 
 Rules:
 
@@ -94,7 +93,7 @@ Pattern: authentication and permissions are enforced through guards and metadata
 
 Examples:
 
-- `JwtAuthGuard`
+- `JwtAuthGuard` — the sole authentication guard; verifies a Supabase Auth JWT via `SupabaseAuthService` and attaches `req.user`. No local Passport strategy or fallback.
 - `PermissionsGuard`
 - `RequirePermission`
 - `McpApiKeyGuard`
@@ -262,7 +261,7 @@ Examples:
 Rules:
 
 - Keep environment validation in `api/src/config/env.validation.ts`.
-- `JWT_SECRET` remains the bootstrap/fallback signing secret, but runtime token signing and verification should resolve through `JwtSecretService` so the Settings singleton can override it with the saved `jwtSecret` value.
+- `JWT_SECRET`/`JwtSecretService` scope is now narrower: user login sessions are entirely Supabase's (verified via JWKS, not this secret). `JWT_SECRET` only signs/verifies the MCP-client OAuth tokens issued by `oauth/oauth.service.ts` (`issueToken`/`verifyToken`, checked by `McpApiKeyGuard`) — runtime signing/verification should still resolve through `JwtSecretService` so the Settings singleton can override it with the saved `jwtSecret` value.
 - Do not expose saved JWT secrets through API reads; safe Settings responses should expose only `jwtSecretSet`.
 - Document command/setup changes in `AGENTS.md`.
 - Document deployment behavior changes in the relevant infra docs or `docs/ROADMAP.md` if no dedicated doc exists yet.
@@ -300,12 +299,12 @@ Pattern: each main route maps to a page component under `src/pages/`.
 Examples:
 
 - Route table in `src/App.tsx`.
-- Pages in `src/pages/Servers/index.tsx`, `src/pages/ServerDetail/index.tsx`, `src/pages/Settings/index.tsx`, and related files.
+- Pages in `src/pages/Servers/Servers.tsx`, `src/pages/ServerDetail/ServerDetail.tsx`, `src/pages/Settings/Settings.tsx`, and related files.
 
 Rules:
 
 - Put route orchestration, page-specific data loading, and page-local UI state in page components.
-- Store route pages in `src/pages/PageName/index.tsx`, not loose `src/pages/PageName.tsx` files.
+- Store route pages in `src/pages/PageName/PageName.tsx`, with `src/pages/PageName/index.ts` as the public entry point and `src/pages/PageName/index.css` as the local stylesheet entry.
 - Colocate page-specific tests in the page folder, such as `src/pages/Login/Login.test.tsx`.
 - Extract cohesive route feature sections to `src/features/<feature>/` when a page grows beyond orchestration and starts owning unrelated UI, state, and API concerns.
 - Extract reusable widgets to `src/components/` only when they are shared across features or are truly domain-neutral.
@@ -321,7 +320,7 @@ Examples:
 - `src/features/prompts/`
 - `src/features/secrets/`
 - `src/features/settings/`
-- Feature barrels such as `src/features/server/index.tsx` and `src/features/secrets/index.tsx`
+- Feature barrels such as `src/features/server/index.ts` and `src/features/secrets/index.ts`
 
 Rules:
 
@@ -340,13 +339,45 @@ src/features/<feature>/
   components/
   hooks/
   api/
-  types.ts
-  constants.ts
-  utils.ts
-  index.tsx
+  types/
+    entityName.interface.ts
+    stateName.type.ts
+    index.ts
+  constants/
+    constantName.constant.ts
+  utils/
+    actionName.util.ts
+  index.ts
 ```
 
 Use only the folders a feature needs; small features can stay flat.
+
+### Frontend File Responsibilities
+
+Pattern: every frontend module has one explicit kind and owner.
+
+Examples:
+
+- Enum: `src/context/auth/permission.enum.ts`
+- Interface: `src/context/auth/userPermissions.interface.ts`
+- Role decision: `src/context/auth/utils/userPermissionRole.role.ts`
+- Hook: `src/hooks/useDetailPageNav.hook.ts`
+- Utility: `src/utils/mcpResponse/parseMcpResponse.util.ts`
+- Constant: `src/features/server/constants/methodColor.constant.ts`
+- Component props: `src/components/organisms/BaseListCard/baseListCardProps.interface.ts`
+
+Rules:
+
+- Store every named interface, enum, type alias, class, entity, and component props contract in its own lower-camel `name.kind.ts` file.
+- Every named frontend `.ts` or `.tsx` file exports exactly one symbol. Re-exports are allowed only in `index.ts`.
+- Every directory under `src/` contains `index.ts` and `index.css`; non-public or non-visual directories may use `export {}` and an empty stylesheet.
+- Do not add catch-all `types.ts`, `utils.ts`, `constants.ts`, `helpers.ts`, `format.ts`, `validation.ts`, or `*-utils.ts` files.
+- Keep `.tsx` modules for React rendering. Top-level functions in component modules must return React UI.
+- Closure-based handlers that coordinate component-local state may stay inside the component function. Reusable stateful coordination belongs in a `.hook.ts`; stateless decisions and transformations belong in a focused utility.
+- Keep one public utility responsibility per file. Prefer semantic suffixes such as `.role.ts`, `.permission.ts`, `.parser.ts`, `.formatter.ts`, `.validator.ts`, `.mapper.ts`, `.builder.ts`, `.factory.ts`, or `.util.ts`.
+- Keep utilities with their owning feature. Promote them to `src/utils/` only when they are genuinely cross-feature.
+- Store constants in focused `.constant.ts` files. Large static datasets may remain dedicated data modules after their contracts and builders have been extracted.
+- Run `npm run check:frontend-structure` directly when auditing structure. It also runs automatically as part of `npm run type-check`.
 
 ### Atomic Design
 
@@ -354,9 +385,9 @@ Pattern: shared reusable UI can follow Atomic Design when the component set grow
 
 Examples:
 
-- Atoms: `src/components/atoms/HelpButton/index.tsx`, `src/components/atoms/SaveIndicator/index.tsx`
-- Organisms: `src/components/organisms/BaseListCard/index.tsx`, `src/components/organisms/ConfirmDialog/index.tsx`
-- Templates: `src/components/templates/BaseDialogLayout/index.tsx`, `src/components/templates/Layout/index.tsx`
+- Atoms: `src/components/atoms/HelpButton/HelpButton.tsx`, `src/components/atoms/SaveIndicator/SaveIndicator.tsx`
+- Organisms: `src/components/organisms/BaseListCard/BaseListCard.tsx`, `src/components/organisms/ConfirmDialog/ConfirmDialog.tsx`
+- Templates: `src/components/templates/BaseDialogLayout/BaseDialogLayout.tsx`, `src/components/templates/Layout/Layout.tsx`
 
 Rules:
 
@@ -367,24 +398,26 @@ Rules:
 - Keep pages as route-level composition under `src/pages/`.
 - Do not create `atoms/`, `molecules/`, `organisms/`, or `templates/` folders for one-off components; introduce them when shared UI volume justifies the structure.
 - Keep atoms domain-neutral. If a component knows about servers, prompts, secrets, operations, or MCP details, it usually belongs in a feature.
-- Store React components in `ComponentName/index.tsx` folders rather than loose `ComponentName.tsx` files when applying this architecture.
+- Store React components as `ComponentName/ComponentName.tsx`, expose them through `ComponentName/index.ts`, and keep the folder stylesheet at `ComponentName/index.css`.
 
 ### Barrel Exports
 
-Pattern: `index.tsx` files define controlled public APIs for React feature and shared component groups.
+Pattern: `index.ts` files are the only export aggregators. React implementations use matching named `.tsx` files; `index.tsx` is forbidden.
 
 Examples:
 
-- `src/components/index.tsx`
-- `src/components/atoms/index.tsx`
-- `src/features/server/index.tsx`
-- `src/features/server/settings/index.tsx`
-- `src/features/prompts/index.tsx`
-- `src/features/secrets/index.tsx`
+- `src/components/index.ts`
+- `src/components/atoms/index.ts`
+- `src/features/server/index.ts`
+- `src/features/server/settings/index.ts`
+- `src/features/prompts/index.ts`
+- `src/features/secrets/index.ts`
 
 Rules:
 
-- Use `index.tsx` barrels at feature or shared component boundaries when they make imports clearer.
+- Use `index.ts` barrels at feature or shared component boundaries when they make imports clearer.
+- Keep implementation and executable logic out of `index.ts`; it contains only explicit export declarations.
+- Prefer direct sibling imports inside a folder to avoid barrel cycles.
 - Export only stable public components, hooks, types, constants, and helpers.
 - Prefer named exports and explicit type exports over broad `export *`.
 - Avoid barrels in tiny folders with one file unless the folder is expected to grow.
@@ -397,15 +430,15 @@ Pattern: `ServerDetail` should act as the server detail route orchestrator, whil
 
 Examples:
 
-- `src/features/server/settings/RateLimitPanel.tsx`
-- `src/features/server/types.ts`
-- `src/components/SaveIndicator.tsx`
+- `src/features/server/settings/RateLimitPanel/RateLimitPanel.tsx`
+- `src/features/server/types/project.interface.ts`
+- `src/components/atoms/SaveIndicator/SaveIndicator.tsx`
 
 Rules:
 
-- Keep page-level tab selection, project loading, navigation, and cross-tab state in `src/pages/ServerDetail.tsx`.
+- Keep page-level tab selection, project loading, navigation, and cross-tab state in `src/pages/ServerDetail/ServerDetail.tsx`.
 - Move self-contained panels, dialogs, accordions, and tab bodies into `src/features/server/<area>/`.
-- Share feature-local types through `src/features/server/types.ts` only when more than one server feature module needs them.
+- Store each server contract under `src/features/server/types/name.kind.ts`; expose stable shared contracts through `src/features/server/types/index.ts`.
 - Put cross-feature UI widgets in `src/components/` only when they are not specific to server detail.
 - Preserve current behavior while extracting modules; avoid combining extraction with product changes.
 
@@ -455,7 +488,7 @@ Pattern: `Layout` owns the main shell; `ServerNavContext` lets detail pages repl
 Examples:
 
 - `src/components/Layout.tsx`
-- `src/context/ServerNavContext.tsx`
+- `src/context/ServerNavProvider.tsx`
 - `src/pages/ServerDetail.tsx`
 
 Rules:
@@ -505,11 +538,11 @@ Rules:
 
 ### Auth and Permission Context
 
-Pattern: authentication state and permission checks are centralized in `AuthContext`.
+Pattern: authentication state and permission checks are centralized behind the `src/context/auth/index.ts` public API.
 
 Examples:
 
-- `src/context/AuthContext.tsx`
+- `src/context/auth/AuthProvider.tsx`
 - `Permission` enum mirrors backend permission keys.
 - `can()` supports backend-provided permissions and role-based fallback.
 
@@ -517,7 +550,7 @@ Rules:
 
 - Gate UI actions with `can(Permission.X)`.
 - Keep frontend permission names aligned with backend `RolePermissions`.
-- Keep role fallback presets in `src/context/permissionPresets.ts`.
+- Keep role fallback presets in `src/context/auth/rolePermissionFallbacks.constant.ts`.
 - Do not rely on frontend permission checks as the only security layer; backend guards remain authoritative.
 - When adding a permission, update backend role permissions, frontend `Permission`, docs, and affected UI.
 - Every new route, sidebar item, tab, primary action, destructive action, credential action, execution/test action, and settings control needs a permission decision before implementation is complete.
@@ -539,6 +572,70 @@ Rules:
 - Promote state to context only when multiple unrelated components need shared access.
 - Use explicit loading, error, and empty states for user-facing fetches.
 - Keep async handlers small enough to show the success and failure path clearly.
+
+### Static Searchable Catalogs
+
+Pattern: large read-only frontend catalogs use a lightweight static summary index plus one static detail file per item.
+
+Example:
+
+- `public/catalogs/api/index.json` contains API card/search metadata; `public/catalogs/api/<id>.json` contains one complete API template.
+- `public/catalogs/prompts/index.json` contains prompt card/search metadata; `public/catalogs/prompts/<id>.json` contains one complete prompt template.
+- `src/features/templates/` owns index/detail loaders, request caches, hooks, summary contracts, and search normalization.
+
+Rules:
+
+- Do not embed a large read-only catalog in a TypeScript module when consumers can fetch static assets lazily.
+- Put only card, grouping, and search fields in the index; keep large nested definitions/content in per-item detail files.
+- Load an index when its lazy route needs it and load a detail only after selection.
+- Cache index/detail promises in memory and remove failed requests from the cache so retry remains possible.
+- Normalize case, diacritics, separators, and whitespace before multi-token client-side search.
+- Derive categories from the index rather than maintaining duplicate category constants.
+- Validate index/detail parity, safe unique IDs, and domain invariants with `npm run check:template-catalogs`; run the gate in type-check and before builds.
+- Static catalog data must not contain credentials or secrets and must not be treated as a permission boundary.
+- Prefer this pattern over browser databases for small read-only catalogs; introduce persistence only when editing, synchronization, offline mutation, or relational queries become real requirements.
+
+### API Template Research Staging
+
+Pattern: unverified third-party API directory records are documented in an ordered research layer before they can become executable static templates.
+
+Examples:
+
+- `APIs/MANUAL.md` is the ordered index for the source records in `APIs.json`.
+- `APIs/process.md` is the self-contained continuation prompt for another AI assistant.
+- `APIs/entries/<order>-<api-name>.md` is the research workspace for one possible integration.
+- `APIs/research/official-sources.json` stores reviewed facts and evidence separately from generated prose.
+- `APIs/research/runtime/claims/<order>/` is an atomic, per-entry ownership marker for parallel research workers; `results/<order>.json` stages one complete isolated result.
+- `APIs/final-apis/<id>.json` stores one YouTube-shaped final candidate for each research entry classified as `documented`.
+- `public/catalogs/api/zendesk.json` is the reference shape for a finished API template detail.
+- `scripts/generate-api-manuals.mjs` creates the research workspaces and preserves existing entry files by default.
+- `scripts/check-api-research.mjs` validates contiguous source order, official HTTPS evidence, supported template values, tool uniqueness, and per-tool evidence links.
+- `scripts/generate-final-api-templates.mjs` promotes only documented research records into final candidate files; `scripts/check-final-api-templates.mjs` validates their shape against the API template contract.
+- `scripts/publish-api-templates.mjs` copies staged final candidates into `public/catalogs/api/<id>.json` plus a matching `index.json` summary, skipping any `id` or `name` that already exists in the production catalog; run `npm run check:template-catalogs` afterward.
+
+Note: the staging tree originally rooted at `APIs/` (including `APIs.json`) has since been relocated to `api_repository/` by ongoing parallel audit work; treat `api_repository/` as the current path for every example above.
+
+Rules:
+
+- Treat a source `Link` as a discovery location, not as a runtime base URL, unless current official documentation explicitly identifies it as the API root.
+- Preserve source order and source metadata so research and review remain traceable.
+- Record template identity, presentation, connection, authentication, signup/docs links, tools, and parameters explicitly before conversion.
+- Require evidence for the production base URL, version, authentication placement, scopes, endpoint method/path, and parameter definitions.
+- Prioritize unaudited APIs from famous, broadly adopted providers for parallel research, using current official adoption evidence when prominence is unclear and source order as the deterministic tie-breaker. Popularity affects research order, not suitability classification or the requirement to review the full catalog.
+- Keep one continuity worker on the smallest pending source order so popularity-first research does not indefinitely stall the contiguous checkpoint. Classify each reviewed entry as `documented`, `partial`, `blocked`, `inactive`, or `non-api`.
+- Parallelize provider research through atomic order-specific directory claims, never through a shared read-modify-write number list. Workers stage isolated per-entry results and must not edit consolidated or generated artifacts.
+- Use one explicit coordinator to validate staged results and append only the longest contiguous sequence to `official-sources.json`; out-of-order results remain staged until every preceding order exists.
+- Never reclaim another worker's order based on age alone. Confirm that the owner is inactive, preserve orphaned claim history under `failed/`, and only then make the order claimable again.
+- Treat provider documentation, provider-owned machine-readable specifications, and the provider's own source repository as primary evidence; marketplace pages alone do not justify inventing hidden runtime details.
+- Record response shape, common errors, pagination, rate limits, idempotency, lifecycle, verification date, and evidence URLs even when the current template contract does not store each item directly.
+- Prefer three to six high-value, tested tools over mechanically copying every upstream endpoint.
+- Use the current supported template enums for authentication, HTTP methods, parameter locations, and parameter types; unresolved mappings remain pending rather than being guessed.
+- Entries that map to an existing template ID must be reviewed and merged instead of creating a duplicate detail file.
+- Before publishing a staged final candidate into `public/catalogs/api/`, check both `id` and `name` against the existing catalog; the same real provider can be independently re-researched under a different `id` (e.g. `openlibrary` vs. `open-library`), and only one detail file may exist per provider.
+- A research JSON scaffold containing `<PENDING_...>` values is not valid catalog data and must never be copied into `public/catalogs/api/` unchanged.
+- Final candidates omit research-only evidence fields, use filenames matching their safe IDs, and retain exactly one API template per JSON file.
+- `partial`, `blocked`, `inactive`, and `non-api` records must not be emitted into `APIs/final-apis/`.
+- Regenerate research files with `--force` only when intentionally discarding manual verification work.
 
 ### Shared Feedback Components
 
@@ -586,7 +683,7 @@ Pattern: theme definitions are centralized and selected through `ColorModeProvid
 Examples:
 
 - `src/theme/index.ts`
-- `src/theme/ColorModeContext.tsx`
+- `src/theme/ColorModeProvider.tsx`
 - `src/main.tsx`
 
 Rules:
@@ -596,19 +693,21 @@ Rules:
 - Store color mode in `localStorage`.
 - Avoid hardcoded colors unless they are part of an existing theme convention or a narrowly scoped visual token.
 
-### Detail Pages and Large Local Types
+### Detail Pages And Page-Owned Contracts
 
-Pattern: complex pages define local TypeScript interfaces close to the workflow they support.
+Pattern: page-only contracts stay close to their route but never inside the `.tsx` page module.
 
-Example:
+Examples:
 
-- `src/pages/ServerDetail.tsx`
+- `src/pages/SharePage/shareInfo.interface.ts`
+- `src/pages/Profile/rolePermissions.interface.ts`
 
 Rules:
 
-- Keep local interfaces near the page until they are reused.
-- Extract shared API/domain types only when multiple pages or components need them.
-- Keep frontend types aligned with backend records and `docs/ENTITIES.md`.
+- Store each page-owned contract in its own `name.kind.ts` file beside the page.
+- Move a contract into its feature only when the feature genuinely owns it or multiple consumers share it.
+- Keep frontend contracts aligned with backend records and `docs/ENTITIES.md`.
+- Do not create a page-local `types.ts` aggregation file.
 
 ### Form and Validation Pattern
 
@@ -643,6 +742,7 @@ Rules:
 - Test route/page behavior when user-visible interactions change.
 - Test API client behavior when interceptors change.
 - Prefer user-facing queries in React Testing Library tests.
+- Run `npm run check:frontend-structure` through `npm run type-check` to reject inline contracts, named multi-export modules, executable barrels, missing directory entry files, `index.tsx`, non-rendering top-level component helpers, and forbidden catch-all modules.
 
 ## Change Checklist
 

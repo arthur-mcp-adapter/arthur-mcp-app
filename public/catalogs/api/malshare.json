@@ -1,0 +1,57 @@
+{
+  "id": "malshare",
+  "name": "MalShare",
+  "tagline": "Inspect MalShare malware sample metadata",
+  "description": "Look up stored metadata for a malware sample by MD5, SHA-1, or SHA-256 hash.",
+  "category": "Anti-Malware",
+  "color": "#991B1B",
+  "emoji": "🧬",
+  "baseUrl": "https://malshare.com",
+  "auth": {
+    "type": "api-key",
+    "hint": "Register with MalShare and send your key in the api_key query parameter.",
+    "keyName": "api_key",
+    "keyIn": "query"
+  },
+  "signupUrl": "https://malshare.com/register.php",
+  "docsUrl": "https://malshare.com/doc.php",
+  "tools": [
+    {
+      "name": "get_sample_details",
+      "description": "Return stored metadata for a malware sample hash.",
+      "method": "GET",
+      "path": "/api.php",
+      "params": [
+        {
+          "name": "action",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Use details for the selected metadata lookup."
+        },
+        {
+          "name": "hash",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "MD5, SHA-1, or SHA-256 sample hash."
+        }
+      ]
+    },
+    {
+      "name": "get_daily_hashes",
+      "description": "List malware sample hashes added during the past 24 hours.",
+      "method": "GET",
+      "path": "/api.php",
+      "params": [
+        {
+          "name": "action",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Use getlist to receive the JSON daily hash list."
+        }
+      ]
+    }
+  ]
+}

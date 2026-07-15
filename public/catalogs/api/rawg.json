@@ -1,0 +1,86 @@
+{
+  "id": "rawg",
+  "name": "RAWG",
+  "tagline": "Video game database with 500k+ titles",
+  "description": "The largest open video game database. Search games, browse genres, find top ratings, and get detailed game info. Free tier available.",
+  "category": "Data",
+  "color": "#1A1A2E",
+  "emoji": "🎮",
+  "baseUrl": "https://api.rawg.io/api",
+  "auth": {
+    "type": "api-key",
+    "hint": "Register for a free API key at rawg.io/apidocs.",
+    "keyName": "key",
+    "keyIn": "query"
+  },
+  "signupUrl": "https://rawg.io/login",
+  "docsUrl": "https://rawg.io/apidocs",
+  "tools": [
+    {
+      "name": "search_games",
+      "description": "Search RAWG for games by title with their rating, release date, and platforms.",
+      "method": "GET",
+      "path": "/games",
+      "params": [
+        {
+          "name": "search",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Search query, e.g. \"The Last of Us\""
+        },
+        {
+          "name": "page_size",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Results per page (max 40)"
+        },
+        {
+          "name": "platforms",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Filter by platform IDs (comma-separated): 4=PC, 18=PS4, 1=Xbox One, 7=Switch"
+        },
+        {
+          "name": "genres",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Filter by genre slugs, e.g. action,rpg"
+        }
+      ]
+    },
+    {
+      "name": "get_game",
+      "description": "Get full details for a game: description, Metacritic score, release date, and developer.",
+      "method": "GET",
+      "path": "/games/{id}",
+      "params": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Game ID (number) or slug (e.g. the-witcher-3)"
+        }
+      ]
+    },
+    {
+      "name": "list_genres",
+      "description": "List all game genres with their game count and most popular games.",
+      "method": "GET",
+      "path": "/genres",
+      "params": [
+        {
+          "name": "page_size",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Results per page (max 40)"
+        }
+      ]
+    }
+  ]
+}

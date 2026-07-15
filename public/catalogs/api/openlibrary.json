@@ -1,0 +1,98 @@
+{
+  "id": "openlibrary",
+  "name": "Open Library",
+  "tagline": "Books, authors and editions",
+  "description": "Search millions of books and access author bios, edition details, and cover images from Open Library — the internet's largest open book catalog. No authentication required.",
+  "category": "Data",
+  "color": "#E8272A",
+  "emoji": "📖",
+  "baseUrl": "https://openlibrary.org",
+  "auth": {
+    "type": "none",
+    "hint": ""
+  },
+  "docsUrl": "https://openlibrary.org/developers/api",
+  "tools": [
+    {
+      "name": "search_books",
+      "description": "Search for books by title, author, ISBN, or keyword.",
+      "method": "GET",
+      "path": "/search.json",
+      "params": [
+        {
+          "name": "q",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "General search query"
+        },
+        {
+          "name": "title",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Filter by book title"
+        },
+        {
+          "name": "author",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Filter by author name"
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of results (max 100)"
+        }
+      ]
+    },
+    {
+      "name": "get_book",
+      "description": "Get metadata for a book by its Open Library key.",
+      "method": "GET",
+      "path": "/works/{olid}.json",
+      "params": [
+        {
+          "name": "olid",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Open Library work ID, e.g. OL27516W"
+        }
+      ]
+    },
+    {
+      "name": "get_author",
+      "description": "Get an author's biography, birth date, and list of works.",
+      "method": "GET",
+      "path": "/authors/{olid}.json",
+      "params": [
+        {
+          "name": "olid",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Open Library author ID, e.g. OL23919A"
+        }
+      ]
+    },
+    {
+      "name": "get_isbn",
+      "description": "Look up a book by ISBN-10 or ISBN-13.",
+      "method": "GET",
+      "path": "/isbn/{isbn}.json",
+      "params": [
+        {
+          "name": "isbn",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Book ISBN-10 or ISBN-13, e.g. 9780140449136"
+        }
+      ]
+    }
+  ]
+}

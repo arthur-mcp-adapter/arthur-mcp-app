@@ -48,6 +48,11 @@ export class TypeOrmUserRepository implements IUserRepository {
     return e ? this.toRecord(e) : null;
   }
 
+  async findWithoutSupabaseId(): Promise<UserRecord[]> {
+    const entities = await this.repo.find({ where: { supabaseId: null } });
+    return entities.map((e) => this.toRecord(e));
+  }
+
   async findById(id: string): Promise<UserRecord | null> {
     const e = await this.repo.findOne({ where: { id } });
     return e ? this.toRecord(e) : null;

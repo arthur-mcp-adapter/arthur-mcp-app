@@ -1,0 +1,14 @@
+{
+  "id": "refactoring-advisor",
+  "name": "Refactoring Advisor",
+  "tagline": "Identify and prioritize refactoring opportunities",
+  "description": "Analyzes code for refactoring opportunities and produces a prioritized improvement plan.",
+  "category": "Code",
+  "emoji": "♻️",
+  "tags": [
+    "code",
+    "refactoring",
+    "architecture"
+  ],
+  "content": "Analyze the following code and identify refactoring opportunities.\n\nFor each opportunity:\n- **Issue**: What is wrong or could be improved\n- **Impact**: Why it matters (maintainability, performance, readability)\n- **Refactoring**: Specific change to make with before/after example\n- **Effort**: Low / Medium / High\n- **Priority**: 1 (highest) to 5 (lowest)\n\nAlso identify:\n- Design patterns that could be applied\n- Dead code or duplication to eliminate\n- Abstractions that are missing or leaking\n\nLanguage/Framework: {{language}}\n\nCode:\n{{code}}"
+}

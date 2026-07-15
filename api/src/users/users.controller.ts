@@ -1,39 +1,33 @@
-import { Body, Controller, Get, Inject, Patch, Request, UseGuards } from '@nestjs/common';
+import { Controller, Get, Inject, Request, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt.guard';
+import { RequestUser } from '../auth/supabase-auth.service';
 import { ROLE_REPO } from '../database/database.tokens';
 import { IRoleRepository } from '../roles/role.repository';
-import { UsersService } from './users.service';
 
 @Controller('users')
 @UseGuards(JwtAuthGuard)
 export class UsersController {
-  constructor(
-    private readonly usersService: UsersService,
-    @Inject(ROLE_REPO) private readonly roleRepo: IRoleRepository,
-  ) {}
+  constructor(@Inject(ROLE_REPO) private readonly roleRepo: IRoleRepository) {}
 
-  /** Authenticated user profile — includes role permissions so the frontend can enforce them */
+  /** Authenticated user profile — built entirely from the verified Supabase JWT claims (no DB
+   * read), plus role permissions so the frontend can enforce them. Self-service profile edits
+   * (username/email/password) go straight from the frontend to Supabase now — there is no
+   * PATCH here anymore. */
   @Get('me')
-  async getMe(@Request() req: any) {
-    const user = await this.usersService.findById(req.user.userId);
-    const { password: _, ...safe } = user as any;
+  async getMe(@Request() req: { user: RequestUser }) {
+    const { userId, username, email, role } = req.user;
+    const me: { _id: string; username: string; email: string; role: string; permissions?: unknown } = {
+      _id: userId,
+      username,
+      email,
+      role,
+    };
 
-    if (safe.role !== 'admin') {
-      const role = await this.roleRepo.findByName(safe.role);
-      if (role) {
-        safe.permissions = role.permissions;
-      }
+    if (role !== 'admin') {
+      const roleRecord = await this.roleRepo.findByName(role);
+      if (roleRecord) me.permissions = roleRecord.permissions;
     }
 
-    return safe;
-  }
-
-  /** Update own profile */
-  @Patch('me')
-  updateMe(
-    @Request() req: any,
-    @Body() dto: { username?: string; email?: string; currentPassword?: string; newPassword?: string },
-  ) {
-    return this.usersService.updateSelf(req.user.userId, dto);
+    return me;
   }
 }

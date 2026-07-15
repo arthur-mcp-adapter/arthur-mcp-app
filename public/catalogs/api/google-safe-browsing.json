@@ -1,0 +1,36 @@
+{
+  "id": "google-safe-browsing",
+  "name": "Google Safe Browsing",
+  "tagline": "Check URLs against Google Safe Browsing",
+  "description": "Search up to fifty URLs for malware, social-engineering, unwanted-software, and other known Safe Browsing threats.",
+  "category": "Anti-Malware",
+  "color": "#4285F4",
+  "emoji": "🔒",
+  "baseUrl": "https://safebrowsing.googleapis.com/v5",
+  "auth": {
+    "type": "api-key",
+    "hint": "Enable Safe Browsing API and send the Google API key in the key query parameter. Safe Browsing is limited to non-commercial use.",
+    "keyName": "key",
+    "keyIn": "query"
+  },
+  "signupUrl": "https://console.cloud.google.com/apis/library/safebrowsing.googleapis.com",
+  "docsUrl": "https://developers.google.com/safe-browsing/reference/rest/v5/urls/search",
+  "tools": [
+    {
+      "name": "search_threat_urls",
+      "description": "Check one or more URLs against Google's known threat expressions.",
+      "method": "GET",
+      "path": "/urls:search",
+      "params": [
+        {
+          "name": "urls",
+          "originalName": "urls[]",
+          "in": "query",
+          "required": true,
+          "type": "array",
+          "description": "URLs to inspect; no more than 50 may be sent in one request."
+        }
+      ]
+    }
+  ]
+}

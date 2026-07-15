@@ -1,0 +1,14 @@
+{
+  "id": "email-newsletter",
+  "name": "Email Newsletter Writer",
+  "tagline": "Craft engaging newsletters that drive opens and clicks",
+  "description": "Writes full email newsletters with subject lines, preheader, body, and CTAs optimized for engagement.",
+  "category": "SEO & Marketing",
+  "emoji": "📧",
+  "tags": [
+    "marketing",
+    "email",
+    "newsletter"
+  ],
+  "content": "Write an email newsletter.\n\n**Brand:** {{brand}}\n**Audience:** {{audience}}\n**Main topic:** {{topic}}\n**Secondary topics:** {{secondary_topics}}\n**Primary CTA:** {{cta}}\n**Tone:** {{tone}}\n\nOutput:\n- **Subject line** (3 variants, under 50 chars)\n- **Preheader text** (under 90 chars)\n- **Email body** (sections with headers, short paragraphs, bullet points)\n- **Primary CTA button text**\n- **P.S. line** (optional, high-engagement tactic)\n\nKeep paragraphs short. Use second person (\"you\"). Avoid spam trigger words."
+}

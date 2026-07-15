@@ -1,0 +1,68 @@
+{
+  "id": "dragon-ball",
+  "name": "Dragon Ball",
+  "tagline": "Explore Dragon Ball characters and planets",
+  "description": "List Dragon Ball characters with pagination and optional name, gender, race, or affiliation filters.",
+  "category": "Anime",
+  "color": "#F97316",
+  "emoji": "🐉",
+  "baseUrl": "https://www.dragonball-api.com/api",
+  "auth": {
+    "type": "none",
+    "hint": "No authentication is required."
+  },
+  "signupUrl": "https://web.dragonball-api.com/",
+  "docsUrl": "https://web.dragonball-api.com/documentation",
+  "tools": [
+    {
+      "name": "list_characters",
+      "description": "List and filter Dragon Ball characters.",
+      "method": "GET",
+      "path": "/characters",
+      "params": [
+        {
+          "name": "page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "One-based result page."
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Records per page."
+        },
+        {
+          "name": "name",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Character name filter."
+        },
+        {
+          "name": "gender",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Gender filter."
+        },
+        {
+          "name": "race",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Race filter such as Saiyan or Human."
+        },
+        {
+          "name": "affiliation",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Affiliation filter."
+        }
+      ]
+    }
+  ]
+}

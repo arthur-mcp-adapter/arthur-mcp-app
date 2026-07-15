@@ -30,6 +30,7 @@ The system currently includes:
 ## Architectural Principles
 
 - Optimize for clear boundaries before clever abstractions.
+- Treat frontend directory barrels as explicit boundaries: named modules export one symbol, only `index.ts` aggregates, barrels contain no executable logic, React implementations use matching named `.tsx` files, and every `src/` directory has `index.ts` plus `index.css`.
 - Prefer explicit contracts between layers: DTOs, repository interfaces, service APIs, and typed frontend models.
 - Keep domain behavior out of controllers and UI components when it belongs in services or helpers.
 - Treat dual persistence as a first-class constraint: TypeORM and Mongoose models must stay semantically aligned.

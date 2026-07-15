@@ -1,0 +1,14 @@
+{
+  "id": "ad-copy",
+  "name": "Ad Copy Writer",
+  "tagline": "Write high-converting ad copy for any platform",
+  "description": "Creates multiple ad copy variants for Google, Meta, LinkedIn, and display ads.",
+  "category": "SEO & Marketing",
+  "emoji": "📣",
+  "tags": [
+    "marketing",
+    "advertising",
+    "copywriting"
+  ],
+  "content": "Write ad copy for the following campaign.\n\n**Product/Service:** {{product}}\n**Target audience:** {{audience}}\n**Platform:** {{platform}} (Google / Meta / LinkedIn / Display)\n**Objective:** {{objective}} (awareness / clicks / conversions)\n**Key benefit:** {{benefit}}\n**CTA:** {{cta}}\n\nGenerate 3 variants for each format:\n- **Headline** (max chars per platform)\n- **Description/Body**\n- **CTA**\n\nAlso include:\n- Emotional hooks\n- Power words used\n- A/B test recommendation"
+}

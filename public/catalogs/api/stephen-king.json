@@ -1,0 +1,99 @@
+{
+  "id": "stephen-king",
+  "name": "Stephen King",
+  "tagline": "Explore Stephen King books and characters",
+  "description": "Browse Stephen King's books, short stories, and villains and retrieve individual records with linked relationships.",
+  "category": "Books",
+  "color": "#991B1B",
+  "emoji": "📕",
+  "baseUrl": "https://stephen-king-api.onrender.com/api",
+  "auth": {
+    "type": "none",
+    "hint": "No API key is required."
+  },
+  "signupUrl": "https://stephen-king-api.onrender.com/",
+  "docsUrl": "https://stephen-king-api.onrender.com/docs",
+  "tools": [
+    {
+      "name": "list_books",
+      "description": "List Stephen King books.",
+      "method": "GET",
+      "path": "/books",
+      "params": [
+        {
+          "name": "page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Page number starting at 1; provide together with limit."
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Items per page, maximum 100; provide together with page."
+        }
+      ]
+    },
+    {
+      "name": "get_book",
+      "description": "Retrieve one book by ID.",
+      "method": "GET",
+      "path": "/book/{id}",
+      "params": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "integer",
+          "description": "Book identifier."
+        }
+      ]
+    },
+    {
+      "name": "list_short_stories",
+      "description": "List Stephen King short stories.",
+      "method": "GET",
+      "path": "/shorts",
+      "params": [
+        {
+          "name": "page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Page number starting at 1; provide together with limit."
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Items per page, maximum 100; provide together with page."
+        }
+      ]
+    },
+    {
+      "name": "list_villains",
+      "description": "List villains and links to their associated works.",
+      "method": "GET",
+      "path": "/villains",
+      "params": [
+        {
+          "name": "page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Page number starting at 1; provide together with limit."
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Items per page, maximum 100; provide together with page."
+        }
+      ]
+    }
+  ]
+}

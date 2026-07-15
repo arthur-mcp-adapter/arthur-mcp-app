@@ -1,0 +1,140 @@
+{
+  "id": "reddit",
+  "name": "Reddit",
+  "tagline": "Subreddit posts, comments and search",
+  "description": "Read public posts, comments, and community data from any subreddit. No authentication required for public content. Useful for social listening and trend research.",
+  "category": "Data",
+  "color": "#FF4500",
+  "emoji": "🤖",
+  "baseUrl": "https://www.reddit.com",
+  "auth": {
+    "type": "none",
+    "hint": ""
+  },
+  "docsUrl": "https://www.reddit.com/dev/api/",
+  "tools": [
+    {
+      "name": "get_subreddit_posts",
+      "description": "Get hot, new, or top posts from any subreddit with their score, title, and comment count.",
+      "method": "GET",
+      "path": "/r/{subreddit}/hot.json",
+      "params": [
+        {
+          "name": "subreddit",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Subreddit name, e.g. programming or ProductManagement"
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of posts (max 100)"
+        },
+        {
+          "name": "t",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Time filter for top: hour, day, week, month, year, or all"
+        }
+      ]
+    },
+    {
+      "name": "get_subreddit_info",
+      "description": "Get metadata about a subreddit: description, member count, creation date, and rules.",
+      "method": "GET",
+      "path": "/r/{subreddit}/about.json",
+      "params": [
+        {
+          "name": "subreddit",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Subreddit name, e.g. SaaS or startups"
+        }
+      ]
+    },
+    {
+      "name": "search_reddit",
+      "description": "Search Reddit posts by keyword across all subreddits or within a specific community.",
+      "method": "GET",
+      "path": "/search.json",
+      "params": [
+        {
+          "name": "q",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Search query"
+        },
+        {
+          "name": "subreddit",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Limit search to this subreddit (optional)"
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Sort by: relevance, hot, top, new, or comments"
+        },
+        {
+          "name": "t",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Time filter: hour, day, week, month, year, or all"
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of results (max 100)"
+        }
+      ]
+    },
+    {
+      "name": "get_post_comments",
+      "description": "Get the comments on a specific Reddit post.",
+      "method": "GET",
+      "path": "/r/{subreddit}/comments/{article}.json",
+      "params": [
+        {
+          "name": "subreddit",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Subreddit name"
+        },
+        {
+          "name": "article",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Post ID from the Reddit URL (the alphanumeric part after /comments/)"
+        },
+        {
+          "name": "depth",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Maximum comment nesting depth"
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of comments to return"
+        }
+      ]
+    }
+  ]
+}

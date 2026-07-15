@@ -1,0 +1,62 @@
+{
+  "id": "stytch",
+  "name": "Stytch",
+  "tagline": "Search and retrieve Stytch users",
+  "description": "Search the users in a live Stytch Consumer project and retrieve individual user profiles.",
+  "category": "Authentication & Authorization",
+  "color": "#F97316",
+  "emoji": "🪪",
+  "baseUrl": "https://api.stytch.com/v1",
+  "auth": {
+    "type": "basic",
+    "hint": "Use the Stytch project_id as the Basic-auth username and the project secret as the password. Keep both credentials server-side."
+  },
+  "signupUrl": "https://stytch.com/dashboard",
+  "docsUrl": "https://stytch.com/docs/api-reference/consumer/api/overview",
+  "tools": [
+    {
+      "name": "search_users",
+      "description": "Search or list users in the Stytch project.",
+      "method": "POST",
+      "path": "/users/search",
+      "params": [
+        {
+          "name": "cursor",
+          "in": "body",
+          "required": false,
+          "type": "string",
+          "description": "Opaque next_cursor from the preceding response."
+        },
+        {
+          "name": "limit",
+          "in": "body",
+          "required": false,
+          "type": "integer",
+          "description": "Results per page; defaults to 100 and cannot exceed 1000."
+        },
+        {
+          "name": "query",
+          "in": "body",
+          "required": false,
+          "type": "object",
+          "description": "Optional AND or OR query object containing supported user filter operands; omit it to return all users."
+        }
+      ]
+    },
+    {
+      "name": "get_user",
+      "description": "Get information about one Stytch user.",
+      "method": "GET",
+      "path": "/users/{user_id}",
+      "params": [
+        {
+          "name": "user_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Stytch user ID, or the user's external ID when configured."
+        }
+      ]
+    }
+  ]
+}

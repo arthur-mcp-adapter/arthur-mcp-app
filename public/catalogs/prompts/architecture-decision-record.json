@@ -1,0 +1,15 @@
+{
+  "id": "architecture-decision-record",
+  "name": "Architecture Decision Record",
+  "tagline": "Document architectural decisions with context and consequences",
+  "description": "Creates an ADR documenting the context, decision, alternatives considered, and consequences.",
+  "category": "DevOps",
+  "emoji": "🏗️",
+  "tags": [
+    "devops",
+    "architecture",
+    "documentation",
+    "adr"
+  ],
+  "content": "Write an Architecture Decision Record (ADR).\n\n**Title:** {{title}}\n**Date:** {{date}}\n**Status:** Proposed / Accepted / Deprecated / Superseded\n**Deciders:** {{deciders}}\n\n## Context\n(What situation or problem is driving this decision? Include technical and business constraints.)\n\n## Decision\n(The chosen approach, stated as a complete sentence: \"We will...\")\n\n## Rationale\n(Why this option was chosen)\n\n## Alternatives Considered\n| Option | Pros | Cons | Reason Not Chosen |\n|--------|------|------|-----------------|\n\n## Consequences\n### Positive\n-\n### Negative\n-\n### Risks\n-\n\n## Implementation Notes\n-\n\n## Related Decisions\n-\n\n## References\n-"
+}

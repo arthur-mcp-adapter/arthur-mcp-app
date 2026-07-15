@@ -1,0 +1,49 @@
+{
+  "id": "summarize-text-with-ai",
+  "name": "Summarize Text with AI",
+  "tagline": "Summarize web content with AI",
+  "description": "Generate a concise, optionally translated summary of an accessible webpage URL with configurable output length through ApyHub's AI Summarize API.",
+  "category": "AI",
+  "color": "#6C5CE7",
+  "emoji": "📝",
+  "baseUrl": "https://api.apyhub.com",
+  "auth": {
+    "type": "api-key",
+    "hint": "Generate an ApyHub credential and send the token in the apy-token header. Store only the token value in Arthur MCP Secrets.",
+    "keyName": "apy-token",
+    "keyIn": "header"
+  },
+  "signupUrl": "https://apyhub.com/",
+  "docsUrl": "https://apyhub.com/utility/ai-summarize",
+  "tools": [
+    {
+      "name": "summarize_url",
+      "description": "Summarize an accessible webpage or document URL and return the generated summary text.",
+      "method": "POST",
+      "path": "/ai/summarize-url",
+      "params": [
+        {
+          "name": "url",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Accessible webpage or supported document URL whose content should be summarized."
+        },
+        {
+          "name": "summary_length",
+          "in": "body",
+          "required": false,
+          "type": "string",
+          "description": "Desired length: short, medium, or long; defaults to short."
+        },
+        {
+          "name": "output_language",
+          "in": "body",
+          "required": false,
+          "type": "string",
+          "description": "Supported output language code; defaults to en."
+        }
+      ]
+    }
+  ]
+}

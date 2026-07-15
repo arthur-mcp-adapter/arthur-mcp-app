@@ -1,0 +1,54 @@
+{
+  "id": "ec2-shop",
+  "name": "EC2.shop API",
+  "tagline": "Compare current AWS EC2 prices",
+  "description": "Query EC2.shop for AWS EC2 instance specifications, on-demand pricing, monthly estimates, and spot prices with region, filter, and sort controls.",
+  "category": "Continuous Integration",
+  "color": "#FF9900",
+  "emoji": "☁️",
+  "baseUrl": "https://ec2.shop",
+  "auth": {
+    "type": "none",
+    "hint": "No authentication is required. Set the Accept header to json to receive the documented JSON response instead of the default text table."
+  },
+  "signupUrl": "https://ec2.shop/",
+  "docsUrl": "https://github.com/yeo/ec2.shop",
+  "tools": [
+    {
+      "name": "list_ec2_prices",
+      "description": "List and compare AWS EC2 instance specifications and prices.",
+      "method": "GET",
+      "path": "/",
+      "params": [
+        {
+          "name": "accept",
+          "in": "header",
+          "required": true,
+          "type": "string",
+          "description": "Set to json to return the documented JSON array rather than a text table."
+        },
+        {
+          "name": "region",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "AWS region identifier, for example us-west-2; the live service currently exposes the supported region list."
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Comma-separated keywords and comparisons such as ssd,mem>=32,cpu<=4; prefix a term with - to exclude it."
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Comma-separated sort fields; prefix a field with - for descending order, for example -price,mem."
+        }
+      ]
+    }
+  ]
+}

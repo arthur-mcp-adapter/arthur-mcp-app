@@ -1,0 +1,148 @@
+{
+  "id": "pinata",
+  "name": "Pinata",
+  "tagline": "Manage IPFS-pinned files on Pinata",
+  "description": "List, retrieve, delete, and pin existing IPFS content by CID on Pinata's public or private IPFS network.",
+  "category": "Cloud Storage & File Sharing",
+  "color": "#6D28D9",
+  "emoji": "📌",
+  "baseUrl": "https://api.pinata.cloud/v3",
+  "auth": {
+    "type": "bearer",
+    "hint": "Generate a Pinata API JWT (with appropriate org:files scopes) from the Pinata dashboard and send it as Authorization: Bearer <YOUR_PINATA_JWT>."
+  },
+  "signupUrl": "https://app.pinata.cloud/register",
+  "docsUrl": "https://docs.pinata.cloud/",
+  "tools": [
+    {
+      "name": "list_files",
+      "description": "List pinned files on a network, with optional filters.",
+      "method": "GET",
+      "path": "/files/{network}",
+      "params": [
+        {
+          "name": "network",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Target IPFS network: public or private."
+        },
+        {
+          "name": "name",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Filter files by name."
+        },
+        {
+          "name": "cid",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Filter files by CID."
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Limit the number of results."
+        },
+        {
+          "name": "order",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Sort by creation date: ASC or DESC."
+        },
+        {
+          "name": "pageToken",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Pagination token from a previous response's nextPageToken."
+        }
+      ]
+    },
+    {
+      "name": "get_file",
+      "description": "Get details for a specific pinned file by its ID.",
+      "method": "GET",
+      "path": "/files/{network}/{id}",
+      "params": [
+        {
+          "name": "network",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Target IPFS network: public or private."
+        },
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "File identifier (UUID)."
+        }
+      ]
+    },
+    {
+      "name": "delete_file",
+      "description": "Delete (unpin) a file by its ID.",
+      "method": "DELETE",
+      "path": "/files/{network}/{id}",
+      "params": [
+        {
+          "name": "network",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Target IPFS network: public or private."
+        },
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "File identifier (UUID) to delete."
+        }
+      ]
+    },
+    {
+      "name": "pin_by_cid",
+      "description": "Pin existing IPFS content to Pinata by its CID, without uploading binary data.",
+      "method": "POST",
+      "path": "/files/public/pin_by_cid",
+      "params": [
+        {
+          "name": "cid",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "CID of the existing IPFS content to pin."
+        },
+        {
+          "name": "name",
+          "in": "body",
+          "required": false,
+          "type": "string",
+          "description": "Custom name for the pinned file."
+        },
+        {
+          "name": "group_id",
+          "in": "body",
+          "required": false,
+          "type": "string",
+          "description": "ID of the group to associate the pinned file with."
+        },
+        {
+          "name": "host_nodes",
+          "in": "body",
+          "required": false,
+          "type": "array",
+          "description": "Optional array of host node IDs to help locate the content."
+        }
+      ]
+    }
+  ]
+}

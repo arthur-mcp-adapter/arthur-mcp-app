@@ -2,6 +2,8 @@
 
 This document turns the current frontend modularization direction into an execution plan. It is intentionally incremental and should be applied without broad rewrites.
 
+Current file convention: `docs/FRONTEND_EXPORT_AND_FOLDER_CONVENTION_PLAN.md` is implemented and authoritative. Generic `types.ts`, `constants.ts`, `utils.ts`, and `*-utils.ts` modules are forbidden. Use individual `name.kind.ts` contracts, one-purpose utilities, `.hook.ts` hooks, focused `.constant.ts` files, matching named React `.tsx` implementations, and pure `index.ts` barrels. Every named module exports one symbol and every source directory contains `index.ts` plus `index.css`.
+
 ## Goal
 
 Move the frontend toward a domain-oriented modular structure where route pages orchestrate data loading and navigation, and domain features own their UI sections, local state, API adapters, and helpers.
@@ -56,7 +58,7 @@ src/features/<domain>/
   components/
   hooks/
   utils/
-  types.ts
+  types/
   index.ts
 ```
 
@@ -73,8 +75,9 @@ src/features/server/
   settings/
   api/
   hooks/
-  types.ts
-  constants.ts
+  types/
+  constants/
+  utils/
 ```
 
 ### `src/components/`
@@ -119,7 +122,7 @@ Tasks:
    - composing tab panels and dialogs.
 2. Move remaining large tab bodies and dialog implementations under `src/features/server/`.
 3. Move request payload shaping and response-to-form mapping into feature-local helpers.
-4. Consolidate reusable server feature types in `src/features/server/types.ts` only when the same type crosses sub-areas.
+4. Keep reusable server feature contracts in individual files under `src/features/server/types/`, exposed through `src/features/server/types/index.ts` only when they cross sub-areas.
 5. Create feature-local hooks for server detail state where state is shared by multiple server submodules.
 
 Acceptance criteria:
@@ -147,7 +150,7 @@ Tasks:
    - `*Tab.tsx` for tab bodies;
    - `*Panel.tsx` for bounded sections inside a tab;
    - `*Dialog.tsx` for modal workflows;
-   - `*-utils.ts` or `*-form-utils.ts` for pure helpers.
+   - `utils/<action>.<role>.ts` for pure helpers, with one responsibility per file.
 3. Add narrow barrel exports only when they reduce import noise without hiding ownership.
 
 Acceptance criteria:

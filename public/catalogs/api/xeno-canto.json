@@ -1,0 +1,42 @@
+{
+  "id": "xeno-canto",
+  "name": "xeno-canto",
+  "tagline": "Search wildlife sound recordings",
+  "description": "Search Xeno-canto bird and wildlife recordings with its documented query language and pagination.",
+  "category": "Animals",
+  "color": "#15803D",
+  "emoji": "🎶",
+  "baseUrl": "https://xeno-canto.org/api/3",
+  "auth": {
+    "type": "api-key",
+    "hint": "Create a Xeno-canto API key and send it in the key query parameter.",
+    "keyName": "key",
+    "keyIn": "query"
+  },
+  "signupUrl": "https://xeno-canto.org/account/register",
+  "docsUrl": "https://xeno-canto.org/explore/api",
+  "tools": [
+    {
+      "name": "search_recordings",
+      "description": "Search wildlife sound recordings using Xeno-canto query terms.",
+      "method": "GET",
+      "path": "/recordings",
+      "params": [
+        {
+          "name": "query",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Xeno-canto search expression, such as a species or country query."
+        },
+        {
+          "name": "page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "One-based result page."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,151 @@
+{
+  "id": "travis-ci",
+  "name": "Travis CI",
+  "tagline": "Inspect and control Travis CI repositories and builds",
+  "description": "Look up a Travis CI repository, list and inspect its builds, and restart or cancel a build. Requires a Travis CI API token generated via the Travis CLI or account profile page.",
+  "category": "Continuous Integration",
+  "color": "#3EAAAF",
+  "emoji": "🔄",
+  "baseUrl": "https://api.travis-ci.com",
+  "auth": {
+    "type": "api-key",
+    "hint": "Generate a token with the Travis CLI (travis login && travis token) or from your Travis CI profile page, then send it as Authorization: token YOUR_TOKEN. Store the complete value, including the \"token \" prefix, in Arthur MCP Secrets. Tokens for travis-ci.com and the legacy travis-ci.org host are not interchangeable.",
+    "keyName": "Authorization",
+    "keyIn": "header"
+  },
+  "signupUrl": "https://app.travis-ci.com/signup",
+  "docsUrl": "https://developer.travis-ci.com/",
+  "tools": [
+    {
+      "name": "get_repository",
+      "description": "Retrieve a Travis CI repository's details by its owner/name slug.",
+      "method": "GET",
+      "path": "/repo/{repository_slug}",
+      "params": [
+        {
+          "name": "repository_slug",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "URL-encoded owner/repository slug, e.g. rails%2Frails."
+        },
+        {
+          "name": "Travis-API-Version",
+          "in": "header",
+          "required": true,
+          "type": "string",
+          "description": "Must be set to 3 on every request."
+        }
+      ]
+    },
+    {
+      "name": "list_builds",
+      "description": "List builds for a repository, with optional filtering and sorting.",
+      "method": "GET",
+      "path": "/repo/{repository_id}/builds",
+      "params": [
+        {
+          "name": "repository_id",
+          "in": "path",
+          "required": true,
+          "type": "integer",
+          "description": "Numeric ID uniquely identifying the repository."
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "How many builds to include in the response."
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "How many builds to skip before the first entry in the response."
+        },
+        {
+          "name": "sort_by",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Field(s) to sort by, e.g. id, started_at, number; append :desc to reverse. Default is number:desc,id:desc."
+        },
+        {
+          "name": "Travis-API-Version",
+          "in": "header",
+          "required": true,
+          "type": "string",
+          "description": "Must be set to 3 on every request."
+        }
+      ]
+    },
+    {
+      "name": "get_build",
+      "description": "Retrieve a single build by its ID.",
+      "method": "GET",
+      "path": "/build/{build_id}",
+      "params": [
+        {
+          "name": "build_id",
+          "in": "path",
+          "required": true,
+          "type": "integer",
+          "description": "Numeric ID uniquely identifying the build."
+        },
+        {
+          "name": "Travis-API-Version",
+          "in": "header",
+          "required": true,
+          "type": "string",
+          "description": "Must be set to 3 on every request."
+        }
+      ]
+    },
+    {
+      "name": "restart_build",
+      "description": "Restart a completed or canceled build.",
+      "method": "POST",
+      "path": "/build/{build_id}/restart",
+      "params": [
+        {
+          "name": "build_id",
+          "in": "path",
+          "required": true,
+          "type": "integer",
+          "description": "Numeric ID uniquely identifying the build to restart."
+        },
+        {
+          "name": "Travis-API-Version",
+          "in": "header",
+          "required": true,
+          "type": "string",
+          "description": "Must be set to 3 on every request."
+        }
+      ]
+    },
+    {
+      "name": "cancel_build",
+      "description": "Cancel an active build and its associated jobs.",
+      "method": "POST",
+      "path": "/build/{build_id}/cancel",
+      "params": [
+        {
+          "name": "build_id",
+          "in": "path",
+          "required": true,
+          "type": "integer",
+          "description": "Numeric ID uniquely identifying the build to cancel."
+        },
+        {
+          "name": "Travis-API-Version",
+          "in": "header",
+          "required": true,
+          "type": "string",
+          "description": "Must be set to 3 on every request."
+        }
+      ]
+    }
+  ]
+}

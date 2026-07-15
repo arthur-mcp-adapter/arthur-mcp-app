@@ -1,0 +1,122 @@
+{
+  "id": "freshdesk",
+  "name": "Freshdesk",
+  "tagline": "Support tickets and agents",
+  "description": "Manage support tickets, contacts, and agents in Freshdesk. Update the base URL in Settings to your Freshdesk subdomain (your-domain.freshdesk.com).",
+  "category": "Business",
+  "color": "#25C16F",
+  "emoji": "🎧",
+  "baseUrl": "https://your-domain.freshdesk.com/api/v2",
+  "auth": {
+    "type": "api-key",
+    "hint": "Find your API Key in Freshdesk → Profile Settings → Your API Key (bottom right). In the API Key field enter: Basic <base64 of \"API_KEY:X\">.",
+    "keyName": "Authorization",
+    "keyIn": "header"
+  },
+  "signupUrl": "https://freshdesk.com/signup",
+  "docsUrl": "https://developers.freshdesk.com/api/",
+  "tools": [
+    {
+      "name": "list_tickets",
+      "description": "List support tickets with their subject, status, priority, and requester.",
+      "method": "GET",
+      "path": "/tickets",
+      "params": [
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Filter: new_and_my_open, watching, spam, or deleted"
+        },
+        {
+          "name": "order_by",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Sort by: created_at, updated_at, or due_by"
+        },
+        {
+          "name": "per_page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Results per page (max 100)"
+        }
+      ]
+    },
+    {
+      "name": "get_ticket",
+      "description": "Get full details for a support ticket including all conversations.",
+      "method": "GET",
+      "path": "/tickets/{id}",
+      "params": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "integer",
+          "description": "Ticket ID number"
+        }
+      ]
+    },
+    {
+      "name": "create_ticket",
+      "description": "Create a new support ticket in Freshdesk.",
+      "method": "POST",
+      "path": "/tickets",
+      "params": [
+        {
+          "name": "subject",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Ticket subject"
+        },
+        {
+          "name": "description",
+          "in": "body",
+          "required": false,
+          "type": "string",
+          "description": "Ticket description (HTML allowed)"
+        },
+        {
+          "name": "email",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Requester email address"
+        },
+        {
+          "name": "priority",
+          "in": "body",
+          "required": false,
+          "type": "integer",
+          "description": "Priority: 1 (low), 2 (medium), 3 (high), 4 (urgent)"
+        },
+        {
+          "name": "status",
+          "in": "body",
+          "required": false,
+          "type": "integer",
+          "description": "Status: 2 (open), 3 (pending), 4 (resolved), 5 (closed)"
+        }
+      ]
+    },
+    {
+      "name": "search_tickets",
+      "description": "Search tickets using a query string.",
+      "method": "GET",
+      "path": "/search/tickets",
+      "params": [
+        {
+          "name": "query",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Search query, e.g. \"status:2 AND priority:3\""
+        }
+      ]
+    }
+  ]
+}

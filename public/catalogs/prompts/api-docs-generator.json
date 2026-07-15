@@ -1,0 +1,14 @@
+{
+  "id": "api-docs-generator",
+  "name": "API Documentation Generator",
+  "tagline": "Generate OpenAPI-style docs from code or spec",
+  "description": "Produces structured API documentation with endpoints, parameters, request/response examples.",
+  "category": "Code",
+  "emoji": "📡",
+  "tags": [
+    "code",
+    "documentation",
+    "api"
+  ],
+  "content": "Generate complete API documentation for the following endpoint(s).\n\nFor each endpoint include:\n- **Method & Path**\n- **Description**\n- **Authentication** required\n- **Request Parameters** (path, query, body) — name, type, required, description\n- **Request Body** example (JSON)\n- **Response Codes** — status, meaning, response body example\n- **Error Responses** — common errors and their meaning\n- **Rate Limits** (if applicable)\n- **Code Example** (curl or the specified language)\n\nLanguage: {{language}}\n\nCode/Spec:\n{{code}}"
+}

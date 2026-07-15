@@ -1,0 +1,14 @@
+{
+  "id": "terms-summarizer",
+  "name": "Terms of Service Summarizer",
+  "tagline": "Translate lengthy ToS into plain English bullet points",
+  "description": "Extracts the key user rights, restrictions, and risky clauses from Terms of Service documents.",
+  "category": "Legal",
+  "emoji": "📋",
+  "tags": [
+    "legal",
+    "terms",
+    "consumer"
+  ],
+  "content": "Summarize the following Terms of Service in plain English.\n\n**Service:** {{service}}\n**User type:** {{user_type}} (consumer / business)\n\n## What You Agree To\n(Key obligations and usage rules)\n-\n\n## What the Company Can Do\n-\n\n## What You Cannot Do\n-\n\n## Data and Privacy\n-\n\n## Payment and Cancellation\n-\n\n## Your IP Rights\n-\n\n## Their Liability Limitations\n-\n\n## How to Cancel / Delete Account\n-\n\n## Red Flags\n(Clauses unusually favorable to the company or restrictive for users)\n-\n\n**Risk Rating:** [Low / Medium / High] — explanation\n\n---\nTerms of Service:\n{{tos}}"
+}

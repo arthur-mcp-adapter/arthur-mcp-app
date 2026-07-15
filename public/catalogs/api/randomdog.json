@@ -1,0 +1,33 @@
+{
+  "id": "randomdog",
+  "name": "RandomDog",
+  "tagline": "Get a random dog media URL",
+  "description": "Retrieve metadata and a URL for a randomly selected dog image or video.",
+  "category": "Animals",
+  "color": "#2563EB",
+  "emoji": "🐶",
+  "baseUrl": "https://random.dog",
+  "auth": {
+    "type": "none",
+    "hint": "No authentication is required."
+  },
+  "signupUrl": "https://random.dog/",
+  "docsUrl": "https://random.dog/woof.json",
+  "tools": [
+    {
+      "name": "get_random_dog",
+      "description": "Return a random dog media URL and file size.",
+      "method": "GET",
+      "path": "/woof.json",
+      "params": [
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Comma-separated extensions to exclude when supported by the service."
+        }
+      ]
+    }
+  ]
+}

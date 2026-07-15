@@ -1,0 +1,14 @@
+{
+  "id": "hashtag-strategy",
+  "name": "Hashtag Strategy",
+  "tagline": "Research and tier hashtags for maximum reach",
+  "description": "Develops a tiered hashtag strategy with high, medium, and niche tags for content amplification.",
+  "category": "Social Media",
+  "emoji": "#️⃣",
+  "tags": [
+    "social media",
+    "hashtags",
+    "reach"
+  ],
+  "content": "Develop a hashtag strategy for the following.\n\n**Brand/Creator:** {{brand}}\n**Industry:** {{industry}}\n**Content theme:** {{theme}}\n**Platform:** {{platform}}\n**Account size:** {{followers}} followers\n\n## Hashtag Tiers\n\n**Tier 1 — High volume (>1M posts)** (use 2-3)\n(Broad, competitive, awareness play)\n\n**Tier 2 — Medium volume (100K-1M posts)** (use 5-7)\n(Industry-specific, good reach-to-competition ratio)\n\n**Tier 3 — Niche/Long-tail (<100K posts)** (use 5-8)\n(Highly targeted, easier to rank, engaged community)\n\n**Branded hashtags** (use 1-2)\n\n## Content-Type Hashtag Sets\n(Rotating sets for different post types)\n\n## Hashtags to Avoid\n(Banned, overused, or irrelevant ones)\n\n## Testing Strategy\n(How to A/B test hashtag performance)"
+}

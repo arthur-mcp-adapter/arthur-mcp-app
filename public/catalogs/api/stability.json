@@ -1,0 +1,61 @@
+{
+  "id": "stability",
+  "name": "Stability AI",
+  "tagline": "AI image generation (Stable Diffusion)",
+  "description": "Generate, edit, and upscale images using Stable Diffusion models via the Stability AI REST API. The industry standard for AI image generation.",
+  "category": "AI",
+  "color": "#6200EA",
+  "emoji": "🎨",
+  "baseUrl": "https://api.stability.ai/v2beta",
+  "auth": {
+    "type": "bearer",
+    "hint": "Create an API key at platform.stability.ai/account/keys."
+  },
+  "signupUrl": "https://platform.stability.ai/",
+  "docsUrl": "https://platform.stability.ai/docs/api-reference",
+  "tools": [
+    {
+      "name": "generate_image",
+      "description": "Generate an image from a text prompt using Stable Diffusion.",
+      "method": "POST",
+      "path": "/stable-image/generate/core",
+      "params": [
+        {
+          "name": "prompt",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Text description of the image to generate"
+        },
+        {
+          "name": "negative_prompt",
+          "in": "body",
+          "required": false,
+          "type": "string",
+          "description": "Things to exclude from the image"
+        },
+        {
+          "name": "output_format",
+          "in": "body",
+          "required": false,
+          "type": "string",
+          "description": "Output format: png, jpeg, or webp"
+        },
+        {
+          "name": "aspect_ratio",
+          "in": "body",
+          "required": false,
+          "type": "string",
+          "description": "Aspect ratio: 1:1, 16:9, 9:16, 4:3, 3:2, etc."
+        },
+        {
+          "name": "seed",
+          "in": "body",
+          "required": false,
+          "type": "integer",
+          "description": "Seed for reproducibility (0 for random)"
+        }
+      ]
+    }
+  ]
+}

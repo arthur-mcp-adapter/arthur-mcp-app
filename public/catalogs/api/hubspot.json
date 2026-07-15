@@ -1,0 +1,128 @@
+{
+  "id": "hubspot",
+  "name": "HubSpot",
+  "tagline": "CRM contacts, deals and companies",
+  "description": "Search and manage contacts, deals, and companies in HubSpot CRM. Requires a Private App token from your HubSpot account.",
+  "category": "Business",
+  "color": "#FF7A59",
+  "emoji": "🧡",
+  "baseUrl": "https://api.hubapi.com/crm/v3",
+  "auth": {
+    "type": "bearer",
+    "hint": "Create a Private App token in Settings → Integrations → Private Apps."
+  },
+  "signupUrl": "https://app.hubspot.com/signup",
+  "docsUrl": "https://developers.hubspot.com/docs/api/crm/contacts",
+  "tools": [
+    {
+      "name": "search_contacts",
+      "description": "Search CRM contacts by name, email, or company. Returns contact details and properties.",
+      "method": "POST",
+      "path": "/objects/contacts/search",
+      "params": [
+        {
+          "name": "query",
+          "in": "body",
+          "required": false,
+          "type": "string",
+          "description": "Search term, e.g. name or email address"
+        },
+        {
+          "name": "limit",
+          "in": "body",
+          "required": false,
+          "type": "integer",
+          "description": "Number of results (max 100)"
+        },
+        {
+          "name": "properties",
+          "in": "body",
+          "required": false,
+          "type": "array",
+          "description": "List of property names to include, e.g. [\"firstname\",\"email\",\"phone\"]"
+        }
+      ]
+    },
+    {
+      "name": "get_contact",
+      "description": "Get a contact by their HubSpot ID with all stored properties.",
+      "method": "GET",
+      "path": "/objects/contacts/{contactId}",
+      "params": [
+        {
+          "name": "contactId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "HubSpot contact ID"
+        },
+        {
+          "name": "properties",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Comma-separated list of properties to return"
+        }
+      ]
+    },
+    {
+      "name": "create_contact",
+      "description": "Create a new contact in HubSpot CRM.",
+      "method": "POST",
+      "path": "/objects/contacts",
+      "params": [
+        {
+          "name": "properties",
+          "in": "body",
+          "required": true,
+          "type": "object",
+          "description": "Contact properties as an object, e.g. {\"firstname\":\"Ana\",\"email\":\"ana@co.com\",\"phone\":\"123\"}"
+        }
+      ]
+    },
+    {
+      "name": "search_deals",
+      "description": "Search open or closed deals by name, stage, or owner.",
+      "method": "POST",
+      "path": "/objects/deals/search",
+      "params": [
+        {
+          "name": "query",
+          "in": "body",
+          "required": false,
+          "type": "string",
+          "description": "Search term"
+        },
+        {
+          "name": "limit",
+          "in": "body",
+          "required": false,
+          "type": "integer",
+          "description": "Number of results (max 100)"
+        },
+        {
+          "name": "properties",
+          "in": "body",
+          "required": false,
+          "type": "array",
+          "description": "Properties to include, e.g. [\"dealname\",\"amount\",\"dealstage\"]"
+        }
+      ]
+    },
+    {
+      "name": "create_deal",
+      "description": "Create a new deal in the CRM pipeline.",
+      "method": "POST",
+      "path": "/objects/deals",
+      "params": [
+        {
+          "name": "properties",
+          "in": "body",
+          "required": true,
+          "type": "object",
+          "description": "Deal properties, e.g. {\"dealname\":\"New deal\",\"amount\":\"5000\",\"dealstage\":\"appointmentscheduled\"}"
+        }
+      ]
+    }
+  ]
+}

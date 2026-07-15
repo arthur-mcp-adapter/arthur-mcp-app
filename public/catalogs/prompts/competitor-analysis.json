@@ -1,0 +1,14 @@
+{
+  "id": "competitor-analysis",
+  "name": "Competitor Analysis",
+  "tagline": "Deep-dive competitive intelligence on a specific rival",
+  "description": "Researches and structures competitive intelligence on a specific company or product.",
+  "category": "Research",
+  "emoji": "🕵️",
+  "tags": [
+    "research",
+    "competitive",
+    "business"
+  ],
+  "content": "Conduct a competitive analysis on the following competitor.\n\n**Competitor:** {{competitor}}\n**Our company:** {{our_company}}\n**Market:** {{market}}\n\n## Company Overview\n## Products / Services\n## Pricing Strategy\n## Target Customers\n## Marketing & Positioning\n## Tech Stack (if known)\n## Strengths\n-\n## Weaknesses\n-\n## Recent Moves\n(Recent launches, hires, funding, news)\n-\n## Threats to Us\n-\n## Opportunities This Creates\n-\n\nSources:\n{{sources}}"
+}

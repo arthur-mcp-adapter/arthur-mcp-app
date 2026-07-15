@@ -1,0 +1,33 @@
+{
+  "id": "colormagic",
+  "name": "ColorMagic",
+  "tagline": "Search community color palettes",
+  "description": "Find ColorMagic palettes by tags or free text and retrieve their colors and metadata.",
+  "category": "Art & Design",
+  "color": "#EC4899",
+  "emoji": "🎨",
+  "baseUrl": "https://colormagic.app/api",
+  "auth": {
+    "type": "none",
+    "hint": "No authentication is required; the provider labels the API as unstable."
+  },
+  "signupUrl": "https://colormagic.app/",
+  "docsUrl": "https://colormagic.app/api",
+  "tools": [
+    {
+      "name": "search_color_palettes",
+      "description": "Search palettes by tag or descriptive text.",
+      "method": "GET",
+      "path": "/palette/search",
+      "params": [
+        {
+          "name": "q",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Palette tag or free-text search query."
+        }
+      ]
+    }
+  ]
+}

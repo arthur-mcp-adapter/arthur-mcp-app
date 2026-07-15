@@ -1,0 +1,68 @@
+{
+  "id": "php-noise",
+  "name": "PHP-Noise",
+  "tagline": "Generate a noise background image",
+  "description": "Generate a PNG noise texture from a hexadecimal or RGB base color and optional tiling controls.",
+  "category": "Art & Design",
+  "color": "#475569",
+  "emoji": "🌫️",
+  "baseUrl": "https://php-noise.com",
+  "auth": {
+    "type": "none",
+    "hint": "No authentication is required."
+  },
+  "signupUrl": "https://php-noise.com/",
+  "docsUrl": "https://php-noise.com/",
+  "tools": [
+    {
+      "name": "generate_noise",
+      "description": "Generate and return a PNG noise texture.",
+      "method": "GET",
+      "path": "/noise.php",
+      "params": [
+        {
+          "name": "hex",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Six-character hexadecimal base color without #; do not combine with RGB fields."
+        },
+        {
+          "name": "r",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Red component from 0 to 255."
+        },
+        {
+          "name": "g",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Green component from 0 to 255."
+        },
+        {
+          "name": "b",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Blue component from 0 to 255."
+        },
+        {
+          "name": "tiles",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of tiles from 1 to 50."
+        },
+        {
+          "name": "tileSize",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Tile size in pixels from 1 to 20."
+        }
+      ]
+    }
+  ]
+}

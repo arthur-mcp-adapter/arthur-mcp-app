@@ -1,0 +1,134 @@
+{
+  "id": "bscscan",
+  "name": "Bscscan",
+  "tagline": "Query BNB Smart Chain activity",
+  "description": "Retrieve BNB balances and normal transaction history through the current unified Etherscan API V2 successor to BscScan's legacy API.",
+  "category": "Blockchain",
+  "color": "#F0B90B",
+  "emoji": "⛓️",
+  "baseUrl": "https://api.etherscan.io/v2",
+  "auth": {
+    "type": "api-key",
+    "hint": "Create an Etherscan API V2 key and send it in the apikey query parameter. Legacy BscScan keys do not work with V2.",
+    "keyName": "apikey",
+    "keyIn": "query"
+  },
+  "signupUrl": "https://etherscan.io/register",
+  "docsUrl": "https://docs.etherscan.io/v2-migration",
+  "tools": [
+    {
+      "name": "get_bnb_balance",
+      "description": "Retrieve the current native BNB balance for a BNB Smart Chain address.",
+      "method": "GET",
+      "path": "/api",
+      "params": [
+        {
+          "name": "chainid",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "BNB Smart Chain mainnet chain ID; set this to 56."
+        },
+        {
+          "name": "module",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "API module; set this to account."
+        },
+        {
+          "name": "action",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "API action; set this to balance."
+        },
+        {
+          "name": "address",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "BNB Smart Chain address with a 0x prefix."
+        },
+        {
+          "name": "tag",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Use latest for the current balance, or a hexadecimal block number within the most recent 128 blocks."
+        }
+      ]
+    },
+    {
+      "name": "list_bnb_transactions",
+      "description": "List normal transactions for a BNB Smart Chain address.",
+      "method": "GET",
+      "path": "/api",
+      "params": [
+        {
+          "name": "chainid",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "BNB Smart Chain mainnet chain ID; set this to 56."
+        },
+        {
+          "name": "module",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "API module; set this to account."
+        },
+        {
+          "name": "action",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "API action; set this to txlist."
+        },
+        {
+          "name": "address",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "BNB Smart Chain address with a 0x prefix."
+        },
+        {
+          "name": "startblock",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Starting block number; defaults to 0."
+        },
+        {
+          "name": "endblock",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Ending block number; defaults to 999999999."
+        },
+        {
+          "name": "page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Page number; defaults to 1."
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Records per page; defaults to 100."
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Sort direction: asc or desc; defaults to asc."
+        }
+      ]
+    }
+  ]
+}

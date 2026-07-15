@@ -1,0 +1,83 @@
+{
+  "id": "vonage",
+  "name": "Vonage",
+  "tagline": "SMS, voice and verify",
+  "description": "Send SMS messages, make voice calls, and run number verification flows with Vonage (formerly Nexmo). Widely used for OTP and notifications.",
+  "category": "Communication",
+  "color": "#7C4DFF",
+  "emoji": "📞",
+  "baseUrl": "https://rest.nexmo.com",
+  "auth": {
+    "type": "none",
+    "hint": "Vonage uses API Key and API Secret as query parameters. Add them as required parameters when calling each tool, or configure them in your project settings."
+  },
+  "signupUrl": "https://dashboard.nexmo.com/sign-up",
+  "docsUrl": "https://developer.vonage.com/api",
+  "tools": [
+    {
+      "name": "send_sms",
+      "description": "Send an SMS message using the Vonage SMS API.",
+      "method": "POST",
+      "path": "/sms/json",
+      "params": [
+        {
+          "name": "api_key",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Your Vonage API Key"
+        },
+        {
+          "name": "api_secret",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Your Vonage API Secret"
+        },
+        {
+          "name": "to",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Recipient phone in E.164 format, e.g. 5511999999999 (no +)"
+        },
+        {
+          "name": "from",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Sender ID or your Vonage virtual number"
+        },
+        {
+          "name": "text",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "SMS message text"
+        }
+      ]
+    },
+    {
+      "name": "check_balance",
+      "description": "Check your current Vonage account balance.",
+      "method": "GET",
+      "path": "/account/get-balance",
+      "params": [
+        {
+          "name": "api_key",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Your Vonage API Key"
+        },
+        {
+          "name": "api_secret",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Your Vonage API Secret"
+        }
+      ]
+    }
+  ]
+}

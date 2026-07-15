@@ -1,0 +1,54 @@
+{
+  "id": "perplexity",
+  "name": "Perplexity AI",
+  "tagline": "AI with real-time web search",
+  "description": "Query Perplexity AI models that combine LLM reasoning with real-time web search. Get cited, up-to-date answers on any topic.",
+  "category": "AI",
+  "color": "#20B2AA",
+  "emoji": "🔍",
+  "baseUrl": "https://api.perplexity.ai",
+  "auth": {
+    "type": "bearer",
+    "hint": "Generate an API key in your Perplexity account settings at perplexity.ai/settings/api."
+  },
+  "signupUrl": "https://www.perplexity.ai/settings/api",
+  "docsUrl": "https://docs.perplexity.ai/reference/post_chat_completions",
+  "tools": [
+    {
+      "name": "search_and_answer",
+      "description": "Ask a question and get an AI-generated answer with web citations. Uses sonar models for online search.",
+      "method": "POST",
+      "path": "/chat/completions",
+      "params": [
+        {
+          "name": "model",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Model: sonar, sonar-pro, or sonar-reasoning-pro"
+        },
+        {
+          "name": "messages",
+          "in": "body",
+          "required": true,
+          "type": "array",
+          "description": "Messages: [{role:\"user\",content:\"Your question here\"}]"
+        },
+        {
+          "name": "search_recency_filter",
+          "in": "body",
+          "required": false,
+          "type": "string",
+          "description": "Limit search to: month, week, day, or hour"
+        },
+        {
+          "name": "return_citations",
+          "in": "body",
+          "required": false,
+          "type": "boolean",
+          "description": "Include source URLs in the response"
+        }
+      ]
+    }
+  ]
+}

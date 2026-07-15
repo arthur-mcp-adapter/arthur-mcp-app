@@ -458,6 +458,8 @@ npm run type-check
 npm test
 npm test --prefix api
 ```
+## Found this app on Mseep.ai
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/alexmmatos-arthur-mcp-badge.png)](https://mseep.ai/app/alexmmatos-arthur-mcp)
 
 ## License
 

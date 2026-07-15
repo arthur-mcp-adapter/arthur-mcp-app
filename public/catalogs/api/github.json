@@ -1,0 +1,206 @@
+{
+  "id": "github",
+  "name": "GitHub",
+  "tagline": "Code repositories, issues and pull requests",
+  "description": "Search repos, manage issues, check pull requests, and view commit history across any GitHub repository using the official REST API.",
+  "category": "Development",
+  "color": "#24292e",
+  "emoji": "🐙",
+  "baseUrl": "https://api.github.com",
+  "auth": {
+    "type": "bearer",
+    "hint": "Create a Personal Access Token in your GitHub settings → Developer Settings → Tokens."
+  },
+  "signupUrl": "https://github.com/settings/tokens/new",
+  "docsUrl": "https://docs.github.com/en/rest",
+  "tools": [
+    {
+      "name": "search_repositories",
+      "description": "Search GitHub repositories by keyword, language, or stars. Returns name, description, stars, forks, and URL.",
+      "method": "GET",
+      "path": "/search/repositories",
+      "params": [
+        {
+          "name": "q",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Search query, e.g. \"react stars:>1000 language:typescript\""
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Sort by: stars, forks, updated, or best-match"
+        },
+        {
+          "name": "per_page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Results per page (max 30)"
+        }
+      ]
+    },
+    {
+      "name": "get_repository",
+      "description": "Get detailed info about a repository: description, language, stars, forks, open issues, and license.",
+      "method": "GET",
+      "path": "/repos/{owner}/{repo}",
+      "params": [
+        {
+          "name": "owner",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Repository owner username or org"
+        },
+        {
+          "name": "repo",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Repository name"
+        }
+      ]
+    },
+    {
+      "name": "list_issues",
+      "description": "List open issues for a repository. Supports filtering by label, assignee, and milestone.",
+      "method": "GET",
+      "path": "/repos/{owner}/{repo}/issues",
+      "params": [
+        {
+          "name": "owner",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Repository owner"
+        },
+        {
+          "name": "repo",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Repository name"
+        },
+        {
+          "name": "state",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Issue state: open, closed, or all"
+        },
+        {
+          "name": "labels",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Comma-separated label names, e.g. \"bug,help wanted\""
+        },
+        {
+          "name": "per_page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Results per page (max 100)"
+        }
+      ]
+    },
+    {
+      "name": "create_issue",
+      "description": "Open a new issue in a repository.",
+      "method": "POST",
+      "path": "/repos/{owner}/{repo}/issues",
+      "params": [
+        {
+          "name": "owner",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Repository owner"
+        },
+        {
+          "name": "repo",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Repository name"
+        },
+        {
+          "name": "title",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Issue title"
+        },
+        {
+          "name": "body",
+          "in": "body",
+          "required": false,
+          "type": "string",
+          "description": "Issue description in Markdown"
+        },
+        {
+          "name": "labels",
+          "in": "body",
+          "required": false,
+          "type": "array",
+          "description": "Array of label names, e.g. [\"bug\", \"urgent\"]"
+        }
+      ]
+    },
+    {
+      "name": "list_pull_requests",
+      "description": "List pull requests for a repository with their title, status, author, and branch info.",
+      "method": "GET",
+      "path": "/repos/{owner}/{repo}/pulls",
+      "params": [
+        {
+          "name": "owner",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Repository owner"
+        },
+        {
+          "name": "repo",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Repository name"
+        },
+        {
+          "name": "state",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "PR state: open, closed, or all"
+        },
+        {
+          "name": "per_page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Results per page (max 100)"
+        }
+      ]
+    },
+    {
+      "name": "get_user",
+      "description": "Get a GitHub user's public profile: bio, company, location, followers, and public repo count.",
+      "method": "GET",
+      "path": "/users/{username}",
+      "params": [
+        {
+          "name": "username",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "GitHub username"
+        }
+      ]
+    }
+  ]
+}

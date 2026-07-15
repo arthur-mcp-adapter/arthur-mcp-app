@@ -36,8 +36,8 @@ function loginPage(serverId: string, clientId: string, redirectUri: string, stat
     <input type="hidden" name="client_id" value="${e(clientId)}" />
     <input type="hidden" name="redirect_uri" value="${e(redirectUri)}" />
     <input type="hidden" name="state" value="${e(state)}" />
-    <label for="username">Username</label>
-    <input type="text" id="username" name="username" required autofocus />
+    <label for="email">Email</label>
+    <input type="email" id="email" name="email" required autofocus />
     <label for="password">Password</label>
     <input type="password" id="password" name="password" required />
     <button type="submit">Sign in</button>
@@ -86,17 +86,17 @@ export class OAuthController {
   @HttpCode(200)
   async handleLogin(
     @Param('serverId') serverId: string,
-    @Body('username') username: string,
+    @Body('email') email: string,
     @Body('password') password: string,
     @Body('client_id') clientId: string,
     @Body('redirect_uri') redirectUri: string,
     @Body('state') state: string,
     @Res() res: Response,
   ) {
-    const user = await this.oauthService.validateUser(username, password);
+    const user = await this.oauthService.validateUser(email, password);
     if (!user) {
       res.setHeader('Content-Type', 'text/html');
-      return res.status(401).send(loginPage(serverId, clientId, redirectUri, state ?? '', 'Incorrect username or password.'));
+      return res.status(401).send(loginPage(serverId, clientId, redirectUri, state ?? '', 'Incorrect email or password.'));
     }
 
     let server;

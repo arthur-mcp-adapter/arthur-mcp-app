@@ -1,0 +1,14 @@
+{
+  "id": "budget-variance",
+  "name": "Budget Variance Explainer",
+  "tagline": "Explain budget vs actual variances in business terms",
+  "description": "Analyzes budget variances and explains them with root causes and corrective actions.",
+  "category": "Finance",
+  "emoji": "📊",
+  "tags": [
+    "finance",
+    "budgeting",
+    "analysis"
+  ],
+  "content": "Analyze and explain the following budget variances.\n\n**Department:** {{department}}\n**Period:** {{period}}\n\n## Variance Summary\n| Line Item | Budget | Actual | Variance | % |\n|-----------|--------|--------|---------|---|\n\n## Favorable Variances\n(What went better than planned and why)\n-\n\n## Unfavorable Variances\n(What went over budget and why)\n-\n\n## Root Cause Analysis\n-\n\n## Corrective Actions\n-\n\n## Forecast Adjustment\n(Revised full-year projection based on current trends)\n\n---\nData:\n{{budget_data}}"
+}

@@ -1,0 +1,133 @@
+{
+  "id": "google-calendar",
+  "name": "Google Calendar",
+  "tagline": "Browse Google calendars and events",
+  "description": "List calendars available to a Google user, browse events within a time range, and retrieve one event by its Calendar identifier.",
+  "category": "Calendar",
+  "color": "#4285F4",
+  "emoji": "📅",
+  "baseUrl": "https://www.googleapis.com/calendar/v3",
+  "auth": {
+    "type": "bearer",
+    "hint": "Enable Google Calendar API in a Google Cloud project, complete OAuth 2.0 consent, and provide an access token with calendar.readonly (or the narrower calendarlist.readonly plus events.readonly scopes)."
+  },
+  "signupUrl": "https://console.cloud.google.com/",
+  "docsUrl": "https://developers.google.com/workspace/calendar/api/v3/reference",
+  "tools": [
+    {
+      "name": "list_calendars",
+      "description": "List calendars on the authorized user's Google Calendar list.",
+      "method": "GET",
+      "path": "/users/me/calendarList",
+      "params": [
+        {
+          "name": "maxResults",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Maximum calendar entries per page; defaults to 100 and cannot exceed 250."
+        },
+        {
+          "name": "pageToken",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Token selecting a subsequent result page."
+        },
+        {
+          "name": "showHidden",
+          "in": "query",
+          "required": false,
+          "type": "boolean",
+          "description": "Whether hidden calendar-list entries should be returned; defaults to false."
+        }
+      ]
+    },
+    {
+      "name": "list_events",
+      "description": "List events from a Google calendar with optional time-window and pagination controls.",
+      "method": "GET",
+      "path": "/calendars/{calendarId}/events",
+      "params": [
+        {
+          "name": "calendarId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Calendar identifier returned by list_calendars, or primary for the authorized user's primary calendar."
+        },
+        {
+          "name": "maxResults",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Maximum events per page; defaults to 250 and cannot exceed 2500."
+        },
+        {
+          "name": "pageToken",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Token from nextPageToken selecting a subsequent event page."
+        },
+        {
+          "name": "timeMin",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Exclusive RFC 3339 lower bound for an event's end time, including a time-zone offset."
+        },
+        {
+          "name": "timeMax",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Exclusive RFC 3339 upper bound for an event's start time, including a time-zone offset."
+        },
+        {
+          "name": "iCalUID",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Return events matching this iCalendar UID."
+        }
+      ]
+    },
+    {
+      "name": "get_event",
+      "description": "Retrieve one event from a Google calendar by its Calendar event identifier.",
+      "method": "GET",
+      "path": "/calendars/{calendarId}/events/{eventId}",
+      "params": [
+        {
+          "name": "calendarId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Calendar identifier, or primary for the authorized user's primary calendar."
+        },
+        {
+          "name": "eventId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Google Calendar event identifier; use list_events with iCalUID when starting from an iCalendar UID."
+        },
+        {
+          "name": "maxAttendees",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Maximum attendees to include in the event response."
+        },
+        {
+          "name": "timeZone",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "IANA time zone used in the response; defaults to the calendar's time zone."
+        }
+      ]
+    }
+  ]
+}

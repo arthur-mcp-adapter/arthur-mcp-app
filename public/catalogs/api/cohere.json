@@ -1,0 +1,133 @@
+{
+  "id": "cohere",
+  "name": "Cohere",
+  "tagline": "Generate, embed, and rerank text with Cohere models",
+  "description": "Use Cohere's v2 API for conversational generation, semantic embeddings, and document reranking. Requires a Cohere API key sent as a bearer token.",
+  "category": "AI",
+  "color": "#39594D",
+  "emoji": "✨",
+  "baseUrl": "https://api.cohere.com",
+  "auth": {
+    "type": "bearer",
+    "hint": "Create a Cohere API key in the dashboard and send it as Authorization: Bearer <API_KEY>."
+  },
+  "signupUrl": "https://dashboard.cohere.com/welcome/register",
+  "docsUrl": "https://docs.cohere.com/v2/reference/about",
+  "tools": [
+    {
+      "name": "create_chat",
+      "description": "Generate an assistant response from chronological user, assistant, system, or tool messages and return content, finish reason, and token usage.",
+      "method": "POST",
+      "path": "/v2/chat",
+      "params": [
+        {
+          "name": "model",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Compatible Cohere chat model identifier."
+        },
+        {
+          "name": "messages",
+          "in": "body",
+          "required": true,
+          "type": "array",
+          "description": "Chronological user, assistant, system, or tool messages."
+        },
+        {
+          "name": "max_tokens",
+          "in": "body",
+          "required": false,
+          "type": "integer",
+          "description": "Maximum output tokens, capped by the selected model's limit."
+        },
+        {
+          "name": "temperature",
+          "in": "body",
+          "required": false,
+          "type": "number",
+          "description": "Non-negative sampling temperature; the reference documents a default of 0.3."
+        },
+        {
+          "name": "stream",
+          "in": "body",
+          "required": false,
+          "type": "boolean",
+          "description": "Return server-sent streaming events when true; defaults to false."
+        }
+      ]
+    },
+    {
+      "name": "rerank_documents",
+      "description": "Rank supplied documents by relevance to a query and return their indexes and relevance scores in descending order.",
+      "method": "POST",
+      "path": "/v2/rerank",
+      "params": [
+        {
+          "name": "model",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Rerank model identifier, for example rerank-v4.0-pro."
+        },
+        {
+          "name": "query",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Search query used to rank the documents."
+        },
+        {
+          "name": "documents",
+          "in": "body",
+          "required": true,
+          "type": "array",
+          "description": "Texts to compare with the query; the reference recommends no more than 1,000 documents per request."
+        },
+        {
+          "name": "top_n",
+          "in": "body",
+          "required": false,
+          "type": "integer",
+          "description": "Maximum number of ranked results to return; must be at least 1."
+        }
+      ]
+    },
+    {
+      "name": "create_embeddings",
+      "description": "Convert text or image inputs into embeddings for semantic search, classification, clustering, and retrieval.",
+      "method": "POST",
+      "path": "/v2/embed",
+      "params": [
+        {
+          "name": "model",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Embedding model identifier, for example embed-v4.0."
+        },
+        {
+          "name": "inputs",
+          "in": "body",
+          "required": true,
+          "type": "array",
+          "description": "Text or image inputs to embed in the structure documented for the selected model."
+        },
+        {
+          "name": "input_type",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Purpose of the embeddings, such as classification, search_document, or search_query when supported."
+        },
+        {
+          "name": "embedding_types",
+          "in": "body",
+          "required": true,
+          "type": "array",
+          "description": "Requested vector representations, such as float."
+        }
+      ]
+    }
+  ]
+}

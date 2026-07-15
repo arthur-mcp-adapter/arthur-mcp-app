@@ -1,0 +1,99 @@
+{
+  "id": "logo-dev",
+  "name": "Logo.dev",
+  "tagline": "Resolve company names to domains and fetch structured brand data",
+  "description": "Search brand names to candidate domains, fetch structured company/brand data (description, colors, socials, logo) by domain, and identify a merchant from a raw card-transaction descriptor. Requires a Logo.dev secret API key; some endpoints require a paid plan or early-access enablement.",
+  "category": "Business",
+  "color": "#6366F1",
+  "emoji": "🏷️",
+  "baseUrl": "https://api.logo.dev",
+  "auth": {
+    "type": "bearer",
+    "hint": "Get a secret key (sk_...) from the Logo.dev dashboard (Pro/Enterprise plans unlock more endpoints) and send it as Authorization: Bearer <YOUR_SECRET_KEY>. This is a different key from the publishable key (pk_...) used by the separate img.logo.dev image API."
+  },
+  "signupUrl": "https://www.logo.dev/",
+  "docsUrl": "https://www.logo.dev/docs/api-reference/introduction",
+  "tools": [
+    {
+      "name": "search_brands",
+      "description": "Resolve a brand name to up to 10 candidate domains, sorted by popularity, each with a logo image URL.",
+      "method": "GET",
+      "path": "/search",
+      "params": [
+        {
+          "name": "q",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Brand name to search for, e.g. sweetgreen."
+        },
+        {
+          "name": "strategy",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Matching strategy: \"suggest\" favors popular prefix matches (autocomplete); \"match\" favors exact/near-exact names. Defaults to suggest."
+        },
+        {
+          "name": "is_profane",
+          "in": "query",
+          "required": false,
+          "type": "boolean",
+          "description": "Filter results by whether the brand is flagged as potentially inappropriate."
+        }
+      ]
+    },
+    {
+      "name": "describe_domain",
+      "description": "Get structured brand data for a domain: name, description, brand colors, social profiles, and logo. Requires any paid plan.",
+      "method": "GET",
+      "path": "/describe/{domain}",
+      "params": [
+        {
+          "name": "domain",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Company domain to describe, e.g. sweetgreen.com."
+        }
+      ]
+    },
+    {
+      "name": "get_brand_profile",
+      "description": "Get a full brand profile for a domain: logo, brandmark, social banners, brand colors, description, and socials. Requires a Pro or Enterprise plan.",
+      "method": "GET",
+      "path": "/brand/{domain}",
+      "params": [
+        {
+          "name": "domain",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Company domain, e.g. sweetgreen.com."
+        }
+      ]
+    },
+    {
+      "name": "identify_merchant",
+      "description": "Resolve a raw card-transaction descriptor to a merchant brand's name, domain, and logo. Early-access endpoint; requires enablement by Logo.dev sales.",
+      "method": "POST",
+      "path": "/transaction",
+      "params": [
+        {
+          "name": "transaction",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Raw card-transaction descriptor, e.g. \"SQ *BLUE BOTTLE 1523 OAKLAND CA\"."
+        },
+        {
+          "name": "country_code",
+          "in": "body",
+          "required": false,
+          "type": "string",
+          "description": "ISO 3166-1 alpha-2 country code where the transaction took place, e.g. US, to disambiguate."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "id": "mailjet",
+  "name": "mailjet",
+  "tagline": "Send transactional email via Mailjet",
+  "description": "Send transactional emails using inline HTML/text content or a saved Mailjet template.",
+  "category": "Business",
+  "color": "#FF8C00",
+  "emoji": "✉️",
+  "baseUrl": "https://api.mailjet.com/v3.1",
+  "auth": {
+    "type": "basic",
+    "hint": "Use the Mailjet API key as the Basic-auth username and the API secret key as the password. Store the credential pair in Arthur MCP Secrets."
+  },
+  "signupUrl": "https://app.mailjet.com/signup",
+  "docsUrl": "https://dev.mailjet.com/email/guides/send-api-v31/",
+  "tools": [
+    {
+      "name": "send_email",
+      "description": "Send one or more transactional email messages with inline HTML/text content.",
+      "method": "POST",
+      "path": "/send",
+      "params": [
+        {
+          "name": "Messages",
+          "in": "body",
+          "required": true,
+          "type": "array",
+          "description": "Array of message objects; each includes From, To, Subject, TextPart, and/or HTMLPart."
+        }
+      ]
+    },
+    {
+      "name": "send_template_email",
+      "description": "Send a transactional email using a saved Mailjet template ID instead of inline content.",
+      "method": "POST",
+      "path": "/send",
+      "params": [
+        {
+          "name": "Messages",
+          "in": "body",
+          "required": true,
+          "type": "array",
+          "description": "Array of message objects; each includes From, To, Subject, TemplateID, and TemplateLanguage set to true."
+        }
+      ]
+    }
+  ]
+}

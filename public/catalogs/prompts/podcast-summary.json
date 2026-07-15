@@ -1,0 +1,14 @@
+{
+  "id": "podcast-summary",
+  "name": "Podcast / Video Summary",
+  "tagline": "Summarize spoken-word content into structured notes",
+  "description": "Turns podcast transcripts or video captions into a clean summary with timestamps and highlights.",
+  "category": "Summarization",
+  "emoji": "🎙️",
+  "tags": [
+    "summarization",
+    "podcast",
+    "video"
+  ],
+  "content": "Summarize the following podcast or video transcript.\n\n**Episode/Video:** {{title}}\n**Guest(s):** {{guests}}\n**Duration:** {{duration}}\n\n## One-Paragraph Summary\n\n## Key Topics Covered\n1.\n2.\n3.\n\n## Best Quotes\n> (timestamp if available)\n\n## Actionable Takeaways\n-\n\n## Resources Mentioned\n-\n\n---\nTranscript:\n{{transcript}}"
+}

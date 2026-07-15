@@ -1,0 +1,189 @@
+{
+  "id": "hebrew-calendar",
+  "name": "Hebrew Calendar",
+  "tagline": "Jewish calendar, Hebrew date conversion, and Shabbat/holiday times",
+  "description": "Fetch Jewish holidays and calendar events, convert between Gregorian and Hebrew dates, and retrieve halachic times such as candle lighting and Havdalah for a location and date.",
+  "category": "Calendar",
+  "color": "#2563EB",
+  "emoji": "✡️",
+  "baseUrl": "https://www.hebcal.com",
+  "auth": {
+    "type": "none",
+    "hint": "Hebcal web APIs are free and do not require registration or an API key. A shared free service applies rate limiting of roughly 90 requests per 10-second window (HTTP 429 when exceeded)."
+  },
+  "signupUrl": "https://www.hebcal.com/",
+  "docsUrl": "https://www.hebcal.com/api-docs/",
+  "tools": [
+    {
+      "name": "get_jewish_calendar",
+      "description": "Fetch Jewish calendar events and holidays for a given year, month, or date range.",
+      "method": "GET",
+      "path": "/hebcal",
+      "params": [
+        {
+          "name": "v",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "API version. Must be 1."
+        },
+        {
+          "name": "cfg",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Output format: json (default REST), fc (FullCalendar.io JSON), rss, ics (iCalendar), or csv."
+        },
+        {
+          "name": "year",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Gregorian or Hebrew 4-digit year; use now for the current year."
+        },
+        {
+          "name": "month",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Single Gregorian month 1-12, or x for the entire year (default)."
+        },
+        {
+          "name": "maj",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Include major holidays (Rosh Hashana, Yom Kippur, Pesach, etc.)."
+        },
+        {
+          "name": "min",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Include minor holidays (Tu BiShvat, Lag B'Omer, etc.)."
+        },
+        {
+          "name": "i",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Diaspora (off, default) or Israel (on) holiday/Torah reading schedule."
+        },
+        {
+          "name": "geonameid",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "GeoNames.org numeric city identifier used for location-dependent items like candle lighting times."
+        }
+      ]
+    },
+    {
+      "name": "convert_date",
+      "description": "Convert a single date or date range between the Gregorian and Hebrew calendars.",
+      "method": "GET",
+      "path": "/converter",
+      "params": [
+        {
+          "name": "cfg",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Output format; must be json for range queries."
+        },
+        {
+          "name": "g2h",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Set to 1 for Gregorian-to-Hebrew conversion; mutually exclusive with h2g."
+        },
+        {
+          "name": "h2g",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Set to 1 for Hebrew-to-Gregorian conversion; mutually exclusive with g2h."
+        },
+        {
+          "name": "date",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Gregorian date (YYYY-MM-DD) for single-date g2h mode."
+        },
+        {
+          "name": "hy",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Hebrew year, used for h2g mode."
+        },
+        {
+          "name": "hm",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Hebrew month name, used for h2g mode."
+        },
+        {
+          "name": "hd",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Hebrew day 1-30, used for h2g mode."
+        }
+      ]
+    },
+    {
+      "name": "get_zmanim",
+      "description": "Fetch halachic times (zmanim), including Shabbat candle lighting and Havdalah, for a date and location.",
+      "method": "GET",
+      "path": "/zmanim",
+      "params": [
+        {
+          "name": "cfg",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Output format; must be json."
+        },
+        {
+          "name": "date",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Single Gregorian date (YYYY-MM-DD); defaults to today if neither date nor start/end are given."
+        },
+        {
+          "name": "start",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Range start date (YYYY-MM-DD)."
+        },
+        {
+          "name": "end",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Range end date (YYYY-MM-DD), capped at 180 days from start."
+        },
+        {
+          "name": "geonameid",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "GeoNames.org numeric city identifier for the location to compute times for."
+        },
+        {
+          "name": "zip",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "5-digit US ZIP code, used as an alternative location to geonameid."
+        }
+      ]
+    }
+  ]
+}

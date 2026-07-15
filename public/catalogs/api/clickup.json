@@ -1,0 +1,147 @@
+{
+  "id": "clickup",
+  "name": "ClickUp",
+  "tagline": "Tasks, lists and workspace management",
+  "description": "Access ClickUp tasks, spaces, and lists. Create and update tasks, track priorities, and manage your team's work programmatically.",
+  "category": "Business",
+  "color": "#7B68EE",
+  "emoji": "🎯",
+  "baseUrl": "https://api.clickup.com/api/v2",
+  "auth": {
+    "type": "bearer",
+    "hint": "Go to ClickUp → Settings → Apps → API Token and copy your Personal Token."
+  },
+  "signupUrl": "https://app.clickup.com/settings/apps",
+  "docsUrl": "https://clickup.com/api",
+  "tools": [
+    {
+      "name": "get_workspaces",
+      "description": "List all ClickUp workspaces (teams) your account has access to.",
+      "method": "GET",
+      "path": "/team",
+      "params": []
+    },
+    {
+      "name": "list_tasks",
+      "description": "List tasks in a specific list with assignees, due dates, and priorities.",
+      "method": "GET",
+      "path": "/list/{list_id}/task",
+      "params": [
+        {
+          "name": "list_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "List ID from the ClickUp URL"
+        },
+        {
+          "name": "status",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Filter by status name, e.g. \"in progress\""
+        },
+        {
+          "name": "assignees",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Filter by assignee user IDs (comma-separated)"
+        },
+        {
+          "name": "page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Page number (100 tasks per page)"
+        }
+      ]
+    },
+    {
+      "name": "create_task",
+      "description": "Create a new task in a ClickUp list.",
+      "method": "POST",
+      "path": "/list/{list_id}/task",
+      "params": [
+        {
+          "name": "list_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "List ID"
+        },
+        {
+          "name": "name",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Task name"
+        },
+        {
+          "name": "description",
+          "in": "body",
+          "required": false,
+          "type": "string",
+          "description": "Task description (plain text)"
+        },
+        {
+          "name": "priority",
+          "in": "body",
+          "required": false,
+          "type": "integer",
+          "description": "Priority: 1 (urgent), 2 (high), 3 (normal), 4 (low)"
+        },
+        {
+          "name": "due_date",
+          "in": "body",
+          "required": false,
+          "type": "integer",
+          "description": "Due date as Unix timestamp in milliseconds"
+        }
+      ]
+    },
+    {
+      "name": "update_task",
+      "description": "Update a ClickUp task: name, status, priority, assignees, or due date.",
+      "method": "PUT",
+      "path": "/task/{task_id}",
+      "params": [
+        {
+          "name": "task_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Task ID"
+        },
+        {
+          "name": "name",
+          "in": "body",
+          "required": false,
+          "type": "string",
+          "description": "New task name"
+        },
+        {
+          "name": "status",
+          "in": "body",
+          "required": false,
+          "type": "string",
+          "description": "New status name"
+        },
+        {
+          "name": "priority",
+          "in": "body",
+          "required": false,
+          "type": "integer",
+          "description": "New priority: 1–4"
+        },
+        {
+          "name": "due_date",
+          "in": "body",
+          "required": false,
+          "type": "integer",
+          "description": "New due date as Unix ms timestamp"
+        }
+      ]
+    }
+  ]
+}

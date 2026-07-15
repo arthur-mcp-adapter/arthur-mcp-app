@@ -1,0 +1,135 @@
+{
+  "id": "asana",
+  "name": "Asana",
+  "tagline": "Tasks, projects and team workflows",
+  "description": "Manage tasks and projects across your team. List work items, track progress, create tasks, and update statuses — all from your AI assistant.",
+  "category": "Business",
+  "color": "#FC636B",
+  "emoji": "✅",
+  "baseUrl": "https://app.asana.com/api/1.0",
+  "auth": {
+    "type": "bearer",
+    "hint": "Create a Personal Access Token in Profile Settings → Apps → Manage Developer Apps."
+  },
+  "signupUrl": "https://app.asana.com/0/developer-console",
+  "docsUrl": "https://developers.asana.com/docs",
+  "tools": [
+    {
+      "name": "list_projects",
+      "description": "List projects in your Asana workspace with their names, status, and due dates.",
+      "method": "GET",
+      "path": "/projects",
+      "params": [
+        {
+          "name": "workspace",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Workspace GID to list projects from"
+        },
+        {
+          "name": "archived",
+          "in": "query",
+          "required": false,
+          "type": "boolean",
+          "description": "Include archived projects (default: false)"
+        },
+        {
+          "name": "opt_fields",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Comma-separated fields, e.g. name,notes,due_date,status,team"
+        }
+      ]
+    },
+    {
+      "name": "get_project",
+      "description": "Get full details for a specific project: description, status, due date, and team.",
+      "method": "GET",
+      "path": "/projects/{project_gid}",
+      "params": [
+        {
+          "name": "project_gid",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Project GID from the Asana URL"
+        },
+        {
+          "name": "opt_fields",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Extra fields to include, e.g. name,notes,due_date,team,members"
+        }
+      ]
+    },
+    {
+      "name": "list_tasks",
+      "description": "List tasks in a project with assignee, due date, and completion status.",
+      "method": "GET",
+      "path": "/tasks",
+      "params": [
+        {
+          "name": "project",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Project GID to list tasks from"
+        },
+        {
+          "name": "completed_since",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Use \"now\" to return only incomplete tasks, or an ISO date for tasks completed after that date"
+        },
+        {
+          "name": "opt_fields",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Fields to return, e.g. name,assignee,due_on,completed,notes"
+        }
+      ]
+    },
+    {
+      "name": "create_task",
+      "description": "Create a new task in Asana and assign it to a project or person.",
+      "method": "POST",
+      "path": "/tasks",
+      "params": [
+        {
+          "name": "data",
+          "in": "body",
+          "required": true,
+          "type": "object",
+          "description": "Task data, e.g. {\"name\":\"Review PRD\",\"notes\":\"Check section 3\",\"due_on\":\"2025-12-31\",\"projects\":[\"<gid>\"],\"assignee\":\"me\"}"
+        }
+      ]
+    },
+    {
+      "name": "update_task",
+      "description": "Update an existing task: rename it, change its due date, assignee, or mark it complete.",
+      "method": "PUT",
+      "path": "/tasks/{task_gid}",
+      "params": [
+        {
+          "name": "task_gid",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Task GID from list_tasks or the Asana URL"
+        },
+        {
+          "name": "data",
+          "in": "body",
+          "required": true,
+          "type": "object",
+          "description": "Fields to update, e.g. {\"completed\":true} or {\"due_on\":\"2025-12-31\",\"assignee\":\"me\"}"
+        }
+      ]
+    }
+  ]
+}

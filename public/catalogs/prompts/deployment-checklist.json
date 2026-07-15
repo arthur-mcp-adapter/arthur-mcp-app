@@ -1,0 +1,15 @@
+{
+  "id": "deployment-checklist",
+  "name": "Deployment Checklist",
+  "tagline": "Generate pre/post deployment checklists for safe releases",
+  "description": "Creates comprehensive deployment checklists tailored to the service and deployment type.",
+  "category": "DevOps",
+  "emoji": "🚢",
+  "tags": [
+    "devops",
+    "deployment",
+    "checklist",
+    "release"
+  ],
+  "content": "Generate a deployment checklist for the following release.\n\n**Service:** {{service}}\n**Environment:** {{environment}} (staging / production)\n**Deployment type:** {{type}} (rolling / blue-green / canary / big bang)\n**Risk level:** {{risk}} (Low / Medium / High)\n\n## Pre-Deployment (T-24h)\n- [ ] Code review complete and approved\n- [ ] All tests passing (unit, integration, E2E)\n- [ ] Security scan clean\n- [ ] Performance benchmarks acceptable\n- [ ] Database migrations tested on staging\n- [ ] Rollback plan documented and tested\n- [ ] On-call engineer notified\n- [ ] Customer comms drafted (if applicable)\n\n## Pre-Deployment (T-1h)\n- [ ] Deployment window confirmed with team\n- [ ] Monitoring dashboards open\n- [ ] Alerts configured for anomalies\n- [ ] Feature flags set correctly\n\n## During Deployment\n- [ ] Deployment started: Time:\n- [ ] Health checks passing\n- [ ] Error rate nominal\n- [ ] Latency nominal\n\n## Post-Deployment (first 30 min)\n- [ ] Smoke tests passed\n- [ ] Key flows verified end-to-end\n- [ ] Metrics stable\n- [ ] No spike in error logs\n\n## Rollback Triggers\n(Define thresholds: if X happens, roll back)\n-"
+}

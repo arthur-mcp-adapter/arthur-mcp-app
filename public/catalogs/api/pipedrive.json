@@ -1,0 +1,144 @@
+{
+  "id": "pipedrive",
+  "name": "Pipedrive",
+  "tagline": "CRM deals, contacts and pipeline",
+  "description": "Search and manage deals, contacts, and pipeline stages in Pipedrive. Great for sales teams who want their AI to query and update CRM data.",
+  "category": "Business",
+  "color": "#017737",
+  "emoji": "🏆",
+  "baseUrl": "https://api.pipedrive.com/v1",
+  "auth": {
+    "type": "api-key",
+    "hint": "Go to Settings → Personal Preferences → API and copy your Personal API Token.",
+    "keyName": "api_token",
+    "keyIn": "query"
+  },
+  "signupUrl": "https://www.pipedrive.com/en/register",
+  "docsUrl": "https://developers.pipedrive.com/docs/api/v1",
+  "tools": [
+    {
+      "name": "search_deals",
+      "description": "Search deals by title, value, or stage in Pipedrive.",
+      "method": "GET",
+      "path": "/deals/search",
+      "params": [
+        {
+          "name": "term",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Search term"
+        },
+        {
+          "name": "fields",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Fields to search: title, notes, or custom_fields"
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of results (max 500)"
+        }
+      ]
+    },
+    {
+      "name": "get_deal",
+      "description": "Get full details for a deal including value, stage, owner, and expected close date.",
+      "method": "GET",
+      "path": "/deals/{id}",
+      "params": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "integer",
+          "description": "Deal ID"
+        }
+      ]
+    },
+    {
+      "name": "create_deal",
+      "description": "Create a new deal in Pipedrive with title, value, and pipeline stage.",
+      "method": "POST",
+      "path": "/deals",
+      "params": [
+        {
+          "name": "title",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Deal title"
+        },
+        {
+          "name": "value",
+          "in": "body",
+          "required": false,
+          "type": "number",
+          "description": "Deal value in the account currency"
+        },
+        {
+          "name": "currency",
+          "in": "body",
+          "required": false,
+          "type": "string",
+          "description": "Currency code, e.g. USD, EUR"
+        },
+        {
+          "name": "stage_id",
+          "in": "body",
+          "required": false,
+          "type": "integer",
+          "description": "Pipeline stage ID"
+        },
+        {
+          "name": "person_id",
+          "in": "body",
+          "required": false,
+          "type": "integer",
+          "description": "ID of the contact person"
+        }
+      ]
+    },
+    {
+      "name": "search_persons",
+      "description": "Search contacts (persons) in Pipedrive by name or email.",
+      "method": "GET",
+      "path": "/persons/search",
+      "params": [
+        {
+          "name": "term",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Search term (name or email)"
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of results (max 500)"
+        }
+      ]
+    },
+    {
+      "name": "get_pipeline",
+      "description": "Get the stages of a Pipedrive pipeline.",
+      "method": "GET",
+      "path": "/stages",
+      "params": [
+        {
+          "name": "pipeline_id",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Pipeline ID to list stages for"
+        }
+      ]
+    }
+  ]
+}

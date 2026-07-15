@@ -1,0 +1,14 @@
+{
+  "id": "content-calendar",
+  "name": "Content Calendar Planner",
+  "tagline": "Plan a month of social content around themes and events",
+  "description": "Creates a structured content calendar with themes, post types, and copy ideas for a full month.",
+  "category": "Social Media",
+  "emoji": "📅",
+  "tags": [
+    "social media",
+    "content",
+    "planning"
+  ],
+  "content": "Create a monthly content calendar.\n\n**Brand:** {{brand}}\n**Month:** {{month}}\n**Platforms:** {{platforms}}\n**Content pillars:** {{pillars}} (e.g., education, product, culture, user stories)\n**Upcoming events/launches:** {{events}}\n**Posting frequency:** {{frequency}}\n\n## Content Calendar\n\n| Date | Day | Platform | Pillar | Format | Topic/Hook | Caption Notes | CTA |\n|------|-----|---------|--------|--------|-----------|--------------|-----|\n\n## Campaign Ideas for the Month\n-\n\n## Repurposing Opportunities\n(How to reuse one piece of content across platforms)\n\n## Key Dates & Moments to Leverage\n-\n\n## KPIs to Track\n-"
+}

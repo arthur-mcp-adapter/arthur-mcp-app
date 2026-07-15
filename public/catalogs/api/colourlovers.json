@@ -1,0 +1,61 @@
+{
+  "id": "colourlovers",
+  "name": "ColourLovers",
+  "tagline": "Explore COLOURlovers colors and palettes",
+  "description": "Search community-created color palettes by keywords, hue, and popularity with JSON output.",
+  "category": "Art & Design",
+  "color": "#E11D48",
+  "emoji": "🌈",
+  "baseUrl": "https://www.colourlovers.com/api",
+  "auth": {
+    "type": "none",
+    "hint": "No authentication is required. Attribution and non-commercial share-alike terms apply."
+  },
+  "signupUrl": "https://www.colourlovers.com/",
+  "docsUrl": "https://www.colourlovers.com/api",
+  "tools": [
+    {
+      "name": "search_palettes",
+      "description": "Search COLOURlovers palettes with optional filtering and pagination.",
+      "method": "GET",
+      "path": "/palettes",
+      "params": [
+        {
+          "name": "keywords",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Palette keyword search text."
+        },
+        {
+          "name": "hueOption",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Comma-separated supported hue names."
+        },
+        {
+          "name": "numResults",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Results to return, up to 100; defaults to 20."
+        },
+        {
+          "name": "resultOffset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Result offset for paging."
+        },
+        {
+          "name": "format",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Use json for JSON output; default is XML."
+        }
+      ]
+    }
+  ]
+}

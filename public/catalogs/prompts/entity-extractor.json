@@ -1,0 +1,15 @@
+{
+  "id": "entity-extractor",
+  "name": "Entity Extractor",
+  "tagline": "Pull names, dates, locations, and amounts from any text",
+  "description": "Identifies and categorizes all named entities in unstructured text in structured format.",
+  "category": "Data Extraction",
+  "emoji": "🏷️",
+  "tags": [
+    "data",
+    "extraction",
+    "nlp",
+    "entities"
+  ],
+  "content": "Extract all named entities from the text below, organized by category.\n\nCategories:\n- **People** (with roles/titles)\n- **Organizations**\n- **Locations**\n- **Dates & Times**\n- **Financial Amounts**\n- **Products & Services**\n- **Events**\n- **Technical Terms**\n\nFor each entity, note the context in which it appears.\nOutput as JSON for downstream processing.\n\n---\nText:\n{{text}}"
+}

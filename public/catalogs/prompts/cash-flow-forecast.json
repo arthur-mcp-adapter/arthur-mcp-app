@@ -1,0 +1,14 @@
+{
+  "id": "cash-flow-forecast",
+  "name": "Cash Flow Forecast",
+  "tagline": "Project cash flow based on historical data and assumptions",
+  "description": "Builds a structured cash flow forecast with scenario analysis for planning purposes.",
+  "category": "Finance",
+  "emoji": "💵",
+  "tags": [
+    "finance",
+    "forecasting",
+    "cash flow"
+  ],
+  "content": "Create a cash flow forecast based on the following data.\n\n**Company:** {{company}}\n**Forecast period:** {{period}}\n**Historical data provided:** {{historical_period}}\n\n## Assumptions\n| Assumption | Value | Basis |\n|-----------|-------|-------|\n\n## Monthly Cash Flow Projection\n| Month | Opening Cash | Inflows | Outflows | Net | Closing Cash |\n|-------|-------------|---------|---------|-----|-------------|\n\n## Scenario Analysis\n| Scenario | Key Assumption | 3-Month Cash Position |\n|---------|---------------|----------------------|\n| Base    | | |\n| Bull    | | |\n| Bear    | | |\n\n## Cash Runway\n- Current runway:\n- Break-even month:\n\n## Key Risks to Forecast\n-\n\n---\nHistorical data:\n{{data}}"
+}

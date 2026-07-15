@@ -1,0 +1,63 @@
+{
+  "id": "anthropic",
+  "name": "Anthropic (Claude)",
+  "tagline": "Claude AI — messages and vision",
+  "description": "Call Claude AI models directly via the Anthropic API. Supports text, vision (image input), and long-context tasks.",
+  "category": "AI",
+  "color": "#D4A574",
+  "emoji": "🤖",
+  "baseUrl": "https://api.anthropic.com/v1",
+  "auth": {
+    "type": "api-key",
+    "hint": "Get an API key at console.anthropic.com. Note: you must also send the header \"anthropic-version: 2023-06-01\" — add it via the project auth settings after creation.",
+    "keyName": "x-api-key",
+    "keyIn": "header"
+  },
+  "signupUrl": "https://console.anthropic.com/",
+  "docsUrl": "https://docs.anthropic.com/en/api",
+  "tools": [
+    {
+      "name": "create_message",
+      "description": "Send a message to a Claude model and get a response. Supports system prompts, multi-turn conversations, and image inputs.",
+      "method": "POST",
+      "path": "/messages",
+      "params": [
+        {
+          "name": "model",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Claude model, e.g. claude-sonnet-4-6, claude-opus-4-8, or claude-haiku-4-5-20251001"
+        },
+        {
+          "name": "max_tokens",
+          "in": "body",
+          "required": true,
+          "type": "integer",
+          "description": "Maximum tokens in the response (required by API)"
+        },
+        {
+          "name": "messages",
+          "in": "body",
+          "required": true,
+          "type": "array",
+          "description": "Messages: [{role:\"user\"|\"assistant\",content:\"text or array of content blocks\"}]"
+        },
+        {
+          "name": "system",
+          "in": "body",
+          "required": false,
+          "type": "string",
+          "description": "System prompt to set Claude's behavior"
+        },
+        {
+          "name": "temperature",
+          "in": "body",
+          "required": false,
+          "type": "number",
+          "description": "Randomness 0–1. Default 1."
+        }
+      ]
+    }
+  ]
+}

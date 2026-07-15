@@ -1,0 +1,14 @@
+{
+  "id": "financial-statement-analyzer",
+  "name": "Financial Statement Analyzer",
+  "tagline": "Analyze P&L, balance sheets, and cash flow statements",
+  "description": "Reviews financial statements to surface trends, ratios, and red flags for business health.",
+  "category": "Finance",
+  "emoji": "💰",
+  "tags": [
+    "finance",
+    "analysis",
+    "accounting"
+  ],
+  "content": "Analyze the following financial statement.\n\n**Company:** {{company}}\n**Statement type:** {{type}} (P&L / Balance Sheet / Cash Flow / All three)\n**Period:** {{period}}\n**Prior period for comparison:** {{prior_period}}\n\n## Key Metrics\n| Metric | Current | Prior | Change |\n|--------|---------|-------|--------|\n\n## Key Ratios\n(Liquidity, Profitability, Leverage, Efficiency — as applicable)\n\n## Trends & Highlights\n-\n\n## Red Flags / Concerns\n-\n\n## Strengths\n-\n\n## Recommendations\n-\n\n---\nFinancial data:\n{{financial_data}}"
+}

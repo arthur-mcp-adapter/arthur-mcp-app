@@ -1,0 +1,98 @@
+{
+  "id": "al-quran-cloud",
+  "name": "Quran Cloud",
+  "tagline": "Read Quran verses, surahs, and editions",
+  "description": "Discover available Quran editions and retrieve individual ayahs or complete surahs in a selected text, translation, tafsir, transliteration, or recitation edition.",
+  "category": "Books",
+  "color": "#15803D",
+  "emoji": "📖",
+  "baseUrl": "https://api.alquran.cloud/v1",
+  "auth": {
+    "type": "none",
+    "hint": "No API key is required."
+  },
+  "signupUrl": "https://alquran.cloud/",
+  "docsUrl": "https://alquran.cloud/api",
+  "tools": [
+    {
+      "name": "list_editions",
+      "description": "List available Quran editions, optionally filtering by type, format, or language.",
+      "method": "GET",
+      "path": "/edition",
+      "params": [
+        {
+          "name": "type",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Edition type such as quran, translation, tafsir, transliteration, or versebyverse."
+        },
+        {
+          "name": "format",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Edition format, such as text or audio."
+        },
+        {
+          "name": "language",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Two-letter language code such as ar or en."
+        }
+      ]
+    },
+    {
+      "name": "get_ayah",
+      "description": "Retrieve one ayah in a selected edition.",
+      "method": "GET",
+      "path": "/ayah/{number}/{edition}",
+      "params": [
+        {
+          "name": "number",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Global ayah number from 1 to 6236 or a surah:ayah reference such as 2:255."
+        },
+        {
+          "name": "edition",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Edition identifier such as en.asad or quran-uthmani."
+        }
+      ]
+    },
+    {
+      "name": "get_surah",
+      "description": "Retrieve a complete surah in a selected edition.",
+      "method": "GET",
+      "path": "/surah/{number}/{edition}",
+      "params": [
+        {
+          "name": "number",
+          "in": "path",
+          "required": true,
+          "type": "integer",
+          "description": "Surah number from 1 through 114."
+        },
+        {
+          "name": "edition",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Edition identifier such as en.asad or quran-uthmani."
+        }
+      ]
+    },
+    {
+      "name": "get_random_ayah",
+      "description": "Retrieve a randomly selected ayah in the default Uthmani edition.",
+      "method": "GET",
+      "path": "/ayah/random",
+      "params": []
+    }
+  ]
+}

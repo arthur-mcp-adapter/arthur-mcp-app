@@ -1,0 +1,47 @@
+{
+  "id": "danbooru-anime",
+  "name": "Danbooru Anime",
+  "tagline": "Search Danbooru anime artwork posts",
+  "description": "Search public Danbooru posts by tags and page controls without exposing account credentials.",
+  "category": "Anime",
+  "color": "#F59E0B",
+  "emoji": "🎨",
+  "baseUrl": "https://danbooru.donmai.us",
+  "auth": {
+    "type": "none",
+    "hint": "The selected public post-search operation requires no authentication. Account-specific limits and operations require separate Basic authentication."
+  },
+  "signupUrl": "https://danbooru.donmai.us/users/new",
+  "docsUrl": "https://danbooru.donmai.us/wiki_pages/help:api",
+  "tools": [
+    {
+      "name": "search_posts",
+      "description": "Search public Danbooru image posts by tags.",
+      "method": "GET",
+      "path": "/posts.json",
+      "params": [
+        {
+          "name": "tags",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Space-separated Danbooru tag query."
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of posts to return, subject to account limits."
+        },
+        {
+          "name": "page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Page number or supported cursor expression."
+        }
+      ]
+    }
+  ]
+}

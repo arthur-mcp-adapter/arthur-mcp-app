@@ -1,0 +1,14 @@
+{
+  "id": "win-loss-analysis",
+  "name": "Win/Loss Analysis",
+  "tagline": "Extract insights from won and lost deals",
+  "description": "Structures post-deal analysis to surface patterns in wins and losses for sales improvement.",
+  "category": "Sales",
+  "emoji": "🏅",
+  "tags": [
+    "sales",
+    "analysis",
+    "strategy"
+  ],
+  "content": "Conduct a win/loss analysis for the following deal.\n\n**Deal:** {{deal}}\n**Outcome:** {{outcome}} (Won / Lost)\n**Competitor (if lost to):** {{competitor}}\n**Deal size:** {{deal_size}}\n**Sales cycle length:** {{cycle}}\n**Decision maker:** {{decision_maker}}\n\n## Deal Summary\n\n## Why We Won / Lost\n### Our Strengths in This Deal\n-\n### Our Weaknesses\n-\n### Buyer's Decision Criteria\n| Criterion | Weight | Our Score | Competitor Score |\n|-----------|--------|-----------|-----------------|\n\n## What We Could Have Done Differently\n-\n\n## Competitive Intelligence Gained\n-\n\n## Recommendations\n1. (For sales process)\n2. (For product/pricing)\n3. (For marketing messaging)\n\n---\nNotes/CRM data:\n{{notes}}"
+}

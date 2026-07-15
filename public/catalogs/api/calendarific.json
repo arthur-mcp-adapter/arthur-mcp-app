@@ -1,0 +1,77 @@
+{
+  "id": "calendarific",
+  "name": "Calendarific",
+  "tagline": "Look up worldwide public holidays",
+  "description": "List public, local, religious, and observance holidays for a country and year, and look up supported countries.",
+  "category": "Calendar",
+  "color": "#F97316",
+  "emoji": "📆",
+  "baseUrl": "https://calendarific.com/api/v2",
+  "auth": {
+    "type": "api-key",
+    "hint": "Create a Calendarific account to get an API key and send it in the api_key query parameter.",
+    "keyName": "api_key",
+    "keyIn": "query"
+  },
+  "signupUrl": "https://calendarific.com/signup",
+  "docsUrl": "https://calendarific.com/api-documentation",
+  "tools": [
+    {
+      "name": "list_holidays",
+      "description": "List holidays for a country and year, optionally narrowed by month, day, region, or holiday type.",
+      "method": "GET",
+      "path": "/holidays",
+      "params": [
+        {
+          "name": "country",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "ISO-3166 country code, such as US."
+        },
+        {
+          "name": "year",
+          "in": "query",
+          "required": true,
+          "type": "integer",
+          "description": "Year to list holidays for; supports historical and future dates through 2049."
+        },
+        {
+          "name": "month",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Month from 1 through 12 to narrow results."
+        },
+        {
+          "name": "day",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Day from 1 through 31 to narrow results."
+        },
+        {
+          "name": "location",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "State or region in ISO-3166 format, such as us-ny."
+        },
+        {
+          "name": "type",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Holiday category: national, local, religious, or observance."
+        }
+      ]
+    },
+    {
+      "name": "list_countries",
+      "description": "List countries and ISO codes supported by the holidays endpoint.",
+      "method": "GET",
+      "path": "/countries",
+      "params": []
+    }
+  ]
+}

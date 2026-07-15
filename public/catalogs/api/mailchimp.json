@@ -1,0 +1,115 @@
+{
+  "id": "mailchimp",
+  "name": "Mailchimp",
+  "tagline": "Email campaigns, lists and analytics",
+  "description": "Manage email lists, campaigns, and automation in Mailchimp. Update the base URL to your data center (us1.api.mailchimp.com, us6, etc.) from your account URL.",
+  "category": "Communication",
+  "color": "#FFE01B",
+  "emoji": "🐒",
+  "baseUrl": "https://us1.api.mailchimp.com/3.0",
+  "auth": {
+    "type": "api-key",
+    "hint": "Get your API key from Mailchimp → Account → Extras → API Keys. In the API Key field enter: Basic <base64 of \"anystring:YOUR_API_KEY\">. Also update the base URL to match your data center (check your account URL).",
+    "keyName": "Authorization",
+    "keyIn": "header"
+  },
+  "signupUrl": "https://login.mailchimp.com/signup/",
+  "docsUrl": "https://mailchimp.com/developer/marketing/api/",
+  "tools": [
+    {
+      "name": "list_audiences",
+      "description": "List all Mailchimp audience lists with their name, member count, and open rates.",
+      "method": "GET",
+      "path": "/lists",
+      "params": [
+        {
+          "name": "count",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of results (max 1000)"
+        },
+        {
+          "name": "fields",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Fields to include, e.g. lists.id,lists.name,lists.stats"
+        }
+      ]
+    },
+    {
+      "name": "get_audience_members",
+      "description": "List subscribers in a Mailchimp audience with their email, status, and tags.",
+      "method": "GET",
+      "path": "/lists/{list_id}/members",
+      "params": [
+        {
+          "name": "list_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Audience list ID"
+        },
+        {
+          "name": "status",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Filter: subscribed, unsubscribed, cleaned, or pending"
+        },
+        {
+          "name": "count",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of results (max 1000)"
+        }
+      ]
+    },
+    {
+      "name": "list_campaigns",
+      "description": "List email campaigns with their type, subject, send date, and performance stats.",
+      "method": "GET",
+      "path": "/campaigns",
+      "params": [
+        {
+          "name": "count",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of results (max 1000)"
+        },
+        {
+          "name": "status",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Filter by status: sent, draft, scheduled"
+        },
+        {
+          "name": "list_id",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Filter by audience list ID"
+        }
+      ]
+    },
+    {
+      "name": "get_campaign_report",
+      "description": "Get performance stats for a sent campaign: opens, clicks, bounces, and unsubscribes.",
+      "method": "GET",
+      "path": "/reports/{campaign_id}",
+      "params": [
+        {
+          "name": "campaign_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Campaign ID"
+        }
+      ]
+    }
+  ]
+}

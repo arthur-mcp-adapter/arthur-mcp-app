@@ -1,0 +1,12 @@
+export type AiProviderType =
+  | 'openai'
+  | 'anthropic'
+  | 'google'
+  | 'gemini'
+  | 'mistral'
+  | 'groq'
+  | 'cohere'
+  | 'azure-openai'
+  | 'azure'
+  | 'ollama'
+  | 'custom'

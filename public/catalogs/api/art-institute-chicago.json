@@ -1,0 +1,54 @@
+{
+  "id": "art-institute-chicago",
+  "name": "Art Institute of Chicago",
+  "tagline": "Search the Art Institute of Chicago collection",
+  "description": "Search artwork records and select the fields needed for display, attribution, and IIIF image construction.",
+  "category": "Art & Design",
+  "color": "#B50938",
+  "emoji": "🎨",
+  "baseUrl": "https://api.artic.edu/api/v1",
+  "auth": {
+    "type": "none",
+    "hint": "No authentication is required. Follow the response license and attribution information."
+  },
+  "signupUrl": "https://www.artic.edu/",
+  "docsUrl": "https://api.artic.edu/docs/",
+  "tools": [
+    {
+      "name": "search_artworks",
+      "description": "Search artwork records by free text with pagination and field selection.",
+      "method": "GET",
+      "path": "/artworks/search",
+      "params": [
+        {
+          "name": "q",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Free-text artwork search query."
+        },
+        {
+          "name": "page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "One-based result page."
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Results per page within the documented maximum."
+        },
+        {
+          "name": "fields",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Comma-separated response fields such as id,title,artist_display,image_id."
+        }
+      ]
+    }
+  ]
+}

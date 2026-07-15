@@ -1,0 +1,63 @@
+{
+  "id": "iconfinder",
+  "name": "Iconfinder",
+  "tagline": "Search the Magnific icon catalog",
+  "description": "Search and paginate the icon catalog that succeeded Iconfinder's developer API, with family and ordering filters.",
+  "category": "Art & Design",
+  "color": "#1A73E8",
+  "emoji": "🔎",
+  "baseUrl": "https://api.magnific.com",
+  "auth": {
+    "type": "api-key",
+    "hint": "Create a Magnific API key and send it in the x-magnific-api-key header.",
+    "keyName": "x-magnific-api-key",
+    "keyIn": "header"
+  },
+  "signupUrl": "https://www.magnific.com/",
+  "docsUrl": "https://docs.magnific.com/api-reference/icons/icons-api",
+  "tools": [
+    {
+      "name": "search_icons",
+      "description": "Search and filter icons in the current catalog.",
+      "method": "GET",
+      "path": "/v1/icons",
+      "params": [
+        {
+          "name": "term",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Text to search for."
+        },
+        {
+          "name": "page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Positive page number."
+        },
+        {
+          "name": "per_page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Positive results-per-page value."
+        },
+        {
+          "name": "family-id",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Icon family identifier."
+        },
+        {
+          "name": "order",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Result order: relevance or recent."
+        }
+      ]
+    }
+  ]
+}

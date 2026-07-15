@@ -1,0 +1,33 @@
+{
+  "id": "randomduck",
+  "name": "RandomDuck",
+  "tagline": "Get random duck images",
+  "description": "Retrieve a random duck image or GIF URL with optional media-type selection.",
+  "category": "Animals",
+  "color": "#EAB308",
+  "emoji": "🦆",
+  "baseUrl": "https://random-d.uk/api/v2",
+  "auth": {
+    "type": "none",
+    "hint": "No authentication is required."
+  },
+  "signupUrl": "https://random-d.uk/",
+  "docsUrl": "https://random-d.uk/api",
+  "tools": [
+    {
+      "name": "get_random_duck",
+      "description": "Return a random duck media URL and attribution message.",
+      "method": "GET",
+      "path": "/random",
+      "params": [
+        {
+          "name": "type",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Requested media type: JPG or GIF."
+        }
+      ]
+    }
+  ]
+}

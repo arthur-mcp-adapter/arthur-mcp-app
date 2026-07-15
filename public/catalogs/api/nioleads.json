@@ -1,0 +1,54 @@
+{
+  "id": "nioleads",
+  "name": "NioLeads",
+  "tagline": "Find business emails by name and company domain",
+  "description": "Find a person's business email address from their name and company domain, and check your NioLeads account credit balance. Requires a NioLeads API key generated from the account's Integrations page.",
+  "category": "Business",
+  "color": "#2563EB",
+  "emoji": "📧",
+  "baseUrl": "https://v2.nioleads.com/api/openapi",
+  "auth": {
+    "type": "bearer",
+    "hint": "Generate an API key on the NioLeads dashboard Integrations page, then send it as Authorization: Bearer <YOUR_AUTH_KEY>."
+  },
+  "signupUrl": "https://nioleads.com/",
+  "docsUrl": "https://nioleads.com/apidoc",
+  "tools": [
+    {
+      "name": "find_email",
+      "description": "Find a business email address from a person's first name, last name, and company domain or name.",
+      "method": "POST",
+      "path": "/find_email",
+      "params": [
+        {
+          "name": "firstname",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Person's first name, e.g. John."
+        },
+        {
+          "name": "lastname",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Person's last name, e.g. Smith."
+        },
+        {
+          "name": "domainOrCompany",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Email domain or company name, e.g. example.com."
+        }
+      ]
+    },
+    {
+      "name": "get_credits",
+      "description": "Retrieve the current available credit balance for the authenticated NioLeads account.",
+      "method": "GET",
+      "path": "/credits",
+      "params": []
+    }
+  ]
+}

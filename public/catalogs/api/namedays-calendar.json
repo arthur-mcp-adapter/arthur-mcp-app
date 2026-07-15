@@ -1,0 +1,70 @@
+{
+  "id": "namedays-calendar",
+  "name": "Namedays Calendar",
+  "tagline": "Look up namedays by date or name",
+  "description": "Get today's namedays across countries, look up namedays for a specific day and month, and search which date a given name is celebrated on.",
+  "category": "Calendar",
+  "color": "#DB2777",
+  "emoji": "🎂",
+  "baseUrl": "https://nameday.abalin.net/api",
+  "auth": {
+    "type": "none",
+    "hint": "Namedays Calendar is a free, unauthenticated API; no credential is required."
+  },
+  "signupUrl": "https://nameday.abalin.net/",
+  "docsUrl": "https://nameday.abalin.net/docs/api",
+  "tools": [
+    {
+      "name": "get_today_namedays",
+      "description": "Retrieve the namedays celebrated today across supported countries.",
+      "method": "GET",
+      "path": "/V2/today/{timezone}",
+      "params": [
+        {
+          "name": "timezone",
+          "in": "path",
+          "required": false,
+          "type": "string",
+          "description": "Optional PHP timezone identifier; defaults to UTC."
+        }
+      ]
+    },
+    {
+      "name": "get_namedays_by_date",
+      "description": "Retrieve the namedays celebrated on a specific day and month across supported countries.",
+      "method": "GET",
+      "path": "/V2/date",
+      "params": [
+        {
+          "name": "day",
+          "in": "query",
+          "required": true,
+          "type": "integer",
+          "description": "Day of month, from 1 through 31."
+        },
+        {
+          "name": "month",
+          "in": "query",
+          "required": true,
+          "type": "integer",
+          "description": "Month, from 1 through 12."
+        }
+      ]
+    },
+    {
+      "name": "search_nameday_by_name",
+      "description": "Search all supported countries for the date a given name is celebrated.",
+      "method": "POST",
+      "path": "/V2/getname",
+      "params": [
+        {
+          "name": "name",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Name to search for, from 2 through 15 characters."
+        }
+      ]
+    }
+  ]
+}

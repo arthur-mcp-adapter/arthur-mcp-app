@@ -1,0 +1,61 @@
+{
+  "id": "shikimori",
+  "name": "Shikimori",
+  "tagline": "Search the Shikimori anime catalog",
+  "description": "Search public Shikimori anime records by text with status, season, score, ordering, and pagination filters.",
+  "category": "Anime",
+  "color": "#1F2937",
+  "emoji": "🎌",
+  "baseUrl": "https://shikimori.one/api",
+  "auth": {
+    "type": "none",
+    "hint": "No authentication is required for the selected public anime search."
+  },
+  "signupUrl": "https://shikimori.one/",
+  "docsUrl": "https://shikimori.one/api/doc",
+  "tools": [
+    {
+      "name": "search_anime",
+      "description": "Search public Shikimori anime records.",
+      "method": "GET",
+      "path": "/animes",
+      "params": [
+        {
+          "name": "search",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Free-text title search."
+        },
+        {
+          "name": "page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Result page."
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Records per page."
+        },
+        {
+          "name": "status",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Release-status filter."
+        },
+        {
+          "name": "order",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Ordering mode."
+        }
+      ]
+    }
+  ]
+}

@@ -9,7 +9,7 @@ Arthur MCP is a full-stack application for managing MCP servers/projects, import
 ## Stack
 
 - Frontend: React 18, TypeScript, Vite, Material UI, React Router, Axios, react-i18next/i18next, Vitest.
-- Backend: NestJS, TypeScript, TypeORM, local SQLite, Mongo/Mongoose in parts of the domain, JWT/Passport, Jest.
+- Backend: NestJS, TypeScript, TypeORM, local SQLite, Mongo/Mongoose in parts of the domain, Supabase Auth (sole identity provider), Jest.
 - Local runtime: frontend at the repository root and API in `api/`.
 - Deploy/infra: `Dockerfile`, `docker-compose.yml`, `nginx.conf`, and `render.yaml`.
 
@@ -23,10 +23,10 @@ Arthur MCP is a full-stack application for managing MCP servers/projects, import
 - `src/locales/`: frontend translation resources by locale and namespace.
 - `src/theme/`: theme and color mode.
 - `api/src/`: NestJS backend.
-- `api/src/auth/`: authentication, JWT, and password reset.
+- `api/src/auth/`: Supabase Auth JWT verification (`JwtAuthGuard`, sole authentication path) and thin signup provisioning (`app_metadata.role`); no local login/password/OAuth strategies.
 - `api/src/dynamic-mcp/`: dynamic MCP tool generation/execution from APIs.
 - `api/src/swagger/`: Swagger/OpenAPI project import and persistence.
-- `api/src/prompts/`, `api/src/secrets/`, `api/src/settings/`, `api/src/users/`, `api/src/roles/`: domain modules.
+- `api/src/prompts/`, `api/src/secrets/`, `api/src/settings/`, `api/src/roles/`: domain modules. `api/src/users/`: `GET /users/me` composed from Supabase JWT claims plus role permissions — no longer a table-backed domain module (its `UserEntity`/`UsersService` are legacy, pending removal, see `docs/ENTITIES.md`).
 - `api/src/audit-logs/` and `api/src/execution-logs/`: audit trails and execution history.
 - `api/src/observability/`: operational health checks, structured logging, Prometheus metrics, correlation IDs, and OpenTelemetry tracing.
 - `observability/`: local Prometheus, Grafana, and Tempo helper configuration.
@@ -43,6 +43,8 @@ Arthur MCP is a full-stack application for managing MCP servers/projects, import
 - Run backend only: `npm run start:dev --prefix api`
 - Build frontend: `npm run build`
 - Type-check frontend: `npm run type-check`
+- Check frontend file organization: `npm run check:frontend-structure`
+- Validate static template catalogs: `npm run check:template-catalogs`
 - Test frontend: `npm test`
 - Build backend: `npm run build --prefix api`
 - Test backend: `npm test --prefix api`
@@ -65,6 +67,7 @@ Before working:
 While working:
 
 - Prefer existing repository patterns.
+- Keep frontend contracts in individual `name.kind.ts` files, focused utilities one responsibility per file, hooks in `.hook.ts`, and React-rendering modules in matching named `.tsx` files. Named source files export exactly one symbol; only `index.ts` aggregates exports; every directory under `src/` contains `index.ts` and `index.css`. `npm run type-check` enforces these conventions.
 - Avoid broad refactors when the task is focused.
 - Treat permissions as part of every new feature, not as follow-up work. Any new user-facing surface, route, action, API endpoint, integration, or settings panel must either reuse an existing permission intentionally or add a new permission end-to-end.
 - Update tests when changing meaningful behavior.

@@ -1,0 +1,98 @@
+{
+  "id": "typeform",
+  "name": "Typeform",
+  "tagline": "Forms, surveys and responses",
+  "description": "Access Typeform forms and read survey responses. Analyze form submissions and fetch response data for reporting and analysis.",
+  "category": "Business",
+  "color": "#261E4A",
+  "emoji": "📝",
+  "baseUrl": "https://api.typeform.com",
+  "auth": {
+    "type": "bearer",
+    "hint": "Create a Personal Token in Typeform → Account → Personal Tokens."
+  },
+  "signupUrl": "https://admin.typeform.com/account#/section/tokens",
+  "docsUrl": "https://www.typeform.com/developers/create/reference/",
+  "tools": [
+    {
+      "name": "list_forms",
+      "description": "List all Typeform forms in your account with their title and response count.",
+      "method": "GET",
+      "path": "/forms",
+      "params": [
+        {
+          "name": "page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Page number"
+        },
+        {
+          "name": "page_size",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Results per page (max 200)"
+        },
+        {
+          "name": "search",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Search by form title"
+        }
+      ]
+    },
+    {
+      "name": "get_form",
+      "description": "Get the structure of a Typeform form including all questions and their types.",
+      "method": "GET",
+      "path": "/forms/{form_id}",
+      "params": [
+        {
+          "name": "form_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Form ID from the Typeform URL"
+        }
+      ]
+    },
+    {
+      "name": "get_responses",
+      "description": "Get survey responses for a form with all answer values and submission metadata.",
+      "method": "GET",
+      "path": "/forms/{form_id}/responses",
+      "params": [
+        {
+          "name": "form_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Form ID"
+        },
+        {
+          "name": "page_size",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Responses per page (max 1000)"
+        },
+        {
+          "name": "since",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "ISO date — return responses submitted after this date"
+        },
+        {
+          "name": "until",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "ISO date — return responses submitted before this date"
+        }
+      ]
+    }
+  ]
+}

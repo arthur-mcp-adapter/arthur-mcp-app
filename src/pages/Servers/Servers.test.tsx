@@ -40,7 +40,7 @@ vi.mock('react-i18next', () => ({
   }),
 }));
 
-vi.mock('../../context/AuthContext', () => ({
+vi.mock('../../context/auth', () => ({
   Permission: {
     ServersView: 'servers_view',
     ServersCreate: 'servers_create',

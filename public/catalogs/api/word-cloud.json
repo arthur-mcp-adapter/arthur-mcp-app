@@ -1,0 +1,98 @@
+{
+  "id": "word-cloud",
+  "name": "Word Cloud",
+  "tagline": "Generate word clouds from text",
+  "description": "Create a word-cloud image from text with configurable dimensions, colors, font, language, stop words, scale, and capitalization.",
+  "category": "Art & Design",
+  "color": "#7C3AED",
+  "emoji": "☁️",
+  "baseUrl": "https://textvis-word-cloud-v1.p.rapidapi.com",
+  "auth": {
+    "type": "api-key",
+    "hint": "Subscribe to Word Cloud API on RapidAPI and use the assigned RapidAPI key in the X-RapidAPI-Key header.",
+    "keyName": "X-RapidAPI-Key",
+    "keyIn": "header"
+  },
+  "signupUrl": "https://wordcloudapi.com/",
+  "docsUrl": "https://wordcloudapi.com/getting-started/",
+  "tools": [
+    {
+      "name": "create_word_cloud",
+      "description": "Generate a base64-encoded word-cloud image from supplied text and optional visual settings.",
+      "method": "POST",
+      "path": "/v1/textToCloud",
+      "params": [
+        {
+          "name": "X-RapidAPI-Host",
+          "in": "header",
+          "required": true,
+          "type": "string",
+          "description": "RapidAPI routing header; set it to textvis-word-cloud-v1.p.rapidapi.com."
+        },
+        {
+          "name": "text",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Text from which to generate the word cloud."
+        },
+        {
+          "name": "scale",
+          "in": "body",
+          "required": false,
+          "type": "number",
+          "description": "Scale factor for the generated word cloud; the official example uses 0.5."
+        },
+        {
+          "name": "width",
+          "in": "body",
+          "required": false,
+          "type": "integer",
+          "description": "Output image width in pixels; the official example uses 400."
+        },
+        {
+          "name": "height",
+          "in": "body",
+          "required": false,
+          "type": "integer",
+          "description": "Output image height in pixels; the official example uses 400."
+        },
+        {
+          "name": "colors",
+          "in": "body",
+          "required": false,
+          "type": "array",
+          "description": "Array of hexadecimal colors to use in the word cloud."
+        },
+        {
+          "name": "font",
+          "in": "body",
+          "required": false,
+          "type": "string",
+          "description": "Font name for rendered words; the official example uses Tahoma."
+        },
+        {
+          "name": "use_stopwords",
+          "in": "body",
+          "required": false,
+          "type": "boolean",
+          "description": "Whether to remove stop words for the selected language."
+        },
+        {
+          "name": "language",
+          "in": "body",
+          "required": false,
+          "type": "string",
+          "description": "Language code used for stop-word processing; the official example uses en."
+        },
+        {
+          "name": "uppercase",
+          "in": "body",
+          "required": false,
+          "type": "boolean",
+          "description": "Whether words should be rendered in uppercase."
+        }
+      ]
+    }
+  ]
+}

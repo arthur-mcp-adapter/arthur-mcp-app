@@ -10,6 +10,7 @@ export default defineConfig({
       // already consumed the available inotify watcher instances.
       usePolling: true,
       interval: 300,
+      ignored: ['**/api_repository/**'],
     },
     proxy: {
       '/api': 'http://localhost:3000',
@@ -23,6 +24,20 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     emptyOutDir: true,
+    chunkSizeWarningLimit: 700,
+    rolldownOptions: {
+      output: {
+        codeSplitting: {
+          groups: [
+            { name: 'monaco-editor', test: /node_modules[\\/](@monaco-editor|monaco-editor)/, priority: 3 },
+            { name: 'grapesjs', test: /node_modules[\\/]grapesjs/, priority: 3 },
+            { name: 'mui', test: /node_modules[\\/]@mui/, priority: 2 },
+            { name: 'react-vendor', test: /node_modules[\\/](react|react-dom|react-router-dom)/, priority: 2 },
+            { name: 'vendor', test: /node_modules/, priority: 1 },
+          ],
+        },
+      },
+    },
   },
   test: {
     globals: true,

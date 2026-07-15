@@ -1,0 +1,85 @@
+{
+  "id": "blockscout",
+  "name": "Blockscout",
+  "tagline": "Explore EVM chains with Blockscout",
+  "description": "Retrieve enriched address details and transaction history across Blockscout-supported EVM chains.",
+  "category": "Blockchain",
+  "color": "#2563EB",
+  "emoji": "🔭",
+  "baseUrl": "https://api.blockscout.com",
+  "auth": {
+    "type": "api-key",
+    "hint": "Create a Blockscout PRO API key and send it in the apikey query parameter.",
+    "keyName": "apikey",
+    "keyIn": "query"
+  },
+  "signupUrl": "https://dev.blockscout.com/",
+  "docsUrl": "https://docs.blockscout.com/devs/pro-api",
+  "tools": [
+    {
+      "name": "get_address",
+      "description": "Retrieve enriched information about an address on a supported EVM chain.",
+      "method": "GET",
+      "path": "/{chain_id}/api/v2/addresses/{address_hash}",
+      "params": [
+        {
+          "name": "chain_id",
+          "in": "path",
+          "required": true,
+          "type": "integer",
+          "description": "Supported EVM chain identifier, such as 1 for Ethereum or 8453 for Base."
+        },
+        {
+          "name": "address_hash",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "EVM address with 0x prefix followed by 40 hexadecimal characters."
+        }
+      ]
+    },
+    {
+      "name": "list_address_transactions",
+      "description": "List decoded transactions for an address on a supported EVM chain.",
+      "method": "GET",
+      "path": "/{chain_id}/api/v2/addresses/{address_hash}/transactions",
+      "params": [
+        {
+          "name": "chain_id",
+          "in": "path",
+          "required": true,
+          "type": "integer",
+          "description": "Supported EVM chain identifier, such as 1 for Ethereum or 10 for Optimism."
+        },
+        {
+          "name": "address_hash",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "EVM address with 0x prefix followed by 40 hexadecimal characters."
+        },
+        {
+          "name": "block_number",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Keyset cursor block number copied from next_page_params."
+        },
+        {
+          "name": "index",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Keyset cursor transaction index copied from next_page_params."
+        },
+        {
+          "name": "items_count",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Keyset cursor item count copied from next_page_params."
+        }
+      ]
+    }
+  ]
+}

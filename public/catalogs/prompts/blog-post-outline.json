@@ -1,0 +1,15 @@
+{
+  "id": "blog-post-outline",
+  "name": "Blog Post Outline",
+  "tagline": "Create structured outlines for long-form content",
+  "description": "Generates a detailed blog post outline with headings, subpoints, and SEO optimization notes.",
+  "category": "Writing",
+  "emoji": "✍️",
+  "tags": [
+    "writing",
+    "blog",
+    "content",
+    "seo"
+  ],
+  "content": "Create a detailed blog post outline.\n\n**Topic:** {{topic}}\n**Target audience:** {{audience}}\n**Tone:** {{tone}} (e.g., educational, conversational, authoritative)\n**Target word count:** {{word_count}}\n**Primary keyword:** {{keyword}}\n**Secondary keywords:** {{secondary_keywords}}\n\nOutline structure:\n- SEO title (under 60 chars, includes primary keyword)\n- Meta description (under 155 chars)\n- Intro hook\n- H2 sections with H3 subpoints\n- Key statistics or data to include (research suggestions)\n- Call to action\n- Internal link suggestions"
+}

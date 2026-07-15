@@ -1,0 +1,97 @@
+{
+  "id": "azure-devops-health",
+  "name": "Azure DevOps Health",
+  "tagline": "Inspect Azure resource and service health",
+  "description": "List current resource availability across an Azure resource group and review service health events affecting a subscription.",
+  "category": "Continuous Integration",
+  "color": "#0078D4",
+  "emoji": "🩺",
+  "baseUrl": "https://management.azure.com",
+  "auth": {
+    "type": "bearer",
+    "hint": "Register a client with Microsoft Entra ID or obtain an Azure CLI/PowerShell access token for Azure Resource Manager, then provide the token for an identity authorized to read the target subscription."
+  },
+  "signupUrl": "https://portal.azure.com/",
+  "docsUrl": "https://learn.microsoft.com/en-us/rest/api/resourcehealth/",
+  "tools": [
+    {
+      "name": "list_resource_group_health",
+      "description": "List the current Resource Health availability status for resources in one Azure resource group.",
+      "method": "GET",
+      "path": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ResourceHealth/availabilityStatuses",
+      "params": [
+        {
+          "name": "subscriptionId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Target Azure subscription ID."
+        },
+        {
+          "name": "resourceGroupName",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Case-insensitive resource group name, from 1 to 90 characters."
+        },
+        {
+          "name": "api-version",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Resource Health API version; use 2025-05-01 for this documented contract."
+        },
+        {
+          "name": "$expand",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Set to recommendedactions to expand recommended actions in each status."
+        },
+        {
+          "name": "$filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "OData-style filter accepted by the operation."
+        }
+      ]
+    },
+    {
+      "name": "list_service_health_events",
+      "description": "List Azure service health events visible in a subscription.",
+      "method": "GET",
+      "path": "/subscriptions/{subscriptionId}/providers/Microsoft.ResourceHealth/events",
+      "params": [
+        {
+          "name": "subscriptionId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Target Azure subscription ID."
+        },
+        {
+          "name": "api-version",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Resource Health API version; use 2025-05-01 for this documented contract."
+        },
+        {
+          "name": "$filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Filter events, for example by service or region."
+        },
+        {
+          "name": "queryStartTime",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Start time for returned events; the service defaults to the previous three days."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "id": "unplugg",
+  "name": "Unplugg",
+  "tagline": "Forecast seasonal time-series data",
+  "description": "Submit equally spaced or resampleable time-series observations to Unplugg and receive an asynchronous forecast through a webhook callback.",
+  "category": "AI",
+  "color": "#2E7D32",
+  "emoji": "📈",
+  "baseUrl": "https://api.unplu.gg",
+  "auth": {
+    "type": "api-key",
+    "hint": "Request an Unplugg access token and send it in the x-access-token header. Store only the token value in Arthur MCP Secrets.",
+    "keyName": "x-access-token",
+    "keyIn": "header"
+  },
+  "signupUrl": "https://unplu.gg/test_api.html",
+  "docsUrl": "https://unplu.gg/test_api.html",
+  "tools": [
+    {
+      "name": "create_forecast",
+      "description": "Submit historical time-series observations and a webhook URL, returning a job ID before the completed forecast is delivered asynchronously.",
+      "method": "POST",
+      "path": "/forecast",
+      "params": [
+        {
+          "name": "data",
+          "in": "body",
+          "required": true,
+          "type": "array",
+          "description": "Time-series observations, each with a Unix-seconds timestamp and numeric value."
+        },
+        {
+          "name": "callback",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "HTTPS webhook URL that will receive forecast and job_id when processing finishes."
+        },
+        {
+          "name": "forecast_to",
+          "in": "body",
+          "required": false,
+          "type": "integer",
+          "description": "Unix-seconds timestamp through which to forecast; if omitted, output length defaults to one eighth of the input point count."
+        }
+      ]
+    }
+  ]
+}

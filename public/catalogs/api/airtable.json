@@ -1,0 +1,184 @@
+{
+  "id": "airtable",
+  "name": "Airtable",
+  "tagline": "Flexible database for teams",
+  "description": "Read and write records in any Airtable base. Used by PM teams worldwide to track roadmaps, content calendars, sprints, and customer data.",
+  "category": "Business",
+  "color": "#2D7FF9",
+  "emoji": "🗄️",
+  "baseUrl": "https://api.airtable.com/v0",
+  "auth": {
+    "type": "bearer",
+    "hint": "Create a Personal Access Token in your Airtable account under Account → Developer Hub."
+  },
+  "signupUrl": "https://airtable.com/create/tokens",
+  "docsUrl": "https://airtable.com/developers/web/api/introduction",
+  "tools": [
+    {
+      "name": "list_records",
+      "description": "List records from a table in your Airtable base. Supports filtering and sorting.",
+      "method": "GET",
+      "path": "/{baseId}/{tableId}",
+      "params": [
+        {
+          "name": "baseId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Base ID from the Airtable URL, e.g. appXXXXXXXXXXXXXX"
+        },
+        {
+          "name": "tableId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Table name or ID, e.g. \"Tasks\" or tblXXXXXXXX"
+        },
+        {
+          "name": "maxRecords",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Max number of records to return"
+        },
+        {
+          "name": "filterByFormula",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Airtable formula to filter, e.g. {Status}=\"Done\""
+        },
+        {
+          "name": "view",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "View name or ID to use for ordering and filters"
+        }
+      ]
+    },
+    {
+      "name": "get_record",
+      "description": "Get a single record by its ID from an Airtable table.",
+      "method": "GET",
+      "path": "/{baseId}/{tableId}/{recordId}",
+      "params": [
+        {
+          "name": "baseId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Base ID from the Airtable URL"
+        },
+        {
+          "name": "tableId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Table name or ID"
+        },
+        {
+          "name": "recordId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Record ID starting with \"rec\", e.g. recXXXXXXXX"
+        }
+      ]
+    },
+    {
+      "name": "create_record",
+      "description": "Create a new record in an Airtable table.",
+      "method": "POST",
+      "path": "/{baseId}/{tableId}",
+      "params": [
+        {
+          "name": "baseId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Base ID from the Airtable URL"
+        },
+        {
+          "name": "tableId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Table name or ID"
+        },
+        {
+          "name": "fields",
+          "in": "body",
+          "required": true,
+          "type": "object",
+          "description": "Record fields matching your column names, e.g. {\"Name\":\"Task A\",\"Status\":\"To do\",\"Priority\":\"High\"}"
+        }
+      ]
+    },
+    {
+      "name": "update_record",
+      "description": "Update one or more fields of an existing record. Only the specified fields are changed.",
+      "method": "PATCH",
+      "path": "/{baseId}/{tableId}/{recordId}",
+      "params": [
+        {
+          "name": "baseId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Base ID from the Airtable URL"
+        },
+        {
+          "name": "tableId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Table name or ID"
+        },
+        {
+          "name": "recordId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Record ID starting with \"rec\""
+        },
+        {
+          "name": "fields",
+          "in": "body",
+          "required": true,
+          "type": "object",
+          "description": "Fields to update, e.g. {\"Status\":\"Done\",\"Notes\":\"Reviewed\"}"
+        }
+      ]
+    },
+    {
+      "name": "delete_record",
+      "description": "Permanently delete a record from an Airtable table.",
+      "method": "DELETE",
+      "path": "/{baseId}/{tableId}/{recordId}",
+      "params": [
+        {
+          "name": "baseId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Base ID from the Airtable URL"
+        },
+        {
+          "name": "tableId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Table name or ID"
+        },
+        {
+          "name": "recordId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Record ID to delete"
+        }
+      ]
+    }
+  ]
+}

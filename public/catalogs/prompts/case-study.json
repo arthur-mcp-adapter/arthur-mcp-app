@@ -1,0 +1,14 @@
+{
+  "id": "case-study",
+  "name": "Case Study Writer",
+  "tagline": "Write compelling customer success stories",
+  "description": "Structures customer wins into persuasive case studies following the challenge-solution-result framework.",
+  "category": "Writing",
+  "emoji": "🏆",
+  "tags": [
+    "writing",
+    "marketing",
+    "case study"
+  ],
+  "content": "Write a customer case study.\n\n**Customer:** {{customer}}\n**Industry:** {{industry}}\n**Challenge:** {{challenge}}\n**Solution:** {{solution}}\n**Results/Metrics:** {{results}}\n**Quote from customer:** {{quote}}\n\nStructure:\n## About {{customer}}\n## The Challenge\n## The Solution\n## Results\n(Include specific metrics: %, time saved, revenue, etc.)\n## What {{customer}} Says\n> {{quote}}\n## Key Takeaways"
+}

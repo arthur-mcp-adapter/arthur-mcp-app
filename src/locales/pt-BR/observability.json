@@ -110,7 +110,8 @@
     "apiKeyProtected": "A chave de API é criptografada e não pode ser recuperada após salvar.",
     "urlRequired": "A URL base da sua ferramenta de observabilidade.",
     "deleteWarning": "Isso removerá permanentemente a configuração do provedor.",
-    "selfHostedOnly": "Isso mostra saúde e métricas de toda a infraestrutura da plataforma, não só do seu workspace."
+    "selfHostedOnly": "Isso mostra saúde e métricas de toda a infraestrutura da plataforma, não só do seu workspace.",
+    "environmentReadOnly": "Você pode visualizar e copiar estes controles, mas salvar exige permissão para gerenciar configurações."
   },
   "empty": {
     "noProviders": "Nenhum provedor de observabilidade ainda. Clique em Novo provedor para adicionar.",

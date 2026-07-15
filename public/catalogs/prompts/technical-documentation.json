@@ -1,0 +1,14 @@
+{
+  "id": "technical-documentation",
+  "name": "Technical Documentation",
+  "tagline": "Clear, structured docs for any component or API",
+  "description": "Produces complete technical documentation with overview, usage, parameters, and troubleshooting.",
+  "category": "Writing",
+  "emoji": "📖",
+  "tags": [
+    "writing",
+    "documentation",
+    "technical"
+  ],
+  "content": "Write technical documentation for the following.\n\nSubject: {{subject}}\nAudience: {{audience}}\nContext: {{context}}\n\n## Overview\n## Prerequisites\n## How It Works\n## Usage / Reference\n## Parameters\n| Name | Type | Required | Default | Description |\n|------|------|----------|---------|-------------|\n## Examples\n## Troubleshooting\n## Related Resources"
+}

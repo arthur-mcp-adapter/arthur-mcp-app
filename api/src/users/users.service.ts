@@ -9,10 +9,14 @@ import * as bcrypt from 'bcryptjs';
 import * as crypto from 'crypto';
 import { USER_REPO } from '../database/database.tokens';
 import { IUserRepository, UserRecord } from './user.repository';
+import { SupabaseAdminService } from '../auth/supabase-admin.service';
 
 @Injectable()
 export class UsersService {
-  constructor(@Inject(USER_REPO) private readonly userRepo: IUserRepository) {}
+  constructor(
+    @Inject(USER_REPO) private readonly userRepo: IUserRepository,
+    private readonly supabaseAdmin: SupabaseAdminService,
+  ) {}
 
   async findByUsername(username: string): Promise<UserRecord | null> {
     return this.userRepo.findByUsername(username);
@@ -24,12 +28,14 @@ export class UsersService {
 
   async create(username: string, password: string, email: string, role = 'admin'): Promise<UserRecord> {
     const hash = await bcrypt.hash(password, 10);
-    return this.userRepo.create({
+    const user = await this.userRepo.create({
       username: username.toLowerCase().trim(),
       email: email.toLowerCase().trim(),
       password: hash,
       role,
     });
+    const supabaseId = await this.supabaseAdmin.linkUser(user.email, password, user.username);
+    return supabaseId ? this.userRepo.update(user._id, { supabaseId }) : user;
   }
 
   async validatePassword(plain: string, hash: string): Promise<boolean> {
@@ -124,7 +130,28 @@ export class UsersService {
 
     const username = await this.generateUniqueUsername(profile.name || profile.email.split('@')[0]);
     const password = await bcrypt.hash(crypto.randomBytes(32).toString('hex'), 10);
-    return this.userRepo.create({ username, email: profile.email, password, role: 'admin', ...providerField });
+    const created = await this.userRepo.create({ username, email: profile.email, password, role: 'admin', ...providerField });
+
+    // 'supabase' profile.id is already the real Supabase Auth user id (from the verified JWT) — no provisioning needed.
+    if (provider === 'supabase') return created;
+    const supabaseId = await this.supabaseAdmin.linkUser(profile.email, undefined, profile.name);
+    return supabaseId ? this.userRepo.update(created._id, { supabaseId }) : created;
+  }
+
+  /** Provisions a Supabase Auth user for every existing local account that doesn't have one yet. */
+  async backfillSupabaseLinks(): Promise<{ linked: number; skipped: number }> {
+    if (!this.supabaseAdmin.isConfigured) return { linked: 0, skipped: 0 };
+
+    const users = await this.userRepo.findWithoutSupabaseId();
+    let linked = 0;
+    for (const user of users) {
+      const supabaseId = await this.supabaseAdmin.linkUser(user.email, undefined, user.username, { role: user.role });
+      if (supabaseId) {
+        await this.userRepo.update(user._id, { supabaseId });
+        linked += 1;
+      }
+    }
+    return { linked, skipped: users.length - linked };
   }
 
   private async generateUniqueUsername(seed: string): Promise<string> {

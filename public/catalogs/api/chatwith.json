@@ -1,0 +1,92 @@
+{
+  "id": "chatwith",
+  "name": "Chatwith",
+  "tagline": "Manage and query custom website-trained chatbots",
+  "description": "List and manage Chatwith chatbots, inspect account details, and send questions to a chatbot. Requires a paid Chatwith plan and an API key from account settings.",
+  "category": "AI",
+  "color": "#6C5CE7",
+  "emoji": "💬",
+  "baseUrl": "https://api.chatwith.tools/v1",
+  "auth": {
+    "type": "bearer",
+    "hint": "Copy the API key from the Chatwith Dashboard Account page and send it as Authorization: Bearer <API_TOKEN>. API access requires a paid plan."
+  },
+  "signupUrl": "https://chatwith.tools/",
+  "docsUrl": "https://api-docs.chatwith.tools/quick-start",
+  "tools": [
+    {
+      "name": "get_current_user",
+      "description": "Return account information for the user associated with the supplied Chatwith API token.",
+      "method": "GET",
+      "path": "/me",
+      "params": []
+    },
+    {
+      "name": "list_chatbots",
+      "description": "List the authenticated user's chatbots and their current configuration metadata.",
+      "method": "GET",
+      "path": "/chatbot",
+      "params": []
+    },
+    {
+      "name": "get_chatbot",
+      "description": "Get one chatbot by UUID, including its model, prompt, display settings, and status fields.",
+      "method": "GET",
+      "path": "/chatbot/{id}",
+      "params": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Chatbot UUID."
+        }
+      ]
+    },
+    {
+      "name": "send_chatbot_message",
+      "description": "Send a question to a chatbot and return its answer; optionally continue a UUID4 conversation and request a non-streaming JSON response.",
+      "method": "POST",
+      "path": "/chatbot/{id}/chat",
+      "params": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Chatbot UUID."
+        },
+        {
+          "name": "message",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Non-empty question or instruction to send to the chatbot."
+        },
+        {
+          "name": "conversationId",
+          "originalName": "conversationId",
+          "in": "body",
+          "required": false,
+          "type": "string",
+          "description": "UUID4 conversation identifier. Omit it to start a new conversation."
+        },
+        {
+          "name": "stream",
+          "in": "body",
+          "required": false,
+          "type": "boolean",
+          "description": "Whether to stream the response; defaults to true. Set false with Accept: application/json to receive the conversation ID."
+        },
+        {
+          "name": "Accept",
+          "originalName": "Accept",
+          "in": "header",
+          "required": false,
+          "type": "string",
+          "description": "Response format: application/json or text/plain; defaults to text/plain."
+        }
+      ]
+    }
+  ]
+}

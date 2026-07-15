@@ -52,7 +52,21 @@ describe('source type helpers', () => {
   })
 
   it('uses the matching template icon when the project has a template tag', () => {
-    expect(getProjectIcon({ tags: ['source:rest', 'template:The Movie Database'] })).toEqual({
+    expect(getProjectIcon(
+      { tags: ['source:rest', 'template:The Movie Database'] },
+      [{
+        id: 'tmdb',
+        name: 'The Movie Database',
+        tagline: 'Movies and TV',
+        description: 'Movie data',
+        category: 'Entertainment',
+        color: '#01B4E4',
+        emoji: '🎬',
+        authType: 'api-key',
+        toolCount: 1,
+        searchTerms: ['movies'],
+      }],
+    )).toEqual({
       label: 'The Movie Database',
       emoji: '🎬',
       color: '#01B4E4',

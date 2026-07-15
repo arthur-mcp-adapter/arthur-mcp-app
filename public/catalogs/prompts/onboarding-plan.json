@@ -1,0 +1,14 @@
+{
+  "id": "onboarding-plan",
+  "name": "Employee Onboarding Plan",
+  "tagline": "Create structured 30-60-90 day onboarding plans",
+  "description": "Generates detailed onboarding plans with milestones, activities, and success metrics.",
+  "category": "HR & Recruiting",
+  "emoji": "🤝",
+  "tags": [
+    "hr",
+    "onboarding",
+    "management"
+  ],
+  "content": "Create a 30-60-90 day onboarding plan.\n\n**Role:** {{role}}\n**Department:** {{department}}\n**Manager:** {{manager}}\n**Team context:** {{team_context}}\n**Key tools/systems:** {{tools}}\n\n## Day 1-7: Orientation\n- Administrative setup\n- Key introductions\n- Culture and values\n\n## 30-Day Goals\n**Focus:** Learn\n- Objectives:\n- Key meetings to schedule:\n- Resources to review:\n- **Success looks like:**\n\n## 60-Day Goals\n**Focus:** Contribute\n- Objectives:\n- First deliverables:\n- **Success looks like:**\n\n## 90-Day Goals\n**Focus:** Own\n- Objectives:\n- Independent projects:\n- **Success looks like:**\n\n## Check-in Schedule\n| Day | Type | Agenda |\n|-----|------|--------|"
+}

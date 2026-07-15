@@ -3,6 +3,10 @@ import { validateEnv } from './env.validation';
 describe('validateEnv', () => {
   const baseConfig = {
     JWT_SECRET: 'a-valid-development-secret',
+    SUPABASE_URL: 'https://project.supabase.co',
+    SUPABASE_PUBLISHABLE_KEY: 'anon-key',
+    SUPABASE_SECRET_KEY: 'secret-key',
+    SUPABASE_JWKS_URL: 'https://project.supabase.co/auth/v1/.well-known/jwks.json',
   };
 
   it.each([

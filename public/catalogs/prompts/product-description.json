@@ -1,0 +1,14 @@
+{
+  "id": "product-description",
+  "name": "Product Description",
+  "tagline": "Benefit-focused e-commerce copy that converts",
+  "description": "Writes compelling product descriptions with headlines, bullet points, and SEO keywords.",
+  "category": "Writing",
+  "emoji": "🛍️",
+  "tags": [
+    "writing",
+    "ecommerce",
+    "marketing"
+  ],
+  "content": "Write a compelling product description.\n\nProduct: {{product_name}}\nCategory: {{category}}\nFeatures: {{features}}\nTarget audience: {{target_audience}}\nUSP: {{usp}}\n\nCreate:\n1. **Headline** (8-12 words)\n2. **Short Description** (2-3 sentences)\n3. **Full Description** (150-200 words)\n4. **Bullet Points** (5 key benefits)\n5. **SEO Keywords** (10 terms)"
+}

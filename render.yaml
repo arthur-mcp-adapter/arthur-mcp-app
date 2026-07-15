@@ -6,7 +6,7 @@ databases:
 
 services:
   - type: web
-    name: arthur-mcp-adapter
+    name: arthur-mcp
     runtime: docker
     region: oregon
     plan: free

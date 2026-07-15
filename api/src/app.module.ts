@@ -5,6 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import { validateEnv } from './config/env.validation';
 import { DatabaseModule } from './database/database.module';
 import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
 import { SwaggerModule } from './swagger/swagger.module';
 import { DynamicMcpModule } from './dynamic-mcp/dynamic-mcp.module';
 import { ObservabilityModule } from './observability/observability.module';
@@ -28,6 +29,7 @@ import { AiProvidersModule } from './ai-providers/ai-providers.module';
     DatabaseModule.forRoot(),
     ObservabilityModule,
     AuthModule,
+    UsersModule,
     SwaggerModule,
     DynamicMcpModule,
     ExecutionLogsModule,

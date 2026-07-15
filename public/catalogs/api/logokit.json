@@ -1,0 +1,107 @@
+{
+  "id": "logokit",
+  "name": "LogoKit",
+  "tagline": "Fetch brand, stock, and cryptocurrency logos",
+  "description": "Retrieve logo images by company domain, stock exchange ticker, or cryptocurrency symbol, with configurable size and fallback behavior.",
+  "category": "Business",
+  "color": "#111827",
+  "emoji": "🖼️",
+  "baseUrl": "https://img.logokit.com",
+  "auth": {
+    "type": "api-key",
+    "hint": "Create a LogoKit account, open the API Tokens section at https://logokit.com/account/api-tokens, and use the publishable Logo API token (prefixed pk_) as the token query parameter. It is designed to be safe for client-side use.",
+    "keyName": "token",
+    "keyIn": "query"
+  },
+  "signupUrl": "https://logokit.com/",
+  "docsUrl": "https://docs.logokit.com",
+  "tools": [
+    {
+      "name": "get_logo_by_domain",
+      "description": "Retrieve a company logo image by its domain name.",
+      "method": "GET",
+      "path": "/{domain}",
+      "params": [
+        {
+          "name": "domain",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Company domain name, for example apple.com."
+        },
+        {
+          "name": "size",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Logo size in pixels: 64, 128, or 256."
+        },
+        {
+          "name": "fallback",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Fallback behavior when no logo is available: monogram, monogram-light, or 404."
+        }
+      ]
+    },
+    {
+      "name": "get_logo_by_stock_ticker",
+      "description": "Retrieve a company logo image by its stock exchange ticker symbol.",
+      "method": "GET",
+      "path": "/ticker/{symbol}",
+      "params": [
+        {
+          "name": "symbol",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Stock ticker symbol."
+        },
+        {
+          "name": "size",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Logo size in pixels: 64, 128, or 256."
+        },
+        {
+          "name": "fallback",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Fallback behavior when no logo is available: monogram, monogram-light, or 404."
+        }
+      ]
+    },
+    {
+      "name": "get_logo_by_crypto_symbol",
+      "description": "Retrieve a cryptocurrency logo image by its symbol.",
+      "method": "GET",
+      "path": "/crypto/{symbol}",
+      "params": [
+        {
+          "name": "symbol",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Cryptocurrency symbol; over 12,000 cryptocurrencies are supported."
+        },
+        {
+          "name": "size",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Logo size in pixels: 64, 128, or 256."
+        },
+        {
+          "name": "fallback",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Fallback behavior when no logo is available: monogram, monogram-light, or 404."
+        }
+      ]
+    }
+  ]
+}

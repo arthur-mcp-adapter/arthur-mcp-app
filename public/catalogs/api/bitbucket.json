@@ -1,0 +1,127 @@
+{
+  "id": "bitbucket",
+  "name": "Bitbucket",
+  "tagline": "Git repos, PRs and pipelines",
+  "description": "Manage Bitbucket Cloud repositories, pull requests, and pipelines via the Bitbucket REST API.",
+  "category": "Development",
+  "color": "#0747A6",
+  "emoji": "🪣",
+  "baseUrl": "https://api.bitbucket.org/2.0",
+  "auth": {
+    "type": "bearer",
+    "hint": "Create an App Password in Bitbucket → Personal Settings → App Passwords with Repository and Pull Request permissions."
+  },
+  "signupUrl": "https://bitbucket.org/account/settings/app-passwords/",
+  "docsUrl": "https://developer.atlassian.com/cloud/bitbucket/rest/",
+  "tools": [
+    {
+      "name": "list_repositories",
+      "description": "List repositories for a workspace or user.",
+      "method": "GET",
+      "path": "/repositories/{workspace}",
+      "params": [
+        {
+          "name": "workspace",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Workspace slug or username"
+        },
+        {
+          "name": "q",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Filter query, e.g. name ~ \"api\""
+        },
+        {
+          "name": "pagelen",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Results per page (max 100)"
+        }
+      ]
+    },
+    {
+      "name": "get_repository",
+      "description": "Get details for a specific Bitbucket repository.",
+      "method": "GET",
+      "path": "/repositories/{workspace}/{repo_slug}",
+      "params": [
+        {
+          "name": "workspace",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Workspace slug"
+        },
+        {
+          "name": "repo_slug",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Repository slug"
+        }
+      ]
+    },
+    {
+      "name": "list_pull_requests",
+      "description": "List pull requests for a repository.",
+      "method": "GET",
+      "path": "/repositories/{workspace}/{repo_slug}/pullrequests",
+      "params": [
+        {
+          "name": "workspace",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Workspace slug"
+        },
+        {
+          "name": "repo_slug",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Repository slug"
+        },
+        {
+          "name": "state",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "State: OPEN, MERGED, DECLINED, or SUPERSEDED"
+        }
+      ]
+    },
+    {
+      "name": "list_issues",
+      "description": "List issues in a Bitbucket repository.",
+      "method": "GET",
+      "path": "/repositories/{workspace}/{repo_slug}/issues",
+      "params": [
+        {
+          "name": "workspace",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Workspace slug"
+        },
+        {
+          "name": "repo_slug",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Repository slug"
+        },
+        {
+          "name": "q",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Filter, e.g. status=\"open\" AND kind=\"bug\""
+        }
+      ]
+    }
+  ]
+}

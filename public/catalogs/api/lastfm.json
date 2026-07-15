@@ -1,0 +1,128 @@
+{
+  "id": "lastfm",
+  "name": "Last.fm",
+  "tagline": "Music scrobbles, charts and tags",
+  "description": "Get artist info, top tracks, user listening history, and music tags from Last.fm — the world's largest music listening database.",
+  "category": "Music & Media",
+  "color": "#D51007",
+  "emoji": "🎵",
+  "baseUrl": "https://ws.audioscrobbler.com/2.0",
+  "auth": {
+    "type": "api-key",
+    "hint": "Create an API account at last.fm/api/account/create to get a free API key.",
+    "keyName": "api_key",
+    "keyIn": "query"
+  },
+  "signupUrl": "https://www.last.fm/api/account/create",
+  "docsUrl": "https://www.last.fm/api",
+  "tools": [
+    {
+      "name": "get_artist_info",
+      "description": "Get an artist's biography, tags, similar artists, and listener statistics.",
+      "method": "GET",
+      "path": "/",
+      "params": [
+        {
+          "name": "method",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Must be \"artist.getinfo\""
+        },
+        {
+          "name": "artist",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Artist name, e.g. \"Radiohead\""
+        },
+        {
+          "name": "format",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Must be \"json\""
+        }
+      ]
+    },
+    {
+      "name": "get_top_tracks",
+      "description": "Get the globally top-played tracks on Last.fm for a period.",
+      "method": "GET",
+      "path": "/",
+      "params": [
+        {
+          "name": "method",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Must be \"chart.getTopTracks\""
+        },
+        {
+          "name": "format",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Must be \"json\""
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of tracks (max 1000)"
+        },
+        {
+          "name": "page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Page number"
+        }
+      ]
+    },
+    {
+      "name": "search_track",
+      "description": "Search for tracks by name and optionally by artist.",
+      "method": "GET",
+      "path": "/",
+      "params": [
+        {
+          "name": "method",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Must be \"track.search\""
+        },
+        {
+          "name": "track",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Track name to search for"
+        },
+        {
+          "name": "artist",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Filter by artist name"
+        },
+        {
+          "name": "format",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Must be \"json\""
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of results (max 30)"
+        }
+      ]
+    }
+  ]
+}

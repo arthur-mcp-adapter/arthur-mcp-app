@@ -1,0 +1,80 @@
+{
+  "id": "nownodes",
+  "name": "Nownodes",
+  "tagline": "Explore Ethereum through NOWNodes",
+  "description": "Retrieve Ethereum address, block, and transaction data from the NOWNodes BlockBook REST API.",
+  "category": "Blockchain",
+  "color": "#FF5F1F",
+  "emoji": "⛓️",
+  "baseUrl": "https://eth-blockbook.nownodes.io/api/v2",
+  "auth": {
+    "type": "api-key",
+    "hint": "Create a NOWNodes API key and send it in the api-key header.",
+    "keyName": "api-key",
+    "keyIn": "header"
+  },
+  "signupUrl": "https://account.nownodes.io/auth/signup",
+  "docsUrl": "https://nownodes.gitbook.io/eth-ethereum/ethereum-eth/mainnet/blockbook",
+  "tools": [
+    {
+      "name": "get_address",
+      "description": "Retrieve confirmed and unconfirmed balances and transaction identifiers for an Ethereum address.",
+      "method": "GET",
+      "path": "/address/{address}",
+      "params": [
+        {
+          "name": "address",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Ethereum address to query."
+        }
+      ]
+    },
+    {
+      "name": "get_block",
+      "description": "Retrieve block metadata and included transactions by height or hash.",
+      "method": "GET",
+      "path": "/block/{blockHeightOrHash}",
+      "params": [
+        {
+          "name": "blockHeightOrHash",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Block height or block hash."
+        }
+      ]
+    },
+    {
+      "name": "get_transaction",
+      "description": "Retrieve a BlockBook v2 transaction representation by transaction identifier.",
+      "method": "GET",
+      "path": "/tx/{txid}",
+      "params": [
+        {
+          "name": "txid",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Transaction identifier to retrieve."
+        }
+      ]
+    },
+    {
+      "name": "get_balance_history",
+      "description": "Retrieve received, sent, and self-sent balance history grouped by time interval.",
+      "method": "GET",
+      "path": "/balancehistory/{address}",
+      "params": [
+        {
+          "name": "address",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Ethereum address whose balance history should be returned."
+        }
+      ]
+    }
+  ]
+}

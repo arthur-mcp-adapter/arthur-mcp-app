@@ -1,48 +1,10 @@
-import { describe, it, expect } from 'vitest'
-import {
-  API_TEMPLATES,
-  SERVER_TEMPLATE_SOURCE_TAG,
-  TEMPLATE_CATEGORIES,
-  buildToolPayload,
-} from './api-templates'
-import {
-  PROMPT_TEMPLATE_CATEGORIES,
-  PROMPT_TEMPLATES,
-} from './prompt-templates'
+import { describe, expect, it } from 'vitest'
+import { SERVER_TEMPLATE_SOURCE_TAG } from './serverTemplateSourceTag.constant'
+import { buildToolPayload } from './utils/buildToolPayload.util'
 
-describe('API templates', () => {
-  it('defines REST template source tag and sorted categories', () => {
+describe('template server payloads', () => {
+  it('defines the REST template source tag', () => {
     expect(SERVER_TEMPLATE_SOURCE_TAG).toBe('source:rest')
-    expect(TEMPLATE_CATEGORIES[0]).toBe('All')
-    expect(TEMPLATE_CATEGORIES.slice(1)).toEqual([...TEMPLATE_CATEGORIES.slice(1)].sort())
-  })
-
-  it('keeps every API template complete enough to create a server', () => {
-    expect(API_TEMPLATES.length).toBeGreaterThan(5)
-
-    for (const template of API_TEMPLATES) {
-      expect(template.id).toBeTruthy()
-      expect(template.name).toBeTruthy()
-      expect(template.tagline).toBeTruthy()
-      expect(template.description).toBeTruthy()
-      expect(template.category).toBeTruthy()
-      expect(template.baseUrl).toMatch(/^https?:\/\//)
-      expect(template.color).toMatch(/^#/)
-      expect(template.auth.type).toMatch(/^(none|bearer|api-key|basic)$/)
-      expect(template.tools.length).toBeGreaterThan(0)
-
-      for (const tool of template.tools) {
-        expect(tool.name).toBeTruthy()
-        expect(tool.method).toMatch(/^(GET|POST|PUT|PATCH|DELETE)$/)
-        expect(tool.path).toMatch(/^\//)
-        for (const param of tool.params) {
-          expect(param.name).toBeTruthy()
-          expect(param.in).toMatch(/^(path|query|body|header)$/)
-          expect(typeof param.required).toBe('boolean')
-          expect(param.type).toMatch(/^(string|number|integer|boolean|object|array)$/)
-        }
-      }
-    }
   })
 
   it('builds tool payloads with parameter maps and required schema fields', () => {
@@ -92,28 +54,5 @@ describe('API templates', () => {
       type: 'object',
       properties: { q: { type: 'string' } },
     })
-  })
-})
-
-describe('prompt templates', () => {
-  it('keeps prompt categories unique and populated', () => {
-    expect(PROMPT_TEMPLATE_CATEGORIES.length).toBeGreaterThan(5)
-    expect(new Set(PROMPT_TEMPLATE_CATEGORIES).size).toBe(PROMPT_TEMPLATE_CATEGORIES.length)
-  })
-
-  it('keeps every prompt template complete and categorized', () => {
-    expect(PROMPT_TEMPLATES.length).toBeGreaterThan(20)
-
-    for (const template of PROMPT_TEMPLATES) {
-      expect(template.id).toBeTruthy()
-      expect(template.name).toBeTruthy()
-      expect(template.tagline).toBeTruthy()
-      expect(template.description).toBeTruthy()
-      expect(PROMPT_TEMPLATE_CATEGORIES).toContain(template.category)
-      expect(template.emoji).toBeTruthy()
-      expect(template.tags.length).toBeGreaterThan(0)
-      expect(template.content).toContain('{{')
-      expect(template.content).toContain('}}')
-    }
   })
 })

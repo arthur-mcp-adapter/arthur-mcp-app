@@ -1,5 +1,7 @@
 # Supabase Adoption Plan
 
+> **Override (2026-07-14):** the Auth migration this document defers to Phase 6 below was executed now, by explicit user decision, alongside the managed-PostgreSQL adoption rather than after it. Supabase Auth is the sole identity provider — the local `users`/`password_resets` tables, local JWT/password login, and Passport OAuth strategies have been removed (legacy tables pending a final drop migration). See `docs/FLOWS.md`'s "Authentication (Supabase)" section and `docs/ENTITIES.md`'s "Identity (Supabase Auth)" section for the resulting architecture. The "Explicit Non-Goals" item below about not running two competing identity systems indefinitely is resolved by removing the local system entirely, not by declining Supabase Auth. The rest of this document (managed PostgreSQL as the current phase, RLS/Realtime/Storage/Edge Functions still deferred) remains the plan going forward and is left intact below as the original rationale.
+
 ## Purpose
 
 This document evaluates how Supabase can support Arthur MCP and defines a phased adoption path. The recommended approach is to adopt Supabase first as managed PostgreSQL infrastructure while preserving the existing NestJS, TypeORM, authentication, and permission architecture.

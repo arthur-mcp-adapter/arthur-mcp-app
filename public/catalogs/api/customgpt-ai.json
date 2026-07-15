@@ -1,0 +1,83 @@
+{
+  "id": "customgpt-ai",
+  "name": "CustomGPT.ai",
+  "tagline": "Manage and query retrieval-augmented AI agents",
+  "description": "List CustomGPT agents, create conversations, and query an agent grounded in its configured knowledge sources. The API calls agents projects in endpoint paths for backward compatibility.",
+  "category": "AI",
+  "color": "#6C47FF",
+  "emoji": "💬",
+  "baseUrl": "https://app.customgpt.ai/api/v1",
+  "auth": {
+    "type": "bearer",
+    "hint": "Create an API key under My Profile → API and send it as Authorization: Bearer <API_KEY>."
+  },
+  "signupUrl": "https://app.customgpt.ai/",
+  "docsUrl": "https://docs.customgpt.ai/reference/quickstart-guide",
+  "tools": [
+    {
+      "name": "list_agents",
+      "description": "List CustomGPT agents, represented as projects in the API, using the API's paginated project collection.",
+      "method": "GET",
+      "path": "/projects",
+      "params": []
+    },
+    {
+      "name": "create_conversation",
+      "description": "Create a named conversation for an agent and return the session identifier used for later messages.",
+      "method": "POST",
+      "path": "/projects/{project_id}/conversations",
+      "params": [
+        {
+          "name": "project_id",
+          "in": "path",
+          "required": true,
+          "type": "integer",
+          "description": "Agent/project identifier."
+        },
+        {
+          "name": "name",
+          "in": "body",
+          "required": false,
+          "type": "string",
+          "description": "Optional human-readable conversation name."
+        }
+      ]
+    },
+    {
+      "name": "send_agent_message",
+      "description": "Send a prompt in an existing agent conversation and return the grounded assistant answer and related response data.",
+      "method": "POST",
+      "path": "/projects/{project_id}/conversations/{session_id}/messages",
+      "params": [
+        {
+          "name": "project_id",
+          "in": "path",
+          "required": true,
+          "type": "integer",
+          "description": "Agent/project identifier."
+        },
+        {
+          "name": "session_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Conversation session identifier."
+        },
+        {
+          "name": "prompt",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Question or instruction to send to the agent."
+        },
+        {
+          "name": "stream",
+          "in": "query",
+          "required": false,
+          "type": "boolean",
+          "description": "Enable streaming when true."
+        }
+      ]
+    }
+  ]
+}

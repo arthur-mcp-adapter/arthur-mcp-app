@@ -1,0 +1,25 @@
+{
+  "id": "randomfox",
+  "name": "RandomFox",
+  "tagline": "Get a random fox image",
+  "description": "Retrieve a random fox image URL and its source page.",
+  "category": "Animals",
+  "color": "#EA580C",
+  "emoji": "🦊",
+  "baseUrl": "https://randomfox.ca",
+  "auth": {
+    "type": "none",
+    "hint": "No authentication is required."
+  },
+  "signupUrl": "https://randomfox.ca/",
+  "docsUrl": "https://randomfox.ca/floof/",
+  "tools": [
+    {
+      "name": "get_random_fox",
+      "description": "Return a random fox image URL and source link.",
+      "method": "GET",
+      "path": "/floof/",
+      "params": []
+    }
+  ]
+}

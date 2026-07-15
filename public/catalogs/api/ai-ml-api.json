@@ -1,0 +1,54 @@
+{
+  "id": "ai-ml-api",
+  "name": "AI/ML API",
+  "tagline": "Access multiple AI models through one OpenAI-compatible API",
+  "description": "Generate chat completions with models from multiple providers through AI/ML API's OpenAI-compatible REST interface. Requires an AI/ML API key and available account credit.",
+  "category": "AI",
+  "color": "#111827",
+  "emoji": "🤖",
+  "baseUrl": "https://api.aimlapi.com/v1",
+  "auth": {
+    "type": "bearer",
+    "hint": "Generate an AI/ML API key and send it as Authorization: Bearer <YOUR_AIMLAPI_KEY>. Store only the token value in Arthur MCP Secrets."
+  },
+  "signupUrl": "https://aimlapi.com/app/",
+  "docsUrl": "https://docs.aimlapi.com/quickstart/setting-up",
+  "tools": [
+    {
+      "name": "create_chat_completion",
+      "description": "Send a conversation to a selected AI model and return the generated assistant message plus token usage.",
+      "method": "POST",
+      "path": "/chat/completions",
+      "params": [
+        {
+          "name": "model",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Model identifier supported by AI/ML API, for example google/gemma-3-4b-it."
+        },
+        {
+          "name": "messages",
+          "in": "body",
+          "required": true,
+          "type": "array",
+          "description": "Conversation messages in chronological order, each containing a role and content."
+        },
+        {
+          "name": "temperature",
+          "in": "body",
+          "required": false,
+          "type": "number",
+          "description": "Sampling temperature supported by the selected model; the quickstart example uses 0.7."
+        },
+        {
+          "name": "max_tokens",
+          "in": "body",
+          "required": false,
+          "type": "integer",
+          "description": "Maximum generated tokens; keep within the selected model's documented limit."
+        }
+      ]
+    }
+  ]
+}

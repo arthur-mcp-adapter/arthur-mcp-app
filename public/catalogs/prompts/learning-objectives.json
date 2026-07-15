@@ -1,0 +1,14 @@
+{
+  "id": "learning-objectives",
+  "name": "Learning Objective Writer",
+  "tagline": "Write SMART learning objectives using Bloom's taxonomy",
+  "description": "Creates measurable learning objectives at all levels of Bloom's taxonomy for courses and modules.",
+  "category": "Education",
+  "emoji": "🎯",
+  "tags": [
+    "education",
+    "curriculum",
+    "instructional design"
+  ],
+  "content": "Write learning objectives for the following course or module.\n\n**Course/Module:** {{course}}\n**Topic:** {{topic}}\n**Target audience:** {{audience}}\n**Level:** {{level}} (introductory / intermediate / advanced)\n\nWrite 2 objectives at each level of Bloom's taxonomy:\n\n**Remember** (recall facts)\n-\n\n**Understand** (explain concepts)\n-\n\n**Apply** (use in new situations)\n-\n\n**Analyze** (break down and compare)\n-\n\n**Evaluate** (make judgments)\n-\n\n**Create** (produce something new)\n-\n\nEach objective should be:\n- Specific and measurable\n- Start with an action verb\n- Include a condition and criterion where appropriate"
+}

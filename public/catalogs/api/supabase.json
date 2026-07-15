@@ -1,0 +1,93 @@
+{
+  "id": "supabase",
+  "name": "Supabase",
+  "tagline": "PostgreSQL database via PostgREST",
+  "description": "Read-only access to any Supabase table using the auto-generated PostgREST REST API. Supports pagination, column selection, and row ordering. After creating this project, go to Settings and replace YOUR_PROJECT_ID in the base URL with your actual Supabase project reference (found in Dashboard → Settings → API).",
+  "category": "Database",
+  "color": "#3ECF8E",
+  "emoji": "🐘",
+  "baseUrl": "https://YOUR_PROJECT_ID.supabase.co/rest/v1",
+  "auth": {
+    "type": "api-key",
+    "hint": "Use your project's anon public key from Supabase Dashboard → Settings → API → Project API Keys. This key is safe to use for read-only, public-access tables.",
+    "keyName": "apikey",
+    "keyIn": "header"
+  },
+  "signupUrl": "https://supabase.com/dashboard",
+  "docsUrl": "https://supabase.com/docs/guides/api/rest/getting-started",
+  "tools": [
+    {
+      "name": "list_rows",
+      "description": "List rows from a Supabase table with optional pagination, column selection, and ordering. The table parameter sets which table to query.",
+      "method": "GET",
+      "path": "/{table}",
+      "params": [
+        {
+          "name": "table",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Table name, e.g. users or products"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Columns to return, e.g. id,name,email — use * for all columns (default)"
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Maximum rows to return (default 100, max 1000)"
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Rows to skip for pagination, e.g. 100 for the second page"
+        },
+        {
+          "name": "order",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Sort column and direction, e.g. created_at.desc or name.asc"
+        }
+      ]
+    },
+    {
+      "name": "get_row_by_id",
+      "description": "Get a single row by its primary key (id column). Pass the id as a PostgREST filter: prefix the value with \"eq.\", e.g. pass \"eq.42\" to match id = 42, or \"eq.550e8400-e29b-41d4-a716-446655440000\" for a UUID.",
+      "method": "GET",
+      "path": "/{table}",
+      "params": [
+        {
+          "name": "table",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Table name, e.g. users or orders"
+        },
+        {
+          "name": "id",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "PostgREST equality filter for the id column, e.g. eq.42 or eq.some-uuid",
+          "originalName": "id"
+        },
+        {
+          "name": "select",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Columns to return, e.g. id,name,email or * for all"
+        }
+      ]
+    }
+  ]
+}

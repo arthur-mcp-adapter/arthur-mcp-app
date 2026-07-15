@@ -1,0 +1,83 @@
+{
+  "id": "openai",
+  "name": "OpenAI",
+  "tagline": "GPT models, images and embeddings",
+  "description": "Access OpenAI's language models to generate text, answer questions, and create embeddings — all via the official REST API.",
+  "category": "AI",
+  "color": "#10A37F",
+  "emoji": "🤖",
+  "baseUrl": "https://api.openai.com/v1",
+  "auth": {
+    "type": "bearer",
+    "hint": "Create an API key in your OpenAI account settings."
+  },
+  "signupUrl": "https://platform.openai.com/api-keys",
+  "docsUrl": "https://platform.openai.com/docs",
+  "tools": [
+    {
+      "name": "chat_completion",
+      "description": "Send a message to a GPT model and get a response. Supports system prompts and conversation history.",
+      "method": "POST",
+      "path": "/chat/completions",
+      "params": [
+        {
+          "name": "model",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Model ID, e.g. gpt-4o, gpt-4o-mini, or gpt-3.5-turbo"
+        },
+        {
+          "name": "messages",
+          "in": "body",
+          "required": true,
+          "type": "array",
+          "description": "Array of message objects: [{role: \"user\"|\"assistant\"|\"system\", content: \"...\"}]"
+        },
+        {
+          "name": "temperature",
+          "in": "body",
+          "required": false,
+          "type": "number",
+          "description": "Randomness (0–2). Lower = more deterministic"
+        },
+        {
+          "name": "max_tokens",
+          "in": "body",
+          "required": false,
+          "type": "integer",
+          "description": "Maximum tokens in the response"
+        }
+      ]
+    },
+    {
+      "name": "list_models",
+      "description": "List all available OpenAI models with their IDs and creation dates.",
+      "method": "GET",
+      "path": "/models",
+      "params": []
+    },
+    {
+      "name": "create_embedding",
+      "description": "Convert text into a numerical vector (embedding) useful for semantic search and similarity.",
+      "method": "POST",
+      "path": "/embeddings",
+      "params": [
+        {
+          "name": "model",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Embedding model, e.g. text-embedding-3-small"
+        },
+        {
+          "name": "input",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Text to convert to an embedding"
+        }
+      ]
+    }
+  ]
+}

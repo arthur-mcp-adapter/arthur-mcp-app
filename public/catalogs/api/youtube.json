@@ -1,0 +1,150 @@
+{
+  "id": "youtube",
+  "name": "YouTube",
+  "tagline": "Video search, channels and statistics",
+  "description": "Search YouTube videos and channels, retrieve video statistics (views, likes, comments), and explore content from any creator using the official YouTube Data API.",
+  "category": "Music & Media",
+  "color": "#FF0000",
+  "emoji": "▶️",
+  "baseUrl": "https://www.googleapis.com/youtube/v3",
+  "auth": {
+    "type": "api-key",
+    "hint": "Create an API key at Google Cloud Console → APIs & Services → Credentials. Enable the YouTube Data API v3 on your project.",
+    "keyName": "key",
+    "keyIn": "query"
+  },
+  "signupUrl": "https://console.cloud.google.com/",
+  "docsUrl": "https://developers.google.com/youtube/v3/docs",
+  "tools": [
+    {
+      "name": "search_videos",
+      "description": "Search YouTube for videos matching a keyword. Returns title, channel, and publication date.",
+      "method": "GET",
+      "path": "/search",
+      "params": [
+        {
+          "name": "q",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Search query, e.g. \"product management tutorial 2024\""
+        },
+        {
+          "name": "part",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Response parts (required): snippet"
+        },
+        {
+          "name": "type",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Resource type: video, channel, or playlist"
+        },
+        {
+          "name": "maxResults",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of results (max 50)"
+        },
+        {
+          "name": "order",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Sort by: date, rating, relevance, title, or viewCount"
+        },
+        {
+          "name": "regionCode",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Filter by country: 2-letter ISO code, e.g. US or BR"
+        }
+      ]
+    },
+    {
+      "name": "get_video_details",
+      "description": "Get full details for a video: title, description, view count, likes, and duration.",
+      "method": "GET",
+      "path": "/videos",
+      "params": [
+        {
+          "name": "id",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Video ID from the YouTube URL (after ?v=), e.g. dQw4w9WgXcQ"
+        },
+        {
+          "name": "part",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Parts to include (required): snippet,statistics,contentDetails"
+        }
+      ]
+    },
+    {
+      "name": "get_channel",
+      "description": "Get a YouTube channel's name, description, subscriber count, and total view count.",
+      "method": "GET",
+      "path": "/channels",
+      "params": [
+        {
+          "name": "id",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Channel ID, e.g. UCBcRF18a7Qf58cCRy5xuWwQ"
+        },
+        {
+          "name": "forUsername",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Channel username (legacy, use id when possible)"
+        },
+        {
+          "name": "part",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Parts to include (required): snippet,statistics"
+        }
+      ]
+    },
+    {
+      "name": "list_playlist_items",
+      "description": "List all videos in a YouTube playlist in order.",
+      "method": "GET",
+      "path": "/playlistItems",
+      "params": [
+        {
+          "name": "playlistId",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Playlist ID from the YouTube URL"
+        },
+        {
+          "name": "part",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Parts to include (required): snippet,contentDetails"
+        },
+        {
+          "name": "maxResults",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of results (max 50)"
+        }
+      ]
+    }
+  ]
+}

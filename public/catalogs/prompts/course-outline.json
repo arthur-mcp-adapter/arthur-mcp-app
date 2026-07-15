@@ -1,0 +1,14 @@
+{
+  "id": "course-outline",
+  "name": "Course Outline Generator",
+  "tagline": "Structure a full course curriculum from a topic",
+  "description": "Creates a complete course outline with modules, lessons, learning objectives, and assessments.",
+  "category": "Education",
+  "emoji": "📚",
+  "tags": [
+    "education",
+    "curriculum",
+    "course design"
+  ],
+  "content": "Create a complete course outline.\n\n**Course title:** {{title}}\n**Subject:** {{subject}}\n**Target audience:** {{audience}}\n**Total duration:** {{duration}}\n**Format:** {{format}} (self-paced, instructor-led, blended)\n**Prerequisite knowledge:** {{prerequisites}}\n\n## Course Overview\n## Learning Outcomes (5-7)\n## Module Structure\n\nFor each module:\n### Module X: {{Module Title}}\n**Duration:** | **Learning objectives:**\n| Lesson | Topics | Activities | Assessment |\n|--------|--------|-----------|-----------|\n\n## Final Assessment / Capstone Project\n## Recommended Resources\n## Certification / Completion Criteria"
+}

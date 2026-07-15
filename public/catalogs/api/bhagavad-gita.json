@@ -1,0 +1,79 @@
+{
+  "id": "bhagavad-gita",
+  "name": "Bhagavad Gita",
+  "tagline": "Read Bhagavad Gita chapters and verses",
+  "description": "List Bhagavad Gita chapters and retrieve a chapter or individual verse with translations and commentaries.",
+  "category": "Books",
+  "color": "#F97316",
+  "emoji": "🕉️",
+  "baseUrl": "https://api.bhagavadgita.io/v2",
+  "auth": {
+    "type": "api-key",
+    "hint": "Obtain an API key through the BhagavadGita.io RapidAPI listing and send it in the X-API-KEY header.",
+    "keyName": "X-API-KEY",
+    "keyIn": "header"
+  },
+  "signupUrl": "https://rapidapi.com/bhagavad-gita-bhagavad-gita-default/api/bhagavad-gita3",
+  "docsUrl": "https://api.bhagavadgita.io/docs",
+  "tools": [
+    {
+      "name": "list_chapters",
+      "description": "List Bhagavad Gita chapters in chapter order.",
+      "method": "GET",
+      "path": "/chapters/",
+      "params": [
+        {
+          "name": "skip",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of chapters to skip; defaults to 0."
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Maximum chapters to return; defaults to 18."
+        }
+      ]
+    },
+    {
+      "name": "get_chapter",
+      "description": "Retrieve one Bhagavad Gita chapter by number.",
+      "method": "GET",
+      "path": "/chapters/{chapter_number}/",
+      "params": [
+        {
+          "name": "chapter_number",
+          "in": "path",
+          "required": true,
+          "type": "integer",
+          "description": "Bhagavad Gita chapter number."
+        }
+      ]
+    },
+    {
+      "name": "get_verse",
+      "description": "Retrieve one verse with its translations and commentaries.",
+      "method": "GET",
+      "path": "/chapters/{chapter_number}/verses/{verse_number}/",
+      "params": [
+        {
+          "name": "chapter_number",
+          "in": "path",
+          "required": true,
+          "type": "integer",
+          "description": "Bhagavad Gita chapter number."
+        },
+        {
+          "name": "verse_number",
+          "in": "path",
+          "required": true,
+          "type": "integer",
+          "description": "Verse number within the chapter."
+        }
+      ]
+    }
+  ]
+}

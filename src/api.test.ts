@@ -1,8 +1,12 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+
+const signOut = vi.hoisted(() => vi.fn());
+vi.mock('./supabaseClient', () => ({ supabase: { auth: { signOut } } }));
 
 describe('api client', () => {
   beforeEach(() => {
     localStorage.clear();
+    signOut.mockClear();
   });
 
   it('exports a default axios instance with baseURL /api', async () => {
@@ -44,6 +48,7 @@ describe('api client', () => {
     await expect(handler({ response: { status: 401 } })).rejects.toEqual({ response: { status: 401 } });
     expect(localStorage.getItem('token')).toBeNull();
     expect(window.location.href).toBe('/login');
+    expect(signOut).toHaveBeenCalled();
 
     localStorage.setItem('token', 'tok456');
     await expect(handler({ response: { status: 500 } })).rejects.toEqual({ response: { status: 500 } });

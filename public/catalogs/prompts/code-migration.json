@@ -1,0 +1,14 @@
+{
+  "id": "code-migration",
+  "name": "Code Migration Guide",
+  "tagline": "Plan and execute framework or language migrations",
+  "description": "Creates a step-by-step migration plan from one technology to another with risk assessment.",
+  "category": "Code",
+  "emoji": "🚀",
+  "tags": [
+    "code",
+    "migration",
+    "architecture"
+  ],
+  "content": "Create a migration guide for the following code/codebase.\n\n**From:** {{source_technology}}\n**To:** {{target_technology}}\n\n## Migration Assessment\n- Scope and complexity\n- Breaking changes\n- Estimated effort\n\n## Pre-Migration Checklist\n-\n\n## Migration Steps\n1.\n2.\n3.\n\n## Risk Areas\n| Risk | Likelihood | Impact | Mitigation |\n|------|-----------|--------|-----------|\n\n## Testing Strategy\n-\n\n## Rollback Plan\n-\n\nCode/Description:\n{{code}}"
+}

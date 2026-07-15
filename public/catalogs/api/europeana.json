@@ -1,0 +1,56 @@
+{
+  "id": "europeana",
+  "name": "Europeana",
+  "tagline": "Search European cultural heritage records",
+  "description": "Search Europeana metadata and media records by text with refinement and pagination controls.",
+  "category": "Art & Design",
+  "color": "#0A72CC",
+  "emoji": "🏺",
+  "baseUrl": "https://api.europeana.eu/record/v2",
+  "auth": {
+    "type": "api-key",
+    "hint": "Request a Europeana API key and send it in the wskey query parameter.",
+    "keyName": "wskey",
+    "keyIn": "query"
+  },
+  "signupUrl": "https://pro.europeana.eu/page/get-api",
+  "docsUrl": "https://europeana.atlassian.net/wiki/spaces/EF/pages/2385739812",
+  "tools": [
+    {
+      "name": "search_cultural_records",
+      "description": "Search Europeana cultural-heritage records.",
+      "method": "GET",
+      "path": "/search.json",
+      "params": [
+        {
+          "name": "query",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Europeana search query."
+        },
+        {
+          "name": "qf",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Query refinement filter."
+        },
+        {
+          "name": "rows",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of records to return."
+        },
+        {
+          "name": "start",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Starting result offset."
+        }
+      ]
+    }
+  ]
+}

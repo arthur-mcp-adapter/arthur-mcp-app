@@ -1,0 +1,1665 @@
+{
+  "version": 1,
+  "items": [
+    {
+      "id": "executive-summary",
+      "name": "Executive Summary",
+      "tagline": "Condense any document into a structured executive brief",
+      "description": "Transforms long documents into concise executive summaries with key findings and recommendations.",
+      "category": "Summarization",
+      "emoji": "📋",
+      "tags": [
+        "summarization",
+        "business",
+        "executive"
+      ],
+      "searchTerms": [
+        "summarization",
+        "business",
+        "executive"
+      ]
+    },
+    {
+      "id": "meeting-notes",
+      "name": "Meeting Notes Distiller",
+      "tagline": "Turn meeting transcripts into structured notes and action items",
+      "description": "Converts raw meeting transcripts into organized notes with decisions, action items, and follow-ups.",
+      "category": "Summarization",
+      "emoji": "📝",
+      "tags": [
+        "summarization",
+        "meetings",
+        "productivity"
+      ],
+      "searchTerms": [
+        "summarization",
+        "meetings",
+        "productivity"
+      ]
+    },
+    {
+      "id": "article-key-points",
+      "name": "Article Key Points",
+      "tagline": "Extract essential insights from any article",
+      "description": "Reads through articles and surfaces the most important takeaways in a scannable format.",
+      "category": "Summarization",
+      "emoji": "🗞️",
+      "tags": [
+        "summarization",
+        "reading",
+        "research"
+      ],
+      "searchTerms": [
+        "summarization",
+        "reading",
+        "research"
+      ]
+    },
+    {
+      "id": "podcast-summary",
+      "name": "Podcast / Video Summary",
+      "tagline": "Summarize spoken-word content into structured notes",
+      "description": "Turns podcast transcripts or video captions into a clean summary with timestamps and highlights.",
+      "category": "Summarization",
+      "emoji": "🎙️",
+      "tags": [
+        "summarization",
+        "podcast",
+        "video"
+      ],
+      "searchTerms": [
+        "summarization",
+        "podcast",
+        "video"
+      ]
+    },
+    {
+      "id": "legal-doc-summary",
+      "name": "Legal Document Summary",
+      "tagline": "Translate dense legal text into plain English",
+      "description": "Summarizes contracts, agreements, and legal filings in plain language for non-lawyers.",
+      "category": "Summarization",
+      "emoji": "⚖️",
+      "tags": [
+        "summarization",
+        "legal",
+        "contracts"
+      ],
+      "searchTerms": [
+        "summarization",
+        "legal",
+        "contracts"
+      ]
+    },
+    {
+      "id": "financial-report-summary",
+      "name": "Financial Report Summary",
+      "tagline": "Distill earnings reports and financial statements",
+      "description": "Extracts the key numbers, trends, and signals from financial reports into a concise brief.",
+      "category": "Summarization",
+      "emoji": "📈",
+      "tags": [
+        "summarization",
+        "finance",
+        "earnings"
+      ],
+      "searchTerms": [
+        "summarization",
+        "finance",
+        "earnings"
+      ]
+    },
+    {
+      "id": "code-reviewer",
+      "name": "Code Reviewer",
+      "tagline": "Thorough code review covering quality, security, and performance",
+      "description": "Performs a structured code review across correctness, security, performance, readability, and best practices.",
+      "category": "Code",
+      "emoji": "🔍",
+      "tags": [
+        "code",
+        "review",
+        "security",
+        "quality"
+      ],
+      "searchTerms": [
+        "code",
+        "review",
+        "security",
+        "quality"
+      ]
+    },
+    {
+      "id": "code-explainer",
+      "name": "Code Explainer",
+      "tagline": "Explain code in plain English for any audience",
+      "description": "Translates technical code into clear, jargon-free explanations.",
+      "category": "Code",
+      "emoji": "💬",
+      "tags": [
+        "code",
+        "documentation",
+        "explanation"
+      ],
+      "searchTerms": [
+        "code",
+        "documentation",
+        "explanation"
+      ]
+    },
+    {
+      "id": "unit-test-generator",
+      "name": "Unit Test Generator",
+      "tagline": "Generate comprehensive unit tests for any function",
+      "description": "Creates thorough unit tests covering happy paths, edge cases, and error conditions.",
+      "category": "Code",
+      "emoji": "✅",
+      "tags": [
+        "code",
+        "testing",
+        "quality"
+      ],
+      "searchTerms": [
+        "code",
+        "testing",
+        "quality"
+      ]
+    },
+    {
+      "id": "bug-report-analyzer",
+      "name": "Bug Report Analyzer",
+      "tagline": "Diagnose bug reports and generate investigation plans",
+      "description": "Analyzes bug reports and stack traces to produce structured investigation plans with fix suggestions.",
+      "category": "Code",
+      "emoji": "🐛",
+      "tags": [
+        "code",
+        "debugging",
+        "analysis"
+      ],
+      "searchTerms": [
+        "code",
+        "debugging",
+        "analysis"
+      ]
+    },
+    {
+      "id": "refactoring-advisor",
+      "name": "Refactoring Advisor",
+      "tagline": "Identify and prioritize refactoring opportunities",
+      "description": "Analyzes code for refactoring opportunities and produces a prioritized improvement plan.",
+      "category": "Code",
+      "emoji": "♻️",
+      "tags": [
+        "code",
+        "refactoring",
+        "architecture"
+      ],
+      "searchTerms": [
+        "code",
+        "refactoring",
+        "architecture"
+      ]
+    },
+    {
+      "id": "api-docs-generator",
+      "name": "API Documentation Generator",
+      "tagline": "Generate OpenAPI-style docs from code or spec",
+      "description": "Produces structured API documentation with endpoints, parameters, request/response examples.",
+      "category": "Code",
+      "emoji": "📡",
+      "tags": [
+        "code",
+        "documentation",
+        "api"
+      ],
+      "searchTerms": [
+        "code",
+        "documentation",
+        "api"
+      ]
+    },
+    {
+      "id": "sql-optimizer",
+      "name": "SQL Query Optimizer",
+      "tagline": "Optimize slow SQL queries for performance",
+      "description": "Analyzes SQL queries for performance issues and rewrites them with indexing and optimization suggestions.",
+      "category": "Code",
+      "emoji": "🗃️",
+      "tags": [
+        "code",
+        "sql",
+        "database",
+        "performance"
+      ],
+      "searchTerms": [
+        "code",
+        "sql",
+        "database",
+        "performance"
+      ]
+    },
+    {
+      "id": "security-scanner",
+      "name": "Security Vulnerability Scanner",
+      "tagline": "Scan code for OWASP Top 10 and common vulnerabilities",
+      "description": "Reviews code for security vulnerabilities including injection, auth issues, and data exposure risks.",
+      "category": "Code",
+      "emoji": "🔒",
+      "tags": [
+        "code",
+        "security",
+        "owasp"
+      ],
+      "searchTerms": [
+        "code",
+        "security",
+        "owasp"
+      ]
+    },
+    {
+      "id": "code-migration",
+      "name": "Code Migration Guide",
+      "tagline": "Plan and execute framework or language migrations",
+      "description": "Creates a step-by-step migration plan from one technology to another with risk assessment.",
+      "category": "Code",
+      "emoji": "🚀",
+      "tags": [
+        "code",
+        "migration",
+        "architecture"
+      ],
+      "searchTerms": [
+        "code",
+        "migration",
+        "architecture"
+      ]
+    },
+    {
+      "id": "swot-analysis",
+      "name": "SWOT Analysis",
+      "tagline": "Structured strengths, weaknesses, opportunities, and threats",
+      "description": "Generates a complete SWOT analysis with strategic recommendations.",
+      "category": "Analysis",
+      "emoji": "🧭",
+      "tags": [
+        "analysis",
+        "strategy",
+        "business"
+      ],
+      "searchTerms": [
+        "analysis",
+        "strategy",
+        "business"
+      ]
+    },
+    {
+      "id": "sentiment-analyzer",
+      "name": "Sentiment Analyzer",
+      "tagline": "Classify sentiment and emotional tone of any text",
+      "description": "Analyzes text for overall sentiment, emotional tones, and key phrases driving the score.",
+      "category": "Analysis",
+      "emoji": "📊",
+      "tags": [
+        "analysis",
+        "sentiment",
+        "nlp"
+      ],
+      "searchTerms": [
+        "analysis",
+        "sentiment",
+        "nlp"
+      ]
+    },
+    {
+      "id": "root-cause-analysis",
+      "name": "Root Cause Analysis",
+      "tagline": "Identify root causes using the 5 Whys methodology",
+      "description": "Guides a structured 5 Whys root cause analysis for incidents or business problems.",
+      "category": "Analysis",
+      "emoji": "🔎",
+      "tags": [
+        "analysis",
+        "incident",
+        "process"
+      ],
+      "searchTerms": [
+        "analysis",
+        "incident",
+        "process"
+      ]
+    },
+    {
+      "id": "user-feedback-classifier",
+      "name": "User Feedback Classifier",
+      "tagline": "Categorize and extract themes from user feedback",
+      "description": "Processes raw user feedback into structured categories, themes, and actionable insights.",
+      "category": "Analysis",
+      "emoji": "🗣️",
+      "tags": [
+        "analysis",
+        "feedback",
+        "product",
+        "ux"
+      ],
+      "searchTerms": [
+        "analysis",
+        "feedback",
+        "product",
+        "ux"
+      ]
+    },
+    {
+      "id": "risk-assessment",
+      "name": "Risk Assessment Matrix",
+      "tagline": "Identify, score, and prioritize project risks",
+      "description": "Produces a structured risk register with likelihood, impact, and mitigation strategies.",
+      "category": "Analysis",
+      "emoji": "⚠️",
+      "tags": [
+        "analysis",
+        "risk",
+        "project management"
+      ],
+      "searchTerms": [
+        "analysis",
+        "risk",
+        "project management"
+      ]
+    },
+    {
+      "id": "gap-analysis",
+      "name": "Gap Analysis",
+      "tagline": "Identify the distance between current and desired state",
+      "description": "Maps the gap between where you are and where you want to be, with a roadmap to close it.",
+      "category": "Analysis",
+      "emoji": "📐",
+      "tags": [
+        "analysis",
+        "strategy",
+        "improvement"
+      ],
+      "searchTerms": [
+        "analysis",
+        "strategy",
+        "improvement"
+      ]
+    },
+    {
+      "id": "professional-email",
+      "name": "Professional Email",
+      "tagline": "Draft polished, purpose-driven business emails",
+      "description": "Creates professional emails with clear subject lines and appropriate tone.",
+      "category": "Writing",
+      "emoji": "✉️",
+      "tags": [
+        "writing",
+        "email",
+        "communication"
+      ],
+      "searchTerms": [
+        "writing",
+        "email",
+        "communication"
+      ]
+    },
+    {
+      "id": "product-description",
+      "name": "Product Description",
+      "tagline": "Benefit-focused e-commerce copy that converts",
+      "description": "Writes compelling product descriptions with headlines, bullet points, and SEO keywords.",
+      "category": "Writing",
+      "emoji": "🛍️",
+      "tags": [
+        "writing",
+        "ecommerce",
+        "marketing"
+      ],
+      "searchTerms": [
+        "writing",
+        "ecommerce",
+        "marketing"
+      ]
+    },
+    {
+      "id": "technical-documentation",
+      "name": "Technical Documentation",
+      "tagline": "Clear, structured docs for any component or API",
+      "description": "Produces complete technical documentation with overview, usage, parameters, and troubleshooting.",
+      "category": "Writing",
+      "emoji": "📖",
+      "tags": [
+        "writing",
+        "documentation",
+        "technical"
+      ],
+      "searchTerms": [
+        "writing",
+        "documentation",
+        "technical"
+      ]
+    },
+    {
+      "id": "press-release",
+      "name": "Press Release Writer",
+      "tagline": "Craft newsworthy press releases in AP style",
+      "description": "Writes professional press releases following AP style with quotes, boilerplate, and contact info.",
+      "category": "Writing",
+      "emoji": "📰",
+      "tags": [
+        "writing",
+        "pr",
+        "marketing",
+        "news"
+      ],
+      "searchTerms": [
+        "writing",
+        "pr",
+        "marketing",
+        "news"
+      ]
+    },
+    {
+      "id": "job-description",
+      "name": "Job Description Writer",
+      "tagline": "Write inclusive, compelling job postings",
+      "description": "Creates clear, inclusive job descriptions that attract top talent and set accurate expectations.",
+      "category": "Writing",
+      "emoji": "💼",
+      "tags": [
+        "writing",
+        "hr",
+        "recruiting"
+      ],
+      "searchTerms": [
+        "writing",
+        "hr",
+        "recruiting"
+      ]
+    },
+    {
+      "id": "blog-post-outline",
+      "name": "Blog Post Outline",
+      "tagline": "Create structured outlines for long-form content",
+      "description": "Generates a detailed blog post outline with headings, subpoints, and SEO optimization notes.",
+      "category": "Writing",
+      "emoji": "✍️",
+      "tags": [
+        "writing",
+        "blog",
+        "content",
+        "seo"
+      ],
+      "searchTerms": [
+        "writing",
+        "blog",
+        "content",
+        "seo"
+      ]
+    },
+    {
+      "id": "case-study",
+      "name": "Case Study Writer",
+      "tagline": "Write compelling customer success stories",
+      "description": "Structures customer wins into persuasive case studies following the challenge-solution-result framework.",
+      "category": "Writing",
+      "emoji": "🏆",
+      "tags": [
+        "writing",
+        "marketing",
+        "case study"
+      ],
+      "searchTerms": [
+        "writing",
+        "marketing",
+        "case study"
+      ]
+    },
+    {
+      "id": "faq-generator",
+      "name": "FAQ Generator",
+      "tagline": "Generate comprehensive FAQ sections from any content",
+      "description": "Creates thorough FAQ sections anticipating real user questions from a topic or document.",
+      "category": "Writing",
+      "emoji": "❓",
+      "tags": [
+        "writing",
+        "documentation",
+        "support"
+      ],
+      "searchTerms": [
+        "writing",
+        "documentation",
+        "support"
+      ]
+    },
+    {
+      "id": "ticket-classifier",
+      "name": "Support Ticket Classifier",
+      "tagline": "Triage and categorize incoming support tickets",
+      "description": "Classifies tickets by category, priority, and sentiment and extracts key diagnostic info.",
+      "category": "Customer Support",
+      "emoji": "🎫",
+      "tags": [
+        "support",
+        "classification",
+        "triage"
+      ],
+      "searchTerms": [
+        "support",
+        "classification",
+        "triage"
+      ]
+    },
+    {
+      "id": "support-response",
+      "name": "Support Response Generator",
+      "tagline": "Draft empathetic, solution-oriented customer replies",
+      "description": "Creates helpful, empathetic customer support responses with clear next steps.",
+      "category": "Customer Support",
+      "emoji": "💌",
+      "tags": [
+        "support",
+        "response",
+        "customer"
+      ],
+      "searchTerms": [
+        "support",
+        "response",
+        "customer"
+      ]
+    },
+    {
+      "id": "escalation-detector",
+      "name": "Escalation Detector",
+      "tagline": "Identify tickets that need immediate escalation",
+      "description": "Scans messages for escalation signals like legal threats, VIP accounts, or critical issues.",
+      "category": "Customer Support",
+      "emoji": "🚨",
+      "tags": [
+        "support",
+        "escalation",
+        "risk"
+      ],
+      "searchTerms": [
+        "support",
+        "escalation",
+        "risk"
+      ]
+    },
+    {
+      "id": "churn-risk-analyzer",
+      "name": "Churn Risk Analyzer",
+      "tagline": "Detect early signals of customer churn",
+      "description": "Analyzes customer communication and behavior signals to predict and prevent churn.",
+      "category": "Customer Support",
+      "emoji": "📉",
+      "tags": [
+        "support",
+        "churn",
+        "retention"
+      ],
+      "searchTerms": [
+        "support",
+        "churn",
+        "retention"
+      ]
+    },
+    {
+      "id": "knowledge-base-article",
+      "name": "Knowledge Base Article",
+      "tagline": "Write self-service help articles from support tickets",
+      "description": "Transforms resolved support tickets or feature explanations into polished KB articles.",
+      "category": "Customer Support",
+      "emoji": "📚",
+      "tags": [
+        "support",
+        "documentation",
+        "knowledge base"
+      ],
+      "searchTerms": [
+        "support",
+        "documentation",
+        "knowledge base"
+      ]
+    },
+    {
+      "id": "nps-analyzer",
+      "name": "NPS Response Analyzer",
+      "tagline": "Extract insights from Net Promoter Score responses",
+      "description": "Analyzes NPS survey responses to surface themes, segment detractors/promoters, and recommend actions.",
+      "category": "Customer Support",
+      "emoji": "⭐",
+      "tags": [
+        "support",
+        "nps",
+        "feedback",
+        "analysis"
+      ],
+      "searchTerms": [
+        "support",
+        "nps",
+        "feedback",
+        "analysis"
+      ]
+    },
+    {
+      "id": "entity-extractor",
+      "name": "Entity Extractor",
+      "tagline": "Pull names, dates, locations, and amounts from any text",
+      "description": "Identifies and categorizes all named entities in unstructured text in structured format.",
+      "category": "Data Extraction",
+      "emoji": "🏷️",
+      "tags": [
+        "data",
+        "extraction",
+        "nlp",
+        "entities"
+      ],
+      "searchTerms": [
+        "data",
+        "extraction",
+        "nlp",
+        "entities"
+      ]
+    },
+    {
+      "id": "structured-data-parser",
+      "name": "Structured Data Parser",
+      "tagline": "Convert unstructured text to JSON using a schema",
+      "description": "Parses free-form text and maps it to a defined JSON schema with confidence scoring.",
+      "category": "Data Extraction",
+      "emoji": "⚙️",
+      "tags": [
+        "data",
+        "extraction",
+        "json",
+        "parsing"
+      ],
+      "searchTerms": [
+        "data",
+        "extraction",
+        "json",
+        "parsing"
+      ]
+    },
+    {
+      "id": "invoice-extractor",
+      "name": "Invoice & Receipt Extractor",
+      "tagline": "Extract structured data from invoices and receipts",
+      "description": "Pulls vendor, line items, totals, and payment terms from invoice text or OCR output.",
+      "category": "Data Extraction",
+      "emoji": "🧾",
+      "tags": [
+        "data",
+        "extraction",
+        "finance",
+        "invoices"
+      ],
+      "searchTerms": [
+        "data",
+        "extraction",
+        "finance",
+        "invoices"
+      ]
+    },
+    {
+      "id": "contract-extractor",
+      "name": "Contract Key Terms Extractor",
+      "tagline": "Pull critical clauses and obligations from contracts",
+      "description": "Extracts parties, obligations, dates, payment terms, and risk clauses from contract text.",
+      "category": "Data Extraction",
+      "emoji": "📜",
+      "tags": [
+        "data",
+        "extraction",
+        "legal",
+        "contracts"
+      ],
+      "searchTerms": [
+        "data",
+        "extraction",
+        "legal",
+        "contracts"
+      ]
+    },
+    {
+      "id": "resume-parser",
+      "name": "Resume / CV Parser",
+      "tagline": "Extract structured data from resumes and CVs",
+      "description": "Parses resume text into structured JSON with contact info, experience, skills, and education.",
+      "category": "Data Extraction",
+      "emoji": "📄",
+      "tags": [
+        "data",
+        "extraction",
+        "hr",
+        "resume"
+      ],
+      "searchTerms": [
+        "data",
+        "extraction",
+        "hr",
+        "resume"
+      ]
+    },
+    {
+      "id": "survey-analyzer",
+      "name": "Survey Response Analyzer",
+      "tagline": "Extract themes and insights from survey open-ends",
+      "description": "Processes open-ended survey responses to identify patterns, themes, and sentiment.",
+      "category": "Data Extraction",
+      "emoji": "📋",
+      "tags": [
+        "data",
+        "extraction",
+        "survey",
+        "analysis"
+      ],
+      "searchTerms": [
+        "data",
+        "extraction",
+        "survey",
+        "analysis"
+      ]
+    },
+    {
+      "id": "comparative-analysis",
+      "name": "Comparative Analysis",
+      "tagline": "Systematically compare options and produce a recommendation",
+      "description": "Evaluates multiple options against defined criteria and produces a comparison matrix with a final recommendation.",
+      "category": "Research",
+      "emoji": "⚖️",
+      "tags": [
+        "research",
+        "analysis",
+        "decision"
+      ],
+      "searchTerms": [
+        "research",
+        "analysis",
+        "decision"
+      ]
+    },
+    {
+      "id": "research-summary",
+      "name": "Research Paper Summary",
+      "tagline": "Distill academic or technical papers into actionable insights",
+      "description": "Summarizes research papers with methodology, findings, practical implications, and limitations.",
+      "category": "Research",
+      "emoji": "🔬",
+      "tags": [
+        "research",
+        "summarization",
+        "academic"
+      ],
+      "searchTerms": [
+        "research",
+        "summarization",
+        "academic"
+      ]
+    },
+    {
+      "id": "market-research",
+      "name": "Market Research Report",
+      "tagline": "Synthesize market data into a structured research report",
+      "description": "Compiles market size, trends, players, and opportunities into a structured research brief.",
+      "category": "Research",
+      "emoji": "🌍",
+      "tags": [
+        "research",
+        "market",
+        "business"
+      ],
+      "searchTerms": [
+        "research",
+        "market",
+        "business"
+      ]
+    },
+    {
+      "id": "competitor-analysis",
+      "name": "Competitor Analysis",
+      "tagline": "Deep-dive competitive intelligence on a specific rival",
+      "description": "Researches and structures competitive intelligence on a specific company or product.",
+      "category": "Research",
+      "emoji": "🕵️",
+      "tags": [
+        "research",
+        "competitive",
+        "business"
+      ],
+      "searchTerms": [
+        "research",
+        "competitive",
+        "business"
+      ]
+    },
+    {
+      "id": "tech-trend-report",
+      "name": "Technology Trend Report",
+      "tagline": "Analyze and forecast trends in a technology domain",
+      "description": "Structures an analysis of emerging technology trends with adoption curves and strategic implications.",
+      "category": "Research",
+      "emoji": "💡",
+      "tags": [
+        "research",
+        "technology",
+        "trends"
+      ],
+      "searchTerms": [
+        "research",
+        "technology",
+        "trends"
+      ]
+    },
+    {
+      "id": "seo-meta-tags",
+      "name": "SEO Meta Tags Generator",
+      "tagline": "Generate optimized title tags and meta descriptions",
+      "description": "Creates SEO-optimized title tags, meta descriptions, and Open Graph tags for web pages.",
+      "category": "SEO & Marketing",
+      "emoji": "🔖",
+      "tags": [
+        "seo",
+        "marketing",
+        "meta"
+      ],
+      "searchTerms": [
+        "seo",
+        "marketing",
+        "meta"
+      ]
+    },
+    {
+      "id": "ad-copy",
+      "name": "Ad Copy Writer",
+      "tagline": "Write high-converting ad copy for any platform",
+      "description": "Creates multiple ad copy variants for Google, Meta, LinkedIn, and display ads.",
+      "category": "SEO & Marketing",
+      "emoji": "📣",
+      "tags": [
+        "marketing",
+        "advertising",
+        "copywriting"
+      ],
+      "searchTerms": [
+        "marketing",
+        "advertising",
+        "copywriting"
+      ]
+    },
+    {
+      "id": "email-newsletter",
+      "name": "Email Newsletter Writer",
+      "tagline": "Craft engaging newsletters that drive opens and clicks",
+      "description": "Writes full email newsletters with subject lines, preheader, body, and CTAs optimized for engagement.",
+      "category": "SEO & Marketing",
+      "emoji": "📧",
+      "tags": [
+        "marketing",
+        "email",
+        "newsletter"
+      ],
+      "searchTerms": [
+        "marketing",
+        "email",
+        "newsletter"
+      ]
+    },
+    {
+      "id": "landing-page-copy",
+      "name": "Landing Page Copy",
+      "tagline": "Conversion-optimized copy for landing pages",
+      "description": "Writes full landing page copy following the AIDA framework with social proof and objection handling.",
+      "category": "SEO & Marketing",
+      "emoji": "🎯",
+      "tags": [
+        "marketing",
+        "landing page",
+        "copywriting",
+        "conversion"
+      ],
+      "searchTerms": [
+        "marketing",
+        "landing page",
+        "copywriting",
+        "conversion"
+      ]
+    },
+    {
+      "id": "content-brief",
+      "name": "Content Brief Generator",
+      "tagline": "Create detailed briefs for content writers",
+      "description": "Generates comprehensive content briefs with SEO requirements, structure, and messaging guidelines.",
+      "category": "SEO & Marketing",
+      "emoji": "📝",
+      "tags": [
+        "marketing",
+        "content",
+        "seo",
+        "brief"
+      ],
+      "searchTerms": [
+        "marketing",
+        "content",
+        "seo",
+        "brief"
+      ]
+    },
+    {
+      "id": "resume-screener",
+      "name": "Resume Screener",
+      "tagline": "Score and rank candidates against job requirements",
+      "description": "Evaluates resumes against job criteria and produces a structured scorecard with hire/no-hire recommendation.",
+      "category": "HR & Recruiting",
+      "emoji": "🗂️",
+      "tags": [
+        "hr",
+        "recruiting",
+        "screening"
+      ],
+      "searchTerms": [
+        "hr",
+        "recruiting",
+        "screening"
+      ]
+    },
+    {
+      "id": "interview-questions",
+      "name": "Interview Question Generator",
+      "tagline": "Create targeted interview questions for any role",
+      "description": "Generates behavioral, technical, and situational interview questions tailored to a specific role.",
+      "category": "HR & Recruiting",
+      "emoji": "🎤",
+      "tags": [
+        "hr",
+        "recruiting",
+        "interviews"
+      ],
+      "searchTerms": [
+        "hr",
+        "recruiting",
+        "interviews"
+      ]
+    },
+    {
+      "id": "performance-review",
+      "name": "Performance Review Writer",
+      "tagline": "Draft balanced, constructive performance reviews",
+      "description": "Writes structured performance reviews with achievements, areas for growth, and development goals.",
+      "category": "HR & Recruiting",
+      "emoji": "📊",
+      "tags": [
+        "hr",
+        "performance",
+        "management"
+      ],
+      "searchTerms": [
+        "hr",
+        "performance",
+        "management"
+      ]
+    },
+    {
+      "id": "onboarding-plan",
+      "name": "Employee Onboarding Plan",
+      "tagline": "Create structured 30-60-90 day onboarding plans",
+      "description": "Generates detailed onboarding plans with milestones, activities, and success metrics.",
+      "category": "HR & Recruiting",
+      "emoji": "🤝",
+      "tags": [
+        "hr",
+        "onboarding",
+        "management"
+      ],
+      "searchTerms": [
+        "hr",
+        "onboarding",
+        "management"
+      ]
+    },
+    {
+      "id": "offer-letter",
+      "name": "Job Offer Letter",
+      "tagline": "Generate professional, legally-aware offer letters",
+      "description": "Drafts complete job offer letters with compensation details, start date, and standard contingencies.",
+      "category": "HR & Recruiting",
+      "emoji": "📨",
+      "tags": [
+        "hr",
+        "recruiting",
+        "offer"
+      ],
+      "searchTerms": [
+        "hr",
+        "recruiting",
+        "offer"
+      ]
+    },
+    {
+      "id": "financial-statement-analyzer",
+      "name": "Financial Statement Analyzer",
+      "tagline": "Analyze P&L, balance sheets, and cash flow statements",
+      "description": "Reviews financial statements to surface trends, ratios, and red flags for business health.",
+      "category": "Finance",
+      "emoji": "💰",
+      "tags": [
+        "finance",
+        "analysis",
+        "accounting"
+      ],
+      "searchTerms": [
+        "finance",
+        "analysis",
+        "accounting"
+      ]
+    },
+    {
+      "id": "budget-variance",
+      "name": "Budget Variance Explainer",
+      "tagline": "Explain budget vs actual variances in business terms",
+      "description": "Analyzes budget variances and explains them with root causes and corrective actions.",
+      "category": "Finance",
+      "emoji": "📊",
+      "tags": [
+        "finance",
+        "budgeting",
+        "analysis"
+      ],
+      "searchTerms": [
+        "finance",
+        "budgeting",
+        "analysis"
+      ]
+    },
+    {
+      "id": "investment-thesis",
+      "name": "Investment Thesis Writer",
+      "tagline": "Structure an investment thesis for any asset or company",
+      "description": "Creates a structured investment thesis with bull/bear cases, valuation, and risk factors.",
+      "category": "Finance",
+      "emoji": "📈",
+      "tags": [
+        "finance",
+        "investment",
+        "analysis"
+      ],
+      "searchTerms": [
+        "finance",
+        "investment",
+        "analysis"
+      ]
+    },
+    {
+      "id": "expense-categorizer",
+      "name": "Expense Categorizer",
+      "tagline": "Auto-categorize expense line items for accounting",
+      "description": "Categorizes raw expense data into standard accounting categories with tax treatment notes.",
+      "category": "Finance",
+      "emoji": "💳",
+      "tags": [
+        "finance",
+        "accounting",
+        "expenses"
+      ],
+      "searchTerms": [
+        "finance",
+        "accounting",
+        "expenses"
+      ]
+    },
+    {
+      "id": "cash-flow-forecast",
+      "name": "Cash Flow Forecast",
+      "tagline": "Project cash flow based on historical data and assumptions",
+      "description": "Builds a structured cash flow forecast with scenario analysis for planning purposes.",
+      "category": "Finance",
+      "emoji": "💵",
+      "tags": [
+        "finance",
+        "forecasting",
+        "cash flow"
+      ],
+      "searchTerms": [
+        "finance",
+        "forecasting",
+        "cash flow"
+      ]
+    },
+    {
+      "id": "contract-review",
+      "name": "Contract Review Checklist",
+      "tagline": "Review contracts for missing or risky clauses",
+      "description": "Evaluates contracts against a standard checklist of clauses, flagging gaps and risks.",
+      "category": "Legal",
+      "emoji": "📑",
+      "tags": [
+        "legal",
+        "contracts",
+        "compliance"
+      ],
+      "searchTerms": [
+        "legal",
+        "contracts",
+        "compliance"
+      ]
+    },
+    {
+      "id": "privacy-policy-analyzer",
+      "name": "Privacy Policy Analyzer",
+      "tagline": "Check privacy policies for GDPR and CCPA compliance",
+      "description": "Reviews privacy policies against GDPR, CCPA, and general best practices, flagging gaps and risks.",
+      "category": "Legal",
+      "emoji": "🔏",
+      "tags": [
+        "legal",
+        "privacy",
+        "gdpr",
+        "compliance"
+      ],
+      "searchTerms": [
+        "legal",
+        "privacy",
+        "gdpr",
+        "compliance"
+      ]
+    },
+    {
+      "id": "terms-summarizer",
+      "name": "Terms of Service Summarizer",
+      "tagline": "Translate lengthy ToS into plain English bullet points",
+      "description": "Extracts the key user rights, restrictions, and risky clauses from Terms of Service documents.",
+      "category": "Legal",
+      "emoji": "📋",
+      "tags": [
+        "legal",
+        "terms",
+        "consumer"
+      ],
+      "searchTerms": [
+        "legal",
+        "terms",
+        "consumer"
+      ]
+    },
+    {
+      "id": "legal-memo",
+      "name": "Legal Memo Writer",
+      "tagline": "Structure legal analysis in standard memo format",
+      "description": "Drafts legal memos with question presented, brief answer, facts, analysis, and conclusion.",
+      "category": "Legal",
+      "emoji": "⚖️",
+      "tags": [
+        "legal",
+        "memo",
+        "analysis"
+      ],
+      "searchTerms": [
+        "legal",
+        "memo",
+        "analysis"
+      ]
+    },
+    {
+      "id": "lesson-plan",
+      "name": "Lesson Plan Creator",
+      "tagline": "Design structured lesson plans with objectives and activities",
+      "description": "Creates detailed lesson plans with learning objectives, activities, assessment, and materials.",
+      "category": "Education",
+      "emoji": "🎓",
+      "tags": [
+        "education",
+        "teaching",
+        "curriculum"
+      ],
+      "searchTerms": [
+        "education",
+        "teaching",
+        "curriculum"
+      ]
+    },
+    {
+      "id": "quiz-generator",
+      "name": "Quiz Generator",
+      "tagline": "Create quizzes with multiple formats from any content",
+      "description": "Generates multiple choice, true/false, and short answer questions from educational content.",
+      "category": "Education",
+      "emoji": "❓",
+      "tags": [
+        "education",
+        "assessment",
+        "quiz"
+      ],
+      "searchTerms": [
+        "education",
+        "assessment",
+        "quiz"
+      ]
+    },
+    {
+      "id": "learning-objectives",
+      "name": "Learning Objective Writer",
+      "tagline": "Write SMART learning objectives using Bloom's taxonomy",
+      "description": "Creates measurable learning objectives at all levels of Bloom's taxonomy for courses and modules.",
+      "category": "Education",
+      "emoji": "🎯",
+      "tags": [
+        "education",
+        "curriculum",
+        "instructional design"
+      ],
+      "searchTerms": [
+        "education",
+        "curriculum",
+        "instructional design"
+      ]
+    },
+    {
+      "id": "explainer-for-beginners",
+      "name": "Concept Explainer for Beginners",
+      "tagline": "Explain any complex concept to a complete beginner",
+      "description": "Breaks down complex concepts using the Feynman Technique with analogies and examples.",
+      "category": "Education",
+      "emoji": "🧠",
+      "tags": [
+        "education",
+        "explanation",
+        "learning"
+      ],
+      "searchTerms": [
+        "education",
+        "explanation",
+        "learning"
+      ]
+    },
+    {
+      "id": "course-outline",
+      "name": "Course Outline Generator",
+      "tagline": "Structure a full course curriculum from a topic",
+      "description": "Creates a complete course outline with modules, lessons, learning objectives, and assessments.",
+      "category": "Education",
+      "emoji": "📚",
+      "tags": [
+        "education",
+        "curriculum",
+        "course design"
+      ],
+      "searchTerms": [
+        "education",
+        "curriculum",
+        "course design"
+      ]
+    },
+    {
+      "id": "social-media-post",
+      "name": "Social Media Post Generator",
+      "tagline": "Create platform-native posts for any social network",
+      "description": "Generates optimized posts for LinkedIn, Twitter/X, Instagram, and Facebook with platform-specific formatting.",
+      "category": "Social Media",
+      "emoji": "📱",
+      "tags": [
+        "social media",
+        "content",
+        "marketing"
+      ],
+      "searchTerms": [
+        "social media",
+        "content",
+        "marketing"
+      ]
+    },
+    {
+      "id": "hashtag-strategy",
+      "name": "Hashtag Strategy",
+      "tagline": "Research and tier hashtags for maximum reach",
+      "description": "Develops a tiered hashtag strategy with high, medium, and niche tags for content amplification.",
+      "category": "Social Media",
+      "emoji": "#️⃣",
+      "tags": [
+        "social media",
+        "hashtags",
+        "reach"
+      ],
+      "searchTerms": [
+        "social media",
+        "hashtags",
+        "reach"
+      ]
+    },
+    {
+      "id": "content-calendar",
+      "name": "Content Calendar Planner",
+      "tagline": "Plan a month of social content around themes and events",
+      "description": "Creates a structured content calendar with themes, post types, and copy ideas for a full month.",
+      "category": "Social Media",
+      "emoji": "📅",
+      "tags": [
+        "social media",
+        "content",
+        "planning"
+      ],
+      "searchTerms": [
+        "social media",
+        "content",
+        "planning"
+      ]
+    },
+    {
+      "id": "community-response",
+      "name": "Community Response Writer",
+      "tagline": "Craft authentic replies to comments and DMs",
+      "description": "Generates on-brand, authentic responses to social media comments, DMs, and reviews.",
+      "category": "Social Media",
+      "emoji": "💬",
+      "tags": [
+        "social media",
+        "community",
+        "engagement"
+      ],
+      "searchTerms": [
+        "social media",
+        "community",
+        "engagement"
+      ]
+    },
+    {
+      "id": "influencer-brief",
+      "name": "Influencer Brief",
+      "tagline": "Create detailed briefs for influencer partnerships",
+      "description": "Produces comprehensive influencer briefs with campaign goals, content requirements, and dos and don'ts.",
+      "category": "Social Media",
+      "emoji": "🌟",
+      "tags": [
+        "social media",
+        "influencer",
+        "marketing"
+      ],
+      "searchTerms": [
+        "social media",
+        "influencer",
+        "marketing"
+      ]
+    },
+    {
+      "id": "user-story",
+      "name": "User Story Writer",
+      "tagline": "Write well-structured user stories with acceptance criteria",
+      "description": "Creates user stories in standard format with acceptance criteria, edge cases, and story points guidance.",
+      "category": "Product Management",
+      "emoji": "📌",
+      "tags": [
+        "product",
+        "agile",
+        "user stories"
+      ],
+      "searchTerms": [
+        "product",
+        "agile",
+        "user stories"
+      ]
+    },
+    {
+      "id": "feature-spec",
+      "name": "Feature Specification",
+      "tagline": "Write detailed product specs for engineering teams",
+      "description": "Creates comprehensive feature specifications with requirements, flows, edge cases, and success metrics.",
+      "category": "Product Management",
+      "emoji": "🗺️",
+      "tags": [
+        "product",
+        "specification",
+        "engineering"
+      ],
+      "searchTerms": [
+        "product",
+        "specification",
+        "engineering"
+      ]
+    },
+    {
+      "id": "roadmap-prioritizer",
+      "name": "Roadmap Prioritizer",
+      "tagline": "Score and rank features using RICE or MoSCoW",
+      "description": "Evaluates a list of features using prioritization frameworks to produce a ranked roadmap.",
+      "category": "Product Management",
+      "emoji": "🗓️",
+      "tags": [
+        "product",
+        "roadmap",
+        "prioritization"
+      ],
+      "searchTerms": [
+        "product",
+        "roadmap",
+        "prioritization"
+      ]
+    },
+    {
+      "id": "stakeholder-update",
+      "name": "Stakeholder Update",
+      "tagline": "Write concise product updates for leadership",
+      "description": "Produces clear stakeholder updates with progress, blockers, decisions needed, and next steps.",
+      "category": "Product Management",
+      "emoji": "📢",
+      "tags": [
+        "product",
+        "communication",
+        "stakeholders"
+      ],
+      "searchTerms": [
+        "product",
+        "communication",
+        "stakeholders"
+      ]
+    },
+    {
+      "id": "product-requirements",
+      "name": "Product Requirements Document",
+      "tagline": "Create a full PRD for a new product or feature",
+      "description": "Produces a complete Product Requirements Document with context, user needs, requirements, and success criteria.",
+      "category": "Product Management",
+      "emoji": "📄",
+      "tags": [
+        "product",
+        "prd",
+        "requirements"
+      ],
+      "searchTerms": [
+        "product",
+        "prd",
+        "requirements"
+      ]
+    },
+    {
+      "id": "cold-outreach",
+      "name": "Cold Outreach Email",
+      "tagline": "Write personalized cold emails that get replies",
+      "description": "Creates compelling, personalized cold outreach emails with high-converting subject lines and CTAs.",
+      "category": "Sales",
+      "emoji": "🎣",
+      "tags": [
+        "sales",
+        "outreach",
+        "email"
+      ],
+      "searchTerms": [
+        "sales",
+        "outreach",
+        "email"
+      ]
+    },
+    {
+      "id": "objection-handler",
+      "name": "Objection Handler",
+      "tagline": "Craft responses to common sales objections",
+      "description": "Prepares polished, empathetic responses to the most common objections in your sales cycle.",
+      "category": "Sales",
+      "emoji": "🛡️",
+      "tags": [
+        "sales",
+        "objections",
+        "negotiation"
+      ],
+      "searchTerms": [
+        "sales",
+        "objections",
+        "negotiation"
+      ]
+    },
+    {
+      "id": "sales-proposal",
+      "name": "Sales Proposal Writer",
+      "tagline": "Create compelling, customized sales proposals",
+      "description": "Writes professional sales proposals with problem framing, solution, pricing, and social proof.",
+      "category": "Sales",
+      "emoji": "📊",
+      "tags": [
+        "sales",
+        "proposal",
+        "business development"
+      ],
+      "searchTerms": [
+        "sales",
+        "proposal",
+        "business development"
+      ]
+    },
+    {
+      "id": "followup-sequence",
+      "name": "Follow-Up Email Sequence",
+      "tagline": "Write a multi-touch follow-up cadence that converts",
+      "description": "Creates a 5-7 email follow-up sequence with varied hooks, value adds, and breakup email.",
+      "category": "Sales",
+      "emoji": "🔄",
+      "tags": [
+        "sales",
+        "email",
+        "sequence"
+      ],
+      "searchTerms": [
+        "sales",
+        "email",
+        "sequence"
+      ]
+    },
+    {
+      "id": "win-loss-analysis",
+      "name": "Win/Loss Analysis",
+      "tagline": "Extract insights from won and lost deals",
+      "description": "Structures post-deal analysis to surface patterns in wins and losses for sales improvement.",
+      "category": "Sales",
+      "emoji": "🏅",
+      "tags": [
+        "sales",
+        "analysis",
+        "strategy"
+      ],
+      "searchTerms": [
+        "sales",
+        "analysis",
+        "strategy"
+      ]
+    },
+    {
+      "id": "incident-postmortem",
+      "name": "Incident Postmortem",
+      "tagline": "Write blameless postmortems for production incidents",
+      "description": "Creates structured blameless postmortem documents with timeline, impact, root cause, and action items.",
+      "category": "DevOps",
+      "emoji": "🚒",
+      "tags": [
+        "devops",
+        "incident",
+        "sre",
+        "postmortem"
+      ],
+      "searchTerms": [
+        "devops",
+        "incident",
+        "sre",
+        "postmortem"
+      ]
+    },
+    {
+      "id": "runbook",
+      "name": "Runbook Writer",
+      "tagline": "Create step-by-step operational runbooks",
+      "description": "Produces clear, actionable runbooks for operational procedures, deployments, and incident response.",
+      "category": "DevOps",
+      "emoji": "📗",
+      "tags": [
+        "devops",
+        "runbook",
+        "operations",
+        "sre"
+      ],
+      "searchTerms": [
+        "devops",
+        "runbook",
+        "operations",
+        "sre"
+      ]
+    },
+    {
+      "id": "architecture-decision-record",
+      "name": "Architecture Decision Record",
+      "tagline": "Document architectural decisions with context and consequences",
+      "description": "Creates an ADR documenting the context, decision, alternatives considered, and consequences.",
+      "category": "DevOps",
+      "emoji": "🏗️",
+      "tags": [
+        "devops",
+        "architecture",
+        "documentation",
+        "adr"
+      ],
+      "searchTerms": [
+        "devops",
+        "architecture",
+        "documentation",
+        "adr"
+      ]
+    },
+    {
+      "id": "deployment-checklist",
+      "name": "Deployment Checklist",
+      "tagline": "Generate pre/post deployment checklists for safe releases",
+      "description": "Creates comprehensive deployment checklists tailored to the service and deployment type.",
+      "category": "DevOps",
+      "emoji": "🚢",
+      "tags": [
+        "devops",
+        "deployment",
+        "checklist",
+        "release"
+      ],
+      "searchTerms": [
+        "devops",
+        "deployment",
+        "checklist",
+        "release"
+      ]
+    },
+    {
+      "id": "on-call-alert-triage",
+      "name": "On-Call Alert Triage",
+      "tagline": "Classify and prioritize production alerts",
+      "description": "Structures the investigation and classification of production alerts for on-call engineers.",
+      "category": "DevOps",
+      "emoji": "📟",
+      "tags": [
+        "devops",
+        "oncall",
+        "sre",
+        "monitoring"
+      ],
+      "searchTerms": [
+        "devops",
+        "oncall",
+        "sre",
+        "monitoring"
+      ]
+    }
+  ]
+}

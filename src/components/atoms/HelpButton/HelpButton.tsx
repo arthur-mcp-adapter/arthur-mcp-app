@@ -1,0 +1,44 @@
+import { useState } from 'react'
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  Tooltip,
+  Typography,
+} from '@mui/material'
+import HelpIcon from '@mui/icons-material/Help'
+import { useTranslation } from 'react-i18next'
+import type { HelpButtonProps } from './helpButtonProps.interface'
+
+
+export default function HelpButton({ title, children }: HelpButtonProps) {
+  const [open, setOpen] = useState(false)
+  const { t } = useTranslation('common')
+  return (
+    <>
+      <Tooltip title={t('action.learnMore')}>
+        <IconButton size="small" onClick={() => setOpen(true)}
+          sx={{
+            p: 0.4,
+            '&:hover': { bgcolor: 'primary' },
+          }}>
+          <HelpIcon color="primary" fontSize="small" />
+        </IconButton>
+      </Tooltip>
+      <Dialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
+        <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 1, pb: 1 }}>
+          <HelpIcon color="primary" fontSize="small" />
+          <Typography variant="subtitle1" fontWeight={700}>{title}</Typography>
+        </DialogTitle>
+        <DialogContent dividers>{children}</DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpen(false)}>{t('action.close')}</Button>
+        </DialogActions>
+      </Dialog>
+    </>
+  )
+}

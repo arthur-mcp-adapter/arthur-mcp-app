@@ -1,0 +1,61 @@
+{
+  "id": "mangadex",
+  "name": "MangaDex",
+  "tagline": "Search the MangaDex catalog",
+  "description": "Search public MangaDex manga metadata with title, publication status, language, ordering, and offset pagination.",
+  "category": "Anime",
+  "color": "#FF6740",
+  "emoji": "📚",
+  "baseUrl": "https://api.mangadex.org",
+  "auth": {
+    "type": "none",
+    "hint": "No authentication is required for the selected public manga search."
+  },
+  "signupUrl": "https://mangadex.org/account/signup",
+  "docsUrl": "https://api.mangadex.org/docs/",
+  "tools": [
+    {
+      "name": "search_manga",
+      "description": "Search public MangaDex manga records.",
+      "method": "GET",
+      "path": "/manga",
+      "params": [
+        {
+          "name": "title",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Manga title search."
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of records, up to the documented maximum."
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of records to skip."
+        },
+        {
+          "name": "status[]",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Publication status filter; repeat values when supported by the caller."
+        },
+        {
+          "name": "availableTranslatedLanguage[]",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Translated-language filter."
+        }
+      ]
+    }
+  ]
+}

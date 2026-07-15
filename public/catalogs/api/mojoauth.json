@@ -1,0 +1,42 @@
+{
+  "id": "mojoauth",
+  "name": "MojoAuth",
+  "tagline": "Send MojoAuth magic links",
+  "description": "Start passwordless email authentication by sending a MojoAuth magic link.",
+  "category": "Authentication & Authorization",
+  "color": "#7C3AED",
+  "emoji": "✉️",
+  "baseUrl": "https://api.mojoauth.com",
+  "auth": {
+    "type": "api-key",
+    "hint": "Create a MojoAuth project API key and send it in the x-api-key header.",
+    "keyName": "x-api-key",
+    "keyIn": "header"
+  },
+  "signupUrl": "https://mojoauth.com/",
+  "docsUrl": "https://docs.mojoauth.com/api-reference/send-magic-link-on-the-email",
+  "tools": [
+    {
+      "name": "send_magic_link",
+      "description": "Send a passwordless authentication magic link to an email address.",
+      "method": "POST",
+      "path": "/users/magiclink",
+      "params": [
+        {
+          "name": "email",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Recipient email address."
+        },
+        {
+          "name": "language",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Preferred communication language; the implementation guide documents en as the default."
+        }
+      ]
+    }
+  ]
+}

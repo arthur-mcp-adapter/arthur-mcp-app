@@ -1,0 +1,54 @@
+{
+  "id": "kitsu",
+  "name": "Kitsu",
+  "tagline": "Discover anime through Kitsu",
+  "description": "Search Kitsu anime records with JSON:API filters, sorting, and offset pagination.",
+  "category": "Anime",
+  "color": "#FD755C",
+  "emoji": "🎴",
+  "baseUrl": "https://kitsu.io/api/edge",
+  "auth": {
+    "type": "none",
+    "hint": "No authentication is required for the selected public anime collection operation."
+  },
+  "signupUrl": "https://kitsu.app/",
+  "docsUrl": "https://kitsu.docs.apiary.io/",
+  "tools": [
+    {
+      "name": "search_anime",
+      "description": "Search public Kitsu anime records.",
+      "method": "GET",
+      "path": "/anime",
+      "params": [
+        {
+          "name": "filter[text]",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Free-text anime search."
+        },
+        {
+          "name": "page[limit]",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of records per page."
+        },
+        {
+          "name": "page[offset]",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of records to skip."
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "JSON:API sort expression."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "id": "churn-risk-analyzer",
+  "name": "Churn Risk Analyzer",
+  "tagline": "Detect early signals of customer churn",
+  "description": "Analyzes customer communication and behavior signals to predict and prevent churn.",
+  "category": "Customer Support",
+  "emoji": "📉",
+  "tags": [
+    "support",
+    "churn",
+    "retention"
+  ],
+  "content": "Analyze the following customer interaction history for churn risk signals.\n\n**Customer:** {{customer}}\n**Plan:** {{plan}}\n**Tenure:** {{tenure}}\n**Usage trend:** {{usage_trend}}\n\n**Churn Risk:** [High / Medium / Low]\n**Confidence:** [High / Medium / Low]\n\n**Risk Signals Detected:**\n-\n\n**Contributing Factors:**\n-\n\n**Recommended Intervention:**\n| Action | Channel | Timing | Owner |\n|--------|---------|--------|-------|\n\n**Retention Offer Suggestion:**\n-\n\n---\nInteraction history:\n{{history}}"
+}

@@ -1,0 +1,119 @@
+{
+  "id": "generate-ical",
+  "name": "Generate iCAL",
+  "tagline": "Generate downloadable iCalendar (.ics) files or shareable URLs from event details",
+  "description": "Create an iCalendar event file or a shareable iCalendar URL from event details (summary, description, organizer, attendees, time, and optional recurrence). Requires an ApyHub API token.",
+  "category": "Calendar",
+  "color": "#6C5CE7",
+  "emoji": "🗓️",
+  "baseUrl": "https://api.apyhub.com",
+  "auth": {
+    "type": "api-key",
+    "hint": "Create a token from your ApyHub account (My Apps page) and send it in the apy-token request header.",
+    "keyName": "apy-token",
+    "keyIn": "header"
+  },
+  "signupUrl": "https://apyhub.com/",
+  "docsUrl": "https://apyhub.com/utility/generator-ical",
+  "tools": [
+    {
+      "name": "generate_ical_event",
+      "description": "Generate an iCalendar event as a downloadable .ics file or as a shareable URL, with optional recurrence.",
+      "method": "POST",
+      "path": "/generate/ical/{responseFormat}",
+      "params": [
+        {
+          "name": "responseFormat",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Desired output type: \"file\" to return an .ics file, or \"url\" to return a shareable link."
+        },
+        {
+          "name": "output",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Output file name, e.g. invite.ics. Defaults to invite.ics."
+        },
+        {
+          "name": "summary",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "The event/meeting summary or title."
+        },
+        {
+          "name": "description",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "The event description."
+        },
+        {
+          "name": "organizer_email",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Email address of the event organizer."
+        },
+        {
+          "name": "attendees_email",
+          "in": "body",
+          "required": true,
+          "type": "array",
+          "description": "Email addresses of the event attendees."
+        },
+        {
+          "name": "location",
+          "in": "body",
+          "required": false,
+          "type": "string",
+          "description": "The event location."
+        },
+        {
+          "name": "time_zone",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "IANA time zone for the event, e.g. America/New_York."
+        },
+        {
+          "name": "start_time",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Event start time, e.g. 10:00."
+        },
+        {
+          "name": "end_time",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Event end time, e.g. 11:00."
+        },
+        {
+          "name": "meeting_date",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Event date, e.g. 2020-01-01."
+        },
+        {
+          "name": "recurring",
+          "in": "body",
+          "required": false,
+          "type": "boolean",
+          "description": "Whether the event repeats."
+        },
+        {
+          "name": "recurrence",
+          "in": "body",
+          "required": false,
+          "type": "object",
+          "description": "Recurrence settings when recurring is true, containing frequency (e.g. WEEKLY) and count (number of occurrences)."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,112 @@
+{
+  "id": "square",
+  "name": "Square",
+  "tagline": "Payments, orders and inventory",
+  "description": "Access Square payments, customers, catalog items, and locations via the Square REST API. Use the sandbox environment for testing.",
+  "category": "E-commerce",
+  "color": "#3E4348",
+  "emoji": "◼",
+  "baseUrl": "https://connect.squareup.com/v2",
+  "auth": {
+    "type": "bearer",
+    "hint": "Create an application at developer.squareup.com and use the Production or Sandbox Access Token."
+  },
+  "signupUrl": "https://developer.squareup.com/apps",
+  "docsUrl": "https://developer.squareup.com/reference/square",
+  "tools": [
+    {
+      "name": "list_payments",
+      "description": "List processed payments with amount, currency, status, and card details.",
+      "method": "GET",
+      "path": "/payments",
+      "params": [
+        {
+          "name": "begin_time",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Start time in RFC3339 format, e.g. 2024-01-01T00:00:00Z"
+        },
+        {
+          "name": "end_time",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "End time in RFC3339 format"
+        },
+        {
+          "name": "location_id",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Filter by location ID"
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of results (max 100)"
+        }
+      ]
+    },
+    {
+      "name": "list_customers",
+      "description": "List Square customers with their name, email, and purchase history.",
+      "method": "GET",
+      "path": "/customers",
+      "params": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Results per page (max 100)"
+        },
+        {
+          "name": "sort_field",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Sort by: DEFAULT or CREATED_AT"
+        }
+      ]
+    },
+    {
+      "name": "search_catalog",
+      "description": "Search your Square catalog for items, variations, and categories.",
+      "method": "POST",
+      "path": "/catalog/search",
+      "params": [
+        {
+          "name": "text_filter",
+          "in": "body",
+          "required": false,
+          "type": "object",
+          "description": "Text search, e.g. {\"keyword\":\"coffee\"}"
+        },
+        {
+          "name": "object_types",
+          "in": "body",
+          "required": false,
+          "type": "array",
+          "description": "Types to search: ITEM, CATEGORY, MODIFIER"
+        },
+        {
+          "name": "limit",
+          "in": "body",
+          "required": false,
+          "type": "integer",
+          "description": "Max results"
+        }
+      ]
+    },
+    {
+      "name": "list_locations",
+      "description": "List your Square business locations with their address and status.",
+      "method": "GET",
+      "path": "/locations",
+      "params": []
+    }
+  ]
+}

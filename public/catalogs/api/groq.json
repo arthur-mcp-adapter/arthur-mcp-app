@@ -1,0 +1,97 @@
+{
+  "id": "groq",
+  "name": "Groq",
+  "tagline": "Ultra-fast AI inference (OpenAI-compatible)",
+  "description": "Run LLM inference at very high speed using Groq's purpose-built LPU hardware. Fully compatible with the OpenAI API format — swap in models like Llama 3, Mixtral, and Gemma.",
+  "category": "AI",
+  "color": "#F55036",
+  "emoji": "⚡",
+  "baseUrl": "https://api.groq.com/openai/v1",
+  "auth": {
+    "type": "bearer",
+    "hint": "Create a free API key at console.groq.com. Groq offers a generous free tier."
+  },
+  "signupUrl": "https://console.groq.com",
+  "docsUrl": "https://console.groq.com/docs/openai",
+  "tools": [
+    {
+      "name": "chat_completion",
+      "description": "Send messages to a Groq-hosted model and get an AI response. Supports system prompts and conversation history.",
+      "method": "POST",
+      "path": "/chat/completions",
+      "params": [
+        {
+          "name": "model",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Model ID, e.g. llama-3.3-70b-versatile, llama-3.1-8b-instant, or gemma2-9b-it"
+        },
+        {
+          "name": "messages",
+          "in": "body",
+          "required": true,
+          "type": "array",
+          "description": "Conversation messages: [{role:\"user\"|\"assistant\"|\"system\", content:\"...\"}]"
+        },
+        {
+          "name": "temperature",
+          "in": "body",
+          "required": false,
+          "type": "number",
+          "description": "Randomness (0–2). Lower = more deterministic"
+        },
+        {
+          "name": "max_tokens",
+          "in": "body",
+          "required": false,
+          "type": "integer",
+          "description": "Maximum tokens in the response"
+        }
+      ]
+    },
+    {
+      "name": "list_models",
+      "description": "List all AI models available on Groq with their IDs and context window sizes.",
+      "method": "GET",
+      "path": "/models",
+      "params": []
+    },
+    {
+      "name": "create_transcription",
+      "description": "Transcribe an audio file to text using Groq's Whisper integration (fastest Whisper in the world).",
+      "method": "POST",
+      "path": "/audio/transcriptions",
+      "params": [
+        {
+          "name": "model",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Whisper model: whisper-large-v3 or whisper-large-v3-turbo"
+        },
+        {
+          "name": "file",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Audio file path or URL"
+        },
+        {
+          "name": "language",
+          "in": "body",
+          "required": false,
+          "type": "string",
+          "description": "Language code, e.g. en, pt, es. Omit for auto-detection"
+        },
+        {
+          "name": "response_format",
+          "in": "body",
+          "required": false,
+          "type": "string",
+          "description": "Output format: json, text, or verbose_json"
+        }
+      ]
+    }
+  ]
+}

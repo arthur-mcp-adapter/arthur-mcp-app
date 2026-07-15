@@ -1,0 +1,14 @@
+{
+  "id": "unit-test-generator",
+  "name": "Unit Test Generator",
+  "tagline": "Generate comprehensive unit tests for any function",
+  "description": "Creates thorough unit tests covering happy paths, edge cases, and error conditions.",
+  "category": "Code",
+  "emoji": "✅",
+  "tags": [
+    "code",
+    "testing",
+    "quality"
+  ],
+  "content": "Generate comprehensive unit tests for the following function.\n\nRequirements:\n- Happy path (expected inputs/outputs)\n- Edge cases (empty, null, boundary)\n- Error cases (invalid inputs, exceptions)\n- Descriptive test names\n- Arrange-Act-Assert pattern\n\nFramework: {{framework}}\nLanguage: {{language}}\n\nCode:\n{{code}}"
+}

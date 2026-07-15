@@ -1,0 +1,35 @@
+{
+  "id": "virustotal",
+  "name": "VirusTotal",
+  "tagline": "Retrieve VirusTotal file reports",
+  "description": "Look up VirusTotal's existing analysis report for a file hash without uploading file content.",
+  "category": "Anti-Malware",
+  "color": "#394EFF",
+  "emoji": "🧫",
+  "baseUrl": "https://www.virustotal.com/api/v3",
+  "auth": {
+    "type": "api-key",
+    "hint": "Copy your VirusTotal API key and send it in the x-apikey header.",
+    "keyName": "x-apikey",
+    "keyIn": "header"
+  },
+  "signupUrl": "https://www.virustotal.com/gui/join-us",
+  "docsUrl": "https://docs.virustotal.com/reference/file-info",
+  "tools": [
+    {
+      "name": "get_file_report",
+      "description": "Retrieve an existing VirusTotal File object by hash.",
+      "method": "GET",
+      "path": "/files/{id}",
+      "params": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "SHA-256, SHA-1, or MD5 file hash."
+        }
+      ]
+    }
+  ]
+}

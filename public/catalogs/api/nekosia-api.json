@@ -1,0 +1,61 @@
+{
+  "id": "nekosia-api",
+  "name": "Nekosia API",
+  "tagline": "Retrieve filtered anime artwork",
+  "description": "Fetch random Nekosia artwork by category with tag, rating, count, and duplicate-avoidance controls.",
+  "category": "Anime",
+  "color": "#A855F7",
+  "emoji": "🐾",
+  "baseUrl": "https://api.nekosia.cat/api/v1",
+  "auth": {
+    "type": "none",
+    "hint": "No authentication is required."
+  },
+  "signupUrl": "https://nekosia.cat/",
+  "docsUrl": "https://nekosia.cat/documentation?page=endpoints",
+  "tools": [
+    {
+      "name": "get_category_images",
+      "description": "Return random artwork from a selected safe anime category.",
+      "method": "GET",
+      "path": "/images/{category}",
+      "params": [
+        {
+          "name": "category",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Supported category such as random, catgirl, cute, or foxgirl."
+        },
+        {
+          "name": "count",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of images, up to 20."
+        },
+        {
+          "name": "additionalTags",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Comma-separated required tags."
+        },
+        {
+          "name": "blacklistedTags",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Comma-separated excluded tags."
+        },
+        {
+          "name": "rating",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "safe or suggestive; safe is the default."
+        }
+      ]
+    }
+  ]
+}

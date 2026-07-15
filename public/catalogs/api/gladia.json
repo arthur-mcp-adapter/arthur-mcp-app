@@ -1,0 +1,85 @@
+{
+  "id": "gladia",
+  "name": "Gladia",
+  "tagline": "Transcribe and analyze pre-recorded audio",
+  "description": "Create asynchronous speech-to-text jobs from accessible audio URLs and retrieve transcription results, metadata, diarization, subtitles, translations, and optional audio-intelligence outputs through Gladia V2.",
+  "category": "AI",
+  "color": "#7C3AED",
+  "emoji": "🎙️",
+  "baseUrl": "https://api.gladia.io/v2",
+  "auth": {
+    "type": "api-key",
+    "hint": "Create a Gladia API key and send it in the x-gladia-key header. Store only the key value in Arthur MCP Secrets.",
+    "keyName": "x-gladia-key",
+    "keyIn": "header"
+  },
+  "signupUrl": "https://app.gladia.io/signup",
+  "docsUrl": "https://docs.gladia.io/api-reference",
+  "tools": [
+    {
+      "name": "create_pre_recorded_transcription",
+      "description": "Create an asynchronous transcription job from a publicly reachable or previously uploaded audio URL and return the job identifier and result URL.",
+      "method": "POST",
+      "path": "/pre-recorded",
+      "params": [
+        {
+          "name": "audio_url",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "URL of the audio or video to transcribe; upload local files separately because this endpoint accepts URLs in JSON."
+        },
+        {
+          "name": "diarization",
+          "in": "body",
+          "required": false,
+          "type": "boolean",
+          "description": "Enable speaker diarization in the result."
+        },
+        {
+          "name": "subtitles",
+          "in": "body",
+          "required": false,
+          "type": "boolean",
+          "description": "Enable subtitle generation; configure detailed formats with subtitles_config when needed."
+        },
+        {
+          "name": "summarization",
+          "in": "body",
+          "required": false,
+          "type": "boolean",
+          "description": "Enable generation of a summary alongside the transcription."
+        },
+        {
+          "name": "language_config",
+          "in": "body",
+          "required": false,
+          "type": "object",
+          "description": "Language selection and code-switching configuration; omit languages to use automatic detection."
+        },
+        {
+          "name": "custom_metadata",
+          "in": "body",
+          "required": false,
+          "type": "object",
+          "description": "Caller-defined metadata retained with the transcription for later organization and filtering."
+        }
+      ]
+    },
+    {
+      "name": "get_pre_recorded_transcription",
+      "description": "Get a pre-recorded job's status, request parameters, file metadata, and completed transcription or audio-intelligence results.",
+      "method": "GET",
+      "path": "/pre-recorded/{id}",
+      "params": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "UUID returned when the pre-recorded transcription job was created."
+        }
+      ]
+    }
+  ]
+}

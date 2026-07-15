@@ -1,0 +1,14 @@
+{
+  "id": "user-story",
+  "name": "User Story Writer",
+  "tagline": "Write well-structured user stories with acceptance criteria",
+  "description": "Creates user stories in standard format with acceptance criteria, edge cases, and story points guidance.",
+  "category": "Product Management",
+  "emoji": "📌",
+  "tags": [
+    "product",
+    "agile",
+    "user stories"
+  ],
+  "content": "Write user stories for the following feature.\n\n**Feature:** {{feature}}\n**Product:** {{product}}\n**User persona(s):** {{personas}}\n**Business goal:** {{business_goal}}\n\nFor each user story:\n\n**As a** [persona],\n**I want to** [action],\n**So that** [benefit].\n\n**Acceptance Criteria:**\n- GIVEN [context]\n- WHEN [action]\n- THEN [expected outcome]\n\n**Edge Cases:**\n-\n\n**Out of Scope:**\n-\n\n**Dependencies:**\n-\n\n**Story Points estimate:** S / M / L / XL\n**Priority:** Must-have / Should-have / Could-have\n\nGenerate 3-5 user stories covering the core flows."
+}

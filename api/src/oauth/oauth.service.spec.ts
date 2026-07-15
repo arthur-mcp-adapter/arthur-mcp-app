@@ -1,9 +1,13 @@
 import { UnauthorizedException } from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
 import { OAuthService } from './oauth.service';
-import { UsersService } from '../users/users.service';
 import { ISwaggerProjectRepository, SwaggerProjectRecord } from '../swagger/swagger-project.repository';
 import { JwtSecretService } from '../settings/jwt-secret.service';
+
+const signInWithPassword = jest.fn();
+jest.mock('@supabase/supabase-js', () => ({
+  createClient: () => ({ auth: { signInWithPassword } }),
+}));
 
 const jwtSecret = 'test-jwt-secret-value';
 
@@ -30,10 +34,6 @@ const server = (override: Partial<SwaggerProjectRecord> = {}): SwaggerProjectRec
 });
 
 describe('OAuthService', () => {
-  const users: jest.Mocked<Pick<UsersService, 'findByUsername' | 'validatePassword'>> = {
-    findByUsername: jest.fn(),
-    validatePassword: jest.fn(),
-  };
   const projectRepo: jest.Mocked<Pick<ISwaggerProjectRepository, 'findByIdOrShareSlug'>> = {
     findByIdOrShareSlug: jest.fn(),
   };
@@ -42,15 +42,20 @@ describe('OAuthService', () => {
   };
 
   let service: OAuthService;
+  const originalEnv = process.env;
 
   beforeEach(() => {
     jest.clearAllMocks();
+    process.env = { ...originalEnv, SUPABASE_URL: 'https://project.supabase.co', SUPABASE_PUBLISHABLE_KEY: 'anon-key' };
     jwtSecretService.getSecret.mockResolvedValue(jwtSecret);
     service = new OAuthService(
-      users as unknown as UsersService,
       projectRepo as unknown as ISwaggerProjectRepository,
       jwtSecretService as unknown as JwtSecretService,
     );
+  });
+
+  afterEach(() => {
+    process.env = originalEnv;
   });
 
   it('validates OAuth clients and optional secrets', async () => {
@@ -83,11 +88,24 @@ describe('OAuthService', () => {
     await expect(service.validateClient('server-1', 'client-id', 'bad-secret')).rejects.toThrow(UnauthorizedException);
   });
 
-  it('validates users through UsersService', async () => {
-    users.findByUsername.mockResolvedValue({ _id: 'user-1', username: 'alex', role: 'admin', password: 'hash' } as any);
-    users.validatePassword.mockResolvedValue(true);
+  it('validates users through Supabase password grant', async () => {
+    signInWithPassword.mockResolvedValue({
+      data: { user: { id: 'user-1', user_metadata: { username: 'alex' }, app_metadata: { role: 'admin' } } },
+      error: null,
+    });
 
-    await expect(service.validateUser('alex', 'password')).resolves.toEqual({
+    await expect(service.validateUser('alex@test.com', 'password')).resolves.toEqual({
+      _id: 'user-1',
+      username: 'alex',
+      role: 'admin',
+    });
+    expect(signInWithPassword).toHaveBeenCalledWith({ email: 'alex@test.com', password: 'password' });
+  });
+
+  it('defaults username/role when metadata is missing', async () => {
+    signInWithPassword.mockResolvedValue({ data: { user: { id: 'user-1' } }, error: null });
+
+    await expect(service.validateUser('alex@test.com', 'password')).resolves.toEqual({
       _id: 'user-1',
       username: 'alex',
       role: 'admin',
@@ -95,12 +113,14 @@ describe('OAuthService', () => {
   });
 
   it('returns null for unknown users or invalid passwords', async () => {
-    users.findByUsername.mockResolvedValueOnce(null);
-    await expect(service.validateUser('missing', 'password')).resolves.toBeNull();
+    signInWithPassword.mockResolvedValueOnce({ data: { user: null }, error: new Error('Invalid credentials') });
+    await expect(service.validateUser('missing@test.com', 'password')).resolves.toBeNull();
+  });
 
-    users.findByUsername.mockResolvedValueOnce({ password: 'hash' } as any);
-    users.validatePassword.mockResolvedValueOnce(false);
-    await expect(service.validateUser('alex', 'wrong')).resolves.toBeNull();
+  it('returns null when Supabase is not configured', async () => {
+    process.env.SUPABASE_URL = '';
+    await expect(service.validateUser('alex@test.com', 'password')).resolves.toBeNull();
+    expect(signInWithPassword).not.toHaveBeenCalled();
   });
 
   it('creates and consumes authorization codes once', () => {

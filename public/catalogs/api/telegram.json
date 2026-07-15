@@ -1,0 +1,126 @@
+{
+  "id": "telegram",
+  "name": "Telegram Bot",
+  "tagline": "Send messages and manage bot chats",
+  "description": "Send messages, photos, and files via your Telegram Bot. Get chat updates and manage bot interactions using the Telegram Bot API.",
+  "category": "Communication",
+  "color": "#26A5E4",
+  "emoji": "✈️",
+  "baseUrl": "https://api.telegram.org/bot{token}",
+  "auth": {
+    "type": "none",
+    "hint": "The bot token is part of the base URL. Update the base URL in Settings to https://api.telegram.org/bot<YOUR_BOT_TOKEN> after creating a bot via @BotFather."
+  },
+  "docsUrl": "https://core.telegram.org/bots/api",
+  "tools": [
+    {
+      "name": "send_message",
+      "description": "Send a text message to a Telegram chat or channel.",
+      "method": "POST",
+      "path": "/sendMessage",
+      "params": [
+        {
+          "name": "chat_id",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Chat ID (number) or @channelusername"
+        },
+        {
+          "name": "text",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Message text. Supports HTML and Markdown formatting."
+        },
+        {
+          "name": "parse_mode",
+          "in": "body",
+          "required": false,
+          "type": "string",
+          "description": "Formatting: HTML or Markdown"
+        },
+        {
+          "name": "reply_to_message_id",
+          "in": "body",
+          "required": false,
+          "type": "integer",
+          "description": "Reply to a specific message ID"
+        }
+      ]
+    },
+    {
+      "name": "get_updates",
+      "description": "Get incoming messages and events for your bot.",
+      "method": "GET",
+      "path": "/getUpdates",
+      "params": [
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Update ID offset — use last update_id + 1 to get new updates"
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Max updates (max 100)"
+        },
+        {
+          "name": "timeout",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Long-polling timeout in seconds"
+        }
+      ]
+    },
+    {
+      "name": "get_chat",
+      "description": "Get info about a Telegram chat, group, or channel.",
+      "method": "GET",
+      "path": "/getChat",
+      "params": [
+        {
+          "name": "chat_id",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Chat ID or @channelusername"
+        }
+      ]
+    },
+    {
+      "name": "send_photo",
+      "description": "Send a photo to a Telegram chat using a file URL.",
+      "method": "POST",
+      "path": "/sendPhoto",
+      "params": [
+        {
+          "name": "chat_id",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Chat ID or @channelusername"
+        },
+        {
+          "name": "photo",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Photo URL (HTTPS) or file_id"
+        },
+        {
+          "name": "caption",
+          "in": "body",
+          "required": false,
+          "type": "string",
+          "description": "Photo caption (max 1024 chars)"
+        }
+      ]
+    }
+  ]
+}

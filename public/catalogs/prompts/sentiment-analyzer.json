@@ -1,0 +1,14 @@
+{
+  "id": "sentiment-analyzer",
+  "name": "Sentiment Analyzer",
+  "tagline": "Classify sentiment and emotional tone of any text",
+  "description": "Analyzes text for overall sentiment, emotional tones, and key phrases driving the score.",
+  "category": "Analysis",
+  "emoji": "📊",
+  "tags": [
+    "analysis",
+    "sentiment",
+    "nlp"
+  ],
+  "content": "Analyze the sentiment of the following text.\n\n**Overall Sentiment:** [Very Positive / Positive / Neutral / Negative / Very Negative]\n**Confidence:** [High / Medium / Low]\n**Score:** X/10\n\n**Emotional Tones:**\n- Primary:\n- Secondary:\n\n**Key Phrases:**\n- Positive signals:\n- Negative signals:\n\n**Nuances:** (sarcasm, irony, mixed sentiment)\n\n---\nText:\n{{text}}"
+}

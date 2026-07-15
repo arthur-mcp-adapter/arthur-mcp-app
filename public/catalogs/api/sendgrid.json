@@ -1,0 +1,134 @@
+{
+  "id": "sendgrid",
+  "name": "SendGrid",
+  "tagline": "Transactional and marketing email",
+  "description": "Send individual emails, check delivery stats, manage suppression lists, and browse your email templates via the SendGrid Web API.",
+  "category": "Communication",
+  "color": "#1A82E2",
+  "emoji": "📧",
+  "baseUrl": "https://api.sendgrid.com/v3",
+  "auth": {
+    "type": "bearer",
+    "hint": "Create an API Key in your SendGrid account under Settings → API Keys."
+  },
+  "signupUrl": "https://signup.sendgrid.com/",
+  "docsUrl": "https://docs.sendgrid.com/api-reference",
+  "tools": [
+    {
+      "name": "send_email",
+      "description": "Send a transactional email to one or more recipients.",
+      "method": "POST",
+      "path": "/mail/send",
+      "params": [
+        {
+          "name": "personalizations",
+          "in": "body",
+          "required": true,
+          "type": "array",
+          "description": "Recipient list, e.g. [{\"to\":[{\"email\":\"user@example.com\"}]}]"
+        },
+        {
+          "name": "from",
+          "in": "body",
+          "required": true,
+          "type": "object",
+          "description": "Sender, e.g. {\"email\":\"noreply@yourco.com\",\"name\":\"Your Company\"}"
+        },
+        {
+          "name": "subject",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Email subject line"
+        },
+        {
+          "name": "content",
+          "in": "body",
+          "required": true,
+          "type": "array",
+          "description": "Body content, e.g. [{\"type\":\"text/plain\",\"value\":\"Hello!\"}]"
+        }
+      ]
+    },
+    {
+      "name": "get_stats",
+      "description": "Get email delivery statistics (delivered, opens, clicks, bounces) for a date range.",
+      "method": "GET",
+      "path": "/stats",
+      "params": [
+        {
+          "name": "start_date",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Start date in YYYY-MM-DD format"
+        },
+        {
+          "name": "end_date",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "End date in YYYY-MM-DD format"
+        },
+        {
+          "name": "aggregated_by",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Group by: day, week, or month"
+        }
+      ]
+    },
+    {
+      "name": "list_templates",
+      "description": "List all dynamic email templates in your SendGrid account.",
+      "method": "GET",
+      "path": "/templates",
+      "params": [
+        {
+          "name": "generations",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Template version: legacy or dynamic"
+        },
+        {
+          "name": "page_size",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Results per page (max 200)"
+        }
+      ]
+    },
+    {
+      "name": "list_bounces",
+      "description": "List email addresses that have bounced and should not be emailed again.",
+      "method": "GET",
+      "path": "/suppression/bounces",
+      "params": [
+        {
+          "name": "start_time",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Start timestamp (Unix epoch)"
+        },
+        {
+          "name": "end_time",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "End timestamp (Unix epoch)"
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of results (max 500)"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,92 @@
+{
+  "id": "xcolors",
+  "name": "xColors",
+  "tagline": "Generate and convert colors",
+  "description": "Generate random colors and convert values among HEX, RGB, and HSL color models.",
+  "category": "Art & Design",
+  "color": "#EC4899",
+  "emoji": "🌈",
+  "baseUrl": "https://x-colors.yurace.pro/api",
+  "auth": {
+    "type": "none",
+    "hint": "No authentication is required."
+  },
+  "signupUrl": "https://x-colors.yurace.pro/",
+  "docsUrl": "https://x-colors.yurace.pro/",
+  "tools": [
+    {
+      "name": "generate_random_color",
+      "description": "Generate one or more random colors in HEX, RGB, and HSL formats.",
+      "method": "GET",
+      "path": "/random",
+      "params": [
+        {
+          "name": "number",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of random colors to return; the service defaults to one."
+        }
+      ]
+    },
+    {
+      "name": "generate_color_shade",
+      "description": "Generate random colors constrained by hue and optional lightness type.",
+      "method": "GET",
+      "path": "/random/{hue}",
+      "params": [
+        {
+          "name": "hue",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "A supported color name, the value all, or a numeric hue from 0 through 359."
+        },
+        {
+          "name": "number",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of random colors to return; the service defaults to one."
+        },
+        {
+          "name": "type",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Optional shade filter: dark or light."
+        }
+      ]
+    },
+    {
+      "name": "convert_hex_to_rgb",
+      "description": "Convert a hexadecimal color value to RGB.",
+      "method": "GET",
+      "path": "/hex2rgb",
+      "params": [
+        {
+          "name": "value",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Six-character hexadecimal color value without the leading #."
+        }
+      ]
+    },
+    {
+      "name": "convert_rgb_to_hex",
+      "description": "Convert an RGB color value to hexadecimal.",
+      "method": "GET",
+      "path": "/rgb2hex",
+      "params": [
+        {
+          "name": "value",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Red, green, and blue components separated by hyphens, such as 120-200-30; each component must be at most 255."
+        }
+      ]
+    }
+  ]
+}

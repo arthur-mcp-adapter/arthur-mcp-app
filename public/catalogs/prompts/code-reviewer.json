@@ -1,0 +1,15 @@
+{
+  "id": "code-reviewer",
+  "name": "Code Reviewer",
+  "tagline": "Thorough code review covering quality, security, and performance",
+  "description": "Performs a structured code review across correctness, security, performance, readability, and best practices.",
+  "category": "Code",
+  "emoji": "🔍",
+  "tags": [
+    "code",
+    "review",
+    "security",
+    "quality"
+  ],
+  "content": "You are a senior software engineer. Review the following code across these dimensions:\n\n- **Correctness**: Logic errors, edge cases\n- **Security**: Injection, XSS, insecure dependencies\n- **Performance**: Inefficient algorithms, memory issues\n- **Readability**: Naming, structure, comments\n- **Best Practices**: Language/framework conventions\n- **Test Coverage**: Gaps in testability\n\nFor each issue:\n- Severity: 🔴 Critical / 🟠 High / 🟡 Medium / 🟢 Low\n- Location and explanation\n- Suggested fix\n\nLanguage: {{language}}\n\nCode:\n{{code}}"
+}

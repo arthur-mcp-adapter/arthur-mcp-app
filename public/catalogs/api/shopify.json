@@ -1,0 +1,135 @@
+{
+  "id": "shopify",
+  "name": "Shopify",
+  "tagline": "Products, orders and customers",
+  "description": "Access your Shopify store's products, orders, and customer data. Update the base URL in Settings to your store domain (your-store.myshopify.com/admin/api/2024-07).",
+  "category": "E-commerce",
+  "color": "#95BF47",
+  "emoji": "🛍️",
+  "baseUrl": "https://your-store.myshopify.com/admin/api/2024-07",
+  "auth": {
+    "type": "bearer",
+    "hint": "Create a Custom App in Shopify Admin → Settings → Apps → Develop Apps, then install it and copy the Admin API Access Token."
+  },
+  "signupUrl": "https://accounts.shopify.com/signup",
+  "docsUrl": "https://shopify.dev/docs/api/admin-rest",
+  "tools": [
+    {
+      "name": "list_products",
+      "description": "List products in your Shopify store with title, price, inventory, and status.",
+      "method": "GET",
+      "path": "/products.json",
+      "params": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of products (max 250)"
+        },
+        {
+          "name": "status",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Filter by status: active, archived, or draft"
+        },
+        {
+          "name": "title",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Filter by product title (partial match)"
+        }
+      ]
+    },
+    {
+      "name": "get_product",
+      "description": "Get full details for a product including all variants and images.",
+      "method": "GET",
+      "path": "/products/{product_id}.json",
+      "params": [
+        {
+          "name": "product_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Product ID number"
+        }
+      ]
+    },
+    {
+      "name": "list_orders",
+      "description": "List store orders with customer info, total price, and fulfillment status.",
+      "method": "GET",
+      "path": "/orders.json",
+      "params": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of orders (max 250)"
+        },
+        {
+          "name": "status",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Filter: open, closed, cancelled, or any"
+        },
+        {
+          "name": "financial_status",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Payment status: paid, pending, refunded, etc."
+        },
+        {
+          "name": "created_at_min",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "ISO date — orders created after this date"
+        }
+      ]
+    },
+    {
+      "name": "get_order",
+      "description": "Get full details for an order including line items, shipping, and payment info.",
+      "method": "GET",
+      "path": "/orders/{order_id}.json",
+      "params": [
+        {
+          "name": "order_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Order ID number"
+        }
+      ]
+    },
+    {
+      "name": "list_customers",
+      "description": "List customers with their email, order count, and total spending.",
+      "method": "GET",
+      "path": "/customers.json",
+      "params": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of customers (max 250)"
+        },
+        {
+          "name": "query",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Search query, e.g. \"email:user@example.com\""
+        }
+      ]
+    }
+  ]
+}

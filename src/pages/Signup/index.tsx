@@ -1,8 +1,7 @@
 import { useState } from 'react'
 import { Link as RouterLink, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { useAuth } from '../../context/AuthContext'
-import { useColorMode, ColorMode } from '../../theme/ColorModeContext'
+import { useColorMode, ColorMode } from '../../theme'
 import {
   Alert,
   Box,
@@ -15,12 +14,11 @@ import {
   TextField,
   Typography,
 } from '@mui/material'
-import api from '../../api'
+import { supabase } from '../../supabaseClient'
 import SocialAuthButtons from '../../components/organisms/SocialAuthButtons'
 
 export default function Signup() {
   const navigate = useNavigate()
-  const { reload } = useAuth()
   const { mode } = useColorMode()
   const { t } = useTranslation('auth')
   const [username, setUsername] = useState('')
@@ -28,22 +26,30 @@ export default function Signup() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const [confirmationSent, setConfirmationSent] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
     setLoading(true)
     try {
-      const res = await api.post<{ access_token: string }>('/auth/register', {
-        username,
+      // Plain client-side signup — no backend round trip needed. `role` isn't set here: it
+      // defaults to 'admin' when the app_metadata.role claim is absent (see
+      // SupabaseAuthService), same default this app already gives every new account.
+      const { data, error: signUpError } = await supabase.auth.signUp({
         email,
         password,
+        options: { data: { username }, emailRedirectTo: `${window.location.origin}/oauth-callback` },
       })
-      localStorage.setItem('token', res.data.access_token)
-      reload()
-      navigate('/')
-    } catch (err: any) {
-      setError(err?.response?.data?.message ?? t('error.signupFailed'))
+      if (signUpError) throw signUpError
+
+      // With "Confirm email" enabled in the Supabase project, signUp() returns no session until
+      // the user clicks the emailed confirmation link — show a "check your email" state instead
+      // of navigating in. If confirmation is disabled, a session comes back immediately.
+      if (data.session) navigate('/')
+      else setConfirmationSent(true)
+    } catch {
+      setError(t('error.signupFailed'))
     } finally {
       setLoading(false)
     }
@@ -132,6 +138,10 @@ export default function Signup() {
               {t('heading.signUp')}
             </Typography>
 
+            {confirmationSent ? (
+              <Alert severity="success">{t('hint.checkEmailToConfirm')}</Alert>
+            ) : (
+              <>
             {error && (
               <Alert severity="error" sx={{ mb: 2 }}>
                 {error}
@@ -238,6 +248,8 @@ export default function Signup() {
                 </Typography>
               </Stack>
             </Box>
+              </>
+            )}
           </Card>
         </Grid>
       </Grid>

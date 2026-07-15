@@ -1,0 +1,14 @@
+{
+  "id": "financial-report-summary",
+  "name": "Financial Report Summary",
+  "tagline": "Distill earnings reports and financial statements",
+  "description": "Extracts the key numbers, trends, and signals from financial reports into a concise brief.",
+  "category": "Summarization",
+  "emoji": "📈",
+  "tags": [
+    "summarization",
+    "finance",
+    "earnings"
+  ],
+  "content": "Summarize the following financial report for an investor audience.\n\n**Company:** {{company}}\n**Period:** {{period}}\n\n## Financial Highlights\n- Revenue:\n- Net Income / Loss:\n- EPS:\n- YoY Growth:\n\n## Key Positives\n-\n\n## Key Concerns\n-\n\n## Management Guidance\n-\n\n## Analyst Takeaway\n(1-2 sentences on what this means for investors)\n\n---\nReport:\n{{report}}"
+}

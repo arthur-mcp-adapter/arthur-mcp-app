@@ -1,0 +1,122 @@
+{
+  "id": "alphavantage",
+  "name": "Alpha Vantage",
+  "tagline": "Stock prices and financial data",
+  "description": "Get real-time and historical stock prices, forex rates, and crypto data. Free tier available with 25 requests/day.",
+  "category": "Data",
+  "color": "#1976D2",
+  "emoji": "📈",
+  "baseUrl": "https://www.alphavantage.co",
+  "auth": {
+    "type": "api-key",
+    "hint": "Get a free API key at alphavantage.co/support/#api-key. Use \"demo\" as the key for testing a few endpoints.",
+    "keyName": "apikey",
+    "keyIn": "query"
+  },
+  "signupUrl": "https://www.alphavantage.co/support/#api-key",
+  "docsUrl": "https://www.alphavantage.co/documentation/",
+  "tools": [
+    {
+      "name": "get_stock_quote",
+      "description": "Get the latest price, volume, open, high, low, and change for a stock.",
+      "method": "GET",
+      "path": "/query",
+      "params": [
+        {
+          "name": "function",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Must be \"GLOBAL_QUOTE\""
+        },
+        {
+          "name": "symbol",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Stock ticker, e.g. AAPL, GOOGL, AMZN"
+        }
+      ]
+    },
+    {
+      "name": "get_daily_prices",
+      "description": "Get up to 20 years of daily open/close/high/low/volume data for a stock.",
+      "method": "GET",
+      "path": "/query",
+      "params": [
+        {
+          "name": "function",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Must be \"TIME_SERIES_DAILY\""
+        },
+        {
+          "name": "symbol",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Stock ticker, e.g. MSFT"
+        },
+        {
+          "name": "outputsize",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "compact (last 100 days) or full (all available data)"
+        }
+      ]
+    },
+    {
+      "name": "search_symbol",
+      "description": "Search for a stock symbol by company name or keyword.",
+      "method": "GET",
+      "path": "/query",
+      "params": [
+        {
+          "name": "function",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Must be \"SYMBOL_SEARCH\""
+        },
+        {
+          "name": "keywords",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Company name or keyword, e.g. \"Tesla\" or \"Apple\""
+        }
+      ]
+    },
+    {
+      "name": "get_forex_rate",
+      "description": "Get real-time currency exchange rate between any two currencies.",
+      "method": "GET",
+      "path": "/query",
+      "params": [
+        {
+          "name": "function",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Must be \"CURRENCY_EXCHANGE_RATE\""
+        },
+        {
+          "name": "from_currency",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Source currency code, e.g. USD or BTC"
+        },
+        {
+          "name": "to_currency",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Target currency code, e.g. BRL or ETH"
+        }
+      ]
+    }
+  ]
+}

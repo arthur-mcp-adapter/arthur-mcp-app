@@ -1,0 +1,56 @@
+{
+  "id": "myanimelist",
+  "name": "MyAnimeList",
+  "tagline": "Browse MyAnimeList anime rankings",
+  "description": "Retrieve ranked anime entries from MyAnimeList with ranking type, page size, offset, and selected fields.",
+  "category": "Anime",
+  "color": "#2E51A2",
+  "emoji": "📺",
+  "baseUrl": "https://api.myanimelist.net/v2",
+  "auth": {
+    "type": "api-key",
+    "hint": "Register an API client and send its client ID in the X-MAL-CLIENT-ID header for public reads.",
+    "keyName": "X-MAL-CLIENT-ID",
+    "keyIn": "header"
+  },
+  "signupUrl": "https://myanimelist.net/register.php",
+  "docsUrl": "https://myanimelist.net/apiconfig/references/api/v2",
+  "tools": [
+    {
+      "name": "get_anime_ranking",
+      "description": "Return a MyAnimeList anime ranking page.",
+      "method": "GET",
+      "path": "/anime/ranking",
+      "params": [
+        {
+          "name": "ranking_type",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Ranking category such as all, airing, upcoming, tv, movie, or popularity."
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of results."
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Result offset."
+        },
+        {
+          "name": "fields",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Comma-separated additional fields."
+        }
+      ]
+    }
+  ]
+}

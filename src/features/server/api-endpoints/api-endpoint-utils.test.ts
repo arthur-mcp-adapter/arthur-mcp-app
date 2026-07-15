@@ -1,6 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { buildCurl, buildMcpCurl, inferSchema } from './curl-utils'
-import { emptyHeader, emptyParam, toolToFormState } from './tool-form-utils'
+import { buildCurl, buildMcpCurl, inferSchema, emptyHeader, emptyParam, toolToFormState } from './utils'
 import type { GeneratedTool } from '../types'
 
 const tool: GeneratedTool = {

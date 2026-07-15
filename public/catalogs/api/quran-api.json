@@ -1,0 +1,76 @@
+{
+  "id": "quran-api",
+  "name": "Quran-api",
+  "tagline": "Read Quran translations in many languages",
+  "description": "List editions and retrieve a Quran chapter or verse from hundreds of translations.",
+  "category": "Books",
+  "color": "#166534",
+  "emoji": "📗",
+  "baseUrl": "https://cdn.jsdelivr.net/gh/fawazahmed0/quran-api@1",
+  "auth": {
+    "type": "none",
+    "hint": "No API key is required."
+  },
+  "signupUrl": "https://github.com/fawazahmed0/quran-api",
+  "docsUrl": "https://github.com/fawazahmed0/quran-api#readme",
+  "tools": [
+    {
+      "name": "list_editions",
+      "description": "List all available editions.",
+      "method": "GET",
+      "path": "/editions.json",
+      "params": []
+    },
+    {
+      "name": "get_chapter",
+      "description": "Retrieve one chapter from an edition.",
+      "method": "GET",
+      "path": "/editions/{edition}/{chapter}.json",
+      "params": [
+        {
+          "name": "edition",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Edition identifier from the editions catalog."
+        },
+        {
+          "name": "chapter",
+          "in": "path",
+          "required": true,
+          "type": "integer",
+          "description": "Chapter number."
+        }
+      ]
+    },
+    {
+      "name": "get_verse",
+      "description": "Retrieve one verse from an edition and chapter.",
+      "method": "GET",
+      "path": "/editions/{edition}/{chapter}/{verse}.json",
+      "params": [
+        {
+          "name": "edition",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Edition identifier."
+        },
+        {
+          "name": "chapter",
+          "in": "path",
+          "required": true,
+          "type": "integer",
+          "description": "Chapter number."
+        },
+        {
+          "name": "verse",
+          "in": "path",
+          "required": true,
+          "type": "integer",
+          "description": "Verse number."
+        }
+      ]
+    }
+  ]
+}

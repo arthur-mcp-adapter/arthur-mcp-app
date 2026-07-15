@@ -347,7 +347,7 @@
 | File | Role | Last Arch Audit | Last SOLID Audit |
 |------|------|:-:|:-:|
 | `src/theme/index.ts` | MUI theme definition | — | — |
-| `src/theme/ColorModeContext.tsx` | Light/dark mode context | — | — |
+| `src/theme/ColorModeProvider.tsx` | Light/dark mode provider | — | — |
 
 ---
 
@@ -355,8 +355,8 @@
 
 | File | Role | Last Arch Audit | Last SOLID Audit |
 |------|------|:-:|:-:|
-| `src/context/AuthContext.tsx` | Auth state & session management context | — | — |
-| `src/context/ServerNavContext.tsx` | Server detail navigation context | — | — |
+| `src/context/auth/AuthProvider.tsx` | Auth state & session management provider | — | — |
+| `src/context/ServerNavProvider.tsx` | Server detail navigation provider | — | — |
 | `src/context/permissionPresets.ts` | Permission preset constants | — | — |
 
 ---
@@ -384,8 +384,8 @@
 
 | File | Role | Last Arch Audit | Last SOLID Audit |
 |------|------|:-:|:-:|
-| `src/data/api-templates.ts` | Built-in API template definitions | — | — |
-| `src/data/prompt-templates.ts` | Built-in prompt template definitions | — | — |
+| `src/data/apiTemplates.constant.ts` | Built-in API template definitions | — | — |
+| `src/data/promptTemplates.constant.ts` | Built-in prompt template definitions | — | — |
 
 ---
 
@@ -394,10 +394,10 @@
 | File | Role | Last Arch Audit | Last SOLID Audit |
 |------|------|:-:|:-:|
 | `src/components/atoms/index.tsx` | Atoms barrel export | — | — |
-| `src/components/atoms/AppSnackbar/index.tsx` | Global snackbar notification atom | — | — |
-| `src/components/atoms/CodePreviewTabs/index.tsx` | Tabbed code preview atom | — | — |
-| `src/components/atoms/HelpButton/index.tsx` | Help tooltip button atom | — | — |
-| `src/components/atoms/SaveIndicator/index.tsx` | Save status indicator atom | — | — |
+| `src/components/atoms/AppSnackbar/AppSnackbar.tsx` | Global snackbar notification atom | — | — |
+| `src/components/atoms/CodePreviewTabs/CodePreviewTabs.tsx` | Tabbed code preview atom | — | — |
+| `src/components/atoms/HelpButton/HelpButton.tsx` | Help tooltip button atom | — | — |
+| `src/components/atoms/SaveIndicator/SaveIndicator.tsx` | Save status indicator atom | — | — |
 
 ---
 
@@ -406,8 +406,8 @@
 | File | Role | Last Arch Audit | Last SOLID Audit |
 |------|------|:-:|:-:|
 | `src/components/organisms/index.tsx` | Organisms barrel export | — | — |
-| `src/components/organisms/BaseListCard/index.tsx` | Reusable list card base organism | — | — |
-| `src/components/organisms/ConfirmDialog/index.tsx` | Generic confirm/cancel dialog organism | — | — |
+| `src/components/organisms/BaseListCard/BaseListCard.tsx` | Reusable list card base organism | — | — |
+| `src/components/organisms/ConfirmDialog/ConfirmDialog.tsx` | Generic confirm/cancel dialog organism | — | — |
 
 ---
 
@@ -416,8 +416,8 @@
 | File | Role | Last Arch Audit | Last SOLID Audit |
 |------|------|:-:|:-:|
 | `src/components/templates/index.tsx` | Templates barrel export | — | — |
-| `src/components/templates/BaseDialogLayout/index.tsx` | Standard dialog layout template | — | — |
-| `src/components/templates/Layout/index.tsx` | App shell layout template (nav + sidebar) | — | — |
+| `src/components/templates/BaseDialogLayout/BaseDialogLayout.tsx` | Standard dialog layout template | — | — |
+| `src/components/templates/Layout/Layout.tsx` | App shell layout template (nav + sidebar) | — | — |
 
 ---
 
@@ -427,7 +427,7 @@
 |------|------|:-:|:-:|
 | `src/features/aiProviders/index.tsx` | AI providers feature barrel | — | — |
 | `src/features/aiProviders/types.ts` | Feature-local types | — | — |
-| `src/features/aiProviders/AiProviderCard/index.tsx` | Provider list card component | — | — |
+| `src/features/aiProviders/AiProviderCard/AiProviderCard.tsx` | Provider list card component | — | — |
 
 ---
 
@@ -437,7 +437,7 @@
 |------|------|:-:|:-:|
 | `src/features/errorTracking/index.tsx` | Error tracking feature barrel | — | — |
 | `src/features/errorTracking/types.ts` | Feature-local types | — | — |
-| `src/features/errorTracking/ErrorTrackingProviderCard/index.tsx` | Provider list card component | — | — |
+| `src/features/errorTracking/ErrorTrackingProviderCard/ErrorTrackingProviderCard.tsx` | Provider list card component | — | — |
 
 ---
 
@@ -448,9 +448,9 @@
 | `src/features/observability/index.tsx` | Observability feature barrel | — | — |
 | `src/features/observability/types.ts` | Feature-local types | — | — |
 | `src/features/observability/environment-controls.ts` | Environment toggle logic | — | — |
-| `src/features/observability/ObservabilityEnvironmentPanel/index.tsx` | Environment config panel | — | — |
-| `src/features/observability/ObservabilityProviderCard/index.tsx` | Provider list card component | — | — |
-| `src/features/observability/TechnicalObservabilityPanel/index.tsx` | Technical metrics/traces panel | — | — |
+| `src/features/observability/ObservabilityEnvironmentPanel/ObservabilityEnvironmentPanel.tsx` | Environment config panel | — | — |
+| `src/features/observability/ObservabilityProviderCard/ObservabilityProviderCard.tsx` | Provider list card component | — | — |
+| `src/features/observability/TechnicalObservabilityPanel/TechnicalObservabilityPanel.tsx` | Technical metrics/traces panel | — | — |
 
 ---
 
@@ -460,8 +460,8 @@
 |------|------|:-:|:-:|
 | `src/features/prompts/index.tsx` | Prompts feature barrel | — | — |
 | `src/features/prompts/types.ts` | Feature-local types | — | — |
-| `src/features/prompts/PromptCard/index.tsx` | Prompt list card component | — | — |
-| `src/features/prompts/TagInput/index.tsx` | Tag input field component | — | — |
+| `src/features/prompts/PromptCard/PromptCard.tsx` | Prompt list card component | — | — |
+| `src/features/prompts/TagInput/TagInput.tsx` | Tag input field component | — | — |
 
 ---
 
@@ -471,8 +471,8 @@
 |------|------|:-:|:-:|
 | `src/features/secrets/index.tsx` | Secrets feature barrel | — | — |
 | `src/features/secrets/types.ts` | Feature-local types | — | — |
-| `src/features/secrets/SecretCard/index.tsx` | Secret list card component | — | — |
-| `src/features/secrets/SecretAutocomplete/index.tsx` | Secret autocomplete selector | — | — |
+| `src/features/secrets/SecretCard/SecretCard.tsx` | Secret list card component | — | — |
+| `src/features/secrets/SecretAutocomplete/SecretAutocomplete.tsx` | Secret autocomplete selector | — | — |
 
 ---
 
@@ -481,7 +481,7 @@
 | File | Role | Last Arch Audit | Last SOLID Audit |
 |------|------|:-:|:-:|
 | `src/features/server/activity/index.tsx` | Activity tab barrel | — | — |
-| `src/features/server/activity/ProjectLogs/index.tsx` | Real-time project execution logs panel | — | — |
+| `src/features/server/activity/ProjectLogs/ProjectLogs.tsx` | Real-time project execution logs panel | — | — |
 
 ---
 
@@ -490,15 +490,15 @@
 | File | Role | Last Arch Audit | Last SOLID Audit |
 |------|------|:-:|:-:|
 | `src/features/server/api-endpoints/index.tsx` | API endpoints feature barrel | — | — |
-| `src/features/server/api-endpoints/ApiEndpointsTab/index.tsx` | Tab container for API endpoints | — | — |
-| `src/features/server/api-endpoints/EndpointAccordion/index.tsx` | Collapsible endpoint item | — | — |
-| `src/features/server/api-endpoints/ToolAccordion/index.tsx` | Collapsible tool item | — | — |
-| `src/features/server/api-endpoints/ToolDialog/index.tsx` | Tool create/edit dialog | — | — |
-| `src/features/server/api-endpoints/ToolCommentsSection/index.tsx` | Tool-level comments section | — | — |
-| `src/features/server/api-endpoints/ToolOutputTemplateSection/index.tsx` | Output template editor section | — | — |
-| `src/features/server/api-endpoints/FieldInput/index.tsx` | Schema field input component | — | — |
-| `src/features/server/api-endpoints/FromEndpointPickerDialog/index.tsx` | Pick endpoint from import dialog | — | — |
-| `src/features/server/api-endpoints/ReimportSpecDialog/index.tsx` | Re-import OpenAPI spec dialog | — | — |
+| `src/features/server/api-endpoints/ApiEndpointsTab/ApiEndpointsTab.tsx` | Tab container for API endpoints | — | — |
+| `src/features/server/api-endpoints/EndpointAccordion/EndpointAccordion.tsx` | Collapsible endpoint item | — | — |
+| `src/features/server/api-endpoints/ToolAccordion/ToolAccordion.tsx` | Collapsible tool item | — | — |
+| `src/features/server/api-endpoints/ToolDialog/ToolDialog.tsx` | Tool create/edit dialog | — | — |
+| `src/features/server/api-endpoints/ToolCommentsSection/ToolCommentsSection.tsx` | Tool-level comments section | — | — |
+| `src/features/server/api-endpoints/ToolOutputTemplateSection/ToolOutputTemplateSection.tsx` | Output template editor section | — | — |
+| `src/features/server/api-endpoints/FieldInput/FieldInput.tsx` | Schema field input component | — | — |
+| `src/features/server/api-endpoints/FromEndpointPickerDialog/FromEndpointPickerDialog.tsx` | Pick endpoint from import dialog | — | — |
+| `src/features/server/api-endpoints/ReimportSpecDialog/ReimportSpecDialog.tsx` | Re-import OpenAPI spec dialog | — | — |
 | `src/features/server/api-endpoints/curl-utils.ts` | cURL command generation utilities | — | — |
 | `src/features/server/api-endpoints/tool-form-utils.ts` | Tool form helpers | — | — |
 
@@ -509,9 +509,9 @@
 | File | Role | Last Arch Audit | Last SOLID Audit |
 |------|------|:-:|:-:|
 | `src/features/server/chains/index.tsx` | Chains feature barrel | — | — |
-| `src/features/server/chains/ChainsTab/index.tsx` | Tab container for chains | — | — |
-| `src/features/server/chains/ChainDialog/index.tsx` | Chain create/edit dialog | — | — |
-| `src/features/server/chains/StepBuilder/index.tsx` | Chain step builder component | — | — |
+| `src/features/server/chains/ChainsTab/ChainsTab.tsx` | Tab container for chains | — | — |
+| `src/features/server/chains/ChainDialog/ChainDialog.tsx` | Chain create/edit dialog | — | — |
+| `src/features/server/chains/StepBuilder/StepBuilder.tsx` | Chain step builder component | — | — |
 
 ---
 
@@ -520,9 +520,9 @@
 | File | Role | Last Arch Audit | Last SOLID Audit |
 |------|------|:-:|:-:|
 | `src/features/server/connect/index.tsx` | Connect tab barrel | — | — |
-| `src/features/server/connect/McpEndpointBar/index.tsx` | MCP endpoint display bar | — | — |
-| `src/features/server/connect/ApiKeysPanel/index.tsx` | API key management panel | — | — |
-| `src/features/server/connect/OAuthClientPanel/index.tsx` | OAuth client config panel | — | — |
+| `src/features/server/connect/McpEndpointBar/McpEndpointBar.tsx` | MCP endpoint display bar | — | — |
+| `src/features/server/connect/ApiKeysPanel/ApiKeysPanel.tsx` | API key management panel | — | — |
+| `src/features/server/connect/OAuthClientPanel/OAuthClientPanel.tsx` | OAuth client config panel | — | — |
 
 ---
 
@@ -531,10 +531,10 @@
 | File | Role | Last Arch Audit | Last SOLID Audit |
 |------|------|:-:|:-:|
 | `src/features/server/guardRails/index.tsx` | Guard rails feature barrel | — | — |
-| `src/features/server/guardRails/GuardRailsTab/index.tsx` | Tab container for guard rails | — | — |
-| `src/features/server/guardRails/InputConstraintsPanel/index.tsx` | Input constraints config panel | — | — |
-| `src/features/server/guardRails/OutputFilteringPanel/index.tsx` | Output filtering config panel | — | — |
-| `src/features/server/guardRails/ToolRestrictionsPanel/index.tsx` | Tool restriction config panel | — | — |
+| `src/features/server/guardRails/GuardRailsTab/GuardRailsTab.tsx` | Tab container for guard rails | — | — |
+| `src/features/server/guardRails/InputConstraintsPanel/InputConstraintsPanel.tsx` | Input constraints config panel | — | — |
+| `src/features/server/guardRails/OutputFilteringPanel/OutputFilteringPanel.tsx` | Output filtering config panel | — | — |
+| `src/features/server/guardRails/ToolRestrictionsPanel/ToolRestrictionsPanel.tsx` | Tool restriction config panel | — | — |
 
 ---
 
@@ -543,10 +543,10 @@
 | File | Role | Last Arch Audit | Last SOLID Audit |
 |------|------|:-:|:-:|
 | `src/features/server/harness/index.tsx` | Harness feature barrel | — | — |
-| `src/features/server/harness/HarnessTab/index.tsx` | Tab container for execution harness | — | — |
-| `src/features/server/harness/ExecutionHooksPanel/index.tsx` | Pre/post execution hooks panel | — | — |
-| `src/features/server/harness/RetryPolicyPanel/index.tsx` | Retry policy config panel | — | — |
-| `src/features/server/harness/TimeoutPanel/index.tsx` | Timeout config panel | — | — |
+| `src/features/server/harness/HarnessTab/HarnessTab.tsx` | Tab container for execution harness | — | — |
+| `src/features/server/harness/ExecutionHooksPanel/ExecutionHooksPanel.tsx` | Pre/post execution hooks panel | — | — |
+| `src/features/server/harness/RetryPolicyPanel/RetryPolicyPanel.tsx` | Retry policy config panel | — | — |
+| `src/features/server/harness/TimeoutPanel/TimeoutPanel.tsx` | Timeout config panel | — | — |
 
 ---
 
@@ -555,8 +555,8 @@
 | File | Role | Last Arch Audit | Last SOLID Audit |
 |------|------|:-:|:-:|
 | `src/features/server/prompts/index.tsx` | Server prompts feature barrel | — | — |
-| `src/features/server/prompts/PromptsTab/index.tsx` | Tab container for server prompts | — | — |
-| `src/features/server/prompts/PromptTestPanel/index.tsx` | Interactive prompt testing panel | — | — |
+| `src/features/server/prompts/PromptsTab/PromptsTab.tsx` | Tab container for server prompts | — | — |
+| `src/features/server/prompts/PromptTestPanel/PromptTestPanel.tsx` | Interactive prompt testing panel | — | — |
 
 ---
 
@@ -565,9 +565,9 @@
 | File | Role | Last Arch Audit | Last SOLID Audit |
 |------|------|:-:|:-:|
 | `src/features/server/resources/index.tsx` | Resources feature barrel | — | — |
-| `src/features/server/resources/ResourcesTab/index.tsx` | Tab container for MCP resources | — | — |
-| `src/features/server/resources/DynamicResourceDialog/index.tsx` | Dynamic resource create/edit dialog | — | — |
-| `src/features/server/resources/ResourceTestPanel/index.tsx` | Interactive resource testing panel | — | — |
+| `src/features/server/resources/ResourcesTab/ResourcesTab.tsx` | Tab container for MCP resources | — | — |
+| `src/features/server/resources/DynamicResourceDialog/DynamicResourceDialog.tsx` | Dynamic resource create/edit dialog | — | — |
+| `src/features/server/resources/ResourceTestPanel/ResourceTestPanel.tsx` | Interactive resource testing panel | — | — |
 
 ---
 
@@ -576,13 +576,13 @@
 | File | Role | Last Arch Audit | Last SOLID Audit |
 |------|------|:-:|:-:|
 | `src/features/server/settings/index.tsx` | Server settings feature barrel | — | — |
-| `src/features/server/settings/BaseUrlPanel/index.tsx` | Base URL config panel | — | — |
-| `src/features/server/settings/AuthConfigPanel/index.tsx` | Auth config panel | — | — |
-| `src/features/server/settings/RateLimitPanel/index.tsx` | Rate limit config panel | — | — |
-| `src/features/server/settings/AlertConfigPanel/index.tsx` | Alert config panel | — | — |
-| `src/features/server/settings/TenantConfigPanel/index.tsx` | Tenant config panel | — | — |
-| `src/features/server/settings/ProjectControlsPanel/index.tsx` | Project enable/disable controls | — | — |
-| `src/features/server/settings/InlineEdit/index.tsx` | Inline editable field component | — | — |
+| `src/features/server/settings/BaseUrlPanel/BaseUrlPanel.tsx` | Base URL config panel | — | — |
+| `src/features/server/settings/AuthConfigPanel/AuthConfigPanel.tsx` | Auth config panel | — | — |
+| `src/features/server/settings/RateLimitPanel/RateLimitPanel.tsx` | Rate limit config panel | — | — |
+| `src/features/server/settings/AlertConfigPanel/AlertConfigPanel.tsx` | Alert config panel | — | — |
+| `src/features/server/settings/TenantConfigPanel/TenantConfigPanel.tsx` | Tenant config panel | — | — |
+| `src/features/server/settings/ProjectControlsPanel/ProjectControlsPanel.tsx` | Project enable/disable controls | — | — |
+| `src/features/server/settings/InlineEdit/InlineEdit.tsx` | Inline editable field component | — | — |
 
 ---
 
@@ -593,7 +593,7 @@
 | `src/features/server/index.tsx` | Server feature barrel | — | — |
 | `src/features/server/types.ts` | Feature-wide shared types | — | — |
 | `src/features/server/constants.ts` | Feature-wide constants | — | — |
-| `src/features/server/ProjectCard/index.tsx` | Server list card component | — | — |
+| `src/features/server/ProjectCard/ProjectCard.tsx` | Server list card component | — | — |
 
 ---
 
@@ -602,7 +602,7 @@
 | File | Role | Last Arch Audit | Last SOLID Audit |
 |------|------|:-:|:-:|
 | `src/features/settings/index.tsx` | Global settings feature barrel | — | — |
-| `src/features/settings/GlobalRequestHeadersPanel/index.tsx` | Global request headers config panel | — | — |
+| `src/features/settings/GlobalRequestHeadersPanel/GlobalRequestHeadersPanel.tsx` | Global request headers config panel | — | — |
 
 ---
 
@@ -610,37 +610,37 @@
 
 | File | Role | Last Arch Audit | Last SOLID Audit |
 |------|------|:-:|:-:|
-| `src/pages/Dashboard/index.tsx` | Dashboard overview page | — | — |
-| `src/pages/Login/index.tsx` | Login page | — | — |
-| `src/pages/ForgotPassword/index.tsx` | Forgot password page | — | — |
-| `src/pages/ResetPassword/index.tsx` | Reset password page | — | — |
-| `src/pages/SetupWizard/index.tsx` | First-run setup wizard page | — | — |
-| `src/pages/Profile/index.tsx` | User profile page | — | — |
-| `src/pages/Settings/index.tsx` | Global settings page | — | — |
-| `src/pages/Servers/index.tsx` | Server list page | — | — |
-| `src/pages/NewServer/index.tsx` | New server creation page | — | — |
-| `src/pages/ServerDetail/index.tsx` | Server detail tabbed page | — | — |
-| `src/pages/Prompts/index.tsx` | Prompt list page | — | — |
-| `src/pages/NewPrompt/index.tsx` | New prompt creation page | — | — |
-| `src/pages/PromptDetail/index.tsx` | Prompt detail page | — | — |
-| `src/pages/PromptTemplates/index.tsx` | Prompt template gallery page | — | — |
-| `src/pages/Templates/index.tsx` | API template gallery page | — | — |
-| `src/pages/Secrets/index.tsx` | Secret list page | — | — |
-| `src/pages/NewSecret/index.tsx` | New secret creation page | — | — |
-| `src/pages/SecretDetail/index.tsx` | Secret detail page | — | — |
-| `src/pages/AiProviders/index.tsx` | AI provider list page | — | — |
-| `src/pages/NewAiProvider/index.tsx` | New AI provider creation page | — | — |
-| `src/pages/AiProviderDetail/index.tsx` | AI provider detail page | — | — |
-| `src/pages/ErrorTracking/index.tsx` | Error tracking list page | — | — |
-| `src/pages/NewErrorTrackingProvider/index.tsx` | New error tracking provider page | — | — |
-| `src/pages/ErrorTrackingProviderDetail/index.tsx` | Error tracking provider detail page | — | — |
-| `src/pages/Observability/index.tsx` | Observability list page | — | — |
-| `src/pages/NewObservabilityProvider/index.tsx` | New observability provider page | — | — |
-| `src/pages/ObservabilityProviderDetail/index.tsx` | Observability provider detail page | — | — |
-| `src/pages/AuditLogs/index.tsx` | Audit logs page | — | — |
-| `src/pages/Upload/index.tsx` | Spec upload page | — | — |
-| `src/pages/McpDocs/index.tsx` | MCP docs / reference page | — | — |
-| `src/pages/SharePage/index.tsx` | Public project share page | — | — |
+| `src/pages/Dashboard/Dashboard.tsx` | Dashboard overview page | — | — |
+| `src/pages/Login/Login.tsx` | Login page | — | — |
+| `src/pages/ForgotPassword/ForgotPassword.tsx` | Forgot password page | — | — |
+| `src/pages/ResetPassword/ResetPassword.tsx` | Reset password page | — | — |
+| `src/pages/SetupWizard/SetupWizard.tsx` | First-run setup wizard page | — | — |
+| `src/pages/Profile/Profile.tsx` | User profile page | — | — |
+| `src/pages/Settings/Settings.tsx` | Global settings page | — | — |
+| `src/pages/Servers/Servers.tsx` | Server list page | — | — |
+| `src/pages/NewServer/NewServer.tsx` | New server creation page | — | — |
+| `src/pages/ServerDetail/ServerDetail.tsx` | Server detail tabbed page | — | — |
+| `src/pages/Prompts/Prompts.tsx` | Prompt list page | — | — |
+| `src/pages/NewPrompt/NewPrompt.tsx` | New prompt creation page | — | — |
+| `src/pages/PromptDetail/PromptDetail.tsx` | Prompt detail page | — | — |
+| `src/pages/PromptTemplates/PromptTemplates.tsx` | Prompt template gallery page | — | — |
+| `src/pages/Templates/Templates.tsx` | API template gallery page | — | — |
+| `src/pages/Secrets/Secrets.tsx` | Secret list page | — | — |
+| `src/pages/NewSecret/NewSecret.tsx` | New secret creation page | — | — |
+| `src/pages/SecretDetail/SecretDetail.tsx` | Secret detail page | — | — |
+| `src/pages/AiProviders/AiProviders.tsx` | AI provider list page | — | — |
+| `src/pages/NewAiProvider/NewAiProvider.tsx` | New AI provider creation page | — | — |
+| `src/pages/AiProviderDetail/AiProviderDetail.tsx` | AI provider detail page | — | — |
+| `src/pages/ErrorTracking/ErrorTracking.tsx` | Error tracking list page | — | — |
+| `src/pages/NewErrorTrackingProvider/NewErrorTrackingProvider.tsx` | New error tracking provider page | — | — |
+| `src/pages/ErrorTrackingProviderDetail/ErrorTrackingProviderDetail.tsx` | Error tracking provider detail page | — | — |
+| `src/pages/Observability/Observability.tsx` | Observability list page | — | — |
+| `src/pages/NewObservabilityProvider/NewObservabilityProvider.tsx` | New observability provider page | — | — |
+| `src/pages/ObservabilityProviderDetail/ObservabilityProviderDetail.tsx` | Observability provider detail page | — | — |
+| `src/pages/AuditLogs/AuditLogs.tsx` | Audit logs page | — | — |
+| `src/pages/Upload/Upload.tsx` | Spec upload page | — | — |
+| `src/pages/McpDocs/McpDocs.tsx` | MCP docs / reference page | — | — |
+| `src/pages/SharePage/SharePage.tsx` | Public project share page | — | — |
 
 ---
 
@@ -663,5 +663,5 @@ The following are excluded from audit tracking (generated, config, or non-archit
 
 | File | Role | Last Arch Audit | Last SOLID Audit |
 |------|------|:-:|:-:|
-| `src/features/server/settings/ResponseLimitPanel/index.tsx` | — | — | — |
+| `src/features/server/settings/ResponseLimitPanel/ResponseLimitPanel.tsx` | — | — | — |
 | `api/src/database/database-uri.ts` | — | — | — |

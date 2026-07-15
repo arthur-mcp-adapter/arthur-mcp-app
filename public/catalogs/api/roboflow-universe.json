@@ -1,0 +1,77 @@
+{
+  "id": "roboflow-universe",
+  "name": "Roboflow Universe",
+  "tagline": "Run hosted computer-vision model inference",
+  "description": "Run a Roboflow object-detection model against a hosted image URL and return JSON predictions containing classes, confidence, and bounding boxes.",
+  "category": "AI",
+  "color": "#6706CE",
+  "emoji": "👁️",
+  "baseUrl": "https://serverless.roboflow.com",
+  "auth": {
+    "type": "api-key",
+    "hint": "Create a Roboflow workspace key and send it in the api_key query parameter. Keep private keys in Arthur MCP Secrets.",
+    "keyName": "api_key",
+    "keyIn": "query"
+  },
+  "signupUrl": "https://app.roboflow.com/",
+  "docsUrl": "https://docs.roboflow.com/deploy/serverless-hosted-api-v2/use-with-the-rest-api",
+  "tools": [
+    {
+      "name": "run_object_detection",
+      "description": "Run a selected Roboflow model version against a remotely hosted image and return JSON object-detection predictions.",
+      "method": "POST",
+      "path": "/{project_id}/{version_number}",
+      "params": [
+        {
+          "name": "project_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "URL-safe Roboflow project or dataset identifier."
+        },
+        {
+          "name": "version_number",
+          "in": "path",
+          "required": true,
+          "type": "integer",
+          "description": "Trained dataset/model version number."
+        },
+        {
+          "name": "image",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "URL-encoded public image URL to analyze."
+        },
+        {
+          "name": "confidence",
+          "in": "query",
+          "required": false,
+          "type": "number",
+          "description": "Minimum prediction confidence from 0 through 100; documented default is 40."
+        },
+        {
+          "name": "overlap",
+          "in": "query",
+          "required": false,
+          "type": "number",
+          "description": "Maximum same-class box overlap percentage before boxes are combined; documented default is 30."
+        },
+        {
+          "name": "classes",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Comma-separated class labels to include."
+        },
+        {
+          "name": "format",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Use json for structured predictions; image returns a binary annotated image."
+        }
+      ]
+    }
+  ]
+}

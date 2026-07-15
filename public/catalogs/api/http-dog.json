@@ -1,0 +1,33 @@
+{
+  "id": "http-dog",
+  "name": "HTTP Dog",
+  "tagline": "Get dog media for an HTTP status",
+  "description": "Retrieve JSON metadata for the dog image associated with a numeric HTTP response status code.",
+  "category": "Animals",
+  "color": "#0EA5E9",
+  "emoji": "🐕",
+  "baseUrl": "https://http.dog",
+  "auth": {
+    "type": "none",
+    "hint": "No authentication is required."
+  },
+  "signupUrl": "https://http.dog/",
+  "docsUrl": "https://http.dog/",
+  "tools": [
+    {
+      "name": "get_status_dog",
+      "description": "Return JSON metadata for a dog representation of an HTTP status code.",
+      "method": "GET",
+      "path": "/{status_code}.json",
+      "params": [
+        {
+          "name": "status_code",
+          "in": "path",
+          "required": true,
+          "type": "integer",
+          "description": "Supported three-digit HTTP status code."
+        }
+      ]
+    }
+  ]
+}

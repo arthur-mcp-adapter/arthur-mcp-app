@@ -1,0 +1,27 @@
+{
+  "id": "cape-sandbox",
+  "name": "CAPEsandbox",
+  "tagline": "Inspect CAPE malware-analysis tasks",
+  "description": "List malware-analysis tasks from the official hosted CAPE Sandbox service.",
+  "category": "Anti-Malware",
+  "color": "#7C3AED",
+  "emoji": "🧪",
+  "baseUrl": "https://capesandbox.com/apiv2",
+  "auth": {
+    "type": "api-key",
+    "hint": "Generate or request a CAPE API token and send Authorization: Token <TOKEN>.",
+    "keyName": "Authorization",
+    "keyIn": "header"
+  },
+  "signupUrl": "https://capesandbox.com/",
+  "docsUrl": "https://capev2.readthedocs.io/en/latest/usage/api.html",
+  "tools": [
+    {
+      "name": "list_analysis_tasks",
+      "description": "Return CAPE analysis tasks with optional limit and offset path segments.",
+      "method": "GET",
+      "path": "/tasks/list",
+      "params": []
+    }
+  ]
+}

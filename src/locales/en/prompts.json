@@ -83,6 +83,8 @@
     "deleteFailed": "Failed to delete prompt.",
     "createFailed": "Failed to create prompt.",
     "copyFailed": "Could not copy.",
+    "loadTemplateCatalog": "The prompt template catalog could not be loaded.",
+    "loadTemplateDetail": "This prompt template could not be opened. Please try again.",
     "nameRequired": "Name is required.",
     "contentRequired": "Content is required."
   },

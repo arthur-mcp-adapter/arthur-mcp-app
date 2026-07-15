@@ -1,0 +1,111 @@
+{
+  "id": "pocketbase",
+  "name": "PocketBase",
+  "tagline": "Open-source backend — collections via REST",
+  "description": "Read-only access to any PocketBase collection using its built-in REST API. Supports filtering with PocketBase filter syntax, sorting, pagination, and field expansion. After creating this project, update the base URL in Settings to your PocketBase instance (e.g. https://your-app.pockethost.io).",
+  "category": "Database",
+  "color": "#B8DBE4",
+  "emoji": "🗃️",
+  "baseUrl": "https://YOUR_DOMAIN.pocketbase.io",
+  "auth": {
+    "type": "bearer",
+    "hint": "Use an admin or user token. To get an admin token: POST /api/admins/auth-with-password with {\"identity\":\"email\",\"password\":\"pass\"}. For user auth: POST /api/collections/users/auth-with-password."
+  },
+  "signupUrl": "https://pocketbase.io",
+  "docsUrl": "https://pocketbase.io/docs/api-records/",
+  "tools": [
+    {
+      "name": "list_records",
+      "description": "List records from a PocketBase collection with pagination, filtering, and sorting. Filter syntax examples: status='active' && amount>100 | name~'john' (contains) | created>'2024-01-01'.",
+      "method": "GET",
+      "path": "/api/collections/{collection}/records",
+      "params": [
+        {
+          "name": "collection",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Collection name, e.g. users or posts"
+        },
+        {
+          "name": "page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Page number (default 1)"
+        },
+        {
+          "name": "perPage",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Records per page (default 30, max 500)"
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Filter expression, e.g. status='active' or created>'2024-01-01'"
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Sort fields, e.g. -created,name (prefix with - for descending)"
+        },
+        {
+          "name": "fields",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Comma-separated fields to return, e.g. id,name,email"
+        },
+        {
+          "name": "expand",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Relation fields to expand, e.g. user,category"
+        }
+      ]
+    },
+    {
+      "name": "get_record",
+      "description": "Get a single PocketBase record by its ID from a collection.",
+      "method": "GET",
+      "path": "/api/collections/{collection}/records/{id}",
+      "params": [
+        {
+          "name": "collection",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Collection name, e.g. posts or products"
+        },
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Record ID (15-character string)"
+        },
+        {
+          "name": "fields",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Comma-separated fields to return, e.g. id,title,content"
+        },
+        {
+          "name": "expand",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Relation fields to expand, e.g. author,tags"
+        }
+      ]
+    }
+  ]
+}

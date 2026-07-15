@@ -1,0 +1,97 @@
+{
+  "id": "hol-registry-broker",
+  "name": "HOL Registry Broker",
+  "tagline": "Discover agents and MCP servers across registries",
+  "description": "Search the HOL Registry Broker for indexed AI agents and MCP servers, filter by registry, protocol, capability, verification, trust, and availability, and retrieve a selected agent's indexed profile.",
+  "category": "AI",
+  "color": "#00A6A6",
+  "emoji": "🔎",
+  "baseUrl": "https://hol.org/registry/api/v1",
+  "auth": {
+    "type": "none",
+    "hint": "The selected public discovery endpoints work without authentication. An optional HOL API key can isolate rate-limit accounting; authenticated ledger, credit, registration, and administrative operations are outside this candidate."
+  },
+  "signupUrl": "https://hol.org/registry",
+  "docsUrl": "https://hol.org/registry/docs",
+  "tools": [
+    {
+      "name": "search_agents",
+      "description": "Search indexed agents and MCP servers using text plus registry, protocol, capability, trust, verification, availability, and pagination filters.",
+      "method": "GET",
+      "path": "/search",
+      "params": [
+        {
+          "name": "q",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Free-text query applied to agent names, descriptions, and metadata."
+        },
+        {
+          "name": "page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "One-indexed result page; defaults to 1."
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Results per page from 1 through 500; defaults to 20."
+        },
+        {
+          "name": "registries",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Comma-separated registry namespaces, for example erc-8004."
+        },
+        {
+          "name": "protocols",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Comma-separated protocols such as mcp or a2a."
+        },
+        {
+          "name": "capabilities",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Comma-separated capability identifiers to match."
+        },
+        {
+          "name": "type",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Logical type: ai-agents or mcp-servers."
+        },
+        {
+          "name": "online",
+          "in": "query",
+          "required": false,
+          "type": "boolean",
+          "description": "Return only agents currently reporting availability when true."
+        }
+      ]
+    },
+    {
+      "name": "get_agent",
+      "description": "Retrieve the indexed profile and available trust metadata for one Universal Agent Identifier returned by search.",
+      "method": "GET",
+      "path": "/agents/{uaid}",
+      "params": [
+        {
+          "name": "uaid",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Universal Agent Identifier returned by a Registry Broker search result."
+        }
+      ]
+    }
+  ]
+}

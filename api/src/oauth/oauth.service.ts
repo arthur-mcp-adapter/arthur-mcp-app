@@ -1,7 +1,7 @@
 import * as crypto from 'crypto';
 import * as jwt from 'jsonwebtoken';
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
-import { UsersService } from '../users/users.service';
+import { config } from '../config/configuration';
 import { PROJECT_REPO } from '../database/database.tokens';
 import { ISwaggerProjectRepository, SwaggerProjectRecord } from '../swagger/swagger-project.repository';
 import { JwtSecretService } from '../settings/jwt-secret.service';
@@ -22,7 +22,6 @@ export class OAuthService {
   private readonly codes = new Map<string, AuthCode>();
 
   constructor(
-    private readonly users: UsersService,
     @Inject(PROJECT_REPO) private readonly projectRepo: ISwaggerProjectRepository,
     private readonly jwtSecretService: JwtSecretService,
   ) {}
@@ -38,12 +37,22 @@ export class OAuthService {
     return server;
   }
 
-  async validateUser(username: string, password: string) {
-    const user = await this.users.findByUsername(username);
-    if (!user) return null;
-    const valid = await this.users.validatePassword(password, user.password);
-    if (!valid) return null;
-    return { _id: user._id, username: user.username, role: user.role };
+  /** Same identity source as everything else — the MCP-client login form authenticates
+   * against Supabase directly (password grant) rather than a local table. Lazy-imports
+   * `@supabase/supabase-js`, same reasoning as SupabaseAdminService. */
+  async validateUser(email: string, password: string) {
+    if (!config.supabaseUrl || !config.supabasePublishableKey) return null;
+    const { createClient } = await import('@supabase/supabase-js');
+    const supabase = createClient(config.supabaseUrl, config.supabasePublishableKey, {
+      auth: { autoRefreshToken: false, persistSession: false },
+    });
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error || !data.user) return null;
+    return {
+      _id: data.user.id,
+      username: (data.user.user_metadata?.username as string | undefined) ?? email.split('@')[0],
+      role: (data.user.app_metadata?.role as string | undefined) ?? 'admin',
+    };
   }
 
   createCode(

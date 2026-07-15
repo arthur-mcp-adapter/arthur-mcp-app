@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { API_BASE_URL } from './config/urls'
+import { supabase } from './supabaseClient'
 
 const api = axios.create({ baseURL: API_BASE_URL })
 
@@ -13,6 +14,9 @@ api.interceptors.response.use(
   (res) => res,
   (err) => {
     if (err.response?.status === 401) {
+      // Also sign out of Supabase, not just clear the mirrored token — otherwise its own
+      // session store still holds a (backend-rejected) session and resurrects `token` on reload.
+      supabase.auth.signOut()
       localStorage.removeItem('token')
       window.location.href = '/login'
     }

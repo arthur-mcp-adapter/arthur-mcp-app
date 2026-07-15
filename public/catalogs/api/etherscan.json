@@ -1,0 +1,170 @@
+{
+  "id": "etherscan",
+  "name": "Etherscan",
+  "tagline": "Explore EVM balances and transactions",
+  "description": "Query native balances and normal transaction histories across Etherscan-supported EVM networks.",
+  "category": "Blockchain",
+  "color": "#21325B",
+  "emoji": "🔎",
+  "baseUrl": "https://api.etherscan.io/v2",
+  "auth": {
+    "type": "api-key",
+    "hint": "Create an Etherscan API V2 key and send it in the apikey query parameter.",
+    "keyName": "apikey",
+    "keyIn": "query"
+  },
+  "signupUrl": "https://etherscan.io/register",
+  "docsUrl": "https://docs.etherscan.io/getting-started",
+  "tools": [
+    {
+      "name": "get_native_balance",
+      "description": "Retrieve the native token balance for an address on one supported network.",
+      "method": "GET",
+      "path": "/api",
+      "params": [
+        {
+          "name": "chainid",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "One supported chain ID, such as 1 for Ethereum or 8453 for Base."
+        },
+        {
+          "name": "module",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "API module; set this to account."
+        },
+        {
+          "name": "action",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "API action; set this to balance."
+        },
+        {
+          "name": "address",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "EVM address with a 0x prefix."
+        },
+        {
+          "name": "tag",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Use latest for the current balance, or a hexadecimal block number within the latest 128 blocks."
+        }
+      ]
+    },
+    {
+      "name": "list_normal_transactions",
+      "description": "List normal transactions for an address on one supported network.",
+      "method": "GET",
+      "path": "/api",
+      "params": [
+        {
+          "name": "chainid",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "One supported chain ID, such as 1 for Ethereum or 42161 for Arbitrum One."
+        },
+        {
+          "name": "module",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "API module; set this to account."
+        },
+        {
+          "name": "action",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "API action; set this to txlist."
+        },
+        {
+          "name": "address",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "EVM address with a 0x prefix."
+        },
+        {
+          "name": "startblock",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Starting block number; defaults to 0."
+        },
+        {
+          "name": "endblock",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Ending block number; defaults to 999999999."
+        },
+        {
+          "name": "page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Page number; defaults to 1."
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Records per page; defaults to 100."
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Sort direction: asc for oldest first or desc for newest first."
+        }
+      ]
+    },
+    {
+      "name": "get_contract_execution_status",
+      "description": "Retrieve the execution status and error description for a contract transaction.",
+      "method": "GET",
+      "path": "/api",
+      "params": [
+        {
+          "name": "chainid",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "One supported chain ID."
+        },
+        {
+          "name": "module",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "API module; set this to transaction."
+        },
+        {
+          "name": "action",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "API action; set this to getstatus."
+        },
+        {
+          "name": "txhash",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Transaction hash to inspect."
+        }
+      ]
+    }
+  ]
+}

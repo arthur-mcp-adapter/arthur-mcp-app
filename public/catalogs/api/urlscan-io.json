@@ -1,0 +1,47 @@
+{
+  "id": "urlscan-io",
+  "name": "URLScan.io",
+  "tagline": "Search public urlscan.io scan results",
+  "description": "Search public website scan metadata using urlscan.io's documented Elasticsearch-style query syntax.",
+  "category": "Anti-Malware",
+  "color": "#2563EB",
+  "emoji": "🔎",
+  "baseUrl": "https://urlscan.io/api/v1",
+  "auth": {
+    "type": "none",
+    "hint": "No authentication is required for the selected public Search API; submissions require an API key and are excluded."
+  },
+  "signupUrl": "https://urlscan.io/user/signup",
+  "docsUrl": "https://urlscan.io/docs/api/",
+  "tools": [
+    {
+      "name": "search_public_scans",
+      "description": "Search public urlscan.io results and retrieve high-level scan metadata.",
+      "method": "GET",
+      "path": "/search/",
+      "params": [
+        {
+          "name": "q",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Elasticsearch-style query, for example domain:urlscan.io."
+        },
+        {
+          "name": "size",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Maximum number of results to return within provider limits."
+        },
+        {
+          "name": "search_after",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Continuation value supplied by a previous search response."
+        }
+      ]
+    }
+  ]
+}

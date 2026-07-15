@@ -1,0 +1,15 @@
+{
+  "id": "survey-analyzer",
+  "name": "Survey Response Analyzer",
+  "tagline": "Extract themes and insights from survey open-ends",
+  "description": "Processes open-ended survey responses to identify patterns, themes, and sentiment.",
+  "category": "Data Extraction",
+  "emoji": "📋",
+  "tags": [
+    "data",
+    "extraction",
+    "survey",
+    "analysis"
+  ],
+  "content": "Analyze the following open-ended survey responses.\n\n**Question asked:** {{question}}\n**Number of responses:** {{count}}\n\n## Thematic Analysis\n| Theme | Frequency | % | Representative Quote |\n|-------|-----------|---|---------------------|\n\n## Sentiment Breakdown\n- Positive: %\n- Neutral: %\n- Negative: %\n\n## Subgroup Differences\n(Note any notable differences if demographic data is available)\n\n## Key Insights\n1.\n2.\n3.\n\n## Verbatim Highlights\n(Top 5 most insightful responses)\n-\n\n---\nResponses:\n{{responses}}"
+}

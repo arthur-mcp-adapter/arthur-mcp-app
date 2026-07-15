@@ -32,6 +32,19 @@ describe('Application (e2e)', () => {
     });
   });
 
+  describe('GET /users/me', () => {
+    // Regression check: UsersModule must be directly registered on AppModule. It used to only
+    // get mounted transitively through AuthModule's imports; once AuthModule stopped needing
+    // UsersService (Supabase-only auth), that transitive path disappeared and this route silently
+    // 404'd instead of enforcing auth. A 401 here (guard ran) proves the controller is mounted;
+    // a 404 would mean it's unmounted again.
+    it('requires authentication rather than 404ing', () => {
+      return request(app.getHttpServer())
+        .get('/users/me')
+        .expect(401);
+    });
+  });
+
   describe('GET /mcp-docs', () => {
     it('returns HTML documentation without auth', () => {
       return request(app.getHttpServer())

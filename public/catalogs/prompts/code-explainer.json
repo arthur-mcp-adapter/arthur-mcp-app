@@ -1,0 +1,14 @@
+{
+  "id": "code-explainer",
+  "name": "Code Explainer",
+  "tagline": "Explain code in plain English for any audience",
+  "description": "Translates technical code into clear, jargon-free explanations.",
+  "category": "Code",
+  "emoji": "💬",
+  "tags": [
+    "code",
+    "documentation",
+    "explanation"
+  ],
+  "content": "Explain the following code in plain English for a non-technical audience.\n\n1. What it does at a high level (1-2 sentences)\n2. Main steps in simple terms\n3. Inputs and outputs\n4. Important concepts (no jargon; use analogies if helpful)\n\nCode:\n{{code}}"
+}

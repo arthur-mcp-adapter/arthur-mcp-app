@@ -1,0 +1,33 @@
+{
+  "id": "iucn-red-list",
+  "name": "IUCN",
+  "tagline": "Retrieve IUCN Red List assessments",
+  "description": "Retrieve one IUCN Red List assessment by its assessment identifier through the current V4 conservation-data API.",
+  "category": "Animals",
+  "color": "#D20A2E",
+  "emoji": "🦏",
+  "baseUrl": "https://api.iucnredlist.org/api/v4",
+  "auth": {
+    "type": "bearer",
+    "hint": "Register for an IUCN Red List V4 token and send it as Authorization: Bearer <TOKEN>. Use is restricted by the Red List terms."
+  },
+  "signupUrl": "https://api.iucnredlist.org/users/sign_up",
+  "docsUrl": "https://api.iucnredlist.org/api-docs/index.html",
+  "tools": [
+    {
+      "name": "get_assessment",
+      "description": "Retrieve a Red List assessment including taxon, category, publication, distribution, and conservation fields.",
+      "method": "GET",
+      "path": "/assessment/{assessment_id}",
+      "params": [
+        {
+          "name": "assessment_id",
+          "in": "path",
+          "required": true,
+          "type": "integer",
+          "description": "Numeric IUCN Red List assessment identifier."
+        }
+      ]
+    }
+  ]
+}

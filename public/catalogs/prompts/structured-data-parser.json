@@ -1,0 +1,15 @@
+{
+  "id": "structured-data-parser",
+  "name": "Structured Data Parser",
+  "tagline": "Convert unstructured text to JSON using a schema",
+  "description": "Parses free-form text and maps it to a defined JSON schema with confidence scoring.",
+  "category": "Data Extraction",
+  "emoji": "⚙️",
+  "tags": [
+    "data",
+    "extraction",
+    "json",
+    "parsing"
+  ],
+  "content": "Convert the following unstructured text into structured JSON.\n\nSchema:\n{{schema}}\n\nRules:\n- Extract only explicitly stated information — do not infer\n- Use null for missing fields\n- Normalize dates to ISO 8601 (YYYY-MM-DD)\n- Normalize phone numbers to E.164\n- Use arrays for multiple values\n- Add \"confidence\": \"high\"|\"medium\"|\"low\" for ambiguous fields\n\nReturn valid JSON only.\n\n---\nText:\n{{text}}"
+}

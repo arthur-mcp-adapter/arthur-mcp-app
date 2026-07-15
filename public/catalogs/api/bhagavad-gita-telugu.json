@@ -1,0 +1,69 @@
+{
+  "id": "bhagavad-gita-telugu",
+  "name": "Bhagavad Gita telugu",
+  "tagline": "Read Bhagavad Gita verses in four languages",
+  "description": "Retrieve Bhagavad Gita verses by chapter and verse number or by their serial verse number.",
+  "category": "Books",
+  "color": "#F59E0B",
+  "emoji": "📜",
+  "baseUrl": "https://gita-api.vercel.app",
+  "auth": {
+    "type": "none",
+    "hint": "No API key is required."
+  },
+  "signupUrl": "https://gita-api.vercel.app/",
+  "docsUrl": "https://gita-api.vercel.app/docs",
+  "tools": [
+    {
+      "name": "get_verse",
+      "description": "Retrieve one Bhagavad Gita verse using its chapter and within-chapter verse numbers.",
+      "method": "GET",
+      "path": "/{language}/verse/{chapter_no}/{verse_no}",
+      "params": [
+        {
+          "name": "language",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Language code: tel for Telugu, odi for Odia, eng for English, or esp for Spanish."
+        },
+        {
+          "name": "chapter_no",
+          "in": "path",
+          "required": true,
+          "type": "integer",
+          "description": "Bhagavad Gita chapter number."
+        },
+        {
+          "name": "verse_no",
+          "in": "path",
+          "required": true,
+          "type": "integer",
+          "description": "Verse number within the selected chapter."
+        }
+      ]
+    },
+    {
+      "name": "get_verse_by_serial",
+      "description": "Retrieve one Bhagavad Gita verse using its serial number across the text.",
+      "method": "GET",
+      "path": "/{language}/verse/{verse_no_serial}",
+      "params": [
+        {
+          "name": "language",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Language code: tel for Telugu, odi for Odia, eng for English, or esp for Spanish."
+        },
+        {
+          "name": "verse_no_serial",
+          "in": "path",
+          "required": true,
+          "type": "integer",
+          "description": "Sequential verse number across the Bhagavad Gita."
+        }
+      ]
+    }
+  ]
+}

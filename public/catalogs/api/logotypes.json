@@ -1,0 +1,33 @@
+{
+  "id": "logotypes",
+  "name": "Logotypes",
+  "tagline": "Retrieve brand logo metadata",
+  "description": "Look up structured logo variants and asset URLs by brand name from Logotypes.dev.",
+  "category": "Art & Design",
+  "color": "#111827",
+  "emoji": "🏷️",
+  "baseUrl": "https://logotypes.dev",
+  "auth": {
+    "type": "none",
+    "hint": "No authentication is required."
+  },
+  "signupUrl": "https://logotypes.dev/",
+  "docsUrl": "https://logotypes.dev/",
+  "tools": [
+    {
+      "name": "get_logo_data",
+      "description": "Return available logo variants and metadata for a named brand.",
+      "method": "GET",
+      "path": "/{name}/data",
+      "params": [
+        {
+          "name": "name",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Lowercase logo or brand name, such as spotify."
+        }
+      ]
+    }
+  ]
+}

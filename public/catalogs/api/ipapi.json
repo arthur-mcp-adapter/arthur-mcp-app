@@ -1,0 +1,76 @@
+{
+  "id": "ipapi",
+  "name": "IP Geolocation",
+  "tagline": "Location data from IP addresses",
+  "description": "Look up the country, city, ISP, and coordinates for any IP address. Free for up to 45 requests/minute. No authentication required.",
+  "category": "Data",
+  "color": "#FF6B35",
+  "emoji": "🗺️",
+  "baseUrl": "http://ip-api.com",
+  "auth": {
+    "type": "none",
+    "hint": ""
+  },
+  "docsUrl": "https://ip-api.com/docs",
+  "tools": [
+    {
+      "name": "lookup_ip",
+      "description": "Get country, city, region, ISP, latitude, and longitude for a specific IP address.",
+      "method": "GET",
+      "path": "/json/{query}",
+      "params": [
+        {
+          "name": "query",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "IP address (e.g. 8.8.8.8) or domain name (e.g. google.com)"
+        },
+        {
+          "name": "fields",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Comma-separated fields: status,country,city,regionName,lat,lon,isp,org,as,query"
+        },
+        {
+          "name": "lang",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Language for country/city names: en, de, es, pt-BR, fr, ja, zh-CN, ru"
+        }
+      ]
+    },
+    {
+      "name": "lookup_my_ip",
+      "description": "Get location information for the IP address making the request.",
+      "method": "GET",
+      "path": "/json",
+      "params": [
+        {
+          "name": "fields",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Fields to return: status,country,city,regionName,lat,lon,isp,org"
+        }
+      ]
+    },
+    {
+      "name": "batch_lookup",
+      "description": "Look up location data for up to 100 IP addresses in a single request.",
+      "method": "POST",
+      "path": "/batch",
+      "params": [
+        {
+          "name": "queries",
+          "in": "body",
+          "required": true,
+          "type": "array",
+          "description": "Array of query objects, e.g. [{\"query\":\"8.8.8.8\"},{\"query\":\"1.1.1.1\"}]"
+        }
+      ]
+    }
+  ]
+}

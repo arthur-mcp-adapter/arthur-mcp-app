@@ -1,0 +1,14 @@
+{
+  "id": "support-response",
+  "name": "Support Response Generator",
+  "tagline": "Draft empathetic, solution-oriented customer replies",
+  "description": "Creates helpful, empathetic customer support responses with clear next steps.",
+  "category": "Customer Support",
+  "emoji": "💌",
+  "tags": [
+    "support",
+    "response",
+    "customer"
+  ],
+  "content": "Draft a helpful, empathetic customer support response.\n\nGuidelines:\n- Acknowledge the concern first\n- Be empathetic but professional\n- Provide a clear, actionable solution\n- Avoid jargon\n- Set clear expectations if you cannot resolve immediately\n- End with an offer to help further\n\nTone: {{tone}}\nCustomer plan: {{plan}}\nContext: {{context}}\n\nCustomer message:\n{{customer_message}}"
+}

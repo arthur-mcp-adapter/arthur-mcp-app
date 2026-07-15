@@ -1,0 +1,119 @@
+{
+  "id": "whatsapp",
+  "name": "WhatsApp Business",
+  "tagline": "Send messages via WhatsApp Cloud API",
+  "description": "Send WhatsApp messages to customers using the Meta (Facebook) WhatsApp Cloud API. Requires a verified Meta Business account and a WhatsApp phone number.",
+  "category": "Communication",
+  "color": "#25D366",
+  "emoji": "💚",
+  "baseUrl": "https://graph.facebook.com/v20.0",
+  "auth": {
+    "type": "bearer",
+    "hint": "Get a System User Access Token from Meta Business Suite → Business Settings → System Users. Enable WhatsApp permissions."
+  },
+  "signupUrl": "https://developers.facebook.com/docs/whatsapp/cloud-api/get-started",
+  "docsUrl": "https://developers.facebook.com/docs/whatsapp/cloud-api/reference/messages",
+  "tools": [
+    {
+      "name": "send_text_message",
+      "description": "Send a text message to a WhatsApp user.",
+      "method": "POST",
+      "path": "/{phone_number_id}/messages",
+      "params": [
+        {
+          "name": "phone_number_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Your WhatsApp phone number ID from Meta Business Suite"
+        },
+        {
+          "name": "messaging_product",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Must be \"whatsapp\""
+        },
+        {
+          "name": "to",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Recipient phone in E.164 format, e.g. +5511999999999"
+        },
+        {
+          "name": "type",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Message type: text"
+        },
+        {
+          "name": "text",
+          "in": "body",
+          "required": true,
+          "type": "object",
+          "description": "Message body, e.g. {\"body\":\"Hello!\",\"preview_url\":false}"
+        }
+      ]
+    },
+    {
+      "name": "send_template_message",
+      "description": "Send a pre-approved WhatsApp template message (required for first contact with customers).",
+      "method": "POST",
+      "path": "/{phone_number_id}/messages",
+      "params": [
+        {
+          "name": "phone_number_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Your WhatsApp phone number ID"
+        },
+        {
+          "name": "messaging_product",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Must be \"whatsapp\""
+        },
+        {
+          "name": "to",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Recipient phone in E.164 format"
+        },
+        {
+          "name": "type",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Must be \"template\""
+        },
+        {
+          "name": "template",
+          "in": "body",
+          "required": true,
+          "type": "object",
+          "description": "Template, e.g. {\"name\":\"hello_world\",\"language\":{\"code\":\"en_US\"}}"
+        }
+      ]
+    },
+    {
+      "name": "get_media_url",
+      "description": "Retrieve the download URL for a WhatsApp media file received in a message.",
+      "method": "GET",
+      "path": "/{media_id}",
+      "params": [
+        {
+          "name": "media_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Media ID from incoming message webhook payload"
+        }
+      ]
+    }
+  ]
+}

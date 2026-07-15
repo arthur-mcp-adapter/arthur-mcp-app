@@ -1,0 +1,54 @@
+{
+  "id": "worms",
+  "name": "WoRMS",
+  "tagline": "Resolve authoritative marine species names",
+  "description": "Search the World Register of Marine Species for taxonomic records matching a scientific name.",
+  "category": "Animals",
+  "color": "#0077B6",
+  "emoji": "🐚",
+  "baseUrl": "https://www.marinespecies.org/rest",
+  "auth": {
+    "type": "none",
+    "hint": "No authentication is required for the public service."
+  },
+  "signupUrl": "https://www.marinespecies.org/rest/",
+  "docsUrl": "https://www.marinespecies.org/rest/",
+  "tools": [
+    {
+      "name": "search_species",
+      "description": "Find WoRMS Aphia records matching a scientific name.",
+      "method": "GET",
+      "path": "/AphiaRecordsByName/{scientific_name}",
+      "params": [
+        {
+          "name": "scientific_name",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Scientific taxon name to match."
+        },
+        {
+          "name": "like",
+          "in": "query",
+          "required": false,
+          "type": "boolean",
+          "description": "Use a fuzzy/partial name match when true."
+        },
+        {
+          "name": "marine_only",
+          "in": "query",
+          "required": false,
+          "type": "boolean",
+          "description": "Restrict results to marine taxa."
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Result offset for additional matches."
+        }
+      ]
+    }
+  ]
+}

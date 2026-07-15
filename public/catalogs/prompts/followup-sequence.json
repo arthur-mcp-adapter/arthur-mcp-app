@@ -1,0 +1,14 @@
+{
+  "id": "followup-sequence",
+  "name": "Follow-Up Email Sequence",
+  "tagline": "Write a multi-touch follow-up cadence that converts",
+  "description": "Creates a 5-7 email follow-up sequence with varied hooks, value adds, and breakup email.",
+  "category": "Sales",
+  "emoji": "🔄",
+  "tags": [
+    "sales",
+    "email",
+    "sequence"
+  ],
+  "content": "Write a follow-up email sequence.\n\n**Context:** {{context}} (e.g., after demo, after proposal, after no-reply to cold email)\n**Prospect:** {{prospect}}\n**Product:** {{product}}\n**Objection to address (if known):** {{objection}}\n\n## Sequence (5-7 emails)\n\n**Email 1 (Day 1):** Immediate follow-up\nSubject:\nBody:\n\n**Email 2 (Day 3):** Add value (insight, resource, case study)\nSubject:\nBody:\n\n**Email 3 (Day 7):** Different angle / address objection\nSubject:\nBody:\n\n**Email 4 (Day 14):** Social proof or urgency\nSubject:\nBody:\n\n**Email 5 (Day 21):** \"Last attempt\" with a twist\nSubject:\nBody:\n\n**Email 6 (Day 30):** Breakup email\nSubject:\nBody:\n\nKeep each email under 100 words. One CTA per email. Vary the hooks."
+}

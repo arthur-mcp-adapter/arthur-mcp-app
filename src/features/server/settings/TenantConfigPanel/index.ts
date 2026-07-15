@@ -1,0 +1,1 @@
+export { TenantConfigPanel } from './TenantConfigPanel'

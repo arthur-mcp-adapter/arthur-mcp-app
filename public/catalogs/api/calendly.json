@@ -1,0 +1,119 @@
+{
+  "id": "calendly",
+  "name": "Calendly",
+  "tagline": "Scheduled meetings and event types",
+  "description": "Access your Calendly scheduling data: list event types, view scheduled meetings, and get invitee details.",
+  "category": "Business",
+  "color": "#006BFF",
+  "emoji": "📅",
+  "baseUrl": "https://api.calendly.com",
+  "auth": {
+    "type": "bearer",
+    "hint": "Create a Personal Access Token in Calendly → Integrations → API & Webhooks."
+  },
+  "signupUrl": "https://calendly.com/integrations/api_webhooks",
+  "docsUrl": "https://developer.calendly.com/api-docs",
+  "tools": [
+    {
+      "name": "get_user",
+      "description": "Get the current Calendly user's profile and organization URI.",
+      "method": "GET",
+      "path": "/users/me",
+      "params": []
+    },
+    {
+      "name": "list_event_types",
+      "description": "List all event types (meeting templates) for a user or organization.",
+      "method": "GET",
+      "path": "/event_types",
+      "params": [
+        {
+          "name": "user",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "User URI from get_user response"
+        },
+        {
+          "name": "active",
+          "in": "query",
+          "required": false,
+          "type": "boolean",
+          "description": "Only return active event types"
+        },
+        {
+          "name": "count",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Results per page (max 100)"
+        }
+      ]
+    },
+    {
+      "name": "list_events",
+      "description": "List scheduled meetings with their invitee name, status, and time.",
+      "method": "GET",
+      "path": "/scheduled_events",
+      "params": [
+        {
+          "name": "user",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "User URI from get_user"
+        },
+        {
+          "name": "status",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Filter: active or canceled"
+        },
+        {
+          "name": "min_start_time",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "ISO datetime — events starting after this time"
+        },
+        {
+          "name": "max_start_time",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "ISO datetime — events starting before this time"
+        },
+        {
+          "name": "count",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Results per page (max 100)"
+        }
+      ]
+    },
+    {
+      "name": "get_event_invitees",
+      "description": "List all invitees for a specific scheduled event.",
+      "method": "GET",
+      "path": "/scheduled_events/{uuid}/invitees",
+      "params": [
+        {
+          "name": "uuid",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Event UUID from list_events response"
+        },
+        {
+          "name": "status",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Filter: active or canceled"
+        }
+      ]
+    }
+  ]
+}

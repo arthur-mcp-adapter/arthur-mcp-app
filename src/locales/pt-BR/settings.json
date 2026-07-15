@@ -1,5 +1,7 @@
 {
   "title": "Configurações",
+  "accessRestricted": "Acesso restrito",
+  "accessRestrictedMsg": "Somente administradores podem acessar as configurações do sistema.",
   "help": {
     "title": "Configurações",
     "intro": "Configuração operacional deste deployment — URL do servidor, status do JWT secret, cabeçalhos globais de requisição e SMTP.",
@@ -10,7 +12,8 @@
     "server": "Servidor",
     "security": "Segurança",
     "headers": "Cabeçalhos",
-    "email": "E-mail"
+    "email": "E-mail",
+    "observability": "Observabilidade"
   },
   "server": {
     "title": "Servidor",

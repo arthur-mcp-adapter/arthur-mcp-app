@@ -1,0 +1,14 @@
+{
+  "id": "ticket-classifier",
+  "name": "Support Ticket Classifier",
+  "tagline": "Triage and categorize incoming support tickets",
+  "description": "Classifies tickets by category, priority, and sentiment and extracts key diagnostic info.",
+  "category": "Customer Support",
+  "emoji": "🎫",
+  "tags": [
+    "support",
+    "classification",
+    "triage"
+  ],
+  "content": "Classify the following support ticket.\n\n**Category:** [Technical / Billing / Account / Feature Request / Bug / General]\n**Subcategory:**\n**Priority:** [P1 Critical / P2 High / P3 Medium / P4 Low]\n**Sentiment:** [Frustrated / Neutral / Positive]\n**Escalation Needed:** [Yes / No]\n\n**Key Info:**\n- Feature affected:\n- Impact scope:\n- Error messages:\n\n**Suggested Team:** [Tech Support / Billing / Engineering / Account Mgmt]\n\n---\nTicket:\n{{ticket_content}}"
+}

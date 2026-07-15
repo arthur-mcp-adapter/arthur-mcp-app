@@ -1,0 +1,14 @@
+{
+  "id": "legal-doc-summary",
+  "name": "Legal Document Summary",
+  "tagline": "Translate dense legal text into plain English",
+  "description": "Summarizes contracts, agreements, and legal filings in plain language for non-lawyers.",
+  "category": "Summarization",
+  "emoji": "⚖️",
+  "tags": [
+    "summarization",
+    "legal",
+    "contracts"
+  ],
+  "content": "Summarize the following legal document in plain English for a non-lawyer.\n\n**Document type:** {{doc_type}}\n**Parties involved:** {{parties}}\n\n## What This Document Does\n(2-3 sentence plain-language explanation)\n\n## Key Terms & Obligations\n| Party | Key Obligation |\n|-------|---------------|\n\n## Important Dates & Deadlines\n-\n\n## Rights Granted / Restrictions\n-\n\n## Red Flags or Unusual Clauses\n-\n\n## Recommended Next Steps\n-\n\n---\nDocument:\n{{document}}"
+}

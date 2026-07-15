@@ -1,0 +1,161 @@
+{
+  "id": "isdayoff",
+  "name": "Non-Working Days",
+  "tagline": "Check working, non-working, short, and holiday days",
+  "description": "Determine whether a specific date, month, year, or custom date range is a working day, non-working day, shortened workday, or public holiday, with support for country code, six-day work weeks, and COVID-era exceptions.",
+  "category": "Calendar",
+  "color": "#DC2626",
+  "emoji": "🗓️",
+  "baseUrl": "https://isdayoff.ru",
+  "auth": {
+    "type": "none",
+    "hint": "isDayOff() is a free public API and requires no registration, API key, or authentication."
+  },
+  "signupUrl": "https://isdayoff.ru/",
+  "docsUrl": "https://isdayoff.ru/docs/",
+  "tools": [
+    {
+      "name": "get_day_status",
+      "description": "Get the working/non-working/short/holiday status for one specific date.",
+      "method": "GET",
+      "path": "/{date}",
+      "params": [
+        {
+          "name": "date",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Date in YYYYMMDD, YYYY-MM-DD, YYMMDD, or YY-MM-DD format."
+        },
+        {
+          "name": "cc",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Two-letter ISO 3166-1 alpha-2 country code."
+        },
+        {
+          "name": "pre",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Whether to account for shortened pre-holiday days: 0 (default, ignore) or 1 (mark shortened days with response code 2)."
+        },
+        {
+          "name": "sd",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Work-week length: 0 for a five-day week (default) or 1 for a six-day week."
+        },
+        {
+          "name": "covid",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Whether to apply special COVID-19 non-working decrees: 0 (default, ignore) or 1 (apply and mark with response code 4)."
+        },
+        {
+          "name": "holiday",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Whether to flag public holidays distinctly: 0 (default) or 1 (mark holidays with response code 8)."
+        }
+      ]
+    },
+    {
+      "name": "get_period_data",
+      "description": "Get day-status data for a specific day, month, year, or an arbitrary date range of up to 366 days.",
+      "method": "GET",
+      "path": "/api/getdata",
+      "params": [
+        {
+          "name": "year",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Year in YYYY format; required unless date1/date2 are used."
+        },
+        {
+          "name": "month",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Month in MM format, used together with year."
+        },
+        {
+          "name": "day",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Day in DD format, used together with year and month."
+        },
+        {
+          "name": "date1",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Range start date in YYYYMMDD format; used together with date2 instead of year/month/day."
+        },
+        {
+          "name": "date2",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Range end date in YYYYMMDD format; the range may span at most 366 days."
+        },
+        {
+          "name": "cc",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Two-letter ISO 3166-1 alpha-2 country code."
+        },
+        {
+          "name": "pre",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Whether to account for shortened pre-holiday days: 0 (default) or 1."
+        },
+        {
+          "name": "sd",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Work-week length: 0 for a five-day week (default) or 1 for a six-day week."
+        },
+        {
+          "name": "covid",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Whether to apply special COVID-19 non-working decrees: 0 (default) or 1."
+        },
+        {
+          "name": "delimeter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Delimiter string (up to 7 characters) between day codes in the output; empty by default."
+        }
+      ]
+    },
+    {
+      "name": "check_leap_year",
+      "description": "Check whether a given year is a leap year.",
+      "method": "GET",
+      "path": "/api/isleap",
+      "params": [
+        {
+          "name": "year",
+          "in": "query",
+          "required": true,
+          "type": "integer",
+          "description": "Year in YYYY format."
+        }
+      ]
+    }
+  ]
+}

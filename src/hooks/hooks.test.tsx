@@ -1,11 +1,11 @@
 import React from 'react'
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { act, render, renderHook, screen, waitFor } from '@testing-library/react'
-import { useAsyncFeedback } from './useAsyncFeedback'
-import { useCopyToClipboard } from './useCopyToClipboard'
-import { useDetailPageNav } from './useDetailPageNav'
-import { useListPageLogic } from './useListPageLogic'
-import { Permission } from '../context/AuthContext'
+import { useAsyncFeedback } from './useAsyncFeedback.hook'
+import { useCopyToClipboard } from './useCopyToClipboard.hook'
+import { useDetailPageNav } from './useDetailPageNav.hook'
+import { useListPageLogic } from './useListPageLogic.hook'
+import { Permission } from '../context/auth'
 
 const authState = vi.hoisted(() => ({
   can: vi.fn(() => true),
@@ -20,16 +20,16 @@ vi.mock('../api', () => ({
   default: {},
 }))
 
-vi.mock('../context/AuthContext', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('../context/AuthContext')>()
+vi.mock('../context/auth', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../context/auth')>()
   return {
     ...actual,
     useAuth: () => ({ can: authState.can, loading: authState.loading }),
   }
 })
 
-vi.mock('../context/ServerNavContext', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('../context/ServerNavContext')>()
+vi.mock('../context', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../context')>()
   return {
     ...actual,
     useServerNav: () => ({ serverDetail: null, setServerDetail: serverNavState.setServerDetail }),

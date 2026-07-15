@@ -1,5 +1,7 @@
 {
   "title": "Settings",
+  "accessRestricted": "Access restricted",
+  "accessRestrictedMsg": "Only administrators can access system settings.",
   "help": {
     "title": "Settings",
     "intro": "Operator-level configuration for this deployment — server URL, JWT secret status, global request headers, and SMTP.",
@@ -10,7 +12,8 @@
     "server": "Server",
     "security": "Security",
     "headers": "Headers",
-    "email": "E-mail"
+    "email": "E-mail",
+    "observability": "Observability"
   },
   "server": {
     "title": "Server",

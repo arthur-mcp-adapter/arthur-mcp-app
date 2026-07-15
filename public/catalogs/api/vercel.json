@@ -1,0 +1,99 @@
+{
+  "id": "vercel",
+  "name": "Vercel",
+  "tagline": "Deployments, projects and domains",
+  "description": "Monitor deployments, list projects, check build logs, and manage custom domains for your Vercel-hosted applications.",
+  "category": "Development",
+  "color": "#000000",
+  "emoji": "▲",
+  "baseUrl": "https://api.vercel.com",
+  "auth": {
+    "type": "bearer",
+    "hint": "Create an Access Token in your Vercel account under Settings → Tokens."
+  },
+  "signupUrl": "https://vercel.com/account/tokens",
+  "docsUrl": "https://vercel.com/docs/rest-api",
+  "tools": [
+    {
+      "name": "list_projects",
+      "description": "List all Vercel projects with their framework, domains, and last deployment status.",
+      "method": "GET",
+      "path": "/v9/projects",
+      "params": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of projects (max 100)"
+        },
+        {
+          "name": "search",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Filter by project name"
+        }
+      ]
+    },
+    {
+      "name": "get_project",
+      "description": "Get full details for a Vercel project including environment variables and domains.",
+      "method": "GET",
+      "path": "/v9/projects/{idOrName}",
+      "params": [
+        {
+          "name": "idOrName",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Project ID or name"
+        }
+      ]
+    },
+    {
+      "name": "list_deployments",
+      "description": "List deployments across your account or for a specific project.",
+      "method": "GET",
+      "path": "/v6/deployments",
+      "params": [
+        {
+          "name": "projectId",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Filter by project ID"
+        },
+        {
+          "name": "state",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Filter by state: BUILDING, ERROR, INITIALIZING, QUEUED, READY, CANCELED"
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of results (max 100)"
+        }
+      ]
+    },
+    {
+      "name": "get_deployment",
+      "description": "Get full details for a specific deployment including build logs URL and status.",
+      "method": "GET",
+      "path": "/v13/deployments/{idOrUrl}",
+      "params": [
+        {
+          "name": "idOrUrl",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Deployment ID (dpl_xxx) or deployment URL"
+        }
+      ]
+    }
+  ]
+}

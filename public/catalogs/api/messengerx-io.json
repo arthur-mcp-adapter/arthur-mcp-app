@@ -1,0 +1,100 @@
+{
+  "id": "messengerx-io",
+  "name": "MessengerX.io",
+  "tagline": "Send chatbot messages and manage user tags",
+  "description": "Send on-demand chatbot responses, attach personalization tags to users, and retrieve active tags through the MessengerX/Machaao messaging API.",
+  "category": "AI",
+  "color": "#5865F2",
+  "emoji": "💬",
+  "baseUrl": "https://ganglia.machaao.com/v1",
+  "auth": {
+    "type": "api-key",
+    "hint": "Create a MessengerX application and send its API token in the api_token header. Store only the token value in Arthur MCP Secrets.",
+    "keyName": "api_token",
+    "keyIn": "header"
+  },
+  "signupUrl": "https://portal.messengerx.io/",
+  "docsUrl": "https://messengerx.readthedocs.io/en/latest/",
+  "tools": [
+    {
+      "name": "send_message",
+      "description": "Send an on-demand text or structured message to one or more MessengerX user identifiers.",
+      "method": "POST",
+      "path": "/messages/send",
+      "params": [
+        {
+          "name": "users",
+          "in": "body",
+          "required": true,
+          "type": "array",
+          "description": "MessengerX user identifiers that should receive the response."
+        },
+        {
+          "name": "message",
+          "in": "body",
+          "required": true,
+          "type": "object",
+          "description": "Message object containing text, attachment, quick replies, buttons, or supported combinations."
+        }
+      ]
+    },
+    {
+      "name": "tag_user",
+      "description": "Add, update, or disable a personalization tag for a MessengerX user.",
+      "method": "POST",
+      "path": "/users/tag/{user_id}",
+      "params": [
+        {
+          "name": "user_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Unique MessengerX user identifier."
+        },
+        {
+          "name": "tag",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Tag key, for example preferred_languages."
+        },
+        {
+          "name": "status",
+          "in": "body",
+          "required": true,
+          "type": "integer",
+          "description": "Use 1 to activate the tag or 0 to remove/deactivate it."
+        },
+        {
+          "name": "values",
+          "in": "body",
+          "required": false,
+          "type": "array",
+          "description": "Values associated with the tag."
+        },
+        {
+          "name": "displayName",
+          "in": "body",
+          "required": false,
+          "type": "string",
+          "description": "Human-readable tag label."
+        }
+      ]
+    },
+    {
+      "name": "get_user_tags",
+      "description": "Retrieve all active personalization tags for one MessengerX user.",
+      "method": "GET",
+      "path": "/users/tags/{user_id}",
+      "params": [
+        {
+          "name": "user_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Unique MessengerX user identifier."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "id": "trace-moe",
+  "name": "Trace Moe",
+  "tagline": "Identify an anime scene from an image URL",
+  "description": "Search trace.moe with a publicly reachable screenshot URL and return likely anime, episode, and timestamp matches.",
+  "category": "Anime",
+  "color": "#3B82F6",
+  "emoji": "🔍",
+  "baseUrl": "https://api.trace.moe",
+  "auth": {
+    "type": "none",
+    "hint": "No authentication is required for ordinary public searches; optional account limits are outside this candidate."
+  },
+  "signupUrl": "https://trace.moe/",
+  "docsUrl": "https://soruly.github.io/trace.moe-api/",
+  "tools": [
+    {
+      "name": "search_scene",
+      "description": "Identify an anime scene from a remotely hosted screenshot URL.",
+      "method": "GET",
+      "path": "/search",
+      "params": [
+        {
+          "name": "url",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "URL-encoded, publicly reachable screenshot image URL."
+        },
+        {
+          "name": "anilistInfo",
+          "in": "query",
+          "required": false,
+          "type": "boolean",
+          "description": "Include AniList title and metadata when true."
+        },
+        {
+          "name": "cutBorders",
+          "in": "query",
+          "required": false,
+          "type": "boolean",
+          "description": "Crop likely black borders before matching."
+        }
+      ]
+    }
+  ]
+}

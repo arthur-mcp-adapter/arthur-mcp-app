@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ConflictException, NotFoundException, BadRequestException } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { USER_REPO } from '../database/database.tokens';
+import { SupabaseAdminService } from '../auth/supabase-admin.service';
 import * as bcrypt from 'bcryptjs';
 
 jest.mock('bcryptjs');
@@ -26,6 +27,12 @@ const mockUserRepo = {
   create: jest.fn(),
   update: jest.fn(),
   delete: jest.fn(),
+  findWithoutSupabaseId: jest.fn(),
+};
+
+const mockSupabaseAdmin = {
+  isConfigured: true,
+  linkUser: jest.fn(),
 };
 
 describe('UsersService', () => {
@@ -36,6 +43,7 @@ describe('UsersService', () => {
       providers: [
         UsersService,
         { provide: USER_REPO, useValue: mockUserRepo },
+        { provide: SupabaseAdminService, useValue: mockSupabaseAdmin },
       ],
     }).compile();
 
@@ -92,6 +100,20 @@ describe('UsersService', () => {
       expect(mockUserRepo.create).toHaveBeenCalledWith(
         expect.objectContaining({ username: 'newuser', email: 'new@test.com' }),
       );
+    });
+
+    it('links the new account to Supabase with the plaintext password when configured', async () => {
+      (bcrypt.hash as jest.Mock).mockResolvedValue('hashed_pw');
+      const doc = makeUserRecord();
+      mockUserRepo.create.mockResolvedValue(doc);
+      mockSupabaseAdmin.linkUser.mockResolvedValue('sb-new-user');
+      mockUserRepo.update.mockResolvedValue({ ...doc, supabaseId: 'sb-new-user' });
+
+      const result = await service.create('newuser', 'plainpass', 'new@test.com');
+
+      expect(mockSupabaseAdmin.linkUser).toHaveBeenCalledWith('test@test.com', 'plainpass', 'testuser');
+      expect(mockUserRepo.update).toHaveBeenCalledWith('user123', { supabaseId: 'sb-new-user' });
+      expect(result.supabaseId).toBe('sb-new-user');
     });
   });
 
@@ -215,6 +237,47 @@ describe('UsersService', () => {
         role: 'admin',
         supabaseId: 'sb-user-3',
       }));
+    });
+
+    it('provisions a Supabase link for a newly created Google/GitHub account', async () => {
+      mockUserRepo.findByGoogleId.mockResolvedValue(null);
+      mockUserRepo.findByEmail.mockResolvedValue(null);
+      mockUserRepo.findByUsername.mockResolvedValue(null);
+      (bcrypt.hash as jest.Mock).mockResolvedValue('random-hash');
+      const created = makeUserRecord({ username: 'newperson', googleId: 'g-1' });
+      mockUserRepo.create.mockResolvedValue(created);
+      mockSupabaseAdmin.linkUser.mockResolvedValue('sb-linked');
+      mockUserRepo.update.mockResolvedValue({ ...created, supabaseId: 'sb-linked' });
+
+      const result = await service.findOrCreateFromOAuth('google', { id: 'g-1', email: 'new@test.com', name: 'New Person' });
+
+      expect(mockSupabaseAdmin.linkUser).toHaveBeenCalledWith('new@test.com', undefined, 'New Person');
+      expect(mockUserRepo.update).toHaveBeenCalledWith('user123', { supabaseId: 'sb-linked' });
+      expect(result.supabaseId).toBe('sb-linked');
+    });
+  });
+
+  describe('backfillSupabaseLinks', () => {
+    it('does nothing when Supabase is not configured', async () => {
+      mockSupabaseAdmin.isConfigured = false;
+      const result = await service.backfillSupabaseLinks();
+      expect(result).toEqual({ linked: 0, skipped: 0 });
+      expect(mockUserRepo.findWithoutSupabaseId).not.toHaveBeenCalled();
+      mockSupabaseAdmin.isConfigured = true;
+    });
+
+    it('links every account missing a Supabase id and counts failures as skipped', async () => {
+      mockUserRepo.findWithoutSupabaseId.mockResolvedValue([
+        makeUserRecord({ _id: 'u1', email: 'a@test.com' }),
+        makeUserRecord({ _id: 'u2', email: 'b@test.com' }),
+      ]);
+      mockSupabaseAdmin.linkUser.mockResolvedValueOnce('sb-a').mockResolvedValueOnce(null);
+
+      const result = await service.backfillSupabaseLinks();
+
+      expect(mockUserRepo.update).toHaveBeenCalledWith('u1', { supabaseId: 'sb-a' });
+      expect(mockUserRepo.update).not.toHaveBeenCalledWith('u2', expect.anything());
+      expect(result).toEqual({ linked: 1, skipped: 1 });
     });
   });
 });

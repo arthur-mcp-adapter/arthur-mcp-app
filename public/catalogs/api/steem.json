@@ -1,0 +1,155 @@
+{
+  "id": "steem",
+  "name": "Steem",
+  "tagline": "Read Steem blockchain and social content",
+  "description": "Query Steem posts, ranked social feeds, blocks, and live blockchain properties through the public JSON-RPC API.",
+  "category": "Blockchain",
+  "color": "#171FC9",
+  "emoji": "🌊",
+  "baseUrl": "https://api.steemit.com",
+  "auth": {
+    "type": "none",
+    "hint": "Public read-only JSON-RPC methods do not require an API key."
+  },
+  "signupUrl": "https://signup.steemit.com/",
+  "docsUrl": "https://developers.steem.io/apidefinitions/",
+  "tools": [
+    {
+      "name": "get_post_content",
+      "description": "Retrieve one Steem post or comment by author and permlink.",
+      "method": "POST",
+      "path": "/",
+      "params": [
+        {
+          "name": "jsonrpc",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "JSON-RPC protocol version; set to 2.0."
+        },
+        {
+          "name": "method",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "RPC method; set to condenser_api.get_content."
+        },
+        {
+          "name": "params",
+          "in": "body",
+          "required": true,
+          "type": "array",
+          "description": "Two strings in order: author account name and post/comment permlink."
+        },
+        {
+          "name": "id",
+          "in": "body",
+          "required": true,
+          "type": "integer",
+          "description": "Client-selected JSON-RPC request identifier."
+        }
+      ]
+    },
+    {
+      "name": "get_ranked_posts",
+      "description": "Get ranked Steem posts by feed sort, tag, and optional observing account.",
+      "method": "POST",
+      "path": "/",
+      "params": [
+        {
+          "name": "jsonrpc",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "JSON-RPC protocol version; set to 2.0."
+        },
+        {
+          "name": "method",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "RPC method; set to bridge.get_ranked_posts."
+        },
+        {
+          "name": "params",
+          "in": "body",
+          "required": true,
+          "type": "object",
+          "description": "Object with sort, tag, and observer. Supported sorts are trending, hot, created, promoted, payout, payout_comments, and muted."
+        },
+        {
+          "name": "id",
+          "in": "body",
+          "required": true,
+          "type": "integer",
+          "description": "Client-selected JSON-RPC request identifier."
+        }
+      ]
+    },
+    {
+      "name": "get_block",
+      "description": "Retrieve a Steem block by block number.",
+      "method": "POST",
+      "path": "/",
+      "params": [
+        {
+          "name": "jsonrpc",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "JSON-RPC protocol version; set to 2.0."
+        },
+        {
+          "name": "method",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "RPC method; set to block_api.get_block."
+        },
+        {
+          "name": "params",
+          "in": "body",
+          "required": true,
+          "type": "object",
+          "description": "Object containing block_num as an integer block number."
+        },
+        {
+          "name": "id",
+          "in": "body",
+          "required": true,
+          "type": "integer",
+          "description": "Client-selected JSON-RPC request identifier."
+        }
+      ]
+    },
+    {
+      "name": "get_chain_properties",
+      "description": "Retrieve current dynamic global properties for the Steem blockchain.",
+      "method": "POST",
+      "path": "/",
+      "params": [
+        {
+          "name": "jsonrpc",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "JSON-RPC protocol version; set to 2.0."
+        },
+        {
+          "name": "method",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "RPC method; set to database_api.get_dynamic_global_properties."
+        },
+        {
+          "name": "id",
+          "in": "body",
+          "required": true,
+          "type": "integer",
+          "description": "Client-selected JSON-RPC request identifier."
+        }
+      ]
+    }
+  ]
+}

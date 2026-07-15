@@ -1,0 +1,14 @@
+{
+  "id": "tech-trend-report",
+  "name": "Technology Trend Report",
+  "tagline": "Analyze and forecast trends in a technology domain",
+  "description": "Structures an analysis of emerging technology trends with adoption curves and strategic implications.",
+  "category": "Research",
+  "emoji": "💡",
+  "tags": [
+    "research",
+    "technology",
+    "trends"
+  ],
+  "content": "Create a technology trend report for the following domain.\n\n**Domain:** {{domain}}\n**Audience:** {{audience}}\n**Horizon:** {{horizon}} (e.g., 1 year, 3-5 years)\n\n## Executive Summary\n\n## Trends Overview\n| Trend | Maturity | Adoption Pace | Strategic Impact |\n|-------|----------|--------------|-----------------|\n\n## Deep Dive: Top 3 Trends\nFor each: what it is, why it matters, who is leading, real-world applications, timeline\n\n## Risks & Challenges\n-\n\n## Strategic Recommendations\n1.\n2.\n3.\n\n## Companies to Watch\n-\n\nSources:\n{{sources}}"
+}

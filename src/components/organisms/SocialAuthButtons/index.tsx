@@ -1,28 +1,21 @@
-import { useEffect, useState } from 'react'
 import { Button, Divider, Stack, Typography } from '@mui/material'
 import { IconBrandGoogle, IconBrandGithub } from '@tabler/icons-react'
 import { useTranslation } from 'react-i18next'
-import api from '../../../api'
-import { apiUrl } from '../../../config/urls'
+import { supabase } from '../../../supabaseClient'
+import { supabaseConfigured } from '../../../supabaseConfigured.constant'
 
-interface OAuthProviders {
-  google: boolean
-  github: boolean
-}
-
-/** Redirect buttons for Google/GitHub sign-in; hidden unless the backend has that provider configured. */
+/** Google/GitHub sign-in via Supabase's native OAuth; hidden unless Supabase is configured
+ * (the providers themselves are enabled/disabled in the Supabase dashboard, not this app). */
 export default function SocialAuthButtons() {
   const { t } = useTranslation('auth')
-  const [providers, setProviders] = useState<OAuthProviders | null>(null)
 
-  useEffect(() => {
-    api
-      .get<OAuthProviders>('/auth/providers')
-      .then((res) => setProviders(res.data))
-      .catch(() => setProviders({ google: false, github: false }))
-  }, [])
+  if (!supabaseConfigured) return null
 
-  if (!providers || (!providers.google && !providers.github)) return null
+  const signInWith = (provider: 'google' | 'github') =>
+    supabase.auth.signInWithOAuth({
+      provider,
+      options: { redirectTo: `${window.location.origin}/oauth-callback` },
+    })
 
   return (
     <Stack spacing={2}>
@@ -32,16 +25,12 @@ export default function SocialAuthButtons() {
         </Typography>
       </Divider>
       <Stack direction="row" spacing={2}>
-        {providers.google && (
-          <Button variant="outlined" fullWidth href={apiUrl('/auth/google')} startIcon={<IconBrandGoogle size={18} />}>
-            Google
-          </Button>
-        )}
-        {providers.github && (
-          <Button variant="outlined" fullWidth href={apiUrl('/auth/github')} startIcon={<IconBrandGithub size={18} />}>
-            GitHub
-          </Button>
-        )}
+        <Button variant="outlined" fullWidth onClick={() => signInWith('google')} startIcon={<IconBrandGoogle size={18} />}>
+          Google
+        </Button>
+        <Button variant="outlined" fullWidth onClick={() => signInWith('github')} startIcon={<IconBrandGithub size={18} />}>
+          GitHub
+        </Button>
       </Stack>
     </Stack>
   )

@@ -1,0 +1,82 @@
+{
+  "id": "waifu-im",
+  "name": "Waifu.im",
+  "tagline": "Search curated anime-style images",
+  "description": "Browse Waifu.im images with safety, tag, animation, orientation, size, ordering, and pagination controls.",
+  "category": "Anime",
+  "color": "#EC4899",
+  "emoji": "🖼️",
+  "baseUrl": "https://api.waifu.im",
+  "auth": {
+    "type": "none",
+    "hint": "No authentication is required for the selected public image search."
+  },
+  "signupUrl": "https://www.waifu.im/",
+  "docsUrl": "https://www.waifu.im/docs",
+  "tools": [
+    {
+      "name": "search_images",
+      "description": "Return a paginated collection of accepted Waifu.im images matching optional filters.",
+      "method": "GET",
+      "path": "/images",
+      "params": [
+        {
+          "name": "is_nsfw",
+          "originalName": "IsNsfw",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "NSFW selection mode; omit it to retain the public SFW default."
+        },
+        {
+          "name": "included_tags",
+          "originalName": "IncludedTags",
+          "in": "query",
+          "required": false,
+          "type": "array",
+          "description": "Tags that every returned image must contain."
+        },
+        {
+          "name": "excluded_tags",
+          "originalName": "ExcludedTags",
+          "in": "query",
+          "required": false,
+          "type": "array",
+          "description": "Tags that returned images must not contain."
+        },
+        {
+          "name": "is_animated",
+          "originalName": "IsAnimated",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Animation selection mode."
+        },
+        {
+          "name": "orientation",
+          "originalName": "Orientation",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Image orientation filter."
+        },
+        {
+          "name": "page",
+          "originalName": "Page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "One-based result page."
+        },
+        {
+          "name": "page_size",
+          "originalName": "PageSize",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of results per page."
+        }
+      ]
+    }
+  ]
+}

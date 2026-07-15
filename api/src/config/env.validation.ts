@@ -26,14 +26,13 @@ const envSchema = z
     SMTP_PASS: z.string().optional(),
     SMTP_FROM: z.string().optional(),
     GLOBAL_REQUEST_HEADERS: z.string().optional(),
-    GOOGLE_CLIENT_ID: z.string().optional(),
-    GOOGLE_CLIENT_SECRET: z.string().optional(),
-    GITHUB_CLIENT_ID: z.string().optional(),
-    GITHUB_CLIENT_SECRET: z.string().optional(),
-    SUPABASE_URL: z.string().url().optional(),
-    SUPABASE_PUBLISHABLE_KEY: z.string().optional(),
-    SUPABASE_SECRET_KEY: z.string().optional(),
-    SUPABASE_JWKS_URL: z.string().optional(),
+    // Supabase Auth is the sole identity provider — required, not optional. Google/GitHub sign-in
+    // is now Supabase's own native OAuth (configured in the Supabase dashboard), so this app no
+    // longer reads GOOGLE_CLIENT_ID/GITHUB_CLIENT_ID etc.
+    SUPABASE_URL: z.string().url(),
+    SUPABASE_PUBLISHABLE_KEY: z.string().min(1),
+    SUPABASE_SECRET_KEY: z.string().min(1),
+    SUPABASE_JWKS_URL: z.string().min(1),
     SUPABASE_JWKS: z.string().optional(),
   })
   .superRefine((data, ctx) => {

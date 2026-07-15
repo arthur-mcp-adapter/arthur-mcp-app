@@ -1,0 +1,40 @@
+{
+  "id": "movebank",
+  "name": "Movebank",
+  "tagline": "Explore public animal tracking studies",
+  "description": "List public Movebank studies and selected study metadata through the direct-read service.",
+  "category": "Animals",
+  "color": "#0F766E",
+  "emoji": "🛰️",
+  "baseUrl": "https://www.movebank.org/movebank/service",
+  "auth": {
+    "type": "none",
+    "hint": "The selected operation returns only data made public by owners. Private study access requires a separate authenticated integration."
+  },
+  "signupUrl": "https://www.movebank.org/",
+  "docsUrl": "https://github.com/movebank/movebank-api-doc/blob/master/movebank-api.md",
+  "tools": [
+    {
+      "name": "list_public_studies",
+      "description": "List Movebank studies visible to the public, optionally restricting returned attributes.",
+      "method": "GET",
+      "path": "/direct-read",
+      "params": [
+        {
+          "name": "entity_type",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Use study for the selected catalog operation."
+        },
+        {
+          "name": "attributes",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Comma-separated study attributes such as id,name,citation,license_type."
+        }
+      ]
+    }
+  ]
+}

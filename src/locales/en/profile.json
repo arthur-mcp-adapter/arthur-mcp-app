@@ -14,7 +14,6 @@
     "changePassword": "Change password",
     "usernameLabel": "Username",
     "emailLabel": "Email",
-    "currentPasswordLabel": "Current password",
     "newPasswordLabel": "New password",
     "confirmPasswordLabel": "Confirm new password",
     "passwordMismatch": "Passwords do not match",
@@ -22,9 +21,9 @@
     "saveChanges": "Save changes",
     "saving": "Saving…",
     "saveSuccess": "Profile updated successfully.",
+    "saveSuccessEmailPending": "Profile updated. Check your new email address for a confirmation link.",
     "noChanges": "No changes detected.",
     "passwordMatchError": "Passwords do not match.",
-    "currentPasswordRequired": "Enter your current password to set a new one.",
     "saveError": "Error updating."
   },
   "users": {

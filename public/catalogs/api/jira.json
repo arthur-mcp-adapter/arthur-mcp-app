@@ -1,0 +1,116 @@
+{
+  "id": "jira",
+  "name": "Jira",
+  "tagline": "Issues, sprints and project tracking",
+  "description": "Search and manage Jira issues, sprints, and projects. Update the base URL in Settings to your own Atlassian domain (your-domain.atlassian.net).",
+  "category": "Development",
+  "color": "#0052CC",
+  "emoji": "🔵",
+  "baseUrl": "https://your-domain.atlassian.net/rest/api/3",
+  "auth": {
+    "type": "api-key",
+    "hint": "Go to id.atlassian.com/manage-profile/security/api-tokens and create an API token. In the API Key field enter: Basic <base64 of \"your@email.com:API_TOKEN\">.",
+    "keyName": "Authorization",
+    "keyIn": "header"
+  },
+  "signupUrl": "https://id.atlassian.com/manage-profile/security/api-tokens",
+  "docsUrl": "https://developer.atlassian.com/cloud/jira/platform/rest/v3/",
+  "tools": [
+    {
+      "name": "search_issues",
+      "description": "Search Jira issues using JQL (Jira Query Language).",
+      "method": "GET",
+      "path": "/search",
+      "params": [
+        {
+          "name": "jql",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "JQL query, e.g. \"project=MYPROJ AND status=Open AND assignee=currentUser()\""
+        },
+        {
+          "name": "maxResults",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Max results (default 50, max 100)"
+        },
+        {
+          "name": "fields",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Comma-separated fields: summary,status,assignee,priority,created"
+        }
+      ]
+    },
+    {
+      "name": "get_issue",
+      "description": "Get full details for a Jira issue by its key.",
+      "method": "GET",
+      "path": "/issue/{issueIdOrKey}",
+      "params": [
+        {
+          "name": "issueIdOrKey",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Issue key like PROJ-123 or issue ID"
+        }
+      ]
+    },
+    {
+      "name": "create_issue",
+      "description": "Create a new Jira issue in a project.",
+      "method": "POST",
+      "path": "/issue",
+      "params": [
+        {
+          "name": "fields",
+          "in": "body",
+          "required": true,
+          "type": "object",
+          "description": "Issue fields, e.g. {\"project\":{\"key\":\"PROJ\"},\"summary\":\"Bug title\",\"issuetype\":{\"name\":\"Bug\"},\"description\":{\"type\":\"doc\",\"version\":1,\"content\":[{\"type\":\"paragraph\",\"content\":[{\"type\":\"text\",\"text\":\"Details\"}]}]}}"
+        }
+      ]
+    },
+    {
+      "name": "update_issue",
+      "description": "Update fields of an existing Jira issue (status, assignee, priority, etc.).",
+      "method": "PUT",
+      "path": "/issue/{issueIdOrKey}",
+      "params": [
+        {
+          "name": "issueIdOrKey",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Issue key or ID"
+        },
+        {
+          "name": "fields",
+          "in": "body",
+          "required": true,
+          "type": "object",
+          "description": "Fields to update, e.g. {\"priority\":{\"name\":\"High\"},\"assignee\":{\"accountId\":\"<id>\"}}"
+        }
+      ]
+    },
+    {
+      "name": "get_project",
+      "description": "Get a Jira project's details, issue types, and components.",
+      "method": "GET",
+      "path": "/project/{projectIdOrKey}",
+      "params": [
+        {
+          "name": "projectIdOrKey",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Project key (e.g. PROJ) or numeric ID"
+        }
+      ]
+    }
+  ]
+}

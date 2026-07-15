@@ -1,0 +1,139 @@
+{
+  "id": "open-meteo",
+  "name": "Open-Meteo",
+  "tagline": "Free weather forecasts, no API key",
+  "description": "High-accuracy weather forecasts and historical climate data for any location using latitude and longitude. Completely free and open-source — no registration or API key required.",
+  "category": "Data",
+  "color": "#00B0FF",
+  "emoji": "⛅",
+  "baseUrl": "https://api.open-meteo.com/v1",
+  "auth": {
+    "type": "none",
+    "hint": ""
+  },
+  "docsUrl": "https://open-meteo.com/en/docs",
+  "tools": [
+    {
+      "name": "get_current_weather",
+      "description": "Get the current weather conditions for a location using latitude and longitude.",
+      "method": "GET",
+      "path": "/forecast",
+      "params": [
+        {
+          "name": "latitude",
+          "in": "query",
+          "required": true,
+          "type": "number",
+          "description": "Location latitude, e.g. -23.5505 for São Paulo"
+        },
+        {
+          "name": "longitude",
+          "in": "query",
+          "required": true,
+          "type": "number",
+          "description": "Location longitude, e.g. -46.6333 for São Paulo"
+        },
+        {
+          "name": "current",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Comma-separated variables: temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code,apparent_temperature"
+        },
+        {
+          "name": "timezone",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Timezone, e.g. America/Sao_Paulo or auto"
+        }
+      ]
+    },
+    {
+      "name": "get_forecast",
+      "description": "Get a multi-day weather forecast with daily high/low temperatures and precipitation.",
+      "method": "GET",
+      "path": "/forecast",
+      "params": [
+        {
+          "name": "latitude",
+          "in": "query",
+          "required": true,
+          "type": "number",
+          "description": "Location latitude"
+        },
+        {
+          "name": "longitude",
+          "in": "query",
+          "required": true,
+          "type": "number",
+          "description": "Location longitude"
+        },
+        {
+          "name": "daily",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Daily variables: temperature_2m_max,temperature_2m_min,precipitation_sum,wind_speed_10m_max,weather_code"
+        },
+        {
+          "name": "forecast_days",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of forecast days (1–16, default 7)"
+        },
+        {
+          "name": "timezone",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Timezone, e.g. America/New_York or auto"
+        }
+      ]
+    },
+    {
+      "name": "get_historical_weather",
+      "description": "Get historical weather data for any location and date range back to 1940.",
+      "method": "GET",
+      "path": "/archive",
+      "params": [
+        {
+          "name": "latitude",
+          "in": "query",
+          "required": true,
+          "type": "number",
+          "description": "Location latitude"
+        },
+        {
+          "name": "longitude",
+          "in": "query",
+          "required": true,
+          "type": "number",
+          "description": "Location longitude"
+        },
+        {
+          "name": "start_date",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Start date in YYYY-MM-DD format"
+        },
+        {
+          "name": "end_date",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "End date in YYYY-MM-DD format"
+        },
+        {
+          "name": "daily",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Daily variables to return, e.g. temperature_2m_max,temperature_2m_min,precipitation_sum"
+        }
+      ]
+    }
+  ]
+}

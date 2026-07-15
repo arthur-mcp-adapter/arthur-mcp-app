@@ -1,0 +1,93 @@
+{
+  "id": "giphy",
+  "name": "Giphy",
+  "tagline": "GIF search and trending content",
+  "description": "Search millions of GIFs, get trending content, and translate words into GIFs using the Giphy API. Free tier available.",
+  "category": "Data",
+  "color": "#00FF99",
+  "emoji": "🎞️",
+  "baseUrl": "https://api.giphy.com/v1",
+  "auth": {
+    "type": "api-key",
+    "hint": "Create a free app at developers.giphy.com and copy the API Key. Use \"dc6zaTOxFJmzC\" as a beta key for basic testing.",
+    "keyName": "api_key",
+    "keyIn": "query"
+  },
+  "signupUrl": "https://developers.giphy.com/",
+  "docsUrl": "https://developers.giphy.com/docs/api",
+  "tools": [
+    {
+      "name": "search_gifs",
+      "description": "Search Giphy for GIFs matching a keyword.",
+      "method": "GET",
+      "path": "/gifs/search",
+      "params": [
+        {
+          "name": "q",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Search query"
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of results (max 50)"
+        },
+        {
+          "name": "rating",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Content rating: g, pg, pg-13, or r"
+        },
+        {
+          "name": "lang",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "2-letter language code, e.g. en or pt"
+        }
+      ]
+    },
+    {
+      "name": "get_trending_gifs",
+      "description": "Get the currently trending GIFs on Giphy.",
+      "method": "GET",
+      "path": "/gifs/trending",
+      "params": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of results (max 50)"
+        },
+        {
+          "name": "rating",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Content rating: g, pg, pg-13, or r"
+        }
+      ]
+    },
+    {
+      "name": "translate_to_gif",
+      "description": "Translate a word or phrase to a single best-matching GIF.",
+      "method": "GET",
+      "path": "/gifs/translate",
+      "params": [
+        {
+          "name": "s",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Word or phrase to translate, e.g. \"excited\" or \"good morning\""
+        }
+      ]
+    }
+  ]
+}

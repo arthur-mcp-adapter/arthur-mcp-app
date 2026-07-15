@@ -1,0 +1,100 @@
+{
+  "id": "unsplash",
+  "name": "Unsplash",
+  "tagline": "High-quality free photos",
+  "description": "Search and browse millions of high-resolution free photos from the Unsplash community. Great for content creation workflows.",
+  "category": "Data",
+  "color": "#111111",
+  "emoji": "📷",
+  "baseUrl": "https://api.unsplash.com",
+  "auth": {
+    "type": "api-key",
+    "hint": "Register an app at unsplash.com/oauth/applications. In the API Key field enter: Client-ID YOUR_ACCESS_KEY (include \"Client-ID \" prefix).",
+    "keyName": "Authorization",
+    "keyIn": "header"
+  },
+  "signupUrl": "https://unsplash.com/join",
+  "docsUrl": "https://unsplash.com/documentation",
+  "tools": [
+    {
+      "name": "search_photos",
+      "description": "Search Unsplash for photos matching a keyword.",
+      "method": "GET",
+      "path": "/search/photos",
+      "params": [
+        {
+          "name": "query",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Search keywords, e.g. \"mountain sunset\" or \"office workspace\""
+        },
+        {
+          "name": "per_page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Results per page (max 30)"
+        },
+        {
+          "name": "orientation",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Filter: landscape, portrait, or squarish"
+        },
+        {
+          "name": "color",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Filter by color: black_and_white, black, white, yellow, orange, red, purple, blue, green, teal"
+        }
+      ]
+    },
+    {
+      "name": "get_random_photo",
+      "description": "Get one or more random photos, optionally filtered by topic or search term.",
+      "method": "GET",
+      "path": "/photos/random",
+      "params": [
+        {
+          "name": "query",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Optional search term to filter random photos"
+        },
+        {
+          "name": "orientation",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Orientation: landscape, portrait, or squarish"
+        },
+        {
+          "name": "count",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of photos (max 30)"
+        }
+      ]
+    },
+    {
+      "name": "get_photo",
+      "description": "Get full details for a photo including EXIF data, location, and download URL.",
+      "method": "GET",
+      "path": "/photos/{id}",
+      "params": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Photo ID from search results"
+        }
+      ]
+    }
+  ]
+}

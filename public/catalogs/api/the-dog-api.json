@@ -1,0 +1,63 @@
+{
+  "id": "the-dog-api",
+  "name": "The Dog",
+  "tagline": "Search dog images and breed metadata",
+  "description": "Search TheDogAPI image catalog with optional breed, media, pagination, and ordering filters.",
+  "category": "Animals",
+  "color": "#1D4ED8",
+  "emoji": "🐕",
+  "baseUrl": "https://pro-api.thedogapi.com/v1",
+  "auth": {
+    "type": "api-key",
+    "hint": "Create a TheDogAPI key and send it in the x-api-key header.",
+    "keyName": "x-api-key",
+    "keyIn": "header"
+  },
+  "signupUrl": "https://www.thedogapi.com/signup",
+  "docsUrl": "https://docs.thedogapi.com/",
+  "tools": [
+    {
+      "name": "search_images",
+      "description": "Search dog images and return URLs with available breed metadata.",
+      "method": "GET",
+      "path": "/images/search",
+      "params": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of results to return."
+        },
+        {
+          "name": "page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Zero-based result page."
+        },
+        {
+          "name": "order",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Result order such as RANDOM, ASC, or DESC."
+        },
+        {
+          "name": "breed_ids",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Comma-separated breed identifiers."
+        },
+        {
+          "name": "has_breeds",
+          "in": "query",
+          "required": false,
+          "type": "boolean",
+          "description": "Require breed metadata when true."
+        }
+      ]
+    }
+  ]
+}

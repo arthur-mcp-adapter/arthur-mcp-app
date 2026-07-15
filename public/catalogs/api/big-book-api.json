@@ -1,0 +1,171 @@
+{
+  "id": "big-book-api",
+  "name": "Big Book",
+  "tagline": "Search and recommend books",
+  "description": "Search a catalog of millions of books, retrieve detailed book records, find similar titles, and look up authors.",
+  "category": "Books",
+  "color": "#2563EB",
+  "emoji": "📘",
+  "baseUrl": "https://api.bigbookapi.com",
+  "auth": {
+    "type": "api-key",
+    "hint": "Create a Big Book API account and send the API key in the x-api-key header.",
+    "keyName": "x-api-key",
+    "keyIn": "header"
+  },
+  "signupUrl": "https://bigbookapi.com/",
+  "docsUrl": "https://bigbookapi.com/docs/",
+  "tools": [
+    {
+      "name": "search_books",
+      "description": "Semantically search and filter books by text, publication year, rating, genre, author, ISBN, and other criteria.",
+      "method": "GET",
+      "path": "/search-books",
+      "params": [
+        {
+          "name": "query",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Semantic search query, such as books about wizards."
+        },
+        {
+          "name": "isbn",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "ISBN-13 of the book to match."
+        },
+        {
+          "name": "genres",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Comma-separated genres; books matching any supplied genre are returned."
+        },
+        {
+          "name": "authors",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Comma-separated author IDs or names; author IDs are preferred for disambiguation."
+        },
+        {
+          "name": "earliest-publish-year",
+          "in": "query",
+          "required": false,
+          "type": "number",
+          "description": "Only return books published after this year."
+        },
+        {
+          "name": "latest-publish-year",
+          "in": "query",
+          "required": false,
+          "type": "number",
+          "description": "Only return books published before this year."
+        },
+        {
+          "name": "min-rating",
+          "in": "query",
+          "required": false,
+          "type": "number",
+          "description": "Minimum rating in the inclusive range from 0 to 1."
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Sort criterion: publish-date or rating."
+        },
+        {
+          "name": "sort-direction",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Sort direction: ASC or DESC."
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "number",
+          "description": "Number of books to skip, from 0 through 1000."
+        },
+        {
+          "name": "number",
+          "in": "query",
+          "required": false,
+          "type": "number",
+          "description": "Number of books to return, from 1 through 100."
+        }
+      ]
+    },
+    {
+      "name": "get_book",
+      "description": "Retrieve the complete available record for one book by its Big Book API ID.",
+      "method": "GET",
+      "path": "/{id}",
+      "params": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "number",
+          "description": "Big Book API numeric book ID."
+        }
+      ]
+    },
+    {
+      "name": "find_similar_books",
+      "description": "Find books similar to a selected book.",
+      "method": "GET",
+      "path": "/{id}/similar",
+      "params": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "number",
+          "description": "Big Book API numeric ID of the reference book."
+        },
+        {
+          "name": "number",
+          "in": "query",
+          "required": false,
+          "type": "number",
+          "description": "Number of similar books to return, from 1 through 100."
+        }
+      ]
+    },
+    {
+      "name": "search_authors",
+      "description": "Search for authors by a full or partial name and return their IDs.",
+      "method": "GET",
+      "path": "/search-authors",
+      "params": [
+        {
+          "name": "name",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Full or beginning portion of an author name."
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "number",
+          "description": "Number of authors to skip, from 0 through 100."
+        },
+        {
+          "name": "number",
+          "in": "query",
+          "required": false,
+          "type": "number",
+          "description": "Number of authors to return, from 1 through 100."
+        }
+      ]
+    }
+  ]
+}

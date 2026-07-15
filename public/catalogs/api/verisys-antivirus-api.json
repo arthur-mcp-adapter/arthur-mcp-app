@@ -1,0 +1,42 @@
+{
+  "id": "verisys-antivirus-api",
+  "name": "Verisys Antivirus API",
+  "tagline": "Scan remote files for malware",
+  "description": "Ask Verisys to fetch a remote file URL and return synchronous malware findings without uploading binary content through Arthur MCP.",
+  "category": "Anti-Malware",
+  "color": "#0F766E",
+  "emoji": "🛡️",
+  "baseUrl": "https://us1.api.av.ionxsolutions.com/v1",
+  "auth": {
+    "type": "api-key",
+    "hint": "Create a Verisys Antivirus API key and send it in the X-Api-Key header.",
+    "keyName": "X-Api-Key",
+    "keyIn": "header"
+  },
+  "signupUrl": "https://www.ionxsolutions.com/products/antivirus-api",
+  "docsUrl": "https://docs.av.ionxsolutions.com/introduction",
+  "tools": [
+    {
+      "name": "scan_remote_file",
+      "description": "Synchronously scan a remotely hosted file for malware.",
+      "method": "POST",
+      "path": "/malware/scan/url",
+      "params": [
+        {
+          "name": "file_url",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "HTTPS URL of the file Verisys should fetch and scan."
+        },
+        {
+          "name": "file_name",
+          "in": "body",
+          "required": false,
+          "type": "string",
+          "description": "Optional filename used when the remote URL does not provide a useful name."
+        }
+      ]
+    }
+  ]
+}

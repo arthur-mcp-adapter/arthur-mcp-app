@@ -8,18 +8,6 @@ export const config = {
   get jwtSecret(): string {
     return process.env.JWT_SECRET ?? 'change-me-in-production-secret';
   },
-  get googleClientId(): string | undefined {
-    return process.env.GOOGLE_CLIENT_ID;
-  },
-  get googleClientSecret(): string | undefined {
-    return process.env.GOOGLE_CLIENT_SECRET;
-  },
-  get githubClientId(): string | undefined {
-    return process.env.GITHUB_CLIENT_ID;
-  },
-  get githubClientSecret(): string | undefined {
-    return process.env.GITHUB_CLIENT_SECRET;
-  },
   get selfHosted(): boolean {
     return process.env.SELF_HOSTED === 'true';
   },
@@ -48,5 +36,11 @@ export const config = {
   },
   get supabaseUrl(): string | undefined {
     return process.env.SUPABASE_URL;
+  },
+  get supabaseSecretKey(): string | undefined {
+    return process.env.SUPABASE_SECRET_KEY;
+  },
+  get supabasePublishableKey(): string | undefined {
+    return process.env.SUPABASE_PUBLISHABLE_KEY;
   },
 };

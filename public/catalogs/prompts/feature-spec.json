@@ -1,0 +1,14 @@
+{
+  "id": "feature-spec",
+  "name": "Feature Specification",
+  "tagline": "Write detailed product specs for engineering teams",
+  "description": "Creates comprehensive feature specifications with requirements, flows, edge cases, and success metrics.",
+  "category": "Product Management",
+  "emoji": "🗺️",
+  "tags": [
+    "product",
+    "specification",
+    "engineering"
+  ],
+  "content": "Write a feature specification.\n\n**Feature name:** {{feature}}\n**Product:** {{product}}\n**Author:** {{author}}\n**Date:** {{date}}\n**Status:** Draft / In Review / Approved\n\n## Overview\n(What this feature does and why we're building it)\n\n## Problem Statement\n## Goals & Non-Goals\n## Success Metrics\n| Metric | Current | Target | How Measured |\n|--------|---------|--------|-------------|\n\n## User Stories\n(Link or summarize)\n\n## Requirements\n### Functional Requirements\n-\n### Non-Functional Requirements\n(Performance, security, accessibility)\n-\n\n## User Flows\n(Description or link to Figma)\n\n## Edge Cases\n-\n\n## Technical Considerations\n(For the engineering team)\n\n## Open Questions\n-\n\n## Launch Plan & Rollout\n-"
+}

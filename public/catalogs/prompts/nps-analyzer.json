@@ -1,0 +1,15 @@
+{
+  "id": "nps-analyzer",
+  "name": "NPS Response Analyzer",
+  "tagline": "Extract insights from Net Promoter Score responses",
+  "description": "Analyzes NPS survey responses to surface themes, segment detractors/promoters, and recommend actions.",
+  "category": "Customer Support",
+  "emoji": "⭐",
+  "tags": [
+    "support",
+    "nps",
+    "feedback",
+    "analysis"
+  ],
+  "content": "Analyze the following NPS survey responses.\n\n**Product:** {{product}}\n**Survey period:** {{period}}\n**Total responses:** {{count}}\n\n## Score Distribution\n- Promoters (9-10):\n- Passives (7-8):\n- Detractors (0-6):\n- **NPS Score:**\n\n## Promoter Themes\n(What promoters love)\n-\n\n## Detractor Themes\n(Main complaints)\n-\n\n## Quick Wins\n(Issues that can be fixed quickly with high impact)\n-\n\n## Strategic Actions\n1.\n2.\n3.\n\n---\nResponses:\n{{responses}}"
+}

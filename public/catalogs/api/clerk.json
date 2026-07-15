@@ -1,0 +1,69 @@
+{
+  "id": "clerk",
+  "name": "Clerk",
+  "tagline": "Manage users in a Clerk instance",
+  "description": "List, search, and retrieve users from a Clerk application through the Backend API.",
+  "category": "Authentication & Authorization",
+  "color": "#6C47FF",
+  "emoji": "🔐",
+  "baseUrl": "https://api.clerk.com/v1",
+  "auth": {
+    "type": "bearer",
+    "hint": "Use the Clerk Secret Key from the API Keys page in the Clerk Dashboard as the bearer token."
+  },
+  "signupUrl": "https://dashboard.clerk.com/sign-up",
+  "docsUrl": "https://clerk.com/docs/reference/backend-api",
+  "tools": [
+    {
+      "name": "list_users",
+      "description": "List or search users in the Clerk instance.",
+      "method": "GET",
+      "path": "/users",
+      "params": [
+        {
+          "name": "query",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Partial match across user ID, email, phone, username, web3 wallet, first name, and last name."
+        },
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Maximum number of users to return, from 1 through 500; defaults to 10."
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of users to skip for offset pagination; defaults to 0."
+        },
+        {
+          "name": "order_by",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Supported sort field prefixed with + for ascending or - for descending; defaults to -created_at."
+        }
+      ]
+    },
+    {
+      "name": "get_user",
+      "description": "Retrieve one Clerk user by identifier.",
+      "method": "GET",
+      "path": "/users/{user_id}",
+      "params": [
+        {
+          "name": "user_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Clerk user identifier."
+        }
+      ]
+    }
+  ]
+}

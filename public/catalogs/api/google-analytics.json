@@ -1,0 +1,218 @@
+{
+  "id": "google-analytics",
+  "name": "Google Analytics",
+  "tagline": "Explore and report on Google Analytics data",
+  "description": "Discover available Google Analytics dimensions and metrics, run core and realtime property reports, and check report-field compatibility.",
+  "category": "Business",
+  "color": "#E37400",
+  "emoji": "📈",
+  "baseUrl": "https://analyticsdata.googleapis.com/v1beta",
+  "auth": {
+    "type": "bearer",
+    "hint": "Enable the Google Analytics Data API in a Google Cloud project and provide an OAuth 2.0 access token with the analytics.readonly scope (or the broader analytics scope). User accounts and service accounts are supported when they have access to the target Analytics property."
+  },
+  "signupUrl": "https://console.cloud.google.com/",
+  "docsUrl": "https://developers.google.com/analytics/devguides/reporting/data/v1/rest",
+  "tools": [
+    {
+      "name": "get_metadata",
+      "description": "List dimensions, metrics, and comparisons available to reporting methods for a Google Analytics property.",
+      "method": "GET",
+      "path": "/properties/{propertyId}/metadata",
+      "params": [
+        {
+          "name": "propertyId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Numeric Google Analytics property identifier; use 0 to retrieve only metadata common to all properties."
+        }
+      ]
+    },
+    {
+      "name": "run_report",
+      "description": "Run a customized core report of event data for a Google Analytics property.",
+      "method": "POST",
+      "path": "/properties/{propertyId}:runReport",
+      "params": [
+        {
+          "name": "propertyId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Numeric Google Analytics property identifier."
+        },
+        {
+          "name": "dimensions",
+          "in": "body",
+          "required": false,
+          "type": "array",
+          "description": "Dimension objects requested as report columns, such as [{\"name\":\"country\"}]."
+        },
+        {
+          "name": "metrics",
+          "in": "body",
+          "required": true,
+          "type": "array",
+          "description": "Metric objects requested as report columns, such as [{\"name\":\"activeUsers\"}]."
+        },
+        {
+          "name": "dateRanges",
+          "in": "body",
+          "required": true,
+          "type": "array",
+          "description": "Date range objects with startDate and endDate; relative values such as 7daysAgo and today are supported."
+        },
+        {
+          "name": "dimensionFilter",
+          "in": "body",
+          "required": false,
+          "type": "object",
+          "description": "Optional dimension filter expression."
+        },
+        {
+          "name": "metricFilter",
+          "in": "body",
+          "required": false,
+          "type": "object",
+          "description": "Optional post-aggregation metric filter expression."
+        },
+        {
+          "name": "offset",
+          "in": "body",
+          "required": false,
+          "type": "string",
+          "description": "Zero-based row offset encoded as an int64 string for pagination."
+        },
+        {
+          "name": "limit",
+          "in": "body",
+          "required": false,
+          "type": "string",
+          "description": "Positive maximum row count encoded as an int64 string; the API returns at most 250,000 rows per request."
+        },
+        {
+          "name": "returnPropertyQuota",
+          "in": "body",
+          "required": false,
+          "type": "boolean",
+          "description": "Whether the response should include the property's current quota state."
+        }
+      ]
+    },
+    {
+      "name": "run_realtime_report",
+      "description": "Run a customized report over recent realtime events for a Google Analytics property.",
+      "method": "POST",
+      "path": "/properties/{propertyId}:runRealtimeReport",
+      "params": [
+        {
+          "name": "propertyId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Numeric Google Analytics property identifier."
+        },
+        {
+          "name": "dimensions",
+          "in": "body",
+          "required": false,
+          "type": "array",
+          "description": "Dimension objects to display in realtime report rows."
+        },
+        {
+          "name": "metrics",
+          "in": "body",
+          "required": true,
+          "type": "array",
+          "description": "Metric objects to display in realtime report rows."
+        },
+        {
+          "name": "dimensionFilter",
+          "in": "body",
+          "required": false,
+          "type": "object",
+          "description": "Optional filter expression using dimensions."
+        },
+        {
+          "name": "metricFilter",
+          "in": "body",
+          "required": false,
+          "type": "object",
+          "description": "Optional post-aggregation filter expression using metrics."
+        },
+        {
+          "name": "limit",
+          "in": "body",
+          "required": false,
+          "type": "string",
+          "description": "Positive row limit encoded as an int64 string; the maximum is 250,000 rows."
+        },
+        {
+          "name": "minuteRanges",
+          "in": "body",
+          "required": false,
+          "type": "array",
+          "description": "Recent minute-range objects to read; when omitted, the last 30 minutes are used."
+        },
+        {
+          "name": "returnPropertyQuota",
+          "in": "body",
+          "required": false,
+          "type": "boolean",
+          "description": "Whether the response should include the property's realtime quota state."
+        }
+      ]
+    },
+    {
+      "name": "check_compatibility",
+      "description": "Check whether proposed dimensions and metrics can be combined in a core report.",
+      "method": "POST",
+      "path": "/properties/{propertyId}:checkCompatibility",
+      "params": [
+        {
+          "name": "propertyId",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Numeric Google Analytics property identifier."
+        },
+        {
+          "name": "dimensions",
+          "in": "body",
+          "required": false,
+          "type": "array",
+          "description": "Dimension objects proposed for the core report."
+        },
+        {
+          "name": "metrics",
+          "in": "body",
+          "required": false,
+          "type": "array",
+          "description": "Metric objects proposed for the core report."
+        },
+        {
+          "name": "dimensionFilter",
+          "in": "body",
+          "required": false,
+          "type": "object",
+          "description": "Optional dimension filter expression from the proposed report."
+        },
+        {
+          "name": "metricFilter",
+          "in": "body",
+          "required": false,
+          "type": "object",
+          "description": "Optional metric filter expression from the proposed report."
+        },
+        {
+          "name": "compatibilityFilter",
+          "in": "body",
+          "required": false,
+          "type": "string",
+          "description": "Optional response filter: COMPATIBLE, INCOMPATIBLE, or COMPATIBILITY_UNSPECIFIED."
+        }
+      ]
+    }
+  ]
+}

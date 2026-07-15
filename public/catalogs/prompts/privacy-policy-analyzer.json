@@ -1,0 +1,15 @@
+{
+  "id": "privacy-policy-analyzer",
+  "name": "Privacy Policy Analyzer",
+  "tagline": "Check privacy policies for GDPR and CCPA compliance",
+  "description": "Reviews privacy policies against GDPR, CCPA, and general best practices, flagging gaps and risks.",
+  "category": "Legal",
+  "emoji": "🔏",
+  "tags": [
+    "legal",
+    "privacy",
+    "gdpr",
+    "compliance"
+  ],
+  "content": "Analyze the following privacy policy for compliance and clarity.\n\n**Company type:** {{company_type}}\n**Applicable regulations:** {{regulations}} (GDPR / CCPA / LGPD / PIPEDA / other)\n**Data types collected:** {{data_types}}\n\n## Compliance Checklist\n| Requirement | Present? | Compliant? | Gap |\n|------------|---------|-----------|-----|\n| Legal basis for processing (GDPR) | | | |\n| Data categories collected | | | |\n| Third-party sharing disclosure | | | |\n| Data retention periods | | | |\n| User rights (access, deletion, portability) | | | |\n| Cookie policy | | | |\n| Contact information for DPO/privacy team | | | |\n| Breach notification process | | | |\n| Children's data handling (COPPA if applicable) | | | |\n\n## Critical Gaps\n-\n\n## Unclear or Misleading Language\n-\n\n## Recommended Additions\n-\n\n---\nPolicy:\n{{policy}}"
+}

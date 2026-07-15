@@ -1,0 +1,63 @@
+{
+  "id": "the-cat-api",
+  "name": "Cats",
+  "tagline": "Search cat images by breed and category",
+  "description": "Search The Cat API image catalog with optional breed, category, result-count, and ordering filters.",
+  "category": "Animals",
+  "color": "#6B7280",
+  "emoji": "🐱",
+  "baseUrl": "https://api.thecatapi.com/v1",
+  "auth": {
+    "type": "api-key",
+    "hint": "Create a Cat API key and send it in the x-api-key header.",
+    "keyName": "x-api-key",
+    "keyIn": "header"
+  },
+  "signupUrl": "https://thecatapi.com/signup",
+  "docsUrl": "https://docs.thecatapi.com/api-reference/images/images-search",
+  "tools": [
+    {
+      "name": "search_images",
+      "description": "Search cat images and return image URLs plus associated metadata.",
+      "method": "GET",
+      "path": "/images/search",
+      "params": [
+        {
+          "name": "limit",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of results to return."
+        },
+        {
+          "name": "breed_ids",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Comma-separated breed identifiers."
+        },
+        {
+          "name": "category_ids",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Comma-separated category identifiers."
+        },
+        {
+          "name": "order",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Result order such as RANDOM, ASC, or DESC."
+        },
+        {
+          "name": "has_breeds",
+          "in": "query",
+          "required": false,
+          "type": "boolean",
+          "description": "Restrict results according to whether breed metadata is present."
+        }
+      ]
+    }
+  ]
+}

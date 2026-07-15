@@ -1,0 +1,97 @@
+{
+  "id": "dockerhub",
+  "name": "Docker Hub",
+  "tagline": "Container image search and registry",
+  "description": "Search public Docker images, browse image tags, and get repository details from Docker Hub. No authentication required for public images.",
+  "category": "Development",
+  "color": "#0db7ed",
+  "emoji": "🐳",
+  "baseUrl": "https://hub.docker.com/v2",
+  "auth": {
+    "type": "none",
+    "hint": ""
+  },
+  "docsUrl": "https://docs.docker.com/docker-hub/api/latest/",
+  "tools": [
+    {
+      "name": "search_images",
+      "description": "Search Docker Hub for public images by name or keyword.",
+      "method": "GET",
+      "path": "/search/repositories",
+      "params": [
+        {
+          "name": "query",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Search term, e.g. nginx or postgres"
+        },
+        {
+          "name": "page_size",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Results per page (max 100)"
+        },
+        {
+          "name": "page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Page number"
+        }
+      ]
+    },
+    {
+      "name": "get_repository",
+      "description": "Get details for a Docker Hub repository: description, star count, and pull count.",
+      "method": "GET",
+      "path": "/repositories/{namespace}/{repository}",
+      "params": [
+        {
+          "name": "namespace",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Namespace (username or org), e.g. library for official images"
+        },
+        {
+          "name": "repository",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Repository name, e.g. nginx"
+        }
+      ]
+    },
+    {
+      "name": "list_tags",
+      "description": "List available tags for a Docker image repository.",
+      "method": "GET",
+      "path": "/repositories/{namespace}/{repository}/tags",
+      "params": [
+        {
+          "name": "namespace",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Namespace, e.g. library"
+        },
+        {
+          "name": "repository",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Repository name"
+        },
+        {
+          "name": "page_size",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Results per page (max 100)"
+        }
+      ]
+    }
+  ]
+}

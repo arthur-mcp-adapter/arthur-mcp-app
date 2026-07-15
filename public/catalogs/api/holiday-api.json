@@ -1,0 +1,84 @@
+{
+  "id": "holiday-api",
+  "name": "Holidays",
+  "tagline": "Look up historical and current public holidays worldwide",
+  "description": "Retrieve public holidays and observances by country, year, month, or day, with optional search, language, and previous/upcoming holiday lookups.",
+  "category": "Calendar",
+  "color": "#F59E0B",
+  "emoji": "🏖️",
+  "baseUrl": "https://holidayapi.com",
+  "auth": {
+    "type": "api-key",
+    "hint": "Sign up at holidayapi.com for an API key and send it as the key query parameter.",
+    "keyName": "key",
+    "keyIn": "query"
+  },
+  "signupUrl": "https://holidayapi.com/",
+  "docsUrl": "https://holidayapi.com/docs",
+  "tools": [
+    {
+      "name": "list_holidays",
+      "description": "List public holidays and observances for a country, optionally filtered by year, month, day, or search term.",
+      "method": "GET",
+      "path": "/v1/holidays",
+      "params": [
+        {
+          "name": "country",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "ISO 3166-1 alpha-2 or alpha-3 country code; accepts up to 10 comma-separated values."
+        },
+        {
+          "name": "year",
+          "in": "query",
+          "required": true,
+          "type": "integer",
+          "description": "4-digit year in ISO 8601 format."
+        },
+        {
+          "name": "month",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "1 or 2 digit month (1-12)."
+        },
+        {
+          "name": "day",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "1 or 2 digit day (1-31); must be used together with month."
+        },
+        {
+          "name": "public",
+          "in": "query",
+          "required": false,
+          "type": "boolean",
+          "description": "Return only public holidays."
+        },
+        {
+          "name": "search",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Search holidays by name; minimum 5 characters."
+        },
+        {
+          "name": "language",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "ISO 639-1 language code (with documented exceptions) for holiday names."
+        },
+        {
+          "name": "format",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Response format: csv, json, php, tsv, yaml, or xml; defaults to json."
+        }
+      ]
+    }
+  ]
+}

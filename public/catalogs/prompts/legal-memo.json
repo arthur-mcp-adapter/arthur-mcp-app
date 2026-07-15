@@ -1,0 +1,14 @@
+{
+  "id": "legal-memo",
+  "name": "Legal Memo Writer",
+  "tagline": "Structure legal analysis in standard memo format",
+  "description": "Drafts legal memos with question presented, brief answer, facts, analysis, and conclusion.",
+  "category": "Legal",
+  "emoji": "⚖️",
+  "tags": [
+    "legal",
+    "memo",
+    "analysis"
+  ],
+  "content": "Draft a legal memo on the following matter.\n\n**To:** {{to}}\n**From:** {{from}}\n**Date:** {{date}}\n**Re:** {{subject}}\n**Jurisdiction:** {{jurisdiction}}\n\n## Question Presented\n(The specific legal question to be answered)\n\n## Brief Answer\n(One-paragraph direct answer)\n\n## Relevant Facts\n-\n\n## Analysis\n### Applicable Law\n### Application to Facts\n### Counterarguments\n\n## Conclusion\n(Recommendation and reasoning)\n\n## Caveats\n(Limitations of this analysis)\n\n---\nBackground:\n{{background}}\n\nNote: This memo is for informational purposes only and does not constitute legal advice."
+}

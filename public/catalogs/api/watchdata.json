@@ -1,0 +1,128 @@
+{
+  "id": "watchdata",
+  "name": "Watchdata",
+  "tagline": "Query Ethereum through WatchData",
+  "description": "Read Ethereum balances, blocks, and transactions through WatchData's hosted JSON-RPC API.",
+  "category": "Blockchain",
+  "color": "#6C5CE7",
+  "emoji": "👁️",
+  "baseUrl": "https://ethereum.api.watchdata.io",
+  "auth": {
+    "type": "api-key",
+    "hint": "Create a WatchData application API key and send it in the x-api-key header.",
+    "keyName": "x-api-key",
+    "keyIn": "header"
+  },
+  "signupUrl": "https://dashboard.watchdata.io/login",
+  "docsUrl": "https://docs.watchdata.io/blockchain-apis/ethereum-api",
+  "tools": [
+    {
+      "name": "get_balance",
+      "description": "Retrieve an Ethereum account balance at a selected block state.",
+      "method": "POST",
+      "path": "/node/jsonrpc",
+      "params": [
+        {
+          "name": "jsonrpc",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "JSON-RPC version; set this to 2.0."
+        },
+        {
+          "name": "method",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "JSON-RPC method; set this to eth_getBalance."
+        },
+        {
+          "name": "params",
+          "in": "body",
+          "required": true,
+          "type": "array",
+          "description": "Positional array containing the 20-byte account address and a block quantity or latest, earliest, or pending tag."
+        },
+        {
+          "name": "id",
+          "in": "body",
+          "required": true,
+          "type": "integer",
+          "description": "Client-selected JSON-RPC request identifier."
+        }
+      ]
+    },
+    {
+      "name": "get_block",
+      "description": "Retrieve an Ethereum block by number or block-state tag.",
+      "method": "POST",
+      "path": "/node/jsonrpc",
+      "params": [
+        {
+          "name": "jsonrpc",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "JSON-RPC version; set this to 2.0."
+        },
+        {
+          "name": "method",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "JSON-RPC method; set this to eth_getBlockByNumber."
+        },
+        {
+          "name": "params",
+          "in": "body",
+          "required": true,
+          "type": "array",
+          "description": "Positional array containing a hexadecimal block number or earliest, latest, or pending tag, followed by a boolean selecting full transaction objects."
+        },
+        {
+          "name": "id",
+          "in": "body",
+          "required": true,
+          "type": "integer",
+          "description": "Client-selected JSON-RPC request identifier."
+        }
+      ]
+    },
+    {
+      "name": "get_transaction",
+      "description": "Retrieve an Ethereum transaction by its transaction hash.",
+      "method": "POST",
+      "path": "/node/jsonrpc",
+      "params": [
+        {
+          "name": "jsonrpc",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "JSON-RPC version; set this to 2.0."
+        },
+        {
+          "name": "method",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "JSON-RPC method; set this to eth_getTransactionByHash."
+        },
+        {
+          "name": "params",
+          "in": "body",
+          "required": true,
+          "type": "array",
+          "description": "Positional array containing one 32-byte transaction hash."
+        },
+        {
+          "name": "id",
+          "in": "body",
+          "required": true,
+          "type": "integer",
+          "description": "Client-selected JSON-RPC request identifier."
+        }
+      ]
+    }
+  ]
+}

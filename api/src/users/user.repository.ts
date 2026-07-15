@@ -17,6 +17,7 @@ export interface IUserRepository {
   findByGoogleId(googleId: string): Promise<UserRecord | null>;
   findByGithubId(githubId: string): Promise<UserRecord | null>;
   findBySupabaseId(supabaseId: string): Promise<UserRecord | null>;
+  findWithoutSupabaseId(): Promise<UserRecord[]>;
   findById(id: string): Promise<UserRecord | null>;
   findAll(): Promise<Omit<UserRecord, 'password'>[]>;
   create(data: {

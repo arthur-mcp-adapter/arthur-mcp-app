@@ -1,0 +1,116 @@
+{
+  "id": "gcore-storage",
+  "name": "Gcore Storage",
+  "tagline": "Provision and manage Gcore Object Storage buckets and access keys",
+  "description": "Create S3-compatible or SFTP storage resources, list available locations, and manage buckets and S3 access keys through Gcore's management REST API.",
+  "category": "Cloud Storage & File Sharing",
+  "color": "#FF4C00",
+  "emoji": "☁️",
+  "baseUrl": "https://api.gcore.com/storage/v4",
+  "auth": {
+    "type": "api-key",
+    "hint": "Generate a Gcore API token in the Customer Portal and store the complete header value 'APIKey <YOUR_GCORE_API_KEY>' (including the APIKey prefix) as the Authorization header secret.",
+    "keyName": "Authorization",
+    "keyIn": "header"
+  },
+  "signupUrl": "https://accounts.gcore.com/signup",
+  "docsUrl": "https://docs.gcore.com/storage",
+  "tools": [
+    {
+      "name": "list_locations",
+      "description": "List available storage locations, their type (s3_compatible or sftp), and endpoint addresses.",
+      "method": "GET",
+      "path": "/locations",
+      "params": []
+    },
+    {
+      "name": "create_s3_storage",
+      "description": "Create a new S3-compatible object storage resource in a given location.",
+      "method": "POST",
+      "path": "/object_storages",
+      "params": [
+        {
+          "name": "location_name",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Location name from the locations list, for example luxembourg-2."
+        },
+        {
+          "name": "name",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Storage name; the account ID is prefixed to form the full storage name."
+        }
+      ]
+    },
+    {
+      "name": "list_buckets",
+      "description": "List buckets within a storage resource.",
+      "method": "GET",
+      "path": "/object_storages/{storage_id}/buckets",
+      "params": [
+        {
+          "name": "storage_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Numeric storage ID returned when the storage was created or from the storage list."
+        }
+      ]
+    },
+    {
+      "name": "create_bucket",
+      "description": "Create a new bucket within a storage resource.",
+      "method": "POST",
+      "path": "/object_storages/{storage_id}/buckets",
+      "params": [
+        {
+          "name": "storage_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Numeric storage ID to create the bucket in."
+        }
+      ]
+    },
+    {
+      "name": "delete_bucket",
+      "description": "Delete a bucket, permanently removing all of its data.",
+      "method": "DELETE",
+      "path": "/object_storages/{storage_id}/buckets/{bucket_name}",
+      "params": [
+        {
+          "name": "storage_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Numeric storage ID that owns the bucket."
+        },
+        {
+          "name": "bucket_name",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Name of the bucket to delete."
+        }
+      ]
+    },
+    {
+      "name": "create_access_key",
+      "description": "Create a new S3 access key and secret key for a storage resource, for example during key rotation.",
+      "method": "POST",
+      "path": "/object_storages/{storage_id}/access_keys",
+      "params": [
+        {
+          "name": "storage_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Numeric storage ID to create the access key for."
+        }
+      ]
+    }
+  ]
+}

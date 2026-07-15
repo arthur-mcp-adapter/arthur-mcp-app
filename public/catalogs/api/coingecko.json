@@ -1,0 +1,98 @@
+{
+  "id": "coingecko",
+  "name": "CoinGecko",
+  "tagline": "Crypto prices and market data",
+  "description": "Real-time cryptocurrency prices, market capitalization, and historical data. Free tier available with no authentication.",
+  "category": "Data",
+  "color": "#8DC63F",
+  "emoji": "🪙",
+  "baseUrl": "https://api.coingecko.com/api/v3",
+  "auth": {
+    "type": "none",
+    "hint": ""
+  },
+  "signupUrl": "https://www.coingecko.com/en/api",
+  "docsUrl": "https://www.coingecko.com/api/documentations/v3",
+  "tools": [
+    {
+      "name": "get_price",
+      "description": "Get the current price of one or more coins in any currency.",
+      "method": "GET",
+      "path": "/simple/price",
+      "params": [
+        {
+          "name": "ids",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Coin IDs, e.g. \"bitcoin,ethereum,solana\""
+        },
+        {
+          "name": "vs_currencies",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Target currencies, e.g. \"usd,eur,brl\""
+        },
+        {
+          "name": "include_24hr_change",
+          "in": "query",
+          "required": false,
+          "type": "boolean",
+          "description": "Include 24-hour price change percentage"
+        }
+      ]
+    },
+    {
+      "name": "get_coin_details",
+      "description": "Get full details for a coin: description, market data, ATH, and social links.",
+      "method": "GET",
+      "path": "/coins/{id}",
+      "params": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Coin ID, e.g. bitcoin, ethereum, cardano"
+        }
+      ]
+    },
+    {
+      "name": "get_market_chart",
+      "description": "Get historical price, market cap, and volume data for a coin.",
+      "method": "GET",
+      "path": "/coins/{id}/market_chart",
+      "params": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Coin ID, e.g. bitcoin"
+        },
+        {
+          "name": "vs_currency",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Target currency, e.g. usd"
+        },
+        {
+          "name": "days",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Number of days: 1, 7, 14, 30, 90, 180, 365, or max"
+        }
+      ]
+    },
+    {
+      "name": "list_coins",
+      "description": "Get the full list of supported coins with their IDs, symbols, and names.",
+      "method": "GET",
+      "path": "/coins/list",
+      "params": []
+    }
+  ]
+}

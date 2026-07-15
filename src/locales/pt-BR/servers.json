@@ -253,7 +253,9 @@
     "cancel": "Cancelar",
     "creating": "Criando…",
     "create": "Criar servidor",
-    "noMatch": "Nenhum template corresponde a \"{{query}}\"."
+    "noMatch": "Nenhum template corresponde a \"{{query}}\".",
+    "loadCatalogError": "Não foi possível carregar o catálogo de templates de API.",
+    "loadDetailError": "Não foi possível abrir este template de API. Tente novamente."
   },
   "docs": {
     "searchToolPlaceholder": "Buscar ferramenta...",

@@ -1,0 +1,262 @@
+{
+  "id": "instatus",
+  "name": "Instatus",
+  "tagline": "Post and update incidents and maintenance on your status page",
+  "description": "Create, list, update, and delete incidents and scheduled maintenance windows on an Instatus status page.",
+  "category": "Business",
+  "color": "#7C3AED",
+  "emoji": "🟢",
+  "baseUrl": "https://api.instatus.com",
+  "auth": {
+    "type": "bearer",
+    "hint": "Generate an API key from Instatus User settings -> Developer settings and send it as Authorization: Bearer <YOUR_INSTATUS_API_KEY>."
+  },
+  "signupUrl": "https://instatus.com/",
+  "docsUrl": "https://instatus.com/help/api",
+  "tools": [
+    {
+      "name": "list_incidents",
+      "description": "List incidents on a status page.",
+      "method": "GET",
+      "path": "/v1/{page_id}/incidents",
+      "params": [
+        {
+          "name": "page_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Instatus status page identifier."
+        },
+        {
+          "name": "page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Page number for pagination."
+        },
+        {
+          "name": "per_page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of incidents to return per page."
+        }
+      ]
+    },
+    {
+      "name": "create_incident",
+      "description": "Create a new incident on a status page.",
+      "method": "POST",
+      "path": "/v1/{page_id}/incidents",
+      "params": [
+        {
+          "name": "page_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Instatus status page identifier."
+        },
+        {
+          "name": "name",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Incident title."
+        },
+        {
+          "name": "message",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Incident update message."
+        },
+        {
+          "name": "status",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Incident status, for example investigating, identified, monitoring, or resolved."
+        },
+        {
+          "name": "components",
+          "in": "body",
+          "required": false,
+          "type": "array",
+          "description": "IDs of affected status page components."
+        },
+        {
+          "name": "notify",
+          "in": "body",
+          "required": false,
+          "type": "boolean",
+          "description": "Whether to notify subscribers about this incident."
+        },
+        {
+          "name": "shouldPublish",
+          "in": "body",
+          "required": false,
+          "type": "boolean",
+          "description": "Set to false to create the incident without publishing it."
+        }
+      ]
+    },
+    {
+      "name": "update_incident",
+      "description": "Update an existing incident, for example to add a new status update.",
+      "method": "PUT",
+      "path": "/v1/{page_id}/incidents/{incident_id}",
+      "params": [
+        {
+          "name": "page_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Instatus status page identifier."
+        },
+        {
+          "name": "incident_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Incident identifier to update."
+        },
+        {
+          "name": "message",
+          "in": "body",
+          "required": false,
+          "type": "string",
+          "description": "New incident update message."
+        },
+        {
+          "name": "status",
+          "in": "body",
+          "required": false,
+          "type": "string",
+          "description": "New incident status."
+        },
+        {
+          "name": "notify",
+          "in": "body",
+          "required": false,
+          "type": "boolean",
+          "description": "Whether to notify subscribers about this update."
+        }
+      ]
+    },
+    {
+      "name": "list_maintenances",
+      "description": "List scheduled maintenance windows on a status page.",
+      "method": "GET",
+      "path": "/v2/{page_id}/maintenances",
+      "params": [
+        {
+          "name": "page_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Instatus status page identifier."
+        },
+        {
+          "name": "page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Page number for pagination."
+        },
+        {
+          "name": "per_page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of maintenance windows to return per page."
+        }
+      ]
+    },
+    {
+      "name": "create_maintenance",
+      "description": "Schedule a new maintenance window on a status page.",
+      "method": "POST",
+      "path": "/v1/{page_id}/maintenances",
+      "params": [
+        {
+          "name": "page_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Instatus status page identifier."
+        },
+        {
+          "name": "name",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Maintenance title."
+        },
+        {
+          "name": "start",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Maintenance start time as a datetime string."
+        },
+        {
+          "name": "end",
+          "in": "body",
+          "required": false,
+          "type": "string",
+          "description": "Maintenance end time as a datetime string; required if duration is not supplied."
+        },
+        {
+          "name": "duration",
+          "in": "body",
+          "required": false,
+          "type": "number",
+          "description": "Maintenance duration in minutes; required if end is not supplied."
+        },
+        {
+          "name": "message",
+          "in": "body",
+          "required": false,
+          "type": "string",
+          "description": "Maintenance description message."
+        },
+        {
+          "name": "components",
+          "in": "body",
+          "required": false,
+          "type": "array",
+          "description": "IDs of status page components affected by the maintenance."
+        },
+        {
+          "name": "notify",
+          "in": "body",
+          "required": false,
+          "type": "boolean",
+          "description": "Whether to notify subscribers about this maintenance."
+        }
+      ]
+    },
+    {
+      "name": "delete_maintenance",
+      "description": "Delete a scheduled maintenance window.",
+      "method": "DELETE",
+      "path": "/v1/{page_id}/maintenances/{maintenance_id}",
+      "params": [
+        {
+          "name": "page_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Instatus status page identifier."
+        },
+        {
+          "name": "maintenance_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Maintenance identifier to delete."
+        }
+      ]
+    }
+  ]
+}

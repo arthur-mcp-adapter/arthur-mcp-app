@@ -1,0 +1,107 @@
+{
+  "id": "nasa",
+  "name": "NASA",
+  "tagline": "Space data, astronomy pictures and Mars rovers",
+  "description": "Access NASA's public data: the Astronomy Picture of the Day, near-Earth asteroid tracking, and Mars rover photos. Free tier uses DEMO_KEY (30 req/hour).",
+  "category": "Data",
+  "color": "#0B3D91",
+  "emoji": "🚀",
+  "baseUrl": "https://api.nasa.gov",
+  "auth": {
+    "type": "api-key",
+    "hint": "Use DEMO_KEY for testing (30 requests/hour), or register for a free API key at api.nasa.gov for higher limits (1000 req/hour).",
+    "keyName": "api_key",
+    "keyIn": "query"
+  },
+  "signupUrl": "https://api.nasa.gov/#browseAPI",
+  "docsUrl": "https://api.nasa.gov",
+  "tools": [
+    {
+      "name": "get_astronomy_picture",
+      "description": "Get NASA's Astronomy Picture of the Day with a description written by professional astronomers.",
+      "method": "GET",
+      "path": "/planetary/apod",
+      "params": [
+        {
+          "name": "date",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Date in YYYY-MM-DD format. Defaults to today. Earliest is 1995-06-16"
+        },
+        {
+          "name": "count",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Return this many random pictures instead of a specific date"
+        },
+        {
+          "name": "thumbs",
+          "in": "query",
+          "required": false,
+          "type": "boolean",
+          "description": "Return a video thumbnail URL for video entries"
+        }
+      ]
+    },
+    {
+      "name": "get_near_earth_objects",
+      "description": "Get a list of asteroids and comets that are close to Earth within a date range.",
+      "method": "GET",
+      "path": "/neo/rest/v1/feed",
+      "params": [
+        {
+          "name": "start_date",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Start date in YYYY-MM-DD format (max 7-day window)"
+        },
+        {
+          "name": "end_date",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "End date in YYYY-MM-DD format"
+        }
+      ]
+    },
+    {
+      "name": "get_mars_rover_photos",
+      "description": "Get photos taken by NASA's Mars rovers (Curiosity, Opportunity, or Spirit) on a given Martian day.",
+      "method": "GET",
+      "path": "/mars-photos/api/v1/rovers/{rover}/photos",
+      "params": [
+        {
+          "name": "rover",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Rover name: curiosity, opportunity, or spirit"
+        },
+        {
+          "name": "sol",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Martian day (sol) since rover landing, e.g. 1000"
+        },
+        {
+          "name": "camera",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Camera: FHAZ, RHAZ, MAST, CHEMCAM, MAHLI, MARDI, NAVCAM, PANCAM, MINITES"
+        },
+        {
+          "name": "page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Page number (25 photos per page)"
+        }
+      ]
+    }
+  ]
+}

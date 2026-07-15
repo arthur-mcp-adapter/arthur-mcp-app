@@ -1,0 +1,104 @@
+{
+  "id": "frankfurter",
+  "name": "Frankfurter",
+  "tagline": "Currency exchange rates and conversion",
+  "description": "Get real-time and historical foreign exchange rates for 30+ currencies sourced from the European Central Bank. No registration or API key needed.",
+  "category": "Data",
+  "color": "#009688",
+  "emoji": "💱",
+  "baseUrl": "https://api.frankfurter.app",
+  "auth": {
+    "type": "none",
+    "hint": ""
+  },
+  "docsUrl": "https://www.frankfurter.app/docs",
+  "tools": [
+    {
+      "name": "get_latest_rates",
+      "description": "Get the latest exchange rates for one or more currencies relative to a base currency.",
+      "method": "GET",
+      "path": "/latest",
+      "params": [
+        {
+          "name": "base",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Base currency code, e.g. USD, EUR, BRL (default: EUR)"
+        },
+        {
+          "name": "symbols",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Comma-separated target currencies, e.g. USD,BRL,GBP,JPY"
+        }
+      ]
+    },
+    {
+      "name": "convert_currency",
+      "description": "Convert an amount from one currency to another at the current exchange rate.",
+      "method": "GET",
+      "path": "/latest",
+      "params": [
+        {
+          "name": "amount",
+          "in": "query",
+          "required": true,
+          "type": "number",
+          "description": "Amount to convert, e.g. 100"
+        },
+        {
+          "name": "from",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Source currency code, e.g. USD"
+        },
+        {
+          "name": "to",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Target currency code, e.g. BRL"
+        }
+      ]
+    },
+    {
+      "name": "get_historical_rates",
+      "description": "Get exchange rates on a specific historical date.",
+      "method": "GET",
+      "path": "/{date}",
+      "params": [
+        {
+          "name": "date",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Date in YYYY-MM-DD format, e.g. 2024-01-15"
+        },
+        {
+          "name": "base",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Base currency, e.g. USD"
+        },
+        {
+          "name": "symbols",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Target currencies, e.g. EUR,BRL,GBP"
+        }
+      ]
+    },
+    {
+      "name": "list_currencies",
+      "description": "Get the full list of supported currencies with their names.",
+      "method": "GET",
+      "path": "/currencies",
+      "params": []
+    }
+  ]
+}

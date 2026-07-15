@@ -1,0 +1,15 @@
+{
+  "id": "user-feedback-classifier",
+  "name": "User Feedback Classifier",
+  "tagline": "Categorize and extract themes from user feedback",
+  "description": "Processes raw user feedback into structured categories, themes, and actionable insights.",
+  "category": "Analysis",
+  "emoji": "🗣️",
+  "tags": [
+    "analysis",
+    "feedback",
+    "product",
+    "ux"
+  ],
+  "content": "Analyze and classify the following user feedback.\n\n## Feedback Summary\n**Total items:** {{count}}\n**Product/Feature:** {{product}}\n\n## Sentiment Distribution\n- Positive: %\n- Neutral: %\n- Negative: %\n\n## Top Themes\n| Theme | Frequency | Sentiment | Example Quote |\n|-------|-----------|-----------|---------------|\n\n## Top Feature Requests\n1.\n2.\n3.\n\n## Critical Issues (need immediate attention)\n-\n\n## Recommended Actions\n1.\n2.\n3.\n\n---\nFeedback:\n{{feedback}}"
+}

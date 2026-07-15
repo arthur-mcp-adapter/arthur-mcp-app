@@ -14,7 +14,6 @@
     "changePassword": "Alterar senha",
     "usernameLabel": "Nome de usuário",
     "emailLabel": "E-mail",
-    "currentPasswordLabel": "Senha atual",
     "newPasswordLabel": "Nova senha",
     "confirmPasswordLabel": "Confirmar nova senha",
     "passwordMismatch": "As senhas não coincidem",
@@ -22,9 +21,9 @@
     "saveChanges": "Salvar alterações",
     "saving": "Salvando…",
     "saveSuccess": "Perfil atualizado com sucesso.",
+    "saveSuccessEmailPending": "Perfil atualizado. Verifique seu novo e-mail para confirmar a alteração.",
     "noChanges": "Nenhuma alteração detectada.",
     "passwordMatchError": "As senhas não coincidem.",
-    "currentPasswordRequired": "Digite sua senha atual para definir uma nova.",
     "saveError": "Erro ao atualizar."
   },
   "users": {

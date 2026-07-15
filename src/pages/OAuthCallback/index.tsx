@@ -1,24 +1,19 @@
 import { useEffect } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { Box, CircularProgress } from '@mui/material'
-import { useAuth } from '../../context/AuthContext'
+import { useAuth } from '../../context/auth'
 
-/** Landing page for /auth/google/callback and /auth/github/callback redirects — stores the JWT and enters the app. */
+/** Landing page for Supabase's OAuth redirect — the session is auto-consumed by the Supabase
+ * client from the redirect URL; AuthProvider's onAuthStateChange subscription picks it up, we
+ * just wait for it to resolve. */
 export default function OAuthCallback() {
-  const [searchParams] = useSearchParams()
   const navigate = useNavigate()
-  const { reload } = useAuth()
+  const { me, loading } = useAuth()
 
   useEffect(() => {
-    const token = searchParams.get('token')
-    if (token) {
-      localStorage.setItem('token', token)
-      reload()
-      navigate('/', { replace: true })
-    } else {
-      navigate('/login', { replace: true })
-    }
-  }, [])
+    if (loading) return
+    navigate(me ? '/' : '/login', { replace: true })
+  }, [loading, me, navigate])
 
   return (
     <Box display="flex" alignItems="center" justifyContent="center" minHeight="100vh">

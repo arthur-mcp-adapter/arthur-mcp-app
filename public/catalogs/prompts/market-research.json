@@ -1,0 +1,14 @@
+{
+  "id": "market-research",
+  "name": "Market Research Report",
+  "tagline": "Synthesize market data into a structured research report",
+  "description": "Compiles market size, trends, players, and opportunities into a structured research brief.",
+  "category": "Research",
+  "emoji": "🌍",
+  "tags": [
+    "research",
+    "market",
+    "business"
+  ],
+  "content": "Create a market research report for the following market.\n\n**Market:** {{market}}\n**Geography:** {{geography}}\n**Time horizon:** {{horizon}}\n\n## Market Overview\n- Market size (current):\n- Market size (projected):\n- CAGR:\n\n## Key Trends\n1.\n2.\n3.\n\n## Market Segmentation\n-\n\n## Competitive Landscape\n| Player | Market Share | Strengths | Weaknesses |\n|--------|-------------|-----------|-----------|\n\n## Customer Segments\n-\n\n## Opportunities & White Space\n-\n\n## Barriers to Entry\n-\n\n## Outlook\n-\n\nSources used:\n{{sources}}"
+}

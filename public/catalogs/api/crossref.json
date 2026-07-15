@@ -1,0 +1,163 @@
+{
+  "id": "crossref",
+  "name": "Crossref Metadata Search",
+  "tagline": "Search scholarly metadata, DOIs, journals, and funders indexed by Crossref",
+  "description": "Query Crossref's open bibliographic database for journal articles, books, and other scholarly works, including DOIs, authors, publishers, licenses, and citation counts. No account or credential is required for standard public access.",
+  "category": "Books",
+  "color": "#4F5858",
+  "emoji": "🎓",
+  "baseUrl": "https://api.crossref.org",
+  "auth": {
+    "type": "none",
+    "hint": "No credential required. Optionally send a mailto query parameter (e.g. mailto=you@example.org) with each request to join Crossref's polite pool for more reliable response times; this is a contact identifier, not a secret."
+  },
+  "signupUrl": "https://www.crossref.org/documentation/retrieve-metadata/rest-api/",
+  "docsUrl": "https://github.com/CrossRef/rest-api-doc",
+  "tools": [
+    {
+      "name": "search_works",
+      "description": "Search Crossref's full catalog of scholarly works by free-text query, returning matching DOIs, titles, authors, and publication metadata.",
+      "method": "GET",
+      "path": "/works",
+      "params": [
+        {
+          "name": "query",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Free-text search across all bibliographic fields, e.g. \"machine learning\"."
+        },
+        {
+          "name": "query.bibliographic",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Combined search across title, author, ISSN/ISBN, and year; replaces the deprecated query.title field."
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Comma-separated filters, e.g. \"from-pub-date:2020-01-01,type:journal-article\"."
+        },
+        {
+          "name": "rows",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of results to return per page (default 20, maximum 1000)."
+        },
+        {
+          "name": "offset",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of results to skip for pagination (offset-based paging is limited to the first 10,000 results)."
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Field to sort by, e.g. relevance, published, is-referenced-by-count."
+        },
+        {
+          "name": "mailto",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Contact email to join the polite pool for more reliable performance, e.g. you@example.org."
+        }
+      ]
+    },
+    {
+      "name": "get_work",
+      "description": "Retrieve full bibliographic metadata for a single scholarly work by its DOI.",
+      "method": "GET",
+      "path": "/works/{doi}",
+      "params": [
+        {
+          "name": "doi",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "DOI of the work, e.g. 10.1093/oso/9780198828044.003.0003."
+        },
+        {
+          "name": "mailto",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Contact email to join the polite pool, e.g. you@example.org."
+        }
+      ]
+    },
+    {
+      "name": "list_journal_works",
+      "description": "List scholarly works published in a specific journal identified by ISSN.",
+      "method": "GET",
+      "path": "/journals/{issn}/works",
+      "params": [
+        {
+          "name": "issn",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "ISSN of the journal, e.g. 0028-0836."
+        },
+        {
+          "name": "rows",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Number of results to return per page (default 20, maximum 1000)."
+        },
+        {
+          "name": "filter",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Comma-separated filters, e.g. \"from-pub-date:2020-01-01\"."
+        },
+        {
+          "name": "mailto",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Contact email to join the polite pool, e.g. you@example.org."
+        }
+      ]
+    },
+    {
+      "name": "get_funder",
+      "description": "Retrieve metadata for a funding organization registered in Crossref's Funder Registry, identified by its Funder ID.",
+      "method": "GET",
+      "path": "/funders/{funder_id}",
+      "params": [
+        {
+          "name": "funder_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Crossref Funder Registry identifier, e.g. 100000001 for the U.S. National Science Foundation."
+        }
+      ]
+    },
+    {
+      "name": "get_member",
+      "description": "Retrieve metadata for a Crossref member (publisher), identified by its member ID.",
+      "method": "GET",
+      "path": "/members/{member_id}",
+      "params": [
+        {
+          "name": "member_id",
+          "in": "path",
+          "required": true,
+          "type": "string",
+          "description": "Crossref member ID, e.g. 286."
+        }
+      ]
+    }
+  ]
+}

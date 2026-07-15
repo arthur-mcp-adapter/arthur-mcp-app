@@ -1,0 +1,14 @@
+{
+  "id": "executive-summary",
+  "name": "Executive Summary",
+  "tagline": "Condense any document into a structured executive brief",
+  "description": "Transforms long documents into concise executive summaries with key findings and recommendations.",
+  "category": "Summarization",
+  "emoji": "📋",
+  "tags": [
+    "summarization",
+    "business",
+    "executive"
+  ],
+  "content": "You are a business analyst. Summarize the following document into an executive summary.\n\nStructure your response as:\n1. **Overview** (2-3 sentences)\n2. **Key Findings** (3-5 bullet points)\n3. **Recommendations** (2-3 actionable next steps)\n4. **Risks & Considerations**\n\nKeep the tone professional and concise. Target audience: senior executives.\n\nDocument:\n{{document}}"
+}

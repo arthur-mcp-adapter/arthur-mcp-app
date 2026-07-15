@@ -21,41 +21,30 @@ This document describes the backend domain entities and their persistence shape.
 
 | Domain | TypeORM Entity | Repository Contract |
 |---|---|---|
-| User | `UserEntity` | `UserRecord`, `IUserRepository` |
+| User *(legacy, pending removal — see Identity)* | `UserEntity` | `UserRecord`, `IUserRepository` |
 | Role | `RoleEntity` | `RoleRecord`, `IRoleRepository` |
-| Password reset | `PasswordResetEntity` | `PasswordResetRecord`, `IPasswordResetRepository` |
+| Password reset *(legacy, pending removal — see Identity)* | `PasswordResetEntity` | `PasswordResetRecord`, `IPasswordResetRepository` |
 | Swagger project / MCP server | `SwaggerProjectEntity` | `SwaggerProjectRecord`, `ISwaggerProjectRepository` |
 | AI Provider | `AiProviderEntity` | `AiProviderRecord`, `IAiProviderRepository` |
 | Settings | `SettingsEntity` | `SettingsRecord`, `ISettingsRepository` |
 | Prompt | `PromptEntity` | `PromptRecord`, `IPromptRepository` |
 | Secret | `SecretEntity` | `SecretRecord`, `ISecretRepository` |
 
-## User
+## Identity (Supabase Auth)
 
-Represents an application user account.
+Supabase Auth is the sole identity provider — there is no local login, password hash, or session JWT signed by this app anymore. Source files:
 
-Source files:
+- `api/src/auth/supabase-auth.service.ts` — verifies an inbound Supabase-issued JWT (via the project's JWKS) and maps its claims straight to `RequestUser { userId, username, email, role }`. No database read on this path at all.
+- `api/src/auth/supabase-admin.service.ts` — the one path that *writes* to Supabase, using the service-role secret key (Admin API): provisions a Supabase Auth user for new signups and sets its `app_metadata.role` claim (defaults to `admin`, matching this app's single-tenant-per-account model).
+- `api/src/auth/jwt.guard.ts` (`JwtAuthGuard`) — the only authentication guard; calls `SupabaseAuthService.tryAuthenticate()` and 401s if it returns null.
+- `api/src/auth/auth.controller.ts` — just `GET /auth/providers` (`{ selfHosted }`). Signup, login, logout, OAuth, password reset, and profile self-edits (username/email/password) all go directly from the frontend to Supabase via `@supabase/supabase-js` (publishable key) — see `docs/FLOWS.md`. `role` is never set explicitly by this app's signup path; it defaults to `admin` when `app_metadata.role` is absent.
+- `api/src/users/users.controller.ts` — `GET /users/me` composes the response entirely from `req.user` claims plus a role→permissions lookup against the `roles` table (unchanged, see below). There is no `PATCH /users/me`.
 
-- `api/src/users/user.entity.ts`
-- `api/src/users/user.repository.ts`
+`role` lives only in the Supabase user's `app_metadata.role` claim (embedded in the JWT, no extra round trip), not in any table this app owns. It defaults to `admin` when the claim is absent, which matters for brand-new Google/GitHub signups via Supabase's native OAuth (this backend never touches their creation, so it never gets a chance to set the claim).
 
-Fields:
+### Legacy `users` / `password_resets` tables (pending removal)
 
-| Field | Type | Required | Notes |
-|---|---|---|---|
-| `id` / `_id` | string | yes | UUID. |
-| `username` | string | yes | Unique. |
-| `email` | string | yes | Unique. |
-| `password` | string | yes | Password hash. Do not expose this field in API responses. |
-| `role` | string | yes | Defaults to `user`. |
-| `createdAt` | Date | generated | |
-| `updatedAt` | Date | generated | |
-
-Main usage:
-
-- Authentication and JWT subject lookup.
-- User administration.
-- Role assignment by role name.
+`UserEntity`/`PasswordResetEntity` and their repositories still exist in code and their tables still exist in the database, but they are no longer read on any authentication path. `UsersService` survives only to run the one-off Supabase backfill script (`npm run backfill:supabase-users --prefix api`, `api/src/scripts/backfill-supabase-users.ts`) that provisions `app_metadata.role` for accounts created before this migration, so every pre-existing user's role claim is correct before the tables are dropped in a follow-up migration. Do not add new features against these tables.
 
 ## Role
 
@@ -79,9 +68,9 @@ Fields:
 
 Permission groups include servers, tools, endpoints, resources, prompts, secrets, API keys, users, roles, audit logs, templates, and settings.
 
-## Password Reset
+## Password Reset *(legacy, pending removal)*
 
-Represents a one-time password reset token.
+Represents a one-time password reset token from the old local-login flow. Unreferenced by any live code path — Supabase Auth's own `resetPasswordForEmail`/`updateUser` handle password reset now (see Identity, `docs/FLOWS.md`). Kept only until the table-drop migration lands.
 
 Source files:
 

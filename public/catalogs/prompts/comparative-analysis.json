@@ -1,0 +1,14 @@
+{
+  "id": "comparative-analysis",
+  "name": "Comparative Analysis",
+  "tagline": "Systematically compare options and produce a recommendation",
+  "description": "Evaluates multiple options against defined criteria and produces a comparison matrix with a final recommendation.",
+  "category": "Research",
+  "emoji": "⚖️",
+  "tags": [
+    "research",
+    "analysis",
+    "decision"
+  ],
+  "content": "Provide a thorough comparative analysis.\n\nOptions: {{options}}\nContext: {{context}}\nCriteria: {{criteria}}\n\n## Overview\n## Comparison Matrix\n| Criteria | Option 1 | Option 2 | Option 3 |\n|----------|----------|----------|----------|\n## Strengths & Weaknesses\n## Best Fit Scenarios\n## Recommendation\n## Caveats"
+}

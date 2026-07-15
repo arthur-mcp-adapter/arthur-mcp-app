@@ -1,0 +1,47 @@
+{
+  "id": "lordicon",
+  "name": "Lordicon",
+  "tagline": "Search animated Lordicon assets",
+  "description": "List Lordicon animated icons by family and page using a registered API project token.",
+  "category": "Art & Design",
+  "color": "#7C3AED",
+  "emoji": "✨",
+  "baseUrl": "https://api.lordicon.com",
+  "auth": {
+    "type": "bearer",
+    "hint": "Register a Lordicon API project and use its authentication token as a Bearer token."
+  },
+  "signupUrl": "https://lordicon.com/register",
+  "docsUrl": "https://lordicon.com/docs/api/documentation",
+  "tools": [
+    {
+      "name": "list_icons",
+      "description": "List available animated icons with temporary preview and download links.",
+      "method": "GET",
+      "path": "/v1/icons",
+      "params": [
+        {
+          "name": "family",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Icon family, such as system or wired."
+        },
+        {
+          "name": "page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Result page."
+        },
+        {
+          "name": "per_page",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Records per page."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "id": "companyenrich",
+  "name": "CompanyEnrich",
+  "tagline": "Enrich companies from their domains",
+  "description": "Retrieve current firmographic, financial, location, technology, workforce, and social data for a business domain.",
+  "category": "Business",
+  "color": "#2563EB",
+  "emoji": "🏢",
+  "baseUrl": "https://api.companyenrich.com",
+  "auth": {
+    "type": "bearer",
+    "hint": "Create an account, generate an API token in the CompanyEnrich dashboard, and send it as a Bearer token."
+  },
+  "signupUrl": "https://companyenrich.com/",
+  "docsUrl": "https://docs.companyenrich.com/docs/getting-started",
+  "tools": [
+    {
+      "name": "enrich_company",
+      "description": "Enrich one company by its domain name.",
+      "method": "GET",
+      "path": "/companies/enrich",
+      "params": [
+        {
+          "name": "domain",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Company domain, with a maximum length of 1024 characters."
+        }
+      ]
+    }
+  ]
+}

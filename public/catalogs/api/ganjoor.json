@@ -1,0 +1,148 @@
+{
+  "id": "ganjoor",
+  "name": "Ganjoor",
+  "tagline": "Read classic Persian poetry, poets, and Hafez fortunes",
+  "description": "Retrieve Ganjoor's catalog of classical Persian poets, categories (books), and individual poems with verses, recitations, images, and songs. All documented read routes are anonymous and require no API key.",
+  "category": "Books",
+  "color": "#7C2D12",
+  "emoji": "🪶",
+  "baseUrl": "https://api.ganjoor.net",
+  "auth": {
+    "type": "none",
+    "hint": "The documented poet, category, poem, and Faal read routes are decorated AllowAnonymous in the official GanjoorService source and were confirmed reachable without any credential."
+  },
+  "signupUrl": "https://ganjoor.net/",
+  "docsUrl": "https://api.ganjoor.net/index.html",
+  "tools": [
+    {
+      "name": "list_poets",
+      "description": "List published Ganjoor poets without their biography text.",
+      "method": "GET",
+      "path": "/api/ganjoor/poets",
+      "params": []
+    },
+    {
+      "name": "get_poet",
+      "description": "Retrieve one poet's profile by numeric identifier.",
+      "method": "GET",
+      "path": "/api/ganjoor/poet/{id}",
+      "params": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "integer",
+          "description": "Ganjoor poet identifier."
+        },
+        {
+          "name": "catPoems",
+          "in": "query",
+          "required": false,
+          "type": "boolean",
+          "description": "When true, includes the poet's root category poems; defaults to false in the official source."
+        }
+      ]
+    },
+    {
+      "name": "get_category",
+      "description": "Retrieve one poetry book/category (and optionally its poems) by numeric identifier.",
+      "method": "GET",
+      "path": "/api/ganjoor/cat/{id}",
+      "params": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "integer",
+          "description": "Ganjoor category (book/section) identifier."
+        },
+        {
+          "name": "poems",
+          "in": "query",
+          "required": false,
+          "type": "boolean",
+          "description": "Whether to include the category's poem list; defaults to true in the official source."
+        },
+        {
+          "name": "mainSections",
+          "in": "query",
+          "required": false,
+          "type": "boolean",
+          "description": "Whether to include only main subsections; defaults to false in the official source."
+        }
+      ]
+    },
+    {
+      "name": "get_poem",
+      "description": "Retrieve one poem by numeric identifier with verses and related content.",
+      "method": "GET",
+      "path": "/api/ganjoor/poem/{id}",
+      "params": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "type": "integer",
+          "description": "Ganjoor poem identifier."
+        },
+        {
+          "name": "verseDetails",
+          "in": "query",
+          "required": false,
+          "type": "boolean",
+          "description": "Whether to include per-verse detail objects; defaults to true in the official source."
+        },
+        {
+          "name": "recitations",
+          "in": "query",
+          "required": false,
+          "type": "boolean",
+          "description": "Whether to include audio recitations; defaults to true in the official source."
+        },
+        {
+          "name": "images",
+          "in": "query",
+          "required": false,
+          "type": "boolean",
+          "description": "Whether to include related manuscript images; defaults to true in the official source."
+        },
+        {
+          "name": "songs",
+          "in": "query",
+          "required": false,
+          "type": "boolean",
+          "description": "Whether to include related music tracks; defaults to true in the official source."
+        },
+        {
+          "name": "comments",
+          "in": "query",
+          "required": false,
+          "type": "boolean",
+          "description": "Whether to include user comments; defaults to true in the official source."
+        }
+      ]
+    },
+    {
+      "name": "get_random_poem",
+      "description": "Retrieve a random poem from a given poet.",
+      "method": "GET",
+      "path": "/api/ganjoor/poem/random",
+      "params": [
+        {
+          "name": "poetId",
+          "in": "query",
+          "required": true,
+          "type": "integer",
+          "description": "Poet identifier to pick a random poem from."
+        }
+      ]
+    },
+    {
+      "name": "get_hafez_faal",
+      "description": "Get a random Hafez poem used as a traditional Persian fortune-telling reading (Faal-e Hafez).",
+      "method": "GET",
+      "path": "/api/ganjoor/hafez/faal",
+      "params": []
+    }
+  ]
+}

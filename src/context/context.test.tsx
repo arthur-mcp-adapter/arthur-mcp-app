@@ -2,16 +2,30 @@ import React from 'react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { act, render, renderHook, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { AuthProvider, Permission, can, useAuth, type Me } from './AuthContext'
-import { ALL_PERMISSIONS_OFF, READ_ONLY_FALLBACK, ROLE_PERMISSION_FALLBACKS } from './permissionPresets'
-import { ServerNavProvider, useServerNav } from './ServerNavContext'
-import { ColorModeProvider, ColorMode, useColorMode } from '../theme/ColorModeContext'
+import { AuthProvider, Permission, can, useAuth, type Me } from './auth'
+import { ALL_PERMISSIONS_OFF, READ_ONLY_FALLBACK, ROLE_PERMISSION_FALLBACKS } from './auth'
+import { ServerNavProvider, useServerNav } from './'
+import { ColorModeProvider, ColorMode, useColorMode } from '../theme'
 
 const apiGet = vi.hoisted(() => vi.fn())
+const onAuthStateChange = vi.hoisted(() => vi.fn())
+const signOut = vi.hoisted(() => vi.fn())
 
 vi.mock('../api', () => ({
   default: { get: apiGet },
 }))
+
+vi.mock('../supabaseClient', () => ({
+  supabase: { auth: { onAuthStateChange, signOut } },
+}))
+
+/** Makes AuthProvider's subscription fire once, synchronously, with the given session. */
+function mockSession(session: { access_token: string } | null) {
+  onAuthStateChange.mockImplementation((cb: (event: string, session: unknown) => void) => {
+    cb('INITIAL_SESSION', session)
+    return { data: { subscription: { unsubscribe: vi.fn() } } }
+  })
+}
 
 describe('auth and navigation contexts', () => {
   beforeEach(() => {
@@ -44,21 +58,22 @@ describe('auth and navigation contexts', () => {
     expect(ROLE_PERMISSION_FALLBACKS.admin.settings_manage).toBe(true)
   })
 
-  it('loads current user when a token exists', async () => {
-    localStorage.setItem('token', 'tok')
-    apiGet.mockResolvedValue({ data: { _id: 'u1', username: 'ada', email: 'a@example.com', role: 'viewer', createdAt: 'now' } })
+  it('loads current user when a Supabase session exists', async () => {
+    mockSession({ access_token: 'tok' })
+    apiGet.mockResolvedValue({ data: { _id: 'u1', username: 'ada', email: 'a@example.com', role: 'viewer' } })
 
     const { result } = renderHook(() => useAuth(), { wrapper: AuthProvider })
 
     await waitFor(() => expect(result.current.loading).toBe(false))
     expect(apiGet).toHaveBeenCalledWith('/users/me')
+    expect(localStorage.getItem('token')).toBe('tok')
     expect(result.current.me?.username).toBe('ada')
     expect(result.current.can(Permission.ServersView)).toBe(true)
     expect(result.current.isAdmin).toBe(false)
   })
 
   it('clears auth state when loading current user fails or logout is called', async () => {
-    localStorage.setItem('token', 'tok')
+    mockSession({ access_token: 'tok' })
     apiGet.mockRejectedValue(new Error('401'))
 
     const { result } = renderHook(() => useAuth(), { wrapper: AuthProvider })
@@ -67,15 +82,19 @@ describe('auth and navigation contexts', () => {
     expect(result.current.me).toBeNull()
 
     act(() => result.current.logout())
+    expect(signOut).toHaveBeenCalled()
     expect(localStorage.getItem('token')).toBeNull()
     expect(result.current.me).toBeNull()
   })
 
-  it('stops loading without calling API when token is missing', async () => {
+  it('stops loading without calling API when there is no Supabase session', async () => {
+    mockSession(null)
+
     const { result } = renderHook(() => useAuth(), { wrapper: AuthProvider })
 
     await waitFor(() => expect(result.current.loading).toBe(false))
-    expect(apiGet).not.toHaveBeenCalled()
+    expect(apiGet).not.toHaveBeenCalledWith('/users/me')
+    expect(localStorage.getItem('token')).toBeNull()
   })
 
   it('stores and clears contextual server navigation', () => {

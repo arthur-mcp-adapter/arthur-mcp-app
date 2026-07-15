@@ -2,12 +2,11 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 
-vi.mock('../../api', () => ({
-  default: {
-    post: vi.fn(),
-    get: vi.fn().mockResolvedValue({ data: { google: false, github: false } }),
-  },
+const signInWithPassword = vi.hoisted(() => vi.fn());
+vi.mock('../../supabaseClient', () => ({
+  supabase: { auth: { signInWithPassword } },
 }));
+vi.mock('../../supabaseConfigured.constant', () => ({ supabaseConfigured: false }));
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
@@ -17,7 +16,7 @@ vi.mock('react-i18next', () => ({
       'heading.signIn': 'Sign in',
       'label.password': 'Password',
       'label.rememberMe': 'Remember me',
-      'label.username': 'Username',
+      'label.email': 'Email',
       'link.forgotPassword': 'Forgot password',
     }[key] ?? key),
   }),
@@ -29,7 +28,6 @@ vi.mock('react-router-dom', async (importOriginal) => {
   return { ...actual, useNavigate: () => mockNavigate };
 });
 
-import api from '../../api';
 import Login from '.';
 
 const renderLogin = () => render(<Login />, { wrapper: MemoryRouter });
@@ -40,9 +38,9 @@ describe('Login page', () => {
     localStorage.clear();
   });
 
-  it('renders username and password fields', () => {
+  it('renders email and password fields', () => {
     renderLogin();
-    expect(screen.getByLabelText(/username/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
   });
 
@@ -57,10 +55,10 @@ describe('Login page', () => {
   });
 
   it('shows error alert on failed login', async () => {
-    (api.post as ReturnType<typeof vi.fn>).mockRejectedValue(new Error('401'));
+    signInWithPassword.mockResolvedValue({ error: new Error('Invalid credentials') });
     renderLogin();
 
-    fireEvent.change(screen.getByLabelText(/username/i), { target: { value: 'bad' } });
+    fireEvent.change(screen.getByLabelText(/email/i), { target: { value: 'bad@test.com' } });
     fireEvent.change(screen.getByLabelText(/password/i), { target: { value: 'wrong' } });
     fireEvent.click(screen.getByRole('button', { name: /sign in/i }));
 
@@ -69,26 +67,25 @@ describe('Login page', () => {
     });
   });
 
-  it('stores token and navigates to / on successful login', async () => {
-    (api.post as ReturnType<typeof vi.fn>).mockResolvedValue({ data: { access_token: 'tok123' } });
+  it('navigates to / on successful login', async () => {
+    signInWithPassword.mockResolvedValue({ data: { session: { access_token: 'tok123' } }, error: null });
     renderLogin();
 
-    fireEvent.change(screen.getByLabelText(/username/i), { target: { value: 'admin' } });
+    fireEvent.change(screen.getByLabelText(/email/i), { target: { value: 'admin@test.com' } });
     fireEvent.change(screen.getByLabelText(/password/i), { target: { value: 'admin123' } });
     fireEvent.click(screen.getByRole('button', { name: /sign in/i }));
 
     await waitFor(() => {
-      expect(localStorage.getItem('token')).toBe('tok123');
       expect(mockNavigate).toHaveBeenCalledWith('/');
     });
   });
 
   it('disables the submit button while the request is pending', async () => {
-    let resolvePost: (v: any) => void;
-    (api.post as ReturnType<typeof vi.fn>).mockReturnValue(new Promise((r) => { resolvePost = r; }));
+    let resolveSignIn: (v: any) => void;
+    signInWithPassword.mockReturnValue(new Promise((r) => { resolveSignIn = r; }));
     renderLogin();
 
-    fireEvent.change(screen.getByLabelText(/username/i), { target: { value: 'admin' } });
+    fireEvent.change(screen.getByLabelText(/email/i), { target: { value: 'admin@test.com' } });
     fireEvent.change(screen.getByLabelText(/password/i), { target: { value: 'admin123' } });
     fireEvent.click(screen.getByRole('button', { name: /sign in/i }));
 
@@ -98,19 +95,19 @@ describe('Login page', () => {
       expect(submit).toBeDisabled();
     });
 
-    resolvePost!({ data: { access_token: 'tok' } });
+    resolveSignIn!({ data: { session: { access_token: 'tok' } }, error: null });
   });
 
-  it('calls /auth/login endpoint with provided credentials', async () => {
-    (api.post as ReturnType<typeof vi.fn>).mockResolvedValue({ data: { access_token: 'tok' } });
+  it('calls signInWithPassword with the provided credentials', async () => {
+    signInWithPassword.mockResolvedValue({ data: { session: { access_token: 'tok' } }, error: null });
     renderLogin();
 
-    fireEvent.change(screen.getByLabelText(/username/i), { target: { value: 'myuser' } });
+    fireEvent.change(screen.getByLabelText(/email/i), { target: { value: 'myuser@test.com' } });
     fireEvent.change(screen.getByLabelText(/password/i), { target: { value: 'mypass' } });
     fireEvent.click(screen.getByRole('button', { name: /sign in/i }));
 
     await waitFor(() => {
-      expect(api.post).toHaveBeenCalledWith('/auth/login', { username: 'myuser', password: 'mypass' });
+      expect(signInWithPassword).toHaveBeenCalledWith({ email: 'myuser@test.com', password: 'mypass' });
     });
   });
 });

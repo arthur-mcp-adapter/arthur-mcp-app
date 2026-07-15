@@ -1,0 +1,14 @@
+{
+  "id": "investment-thesis",
+  "name": "Investment Thesis Writer",
+  "tagline": "Structure an investment thesis for any asset or company",
+  "description": "Creates a structured investment thesis with bull/bear cases, valuation, and risk factors.",
+  "category": "Finance",
+  "emoji": "📈",
+  "tags": [
+    "finance",
+    "investment",
+    "analysis"
+  ],
+  "content": "Write an investment thesis for the following.\n\n**Asset/Company:** {{asset}}\n**Asset class:** {{asset_class}}\n**Investment horizon:** {{horizon}}\n**Current price/valuation:** {{price}}\n\n## Executive Summary\n(1-paragraph bull case)\n\n## Business Overview\n## Competitive Advantage / Moat\n## Growth Drivers\n1.\n2.\n3.\n\n## Financial Overview\n## Valuation\n- Current:\n- Target:\n- Upside/Downside:\n\n## Bull Case\n## Bear Case\n## Key Risks\n| Risk | Probability | Impact | Mitigation |\n|------|------------|--------|-----------|\n\n## Catalysts to Watch\n-\n\n## Conclusion: [Buy / Hold / Sell]"
+}
