@@ -3,10 +3,10 @@ FROM node:20-alpine AS frontend-builder
 WORKDIR /app
 # Vite inlines these at build time; without them the bundle falls back to the
 # localhost placeholder in src/supabaseClient.ts and auth breaks silently.
-ARG SUPABASE_URL
-ARG SUPABASE_PUBLISHABLE_KEY
-ENV SUPABASE_URL=${SUPABASE_URL} \
-    SUPABASE_PUBLISHABLE_KEY=${SUPABASE_PUBLISHABLE_KEY}
+ARG VITE_SUPABASE_URL
+ARG VITE_SUPABASE_PUBLISHABLE_KEY
+ENV VITE_SUPABASE_URL=${VITE_SUPABASE_URL} \
+    VITE_SUPABASE_PUBLISHABLE_KEY=${VITE_SUPABASE_PUBLISHABLE_KEY}
 COPY package*.json ./
 RUN npm ci
 COPY . .

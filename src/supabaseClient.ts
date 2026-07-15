@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 
-const url = import.meta.env.SUPABASE_URL
-const publishableKey = import.meta.env.SUPABASE_PUBLISHABLE_KEY
+const url = import.meta.env.VITE_SUPABASE_URL
+const publishableKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY
 
 // Falls back to a syntactically valid placeholder when unconfigured so createClient() never
 // throws at import time (every auth page imports this) — callers gate on supabaseConfigured

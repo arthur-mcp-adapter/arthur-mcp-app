@@ -98,7 +98,7 @@ Antes da produção, ainda será necessário:
 - trocar `npm install` por `npm ci` nos builds;
 - executar a imagem final com usuário não root;
 - adicionar `NODE_ENV=production` e revisar permissões de escrita;
-- passar `SUPABASE_URL`/`SUPABASE_PUBLISHABLE_KEY` como `ARG`/`ENV` no build do frontend no Dockerfile — hoje não existe nenhum `ARG` no Dockerfile, então a imagem buildada cairia no placeholder `http://localhost` de `src/supabaseClient.ts` (o mesmo problema já encontrado e corrigido no dev local) e signup/login quebrariam silenciosamente em produção. `VITE_API_URL` não é necessário neste deploy (frontend e backend no mesmo domínio/origem, `/api` relativo já funciona);
+- passar `VITE_SUPABASE_URL`/`VITE_SUPABASE_PUBLISHABLE_KEY` como `ARG`/`ENV` no build do frontend no Dockerfile — hoje não existe nenhum `ARG` no Dockerfile, então a imagem buildada cairia no placeholder `http://localhost` de `src/supabaseClient.ts` (o mesmo problema já encontrado e corrigido no dev local) e signup/login quebrariam silenciosamente em produção. `VITE_API_URL` não é necessário neste deploy (frontend e backend no mesmo domínio/origem, `/api` relativo já funciona);
 - corrigir `/ready` para checar conexão real com o banco em vez de responder igual a `/health`/`/live` (ver seção 2.2.1) — necessário para o rolling update não mandar tráfego pra um pod ainda não pronto;
 - publicar a imagem no GHCR;
 - criar manifests Kustomize;
@@ -215,7 +215,7 @@ Tarefas no Dockerfile:
 8. Preservar o health check.
 9. Adicionar labels OCI com repositório, versão e SHA.
 10. Gerar SBOM e executar scan de vulnerabilidades no pipeline.
-11. Adicionar `ARG SUPABASE_URL`/`ARG SUPABASE_PUBLISHABLE_KEY` no stage `frontend-builder` (`ENV` a partir do `ARG`, antes do `npm run build`), e passá-los via `--build-arg` no workflow de publicação (Fase 4) — sem isso o frontend buildado usa o placeholder local e quebra em produção.
+11. Adicionar `ARG VITE_SUPABASE_URL`/`ARG VITE_SUPABASE_PUBLISHABLE_KEY` no stage `frontend-builder` (`ENV` a partir do `ARG`, antes do `npm run build`), e passá-los via `--build-arg` no workflow de publicação (Fase 4) — sem isso o frontend buildado usa o placeholder local e quebra em produção.
 12. Corrigir `api/src/observability/health.controller.ts`'s `/ready` para checar conexão real com o banco (ex.: `SELECT 1` via `DataSource`) em vez de responder igual a `/health`/`/live` — pré-requisito para o `readinessProbe` da Fase 6 ter algum sentido.
 
 Validação mínima:
@@ -386,7 +386,7 @@ Secrets iniciais:
 
 - `JWT_SECRET` (hoje só assina/verifica os tokens OAuth emitidos para clientes MCP de terceiros — não é mais a sessão de login do usuário, ver `docs/DESIGN_PATTERNS.md`);
 - `DATABASE_URI` — connection string do PostgreSQL do próprio projeto Supabase (direta ou do pooler), não de um provedor de banco separado. **Atenção ao sufixo TLS**: com o driver `pg` atual, `?sslmode=require` sozinho passou a *verificar* a cadeia de certificados e rejeita o certificado do pooler do Supabase ("self-signed certificate"); a forma que funciona é `?uselibpqcompat=true&sslmode=require` (semântica libpq clássica, TLS sem verificação de CA — coerente com o `rejectUnauthorized: false` que `api/src/database/database.module.ts` aplica). Validado em produção em 2026-07-15;
-- `SUPABASE_URL`, `SUPABASE_JWKS_URL`, `SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY` — obrigatórios, a aplicação não sobe sem eles (`api/src/config/env.validation.ts`). `SUPABASE_SECRET_KEY` é a service-role key e precisa do mesmo tratamento que os outros secrets; `SUPABASE_URL`/`SUPABASE_PUBLISHABLE_KEY` também são necessários no build/runtime do **frontend** como `SUPABASE_URL`/`SUPABASE_PUBLISHABLE_KEY` (não são secretos — a publishable key é pública por design — mas precisam estar disponíveis como build args da imagem do frontend, não só no Secret do backend);
+- `SUPABASE_URL`, `SUPABASE_JWKS_URL`, `SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY` — obrigatórios, a aplicação não sobe sem eles (`api/src/config/env.validation.ts`). `SUPABASE_SECRET_KEY` é a service-role key e precisa do mesmo tratamento que os outros secrets; `SUPABASE_URL`/`SUPABASE_PUBLISHABLE_KEY` também são necessários no build/runtime do **frontend** como `VITE_SUPABASE_URL`/`VITE_SUPABASE_PUBLISHABLE_KEY` (não são secretos — a publishable key é pública por design — mas precisam estar disponíveis como build args da imagem do frontend, não só no Secret do backend);
 - credenciais SMTP;
 - credenciais de observabilidade externa, se houver.
 

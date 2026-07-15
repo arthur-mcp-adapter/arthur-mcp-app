@@ -34,8 +34,8 @@ jobs:
             ghcr.io/${{ github.repository }}:sha-${{ github.event.workflow_run.head_sha }}
             ghcr.io/${{ github.repository }}:main
           build-args: |
-            SUPABASE_URL=${{ secrets.SUPABASE_URL }}
-            SUPABASE_PUBLISHABLE_KEY=${{ secrets.SUPABASE_PUBLISHABLE_KEY }}
+            VITE_SUPABASE_URL=${{ secrets.SUPABASE_URL }}
+            VITE_SUPABASE_PUBLISHABLE_KEY=${{ secrets.SUPABASE_PUBLISHABLE_KEY }}
             GIT_SHA=${{ github.event.workflow_run.head_sha }}
             VERSION=main
           cache-from: type=gha
