@@ -51,16 +51,16 @@ describe('mapResponse', () => {
     expect(result.content[0].text).toContain('image/png');
   });
 
-  it('truncates body text over 100000 chars', () => {
+  it('truncates body text over 100000 chars when limiting is enabled', () => {
     const longBody = 'a'.repeat(110_000);
-    const result = mapResponse(res({ body: longBody, contentType: 'text/plain' }));
+    const result = mapResponse(res({ body: longBody, contentType: 'text/plain' }), { enabled: true });
     expect(result.content[0].text.length).toBeLessThan(110_000);
     expect(result.content[0].text).toContain('truncated');
   });
 
-  it('slices large JSON arrays and adds "more items" note', () => {
+  it('slices large JSON arrays and adds "more items" note when limiting is enabled', () => {
     const arr = Array.from({ length: 50 }, (_, i) => ({ id: i }));
-    const result = mapResponse(res({ body: JSON.stringify(arr), contentType: 'application/json' }));
+    const result = mapResponse(res({ body: JSON.stringify(arr), contentType: 'application/json' }), { enabled: true });
     expect(result.content[0].text).toContain('more items');
   });
 

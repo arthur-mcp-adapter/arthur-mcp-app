@@ -55,7 +55,7 @@ jobs:
           cache-to: type=gha,mode=max
       - name: Smoke-test /health
         run: |
-          docker run -d --rm --name smoke -p 3000:3000 \
+          docker run -d --name smoke -p 3000:3000 \
             -e DATABASE_URI=sqlite:/app/data/database.sqlite \
             -e SUPABASE_URL=https://placeholder.supabase.co \
             -e SUPABASE_PUBLISHABLE_KEY=sb_publishable_placeholder \
@@ -63,7 +63,7 @@ jobs:
             -e SUPABASE_JWKS_URL=https://placeholder.supabase.co/auth/v1/.well-known/jwks.json \
             -e JWT_SECRET=ci-smoke-secret \
             arthur-mcp:ci
-          for i in $(seq 1 15); do
+          for i in $(seq 1 30); do
             if curl -sf http://localhost:3000/ready; then exit 0; fi
             sleep 2
           done

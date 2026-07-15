@@ -8,7 +8,7 @@ import { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION } from '@opentelemetry/semantic
 let sdk: NodeSDK | undefined;
 
 export function isTracingEnabled(): boolean {
-  return false;
+  return process.env.ENABLE_TRACING === 'true' && process.env.ENABLE_OBSERVABILITY === 'true';
 }
 
 export function initializeOpenTelemetry(): NodeSDK | undefined {
