@@ -131,7 +131,7 @@ describe('auth and navigation contexts', () => {
 describe('color mode context', () => {
   beforeEach(() => localStorage.clear())
 
-  it('defaults to dark mode and toggles to light mode', async () => {
+  it('defaults to light mode and toggles to dark mode', async () => {
     const user = userEvent.setup()
     function Harness() {
       const { mode, toggle } = useColorMode()
@@ -139,11 +139,11 @@ describe('color mode context', () => {
     }
 
     render(<Harness />, { wrapper: ColorModeProvider })
-    expect(screen.getByRole('button', { name: ColorMode.Dark })).toBeInTheDocument()
-
-    await user.click(screen.getByRole('button', { name: ColorMode.Dark }))
     expect(screen.getByRole('button', { name: ColorMode.Light })).toBeInTheDocument()
-    expect(localStorage.getItem('colorMode')).toBe(ColorMode.Light)
+
+    await user.click(screen.getByRole('button', { name: ColorMode.Light }))
+    expect(screen.getByRole('button', { name: ColorMode.Dark })).toBeInTheDocument()
+    expect(localStorage.getItem('colorMode')).toBe(ColorMode.Dark)
   })
 
   it('uses stored light mode', () => {

@@ -9,7 +9,7 @@ import type { ColorModeProviderProps } from './colorModeProviderProps.interface'
 
 export function ColorModeProvider({ children }: ColorModeProviderProps) {
   const [mode, setMode] = useState<ColorMode>(() => {
-    return (localStorage.getItem('colorMode') as ColorMode) ?? ColorMode.Dark
+    return (localStorage.getItem('colorMode') as ColorMode) ?? ColorMode.Light
   })
 
   const ctx = useMemo<ColorModeContextType>(() => ({
