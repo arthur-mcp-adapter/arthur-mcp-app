@@ -22,6 +22,8 @@ Supabase Auth is now the sole identity provider (Phases 1-4 of the identity migr
 
 ## Latest Changes
 
+- Both workflows can now be triggered manually from the GitHub Actions tab: added `workflow_dispatch` to `ci.yml` and `publish-image.yml`. `publish-image.yml` resolves the commit as `workflow_run.head_sha || github.sha` (job-level `SHA` env) so a manual run publishes the ref it was dispatched on; the manual path skips CI, so prefer dispatching CI (publish still chains on success) unless you specifically need an image rebuild, e.g. after rotating the `SUPABASE_*` repo secrets baked in as VITE build args.
+
 - Deployed the user's full local work (Supabase identity migration UI/backend, previously uncommitted — production was serving the upstream-inherited login) after the user committed it as `6c124a9`:
   - Fixed the 16 frontend structure-gate violations that commit introduced (`e46fe76`): `Signup`, `OAuthCallback`, `SocialAuthButtons`, and `features/server/operations` renamed from `index.tsx` to named `.tsx` files with `index.ts` barrels + `index.css`; `operations` additionally extracted `OperationsTabProps` (`.interface.ts`), `DEFAULT_PORT`/`EMPTY_OPERATION` (`.constant.ts`), and `schemaFrom` (`.util.ts`). No behavior change; importers unaffected (barrels re-export). Validated: `npm run type-check` clean, `npm test` 91/91.
   - Stopped tracking `.mcp.json` in the public repo (exposes server host/user; **it remains in git history permanently** — the SSH host is key-auth'd, but consider tightening password auth/firewall on the host, user-managed).
