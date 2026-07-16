@@ -9,6 +9,7 @@ import type { RequireSetupProps } from './requireSetupProps.interface'
 const Login = lazy(() => import('./pages/Login'))
 const Signup = lazy(() => import('./pages/Signup'))
 const OAuthCallback = lazy(() => import('./pages/OAuthCallback'))
+const OAuthConsent = lazy(() => import('./pages/OAuthConsent'))
 const ForgotPassword = lazy(() => import('./pages/ForgotPassword'))
 const ResetPassword = lazy(() => import('./pages/ResetPassword'))
 const Servers = lazy(() => import('./pages/Servers'))
@@ -61,6 +62,7 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/oauth-callback" element={<OAuthCallback />} />
+        <Route path="/oauth/consent" element={<OAuthConsent />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/mcp-swagger/:slug" element={<SharePage />} />
