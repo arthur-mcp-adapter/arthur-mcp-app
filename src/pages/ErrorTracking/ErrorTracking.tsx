@@ -221,12 +221,23 @@ export default function ErrorTracking() {
           <Typography variant="body2" gutterBottom>
             {t('help.summary')}
           </Typography>
-          <Typography variant="body2" gutterBottom>
-            {t('help.findDsnPath')}
-          </Typography>
-          <Typography variant="body2">
-            {t('help.revealHint')}
-          </Typography>
+          <Typography variant="body2" gutterBottom><strong>{t('help.setupTitle')}</strong></Typography>
+          <Box component="ol" sx={{ mt: 0, mb: 1.5, pl: 2.5 }}>
+            <Box component="li"><Typography variant="body2">{t('help.findDsnPath')}</Typography></Box>
+            <Box component="li"><Typography variant="body2">{t('help.enterFields')}</Typography></Box>
+            <Box component="li"><Typography variant="body2">{t('help.activateAndSave')}</Typography></Box>
+          </Box>
+          <Typography variant="body2" gutterBottom><strong>{t('help.fieldEffectsTitle')}</strong></Typography>
+          <Box component="ul" sx={{ mt: 0, mb: 1.5, pl: 2.5 }}>
+            <Box component="li"><Typography variant="body2">{t('help.dsnEffect')}</Typography></Box>
+            <Box component="li"><Typography variant="body2">{t('help.environmentEffect')}</Typography></Box>
+            <Box component="li"><Typography variant="body2">{t('help.projectEffect')}</Typography></Box>
+            <Box component="li"><Typography variant="body2">{t('help.activeEffect')}</Typography></Box>
+          </Box>
+          <Typography variant="body2" gutterBottom><strong>{t('help.verifyTitle')}</strong></Typography>
+          <Typography variant="body2" gutterBottom>{t('help.verify')}</Typography>
+          <Typography variant="body2" gutterBottom><strong>{t('help.securityTitle')}</strong></Typography>
+          <Typography variant="body2">{t('help.revealHint')}</Typography>
         </HelpButton>
       </Box>
       <Typography variant="body2" color="text.secondary" mb={3}>{t('heading.subtitle')}</Typography>

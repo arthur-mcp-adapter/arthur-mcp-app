@@ -116,9 +116,20 @@
   "help": {
     "title": "Rastreamento de Erros do Sentry",
     "summary": "O Sentry captura exceções não tratadas e erros de execução de ferramentas desta plataforma, agrupa por stack trace e envia alertas quando a taxa de erro aumenta.",
+    "setupTitle": "Como conectar o Sentry",
     "findDsnPath": "Encontre seu DSN no Sentry em Configurações → Projetos → [seu projeto] → Chaves do Cliente (DSN).",
+    "enterFields": "Cole o DSN e informe ambiente e nome do projeto se quiser separar e identificar os eventos no Sentry.",
+    "activateAndSave": "Ative o encaminhamento e salve. Somente a integração ativa recebe novos eventos de erro do Arthur.",
+    "fieldEffectsTitle": "O que os campos afetam",
+    "dsnEffect": "O DSN seleciona a organização e o projeto do Sentry que recebem os eventos e contém as credenciais necessárias para enviá-los.",
+    "environmentEffect": "Ambiente identifica os eventos, como produção ou staging, para que filtros e alertas diferenciem as implantações. Vazio usa produção.",
+    "projectEffect": "O nome do projeto é enviado como valor de release do Sentry e ajuda a agrupar eventos desta implantação do Arthur.",
+    "activeEffect": "Ativo começa a encaminhar erros não tratados do backend e da execução de Ferramentas; inativo mantém a configuração, mas pausa o envio.",
+    "verifyTitle": "Como verificar a conexão",
+    "verify": "Clique primeiro em Testar conexão e depois em Enviar evento de teste. Confirme que o evento aparece no projeto correto do Sentry com o ambiente esperado antes de depender dos alertas.",
+    "securityTitle": "Segurança e dados",
     "findClientKeys": "Encontre seu DSN no Sentry em Configurações → Projetos → [seu projeto] → Chaves do Cliente.",
-    "revealHint": "O DSN é armazenado criptografado e nunca retornado nas respostas da API. Use o botão Revelar para carregá-lo e editar."
+    "revealHint": "O DSN é armazenado criptografado e omitido das respostas normais da API; revele-o somente quando um editor autorizado precisar rotacioná-lo. Eventos de erro podem incluir caminhos de requisição, identificadores de usuário, stack traces e contexto de execução, portanto revise o acesso e a retenção no Sentry antes de ativar o envio em produção. Parâmetros sensíveis da query são ocultados, mas segredos nunca devem ser colocados em caminhos ou mensagens de erro."
   },
   "toast": {
     "saved": "Integração com o Sentry criada.",

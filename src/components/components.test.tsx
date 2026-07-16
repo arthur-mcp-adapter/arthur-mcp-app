@@ -51,7 +51,7 @@ describe('shared components', () => {
     const user = userEvent.setup()
     render(<HelpButton title="Server help"><p>Detailed help text</p></HelpButton>)
 
-    await user.click(screen.getByRole('button'))
+    await user.click(screen.getByRole('button', { name: 'Learn more' }))
     expect(screen.getByRole('dialog')).toBeInTheDocument()
     expect(screen.getByText('Server help')).toBeInTheDocument()
     expect(screen.getByText('Detailed help text')).toBeInTheDocument()

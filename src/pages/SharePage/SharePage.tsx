@@ -559,7 +559,7 @@ export default function SharePage() {
   )
 
   const fullUrl = backendUrl(info.mcpUrl)
-  const canAuthorize = info.hasKey || !!info.hasOAuthClient
+  const canAuthorize = info.hasKey || info.oauthMode === 'managed'
   const isAuthorized = authKey.trim().length > 0
 
   return (
@@ -592,7 +592,11 @@ export default function SharePage() {
               <Chip size="small" label={t('share.resourcesAvailable', { count: info.resourceCount })} sx={{ bgcolor: '#49cc90', color: '#fff', fontWeight: 700 }} />
               <Chip size="small" label={t('share.promptsAvailable', { count: info.promptCount })} sx={{ bgcolor: '#fca130', color: '#fff', fontWeight: 700 }} />
               {info.hasKey ? <Chip size="small" icon={<LockIcon fontSize="small" />} label={t('label.authRequired')} color="warning" /> : <Chip size="small" label={t('label.noKeyRequired')} variant="outlined" />}
-              {info.hasOAuthClient ? <Chip size="small" icon={<LockIcon fontSize="small" />} label={t('share.oauthClientAvailable')} color="warning" /> : <Chip size="small" label={t('share.noOauthClientAvailable')} variant="outlined" />}
+              {info.oauthMode === 'external'
+                ? <Chip size="small" icon={<LockIcon fontSize="small" />} label={t('share.externalOauthAvailable')} color="warning" />
+                : info.hasOAuthClient
+                  ? <Chip size="small" icon={<LockIcon fontSize="small" />} label={t('share.oauthClientAvailable')} color="warning" />
+                  : <Chip size="small" label={t('share.noOauthClientAvailable')} variant="outlined" />}
             </Stack>
           </Stack>
         </Box>
@@ -842,7 +846,7 @@ export default function SharePage() {
         authKey={authKey}
         authMode={authMode}
         hasApiKey={info.hasKey}
-        hasOAuthClient={!!info.hasOAuthClient}
+        hasOAuthClient={info.oauthMode === 'managed'}
         mcpUrl={info.mcpUrl}
         open={authorizeOpen}
         onAuthorize={(value, mode) => { setAuthKey(value); setAuthMode(mode) }}

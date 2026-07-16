@@ -121,6 +121,14 @@ export default function Servers() {
               <Box component="li"><Typography variant="body2">{t('servers:help.toolCount')}</Typography></Box>
               <Box component="li"><Typography variant="body2">{t('servers:help.tags')}</Typography></Box>
             </Box>
+            <Typography variant="body2" gutterBottom><strong>{t('servers:help.successTitle')}</strong></Typography>
+            <Typography variant="body2" gutterBottom>{t('servers:help.success')}</Typography>
+            <Typography variant="body2" gutterBottom><strong>{t('servers:help.troubleshootingTitle')}</strong></Typography>
+            <Box component="ul" sx={{ mt: 0, mb: 1, pl: 2.5 }}>
+              <Box component="li"><Typography variant="body2">{t('servers:help.troubleshootingNoTools')}</Typography></Box>
+              <Box component="li"><Typography variant="body2">{t('servers:help.troubleshootingErrors')}</Typography></Box>
+              <Box component="li"><Typography variant="body2">{t('servers:help.troubleshootingMissing')}</Typography></Box>
+            </Box>
             <Typography variant="body2">{t('servers:help.newServerHint')}</Typography>
           </HelpButton>
         </Box>

@@ -36,7 +36,7 @@ export function ApiKeysPanel({ projectId, initialKeys, onChange }: ApiKeysPanelP
   const syncKeys = (updated: McpApiKeyEntry[]) => { setKeys(updated); onChange(updated) }
 
   const handleAdd = async () => {
-    if (!newKeyName.trim()) { setAddError('Name is required.'); return }
+    if (!newKeyName.trim()) { setAddError(t('error.keyNameRequired')); return }
     setAdding(true)
     setAddError('')
     try {
@@ -94,16 +94,16 @@ export function ApiKeysPanel({ projectId, initialKeys, onChange }: ApiKeysPanelP
         <Box display="flex" alignItems="center" gap={0.5} flexGrow={1}>
           <Typography variant="subtitle1" fontWeight={700}>{t('heading.accessKeys')}</Typography>
           <HelpButton title={t('heading.accessKeys')}>
-            <Typography variant="body2" gutterBottom>
-              Named keys that control who can connect to this server's AI endpoint.
-              Every client must include <code>auth: &lt;key&gt;</code> in their configuration — requests without a valid key are rejected.
-            </Typography>
-            <Typography variant="body2" gutterBottom>
-              Create <strong>one key per client</strong> (e.g. "Claude Desktop", "Cursor") so you can revoke access for a single client without affecting others.
-            </Typography>
-            <Typography variant="body2">
-              Without any key, the endpoint is <strong>publicly accessible</strong> to anyone who knows the URL.
-            </Typography>
+            <Typography variant="body2" gutterBottom>{t('help.accessKeys.intro')}</Typography>
+            <Typography variant="subtitle2" fontWeight={700} gutterBottom>{t('help.accessKeys.stepsTitle')}</Typography>
+            <Box component="ol" sx={{ mt: 0, mb: 1, pl: 2.5 }}>
+              <Box component="li"><Typography variant="body2">{t('help.accessKeys.create')}</Typography></Box>
+              <Box component="li"><Typography variant="body2">{t('help.accessKeys.copy')}</Typography></Box>
+              <Box component="li"><Typography variant="body2">{t('help.accessKeys.connect')}</Typography></Box>
+            </Box>
+            <Typography variant="body2" gutterBottom>{t('help.accessKeys.result')}</Typography>
+            <Typography variant="body2" gutterBottom>{t('help.accessKeys.manage')}</Typography>
+            <Typography variant="body2" color="warning.main">{t('help.accessKeys.caution')}</Typography>
           </HelpButton>
         </Box>
         {can(Permission.ApiKeysCreate) && (
@@ -162,8 +162,14 @@ export function ApiKeysPanel({ projectId, initialKeys, onChange }: ApiKeysPanelP
               </Box>
             )
           })}
-          <Typography variant="caption" color="text.secondary" mt={0.5}>
-            {t('label.useInHeader')} <Box component="code" sx={{ bgcolor: 'action.hover', px: 0.8, py: 0.2, borderRadius: 0.5, fontSize: '0.75rem' }}>auth: &lt;key&gt;</Box>
+          <Box display="flex" alignItems="center" flexWrap="wrap" gap={0.75} mt={0.5}>
+            <Typography variant="caption" color="text.secondary">{t('label.useInHeader')}</Typography>
+            <Box component="code" sx={{ bgcolor: 'action.hover', px: 0.8, py: 0.2, borderRadius: 0.5, fontSize: '0.75rem' }}>auth: &lt;key&gt;</Box>
+            <Typography variant="caption" color="text.secondary">{t('label.useInQuery')}</Typography>
+            <Box component="code" sx={{ bgcolor: 'action.hover', px: 0.8, py: 0.2, borderRadius: 0.5, fontSize: '0.75rem' }}>?auth=&lt;key&gt;</Box>
+          </Box>
+          <Typography variant="caption" color="warning.main">
+            {t('hint.queryAccessKeyWarning')}
           </Typography>
         </Box>
       )}
@@ -177,7 +183,7 @@ export function ApiKeysPanel({ projectId, initialKeys, onChange }: ApiKeysPanelP
         </Box>
         <Box sx={{ flex: 1, overflowY: 'auto', px: 3, py: 2.5 }}>
           {addError && <Alert severity="error" sx={{ mb: 2 }}>{addError}</Alert>}
-          <TextField size="small" fullWidth autoFocus label={t('label.name')}
+          <TextField size="small" fullWidth autoFocus label={t('common:label.name')}
             placeholder={t('placeholder.serverName')}
             value={newKeyName}
             onChange={(e) => { setNewKeyName(e.target.value); setAddError('') }}

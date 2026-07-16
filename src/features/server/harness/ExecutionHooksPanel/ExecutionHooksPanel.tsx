@@ -97,9 +97,9 @@ export function ExecutionHooksPanel({ projectId }: ExecutionHooksPanelProps) {
                 <Box component="li"><Typography variant="body2"><strong>{t('label.addQueryParameter')}:</strong> {t('help.executionHooks.query')}</Typography></Box>
                 <Box component="li"><Typography variant="body2"><strong>{t('label.logCall')}:</strong> {t('help.executionHooks.log')}</Typography></Box>
               </Box>
-              <Typography variant="body2">
-                {t('help.executionHooks.phases')}
-              </Typography>
+              <Typography variant="body2" gutterBottom>{t('help.executionHooks.steps')}</Typography>
+              <Typography variant="body2" gutterBottom>{t('help.executionHooks.result')}</Typography>
+              <Typography variant="body2">{t('help.executionHooks.caution')}</Typography>
             </HelpButton>
           </Box>
           <Typography variant="caption" color="text.secondary">

@@ -213,17 +213,23 @@ export default function Settings() {
           <Typography variant="body2" gutterBottom>
             {t('help.intro')}
           </Typography>
-          <Typography variant="body2" gutterBottom>
-            {t('help.sections')}
-          </Typography>
-          <Box component="ul" sx={{ mt: 0, mb: 1, pl: 2.5 }}>
+          <Typography variant="body2" gutterBottom><strong>{t('help.sections')}</strong></Typography>
+          <Box component="ul" sx={{ mt: 0, mb: 1.5, pl: 2.5 }}>
             <Box component="li"><Typography variant="body2">{t('help.sectionServer')}</Typography></Box>
             <Box component="li"><Typography variant="body2">{t('help.sectionSecurity')}</Typography></Box>
             <Box component="li"><Typography variant="body2">{t('help.sectionHeaders')}</Typography></Box>
             <Box component="li"><Typography variant="body2">{t('help.sectionEmail')}</Typography></Box>
+            <Box component="li"><Typography variant="body2">{t('help.sectionObservability')}</Typography></Box>
           </Box>
+          <Typography variant="body2" gutterBottom><strong>{t('help.workflowTitle')}</strong></Typography>
+          <Box component="ol" sx={{ mt: 0, mb: 1.5, pl: 2.5 }}>
+            <Box component="li"><Typography variant="body2">{t('help.workflowReview')}</Typography></Box>
+            <Box component="li"><Typography variant="body2">{t('help.workflowSave')}</Typography></Box>
+            <Box component="li"><Typography variant="body2">{t('help.workflowVerify')}</Typography></Box>
+          </Box>
+          <Typography variant="body2" gutterBottom><strong>{t('help.cautionTitle')}</strong></Typography>
           <Typography variant="body2">
-            {t('help.saveReminder')}
+            {t('help.cautionBody')}
           </Typography>
         </HelpButton>
       </Box>
@@ -237,11 +243,21 @@ export default function Settings() {
               <Typography variant="subtitle1" fontWeight={700}>{t('server.title')}</Typography>
               <HelpButton title={t('server.helpTitle')}>
                 <Typography variant="body2" gutterBottom>{t('server.helpIntro')}</Typography>
-                <Box component="ul" sx={{ mt: 0, mb: 1, pl: 2.5 }}>
+                <Typography variant="body2" gutterBottom><strong>{t('server.helpFieldEffects')}</strong></Typography>
+                <Box component="ul" sx={{ mt: 0, mb: 1.5, pl: 2.5 }}>
                   <Box component="li"><Typography variant="body2">{t('server.helpPasswordReset')}</Typography></Box>
                   <Box component="li"><Typography variant="body2">{t('server.helpMcpEndpoint')}</Typography></Box>
+                  <Box component="li"><Typography variant="body2">{t('server.helpTimeout')}</Typography></Box>
                 </Box>
-                <Typography variant="body2" gutterBottom>{t('server.helpTimeout')}</Typography>
+                <Typography variant="body2" gutterBottom><strong>{t('server.helpSetupTitle')}</strong></Typography>
+                <Box component="ol" sx={{ mt: 0, mb: 1.5, pl: 2.5 }}>
+                  <Box component="li"><Typography variant="body2">{t('server.helpSetupUrl')}</Typography></Box>
+                  <Box component="li"><Typography variant="body2">{t('server.helpSetupTimeout')}</Typography></Box>
+                  <Box component="li"><Typography variant="body2">{t('server.helpSetupSave')}</Typography></Box>
+                </Box>
+                <Typography variant="body2" gutterBottom><strong>{t('server.helpVerifyTitle')}</strong></Typography>
+                <Typography variant="body2" gutterBottom>{t('server.helpVerify')}</Typography>
+                <Typography variant="body2" gutterBottom><strong>{t('server.helpCautionTitle')}</strong></Typography>
                 <Typography variant="body2">{t('server.helpTimeoutTip')}</Typography>
               </HelpButton>
             </Box>
@@ -282,6 +298,15 @@ export default function Settings() {
               <Typography variant="subtitle1" fontWeight={700}>{t('security.title')}</Typography>
               <HelpButton title={t('security.helpTitle')}>
                 <Typography variant="body2" gutterBottom>{t('security.helpIntro')}</Typography>
+                <Typography variant="body2" gutterBottom><strong>{t('security.helpSetupTitle')}</strong></Typography>
+                <Box component="ol" sx={{ mt: 0, mb: 1.5, pl: 2.5 }}>
+                  <Box component="li"><Typography variant="body2">{t('security.helpGenerate')}</Typography></Box>
+                  <Box component="li"><Typography variant="body2">{t('security.helpEnter')}</Typography></Box>
+                  <Box component="li"><Typography variant="body2">{t('security.helpSave')}</Typography></Box>
+                </Box>
+                <Typography variant="body2" gutterBottom><strong>{t('security.helpVerifyTitle')}</strong></Typography>
+                <Typography variant="body2" gutterBottom>{t('security.helpVerify')}</Typography>
+                <Typography variant="body2" gutterBottom><strong>{t('security.helpCautionTitle')}</strong></Typography>
                 <Typography variant="body2">{t('security.helpRotation')}</Typography>
               </HelpButton>
             </Box>
@@ -334,6 +359,15 @@ export default function Settings() {
                   <Box component="li"><Typography variant="body2">{t('smtp.helpPassword')}</Typography></Box>
                   <Box component="li"><Typography variant="body2">{t('smtp.helpFrom')}</Typography></Box>
                 </Box>
+                <Typography variant="body2" gutterBottom><strong>{t('smtp.helpSetupTitle')}</strong></Typography>
+                <Box component="ol" sx={{ mt: 0, mb: 1.5, pl: 2.5 }}>
+                  <Box component="li"><Typography variant="body2">{t('smtp.helpSetupProvider')}</Typography></Box>
+                  <Box component="li"><Typography variant="body2">{t('smtp.helpSetupFields')}</Typography></Box>
+                  <Box component="li"><Typography variant="body2">{t('smtp.helpSetupSave')}</Typography></Box>
+                </Box>
+                <Typography variant="body2" gutterBottom><strong>{t('smtp.helpVerifyTitle')}</strong></Typography>
+                <Typography variant="body2" gutterBottom>{t('smtp.helpVerify')}</Typography>
+                <Typography variant="body2" gutterBottom><strong>{t('smtp.helpCautionTitle')}</strong></Typography>
                 <Typography variant="body2">{t('smtp.helpRotation')}</Typography>
               </HelpButton>
             </Box>

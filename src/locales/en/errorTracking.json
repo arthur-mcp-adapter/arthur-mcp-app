@@ -116,9 +116,20 @@
   "help": {
     "title": "Sentry Error Tracking",
     "summary": "Sentry captures unhandled exceptions and tool execution errors from this platform, groups them by stack trace, and sends alerts when error rates spike.",
+    "setupTitle": "Connect Sentry",
     "findDsnPath": "Find your DSN in Sentry under Settings → Projects → [your project] → Client Keys (DSN).",
+    "enterFields": "Paste the DSN, then set an environment and project name if you want events separated and labelled in Sentry.",
+    "activateAndSave": "Enable forwarding and save. Only the active integration receives new Arthur error events.",
+    "fieldEffectsTitle": "What the fields affect",
+    "dsnEffect": "DSN selects the Sentry organization and project that receives events and contains the credentials needed to send them.",
+    "environmentEffect": "Environment labels events, such as production or staging, so Sentry filters and alerts can distinguish deployments. Blank defaults to production.",
+    "projectEffect": "Project name is sent as the Sentry release value and helps group events from this Arthur deployment.",
+    "activeEffect": "Active starts forwarding unhandled backend and Tool execution errors; inactive keeps the configuration but pauses forwarding.",
+    "verifyTitle": "Verify the connection",
+    "verify": "Click Test connection first, then Send Test Event. Confirm the event appears in the selected Sentry project with the expected environment before relying on alerts.",
+    "securityTitle": "Security and data",
     "findClientKeys": "Find your DSN in Sentry under Settings → Projects → [your project] → Client Keys.",
-    "revealHint": "The DSN is stored encrypted and never returned in API responses. Use the Reveal button to load it for editing."
+    "revealHint": "The DSN is stored encrypted and omitted from normal API responses; reveal it only when an authorised editor must rotate it. Error events can include request paths, user identifiers, stack traces, and execution context, so review Sentry access and retention policies before enabling production forwarding. Sensitive query parameters are redacted, but secrets should never be placed in paths or error messages."
   },
   "toast": {
     "saved": "Sentry integration created.",

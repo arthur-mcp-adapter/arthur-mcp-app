@@ -91,6 +91,14 @@ export default function AuditLogs() {
             <Typography variant="body2">
               {t('help.retention')}
             </Typography>
+            <Typography variant="body2" gutterBottom sx={{ mt: 1 }}><strong>{t('help.successTitle')}</strong></Typography>
+            <Typography variant="body2" gutterBottom>{t('help.successBody')}</Typography>
+            <Typography variant="body2" gutterBottom><strong>{t('help.troubleshootingTitle')}</strong></Typography>
+            <Box component="ul" sx={{ mt: 0, mb: 0, pl: 2.5 }}>
+              <Box component="li"><Typography variant="body2">{t('help.troubleshootingMissing')}</Typography></Box>
+              <Box component="li"><Typography variant="body2">{t('help.troubleshootingAccess')}</Typography></Box>
+              <Box component="li"><Typography variant="body2">{t('help.troubleshootingIp')}</Typography></Box>
+            </Box>
           </HelpButton>
         </Box>
         <Box display="flex" alignItems="center" gap={1}>
@@ -164,6 +172,7 @@ export default function AuditLogs() {
                           </Box>
                         ))}
                       </Box>
+                      <Typography variant="body2">{t('help.actionDetail')}</Typography>
                     </>],
                     [t('columns.entity'), <>
                       <Typography variant="body2" gutterBottom>{t('help.entityHelp')}</Typography>

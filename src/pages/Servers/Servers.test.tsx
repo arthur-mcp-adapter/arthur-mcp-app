@@ -26,6 +26,10 @@ vi.mock('react-i18next', () => ({
       'servers:empty.noServers': 'No servers yet',
       'servers:error.loadFailed': 'Could not load servers',
       'servers:heading.title': 'Servers',
+      'servers:help.successTitle': 'How to verify the setup:',
+      'servers:help.success': 'The server appears, the AI client connects, and a test call appears in Activity.',
+      'servers:help.troubleshootingTitle': 'If it does not work:',
+      'servers:help.troubleshootingErrors': 'Check source authentication and MCP access separately.',
       'servers:label.all': 'All',
       'servers:label.tags': 'Tags',
       'servers:label.toolCount': `${vars?.count ?? 0} tools`,
@@ -70,6 +74,18 @@ describe('Servers page', () => {
     (api.get as ReturnType<typeof vi.fn>).mockResolvedValue({ data: [] });
     renderServers();
     expect(screen.getByText('Servers')).toBeInTheDocument();
+  });
+
+  it('opens practical setup and troubleshooting help', async () => {
+    (api.get as ReturnType<typeof vi.fn>).mockResolvedValue({ data: [] });
+    renderServers();
+
+    fireEvent.click(screen.getByLabelText('action.learnMore'));
+
+    expect(screen.getByText('How to verify the setup:')).toBeInTheDocument();
+    expect(screen.getByText(/test call appears in Activity/i)).toBeInTheDocument();
+    expect(screen.getByText('If it does not work:')).toBeInTheDocument();
+    expect(screen.getByText(/source authentication and MCP access separately/i)).toBeInTheDocument();
   });
 
   it('renders the New server button for users with servers_create permission', async () => {

@@ -4,6 +4,7 @@ import type { McpPrompt } from './mcpPrompt.interface'
 import type { ToolChain } from './toolChain.interface'
 import type { McpApiKeyEntry } from './mcpApiKeyEntry.interface'
 import type { AuthConfig } from './authConfig.type'
+import type { OAuthConfig } from './oauthConfig.type'
 
 export interface Project {
   _id: string
@@ -26,6 +27,7 @@ export interface Project {
   mcpApiKeys?: McpApiKeyEntry[]
   oauthClientId?: string
   oauthClientSecret?: string
+  oauthConfig?: OAuthConfig
   rateLimit?: { enabled: boolean; requestsPerMinute: number }
   responseConfig?: {
     enabled: boolean

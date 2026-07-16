@@ -7,14 +7,18 @@ import { InlineEdit } from './settings/InlineEdit'
 import { AlertConfigPanel } from './settings/AlertConfigPanel'
 import { InputConstraintsPanel } from './guardRails/InputConstraintsPanel'
 import { TimeoutPanel } from './harness/TimeoutPanel'
+import { OAuthClientPanel } from './connect/OAuthClientPanel'
+import { ApiKeysPanel } from './connect/ApiKeysPanel'
 import type { GeneratedTool } from './types'
 
 const apiGet = vi.hoisted(() => vi.fn())
 const apiPatch = vi.hoisted(() => vi.fn())
+const apiPost = vi.hoisted(() => vi.fn())
+const apiDelete = vi.hoisted(() => vi.fn())
 const authState = vi.hoisted(() => ({ allowed: new Set<string>() }))
 
 vi.mock('../../api', () => ({
-  default: { get: apiGet, patch: apiPatch },
+  default: { get: apiGet, patch: apiPatch, post: apiPost, delete: apiDelete },
 }))
 
 vi.mock('../../context/auth', async (importOriginal) => {
@@ -29,8 +33,16 @@ vi.mock('react-i18next', () => ({
   useTranslation: () => ({
     t: (key: string, vars?: Record<string, unknown>) => ({
       'action.addConstraint': 'Add constraint',
+      'action.addKey': 'Add key',
       'action.addToolOverride': 'Add tool override',
+      'action.close': 'Close',
       'action.remove': 'Remove',
+      'baseUrl.edit': 'Edit base URL',
+      'baseUrl.empty': 'No base URL set',
+      'baseUrl.errorInvalid': 'Enter a valid URL including http:// or https://.',
+      'baseUrl.fieldLabel': 'External API base URL',
+      'common:action.save': 'Save',
+      'common:label.name': 'Name',
       'error.rateLimitRange': 'Rate limit out of range',
       'error.saveFailed': 'Save failed',
       'empty.noInputConstraints': 'No input constraints',
@@ -38,6 +50,8 @@ vi.mock('react-i18next', () => ({
       'guardRails.section.inputConstraintsDesc': 'Validate incoming parameters',
       'harness.section.timeouts': 'Timeouts',
       'harness.section.timeoutsDesc': 'Control execution timeouts',
+      'hint.oauthHelpChooseTitle': '1. Choose the right mode',
+      'hint.oauthHelpExternalStep1': 'Register the MCP client with Authorization Code and PKCE.',
       'heading.errorAlerts': 'Error alerts',
       'heading.requestLimit': 'Request limit',
       'hint.alertHint': 'Alerts are sent when the threshold is crossed',
@@ -56,6 +70,17 @@ vi.mock('react-i18next', () => ({
       'label.timeoutAppliesAll': `${vars?.seconds}s for all tools`,
       'label.timeoutMs': 'Timeout',
       'label.value': 'Value',
+      'label.oauthProviderMode': 'OAuth provider',
+      'label.oauthModeExternal': 'External OAuth/OIDC',
+      'label.oauthModeManaged': 'Arthur-managed OAuth',
+      'label.oauthModeNone': 'Disabled',
+      'label.oauthIssuerUrl': 'Issuer URL',
+      'label.authUrl': 'Auth URL',
+      'label.tokenUrl': 'Token URL',
+      'label.oauthJwksUrl': 'JWKS URL',
+      'label.oauthIntrospectionUrl': 'Introspection URL',
+      'label.oauthAudience': 'Audience / Resource',
+      'label.oauthScopes': 'Required scopes',
       'logs.tool': 'Tool',
       'status.active': 'Active',
       'status.inactive': 'Inactive',
@@ -109,13 +134,13 @@ describe('server feature panels', () => {
     const onChange = vi.fn()
     render(<BaseUrlPanel projectId="p1" initialValue="https://old.example.com" onChange={onChange} />)
 
-    fireEvent.click(screen.getByLabelText('Edit Base URL'))
-    fireEvent.change(screen.getByLabelText('ExternalAPI Base URL'), { target: { value: 'not-a-url' } })
-    fireEvent.keyDown(screen.getByLabelText('ExternalAPI Base URL'), { key: 'Enter' })
-    expect(screen.getByText(/Invalid URL/)).toBeInTheDocument()
+    fireEvent.click(screen.getByLabelText('Edit base URL'))
+    fireEvent.change(screen.getByLabelText('External API base URL'), { target: { value: 'not-a-url' } })
+    fireEvent.keyDown(screen.getByLabelText('External API base URL'), { key: 'Enter' })
+    expect(screen.getByText(/valid URL/)).toBeInTheDocument()
 
-    fireEvent.change(screen.getByLabelText('ExternalAPI Base URL'), { target: { value: 'https://new.example.com' } })
-    fireEvent.keyDown(screen.getByLabelText('ExternalAPI Base URL'), { key: 'Enter' })
+    fireEvent.change(screen.getByLabelText('External API base URL'), { target: { value: 'https://new.example.com' } })
+    fireEvent.keyDown(screen.getByLabelText('External API base URL'), { key: 'Enter' })
 
     await waitFor(() => expect(apiPatch).toHaveBeenCalledWith('/swagger/servers/p1/base-url', { baseUrl: 'https://new.example.com' }))
     expect(onChange).toHaveBeenCalledWith('https://new.example.com')
@@ -126,7 +151,7 @@ describe('server feature panels', () => {
     render(<BaseUrlPanel projectId="p1" initialValue="" onChange={vi.fn()} />)
 
     expect(screen.getByText('No base URL set')).toBeInTheDocument()
-    expect(screen.queryByLabelText('Edit Base URL')).not.toBeInTheDocument()
+    expect(screen.queryByLabelText('Edit base URL')).not.toBeInTheDocument()
   })
 
   it('supports inline edit commit, cancel, multiline, and read-only states', async () => {
@@ -210,5 +235,57 @@ describe('server feature panels', () => {
 
     fireEvent.click(screen.getByLabelText('Remove override'))
     await waitFor(() => expect(apiPatch).toHaveBeenLastCalledWith('/swagger/servers/p1/harness/timeout', { globalTimeoutMs: 1000, overrides: [] }), { timeout: 1200 })
+  })
+
+  it('saves a customer-owned external OAuth provider', async () => {
+    const oauthConfig = {
+      mode: 'external' as const,
+      issuer: 'https://login.customer.com',
+      authorizationUrl: 'https://login.customer.com/authorize',
+      tokenUrl: 'https://login.customer.com/token',
+      jwksUrl: 'https://login.customer.com/jwks',
+      audience: 'https://mcp.example.com/orders',
+      scopes: ['orders.read'],
+    }
+    apiPatch.mockResolvedValueOnce({ data: { oauthConfig } })
+    const onChange = vi.fn()
+
+    render(<OAuthClientPanel projectId="p1" shareSlug="orders" initialConfig={oauthConfig}
+      serverBase="https://mcp.example.com" onChange={onChange} />)
+
+    fireEvent.click(screen.getByTestId('HelpIcon'))
+    expect(screen.getByText('1. Choose the right mode')).toBeInTheDocument()
+    expect(screen.getByText('Register the MCP client with Authorization Code and PKCE.')).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: 'Close' }))
+    await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument())
+
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }))
+
+    await waitFor(() => expect(apiPatch).toHaveBeenCalledWith('/swagger/servers/p1/oauth-client', {
+      mode: 'external',
+      oauthClientId: null,
+      oauthClientSecret: null,
+      issuer: 'https://login.customer.com',
+      authorizationUrl: 'https://login.customer.com/authorize',
+      tokenUrl: 'https://login.customer.com/token',
+      jwksUrl: 'https://login.customer.com/jwks',
+      introspectionUrl: undefined,
+      introspectionClientId: undefined,
+      introspectionClientSecret: undefined,
+      audience: 'https://mcp.example.com/orders',
+      scopes: ['orders.read'],
+    }))
+    expect(onChange).toHaveBeenCalledWith(null, null, oauthConfig)
+    expect(screen.getByText('https://mcp.example.com/.well-known/oauth-protected-resource/api/mcp/server/orders')).toBeInTheDocument()
+  })
+
+  it('uses the common localized name label when creating an Access Key', () => {
+    authState.allowed = new Set([Permission.ApiKeysCreate])
+    render(<ApiKeysPanel projectId="p1" initialKeys={[]} onChange={vi.fn()} />)
+
+    fireEvent.click(screen.getByRole('button', { name: 'Add key' }))
+
+    expect(screen.getByLabelText('Name')).toBeInTheDocument()
+    expect(screen.queryByText('label.name')).not.toBeInTheDocument()
   })
 })

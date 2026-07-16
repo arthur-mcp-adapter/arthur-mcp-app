@@ -89,9 +89,9 @@ export function OutputFilteringPanel({ projectId, tools }: OutputFilteringPanelP
                 <Box component="li"><Typography variant="body2"><strong>{t('label.removeField')}:</strong> {t('help.outputFiltering.remove')}</Typography></Box>
                 <Box component="li"><Typography variant="body2"><strong>{t('label.redactPattern')}:</strong> {t('help.outputFiltering.redact')}</Typography></Box>
               </Box>
-              <Typography variant="body2">
-                {t('help.outputFiltering.paths')}
-              </Typography>
+              <Typography variant="body2" gutterBottom>{t('help.outputFiltering.steps')}</Typography>
+              <Typography variant="body2" gutterBottom>{t('help.outputFiltering.result')}</Typography>
+              <Typography variant="body2">{t('help.outputFiltering.caution')}</Typography>
             </HelpButton>
           </Box>
           <Typography variant="caption" color="text.secondary">

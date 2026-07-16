@@ -84,7 +84,9 @@ export function ToolRestrictionsPanel({ projectId, tools }: ToolRestrictionsPane
                 <Box component="li"><Typography variant="body2"><strong>{t('label.maxCallsPerSession')}:</strong> {t('help.toolRestrictions.maxCalls')}</Typography></Box>
                 <Box component="li"><Typography variant="body2"><strong>{t('label.requireConfirmation')}:</strong> {t('help.toolRestrictions.confirmation')}</Typography></Box>
               </Box>
-              <Typography variant="body2">{t('help.toolRestrictions.disabled')}</Typography>
+              <Typography variant="body2" gutterBottom>{t('help.toolRestrictions.steps')}</Typography>
+              <Typography variant="body2" gutterBottom>{t('help.toolRestrictions.result')}</Typography>
+              <Typography variant="body2">{t('help.toolRestrictions.caution')}</Typography>
             </HelpButton>
           </Box>
           <Typography variant="caption" color="text.secondary">

@@ -95,7 +95,9 @@ export function InputConstraintsPanel({ projectId, tools }: InputConstraintsPane
                 <Box component="li"><Typography variant="body2"><strong>{t('label.allowedValues')}:</strong> {t('help.inputConstraints.allowedValues')}</Typography></Box>
                 <Box component="li"><Typography variant="body2"><strong>{t('label.regexMatch')}:</strong> {t('help.inputConstraints.regex')}</Typography></Box>
               </Box>
-              <Typography variant="body2">{t('help.inputConstraints.allTools')}</Typography>
+              <Typography variant="body2" gutterBottom>{t('help.inputConstraints.steps')}</Typography>
+              <Typography variant="body2" gutterBottom>{t('help.inputConstraints.result')}</Typography>
+              <Typography variant="body2">{t('help.inputConstraints.caution')}</Typography>
             </HelpButton>
           </Box>
           <Typography variant="caption" color="text.secondary">

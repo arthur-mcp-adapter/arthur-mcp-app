@@ -6,3 +6,8 @@
   color: #5D87FF;
   opacity: 1;
 }
+
+.oauth-client-panel-monospace-input input {
+  font-family: monospace;
+  font-size: 0.85rem;
+}

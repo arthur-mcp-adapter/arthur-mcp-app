@@ -318,6 +318,7 @@
     "apiKeyScheme": "Chave de API MCP",
     "oauthClientCredentialsScheme": "Credenciais do cliente OAuth",
     "oauthClientAvailable": "Cliente OAuth",
+    "externalOauthAvailable": "OAuth/OIDC externo",
     "noOauthClientAvailable": "Sem Cliente OAuth",
     "apiKeyLabel": "Valor",
     "apiKeyHelper": "A chave fica no seu navegador e é enviada como cabeçalho auth nas requisições do simulador.",
@@ -409,7 +410,13 @@
       "generatedItem3Suffix": "da operação.",
       "generatedItem4": "Parâmetros de entrada (path, query, body) mapeados para o schema de parâmetros da ferramenta MCP.",
       "tipStrong": "Dica:",
-      "tipBody": "Quanto mais rica for a descrição da sua spec, melhor a IA vai entender quando e como usar cada ferramenta. Após a importação, você pode editar cada ferramenta individualmente na aba Tools do servidor."
+      "tipBody": "Quanto mais rica for a descrição da sua spec, melhor a IA vai entender quando e como usar cada ferramenta. Após a importação, você pode editar cada ferramenta individualmente na aba Ferramentas do servidor.",
+      "successTitle": "Como verificar a importação:",
+      "successBody": "Uma mensagem de sucesso mostra o nome do servidor e a quantidade de ferramentas geradas. Abra o servidor, revise suas Ferramentas, confirme a URL base e a autenticação da fonte e faça uma chamada de teste antes de conectar um cliente de IA.",
+      "troubleshootingTitle": "Se a importação não ficar correta:",
+      "troubleshootingFormat": "Se o arquivo for rejeitado, valide se ele usa OpenAPI 3.x ou Swagger 2.0 e se é um YAML ou JSON válido com extensão .yaml, .yml ou .json.",
+      "troubleshootingUrl": "Se as chamadas geradas apontarem para o host errado, importe novamente com a substituição correta de URL Base ou corrija a conexão após a importação.",
+      "troubleshootingDescriptions": "Se as ferramentas tiverem nomes ou parâmetros pouco claros, melhore operationId, summary, description e as definições de parâmetros na spec, ou edite as ferramentas geradas antes do uso."
     }
   },
   "newServer": {
@@ -514,19 +521,25 @@
     }
   },
   "help": {
-    "intro": "Um servidor é o conceito central do Arthur MCP. Cada servidor representa uma API externa — como seu CRM, provedor de pagamentos, microsserviço interno ou banco de dados — adaptada ao protocolo MCP para que clientes de IA (Claude, ChatGPT, agentes personalizados) possam consultá-la e interagir com ela naturalmente em qualquer conversa, sem que o usuário precise alternar entre ferramentas.",
+    "intro": "Um servidor transforma uma fonte de dados conectada em um endpoint MCP que um cliente de IA pode usar. A fonte pode ser uma API REST ou GraphQL, um banco de dados ou conteúdo estático. Abra o cartão de um servidor para configurar o que a IA poderá chamar ou ler.",
     "howItWorks": "Como funciona, do início ao fim:",
-    "step1": "Crie um servidor e dê a ele um nome e uma URL base — o endereço raiz da API que você deseja conectar (ex: https://api.meu-crm.com). A URL base é prefixada ao caminho de endpoint de cada ferramenta, então você só precisa defini-la uma vez.",
-    "step2": "Adicione ferramentas — manualmente (um endpoint por vez) ou importando uma spec OpenAPI/Swagger para gerar todas as ferramentas automaticamente de uma vez. Cada ferramenta mapeia um endpoint da API para uma função chamável pela IA, com nomes e descrições de parâmetros.",
-    "step3": "Configure a autenticação para que o Arthur saiba como se identificar na API — por exemplo, um Bearer token, Basic auth ou um cabeçalho de chave de API. Sem autenticação, chamadas a APIs protegidas retornarão erros 401.",
-    "step4": "Copie a URL do endpoint MCP da aba Conectar do servidor e cole na configuração de servidor do seu cliente de IA. Cada cliente de IA tem uma interface diferente para isso — consulte a documentação do cliente se não tiver certeza de onde colar a URL.",
-    "step5": "Uma vez conectada, a IA descobre automaticamente todas as ferramentas habilitadas e pode chamá-las em qualquer conversa. O usuário pergunta naturalmente — 'buscar o cliente 123' — e a IA escolhe a ferramenta certa, preenche os parâmetros e retorna o resultado.",
+    "step1": "Escolha Novo servidor, comece por um template ou importe um arquivo OpenAPI/Swagger. Selecione o tipo de fonte e informe os dados de conexão solicitados pelo fluxo de criação.",
+    "step2": "Abra o novo servidor e defina Operações para a fonte; depois exponha as capacidades necessárias como Ferramentas, Recursos ou Prompts. Importações REST podem gerar ferramentas a partir da especificação.",
+    "step3": "Configure a credencial da fonte quando necessário. É assim que o Arthur acessa a fonte; ela é diferente da Chave de Acesso ou configuração OAuth que protege o endpoint MCP.",
+    "step4": "Em Conectar, copie a URL do endpoint MCP e configure o acesso do cliente de IA. Use Chave de Acesso ou OAuth quando o endpoint não puder ser público.",
+    "step5": "Conecte o cliente de IA e peça que ele use uma Ferramenta habilitada. O Arthur registra a chamada na seção Atividade do servidor para você confirmar o resultado.",
     "cardIndicators": "Indicadores do cartão — o que cada elemento em um cartão de servidor significa:",
-    "colouredDot": "Ponto colorido (canto superior direito): semáforo de saúde baseado na última hora de atividade. Verde = todas as requisições bem-sucedidas. Amarelo = alguns erros (taxa de falha de 1–19%). Vermelho = alta taxa de erros (20%+), requer atenção. Cinza = sem atividade na última hora, ou o servidor está pausado.",
-    "activePaused": "Chip Ativo / Pausado: Ativo significa que o servidor está aceitando requisições de clientes de IA agora. Pausado significa que está temporariamente offline — todas as chamadas serão rejeitadas até que você o reative. Pausar é útil durante manutenção ou quando uma API upstream está fora do ar.",
-    "toolCount": "Contagem de ferramentas: quantas ferramentas MCP habilitadas estão registradas neste servidor. Zero ferramentas significa que nenhum cliente de IA pode fazer nada útil com este servidor — adicione pelo menos uma ferramenta antes de conectar uma IA. Ferramentas desabilitadas não contam para esse número.",
+    "colouredDot": "Ícone da fonte: identifica o tipo de fonte conectada ao servidor, como REST, GraphQL, banco de dados ou conteúdo estático. Ele descreve o tipo de conexão, não sua saúde.",
+    "activePaused": "Chip de status: Ativo significa que o servidor está disponível; Erro indica um estado salvo que precisa ser revisado; Pausado bloqueia temporariamente as chamadas MCP até que você o reative. Abra o servidor e consulte Atividade para verificar a saúde das chamadas.",
+    "toolCount": "Contadores de capacidades: mostram quantas Ferramentas, Recursos e Prompts estão configurados. Zero Ferramentas significa que a IA não tem uma ação chamável nesse servidor, embora ainda possa ler Recursos ou usar Prompts.",
     "tags": "Tags: rótulos personalizados que você define para organização e filtragem. Use-os para agrupar servidores por equipe, ambiente (produção, staging) ou o tipo de API que conectam. Clique em uma tag na barra de filtros acima para mostrar apenas servidores com aquela tag.",
-    "newServerHint": "Clique em Novo servidor para abrir o assistente de criação. Você pode preencher os detalhes do servidor manualmente, ou arrastar um arquivo de spec OpenAPI/Swagger para gerar automaticamente todas as ferramentas, parâmetros e descrições em uma etapa. Após a criação, vá para a aba Conectar do servidor para obter a URL do endpoint MCP."
+    "successTitle": "Como verificar a configuração:",
+    "success": "O servidor aparece nesta lista, pelo menos uma capacidade desejada está habilitada, o cliente de IA conecta pela URL mostrada em Conectar e uma chamada de teste aparece em Atividade sem erro.",
+    "troubleshootingTitle": "Se não funcionar:",
+    "troubleshootingNoTools": "Se o cliente conecta, mas não consegue fazer nada, confirme que o servidor tem uma Ferramenta habilitada e que seu nome, descrição e parâmetros estão claros.",
+    "troubleshootingErrors": "Para erros 401 ou 403, diferencie autenticação da fonte e acesso MCP: verifique a credencial da fonte e depois a Chave de Acesso ou configuração OAuth em Conectar.",
+    "troubleshootingMissing": "Se um servidor ou ação não aparece, limpe os filtros de busca e tags e confirme que sua função tem a permissão necessária para visualizar ou editar.",
+    "newServerHint": "Excluir um servidor também remove suas capacidades configuradas e interrompe conexões ativas. Duplique um servidor quando precisar de um ponto de partida seguro para uma variação."
   },
   "period": {
     "24h": "Hoje",

@@ -218,9 +218,14 @@ export default function Dashboard() {
           <Box display="flex" alignItems="center" gap={1} mb={0.5}>
             <Typography variant="h5" fontWeight={700} letterSpacing="-0.2px">{t('heading.title')}</Typography>
             <HelpButton title={t('heading.title')}>
+              <Typography variant="body2" gutterBottom><strong>{t('help.aboutTitle')}</strong></Typography>
               <Typography variant="body2" gutterBottom>{t('help.overviewIntro')}</Typography>
+              <Typography variant="body2" gutterBottom><strong>{t('help.howToUseTitle')}</strong></Typography>
+              <Typography variant="body2" gutterBottom>{t('help.overviewPeriod')}</Typography>
+              <Typography variant="body2" gutterBottom><strong>{t('help.successTitle')}</strong></Typography>
               <Typography variant="body2" gutterBottom>{t('help.overviewReadability')}</Typography>
-              <Typography variant="body2">{t('help.overviewPeriod')}</Typography>
+              <Typography variant="body2" gutterBottom><strong>{t('help.troubleshootingTitle')}</strong></Typography>
+              <Typography variant="body2">{t('help.overviewTroubleshooting')}</Typography>
             </HelpButton>
           </Box>
           {stats && (
@@ -310,7 +315,8 @@ export default function Dashboard() {
                 helpContent={
                   <>
                     <Typography variant="body2" gutterBottom>{t('help.tasksContent')}</Typography>
-                    <Typography variant="body2">{t('help.tasksWhenFail')}</Typography>
+                    <Typography variant="body2" gutterBottom><strong>{t('help.successTitle')}</strong> {t('help.tasksSuccess')}</Typography>
+                    <Typography variant="body2"><strong>{t('help.troubleshootingTitle')}</strong> {t('help.tasksWhenFail')}</Typography>
                   </>
                 }
               />
@@ -324,7 +330,8 @@ export default function Dashboard() {
                 helpContent={
                   <>
                     <Typography variant="body2" gutterBottom>{t('help.integrationsContent')}</Typography>
-                    <Typography variant="body2">{t('help.integrationsTip')}</Typography>
+                    <Typography variant="body2" gutterBottom><strong>{t('help.successTitle')}</strong> {t('help.integrationsSuccess')}</Typography>
+                    <Typography variant="body2"><strong>{t('help.troubleshootingTitle')}</strong> {t('help.integrationsTip')}</Typography>
                   </>
                 }
               />
@@ -338,7 +345,8 @@ export default function Dashboard() {
                 helpContent={
                   <>
                     <Typography variant="body2" gutterBottom>{t('help.actionsContent')}</Typography>
-                    <Typography variant="body2">{t('help.actionsTip')}</Typography>
+                    <Typography variant="body2" gutterBottom><strong>{t('help.successTitle')}</strong> {t('help.actionsSuccess')}</Typography>
+                    <Typography variant="body2"><strong>{t('help.troubleshootingTitle')}</strong> {t('help.actionsTip')}</Typography>
                   </>
                 }
               />
@@ -352,7 +360,9 @@ export default function Dashboard() {
                 helpContent={
                   <>
                     <Typography variant="body2" gutterBottom>{t('help.securityContent')}</Typography>
-                    <Typography variant="body2">{t('help.securityTip')}</Typography>
+                    <Typography variant="body2" gutterBottom><strong>{t('help.howToUseTitle')}</strong> {t('help.securityHowTo')}</Typography>
+                    <Typography variant="body2" gutterBottom><strong>{t('help.successTitle')}</strong> {t('help.securitySuccess')}</Typography>
+                    <Typography variant="body2"><strong>{t('help.troubleshootingTitle')}</strong> {t('help.securityTip')}</Typography>
                   </>
                 }
               />
@@ -371,13 +381,15 @@ export default function Dashboard() {
                     </Typography>
                     <Box component="ul" sx={{ mt: 0.5, mb: 0, pl: 2.5 }}>
                       {([
-                        ['Blue', t('help.chartBlue')],
-                        ['Yellow', t('help.chartYellow')],
-                        ['Red', t('help.chartRed')],
+                        [t('help.chartBlueLabel'), t('help.chartBlue')],
+                        [t('help.chartYellowLabel'), t('help.chartYellow')],
+                        [t('help.chartRedLabel'), t('help.chartRed')],
                       ] as [string, string][]).map(([l, d]) => (
                         <Box component="li" key={l}><Typography variant="body2"><strong>{l}</strong> — {d}</Typography></Box>
                       ))}
                     </Box>
+                    <Typography variant="body2" gutterBottom sx={{ mt: 1 }}><strong>{t('help.successTitle')}</strong> {t('help.chartSuccess')}</Typography>
+                    <Typography variant="body2"><strong>{t('help.troubleshootingTitle')}</strong> {t('help.chartTroubleshooting')}</Typography>
                   </HelpButton>
                 </Box>
                 <CallsChart data={stats.callsByBucket} preset={preset} />
@@ -430,9 +442,11 @@ export default function Dashboard() {
                 <Box display="flex" alignItems="center" gap={0.5} mb={2}>
                   <Typography variant="subtitle1" fontWeight={700}>{t('topTools.title')}</Typography>
                   <HelpButton title={t('help.topActionsTitle')}>
-                    <Typography variant="body2">
+                    <Typography variant="body2" gutterBottom>
                       {t('help.topActionsContent')}
                     </Typography>
+                    <Typography variant="body2" gutterBottom><strong>{t('help.successTitle')}</strong> {t('help.topActionsSuccess')}</Typography>
+                    <Typography variant="body2"><strong>{t('help.troubleshootingTitle')}</strong> {t('help.topActionsTroubleshooting')}</Typography>
                   </HelpButton>
                 </Box>
                 {stats.topTools.length === 0 ? (
@@ -470,16 +484,18 @@ export default function Dashboard() {
                     </Typography>
                     <Box component="ul" sx={{ mt: 0.5, mb: 0, pl: 2.5 }}>
                       {([
-                        ['Green dot', t('help.statusGreen')],
-                        ['Yellow dot', t('help.statusYellow')],
-                        ['Red dot', t('help.statusRed')],
-                        ['Grey dot', t('help.statusGrey')],
+                        [t('help.statusGreenLabel'), t('help.statusGreen')],
+                        [t('help.statusYellowLabel'), t('help.statusYellow')],
+                        [t('help.statusRedLabel'), t('help.statusRed')],
+                        [t('help.statusGreyLabel'), t('help.statusGrey')],
                       ] as [string, string][]).map(([l, d]) => (
                         <Box component="li" key={l} sx={{ mb: 0.5 }}>
                           <Typography variant="body2"><strong>{l}</strong> — {d}</Typography>
                         </Box>
                       ))}
                     </Box>
+                    <Typography variant="body2" gutterBottom sx={{ mt: 1 }}><strong>{t('help.successTitle')}</strong> {t('help.statusSuccess')}</Typography>
+                    <Typography variant="body2"><strong>{t('help.troubleshootingTitle')}</strong> {t('help.statusTroubleshooting')}</Typography>
                   </HelpButton>
                 </Box>
                 {health.length === 0 ? (

@@ -89,9 +89,9 @@ export function RetryPolicyPanel({ projectId }: RetryPolicyPanelProps) {
                 <Box component="li"><Typography variant="body2"><strong>{t('label.linear')}:</strong> {t('help.retryPolicy.linear')}</Typography></Box>
                 <Box component="li"><Typography variant="body2"><strong>{t('label.exponential')}:</strong> {t('help.retryPolicy.exponential')}</Typography></Box>
               </Box>
-              <Typography variant="body2">
-                {t('help.retryPolicy.safeCodes')}
-              </Typography>
+              <Typography variant="body2" gutterBottom>{t('help.retryPolicy.steps')}</Typography>
+              <Typography variant="body2" gutterBottom>{t('help.retryPolicy.result')}</Typography>
+              <Typography variant="body2">{t('help.retryPolicy.caution')}</Typography>
             </HelpButton>
           </Box>
           <Typography variant="caption" color="text.secondary">

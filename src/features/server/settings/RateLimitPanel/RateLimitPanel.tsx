@@ -77,9 +77,8 @@ export function RateLimitPanel({ projectId, initialRateLimit, onChange }: RateLi
               <Typography variant="body2" gutterBottom>
                 <strong>{t('help.rateLimit.howTitle')}</strong> {t('help.rateLimit.howText')}
               </Typography>
-              <Typography variant="body2">
-                {t('help.rateLimit.toggleText')}
-              </Typography>
+              <Typography variant="body2" gutterBottom>{t('help.rateLimit.result')}</Typography>
+              <Typography variant="body2">{t('help.rateLimit.troubleshoot')}</Typography>
             </HelpButton>
           </Box>
           <SaveIndicator status={saveStatus} error={saveError} />
