@@ -84,7 +84,9 @@ export function ToolRestrictionsPanel({ projectId, tools }: ToolRestrictionsPane
                 <Box component="li"><Typography variant="body2"><strong>{t('label.maxCallsPerSession')}:</strong> {t('help.toolRestrictions.maxCalls')}</Typography></Box>
                 <Box component="li"><Typography variant="body2"><strong>{t('label.requireConfirmation')}:</strong> {t('help.toolRestrictions.confirmation')}</Typography></Box>
               </Box>
-              <Typography variant="body2">{t('help.toolRestrictions.disabled')}</Typography>
+              <Typography variant="body2" gutterBottom>{t('help.toolRestrictions.steps')}</Typography>
+              <Typography variant="body2" gutterBottom>{t('help.toolRestrictions.result')}</Typography>
+              <Typography variant="body2">{t('help.toolRestrictions.caution')}</Typography>
             </HelpButton>
           </Box>
           <Typography variant="caption" color="text.secondary">
@@ -101,7 +103,7 @@ export function ToolRestrictionsPanel({ projectId, tools }: ToolRestrictionsPane
       ) : (
         <Box mb={2}>
           {restrictions.map((r) => (
-            <Box key={r.id} display="flex" gap={1} alignItems="center" mb={1.5} sx={{ opacity: r.enabled ? 1 : 0.5 }}>
+            <Box key={r.id} display="flex" gap={1} alignItems="center" mb={1.5} flexWrap="wrap" sx={{ opacity: r.enabled ? 1 : 0.5 }}>
               <FormControl size="small" sx={{ flex: 2, minWidth: 140 }}>
                 <InputLabel>{t('logs.tool')}</InputLabel>
                 <Select label={t('logs.tool')} value={r.toolName} onChange={(e) => update(r.id, { toolName: e.target.value })}>

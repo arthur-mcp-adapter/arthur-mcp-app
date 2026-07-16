@@ -30,6 +30,7 @@
     "subtitle": "Connect your AI to your data sources"
   },
   "sidebar": {
-    "backToServers": "Servers"
+    "backToServers": "Servers",
+    "toggleMenu": "Show/hide menu"
   }
 }

@@ -35,8 +35,18 @@ export class ToolEndpointDto {
 }
 
 export class OAuthClientDto {
+  mode?: 'none' | 'managed' | 'external';
   oauthClientId: string | null;
   oauthClientSecret: string | null;
+  issuer?: string;
+  authorizationUrl?: string;
+  tokenUrl?: string;
+  jwksUrl?: string;
+  introspectionUrl?: string;
+  introspectionClientId?: string;
+  introspectionClientSecret?: string;
+  audience?: string;
+  scopes?: string[];
 }
 
 export class ShareSlugDto {

@@ -9,6 +9,7 @@ import { SpanStatusCode, trace } from '@opentelemetry/api';
 import { Observable } from 'rxjs';
 import { catchError, finalize } from 'rxjs/operators';
 import { TracingService } from '../tracing/tracing.service';
+import { redactSensitiveQueryParams } from '../../common/redact-sensitive-query-params.util';
 
 @Injectable()
 export class TracingInterceptor implements NestInterceptor {
@@ -23,7 +24,7 @@ export class TracingInterceptor implements NestInterceptor {
       attributes: {
         'http.method': req.method,
         'http.route': req.route?.path ?? req.path,
-        'http.target': req.originalUrl ?? req.url,
+        'http.target': redactSensitiveQueryParams(req.originalUrl ?? req.url),
       },
     });
 

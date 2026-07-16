@@ -50,6 +50,7 @@ This directory contains specialist agent definitions for Claude Code. Keep this 
 - React/TypeScript frontend implementation, Feature-Driven Architecture, Atomic Design, barrel exports, hooks, forms, routes, state, or API integration: `react-frontend-engineer`.
 - Frontend implementation, visual polish, shared UI composition, Atomic Design, or openclaw component review: `ui-expert`.
 - Flow quality before shipping a user-facing feature, including journey fit across pages, features, and shared UI: `ux-analyst`.
+- Responsive/mobile-first layout, small-screen adaptation, touch targets, or breakpoint behavior: `mobile-first-expert`.
 - Backend API/module work: `nestjs-expert`.
 - Gang of Four design pattern choice, naming, or misuse review: `gof-expert`.
 - SOLID responsibility, interface, substitutability, or dependency direction review: `solid-expert`.

@@ -106,7 +106,7 @@ export default function NewObservabilityProvider() {
 
   return (
     <Box maxWidth={720} mx="auto">
-      <Box display="flex" alignItems="center" gap={1.5} mb={4}>
+      <Box display="flex" flexWrap="wrap" alignItems="center" gap={1.5} mb={4}>
         <Button
           size="small"
           startIcon={<IconArrowLeft size={16} />}
@@ -188,6 +188,7 @@ export default function NewObservabilityProvider() {
             <Grid item xs={12}>
               <TextField
                 size="small" fullWidth required
+                type="url"
                 label={t('observability:label.url')}
                 value={form.url}
                 onChange={(e) => setField('url', e.target.value)}
@@ -237,7 +238,7 @@ export default function NewObservabilityProvider() {
             </Box>
             <Box>
               <Typography variant="caption" color="text.secondary" fontWeight={700}>{t('observability:label.url')}</Typography>
-              <Typography fontFamily="monospace" fontSize="0.875rem">{form.url}</Typography>
+              <Typography fontFamily="monospace" fontSize="0.875rem" sx={{ overflowWrap: 'anywhere' }}>{form.url}</Typography>
             </Box>
             {form.apiKey && (
               <Box>

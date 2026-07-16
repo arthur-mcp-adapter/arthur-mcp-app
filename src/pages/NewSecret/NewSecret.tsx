@@ -92,7 +92,7 @@ export default function NewSecret() {
 
   return (
     <Box maxWidth={720} mx="auto">
-      <Box display="flex" alignItems="center" gap={1.5} mb={4}>
+      <Box display="flex" flexWrap="wrap" alignItems="center" gap={1.5} mb={4}>
         <Button size="small" startIcon={<IconArrowLeft size={16} />} onClick={() => navigate('/secrets')} sx={{ mr: 0.5 }}>
           {t('secrets:heading.title')}
         </Button>
@@ -184,7 +184,7 @@ export default function NewSecret() {
             </Box>
             <Box>
               <Typography variant="caption" color="text.secondary" fontWeight={700}>{t('secrets:label.referenceKey')}</Typography>
-              <Typography fontFamily="monospace" fontSize="0.875rem">{`{{secret:${form.name.trim()}}}`}</Typography>
+              <Typography fontFamily="monospace" fontSize="0.875rem" sx={{ overflowWrap: 'anywhere' }}>{`{{secret:${form.name.trim()}}}`}</Typography>
             </Box>
             <Box>
               <Typography variant="caption" color="text.secondary" fontWeight={700}>{t('secrets:label.value')}</Typography>

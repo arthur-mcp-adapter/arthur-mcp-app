@@ -79,20 +79,25 @@ export function SecretCard({ secret, onEdit, onDelete, onCopy, copied }: SecretC
       content={
         <Box>
           <Box display="flex" alignItems="center" gap={0.5} mb={1}>
-            <Typography variant="caption" fontFamily="monospace" color="text.secondary">
+            <Typography
+              variant="caption"
+              fontFamily="monospace"
+              color="text.secondary"
+              sx={{ overflowWrap: 'anywhere', minWidth: 0 }}
+            >
               {revealed ? (value ?? t('common:action.loading')) : '••••••••••••'}
             </Typography>
             {canReveal && (
               <Tooltip title={revealed ? t('action.hide') : t('action.reveal')}>
-                <IconButton size="small" onClick={handleReveal} disabled={loadingValue} sx={{ p: 0.25 }}>
+                <IconButton size="small" onClick={handleReveal} disabled={loadingValue} sx={{ p: 0.25, flexShrink: 0 }}>
                   {revealed ? <IconEyeOff size={13} /> : <IconEye size={13} />}
                 </IconButton>
               </Tooltip>
             )}
           </Box>
 
-          <Box sx={{ bgcolor: 'action.hover', border: '1px solid', borderColor: 'divider', borderRadius: '4px', px: 1, py: 0.25, display: 'inline-block' }}>
-            <Typography variant="caption" fontFamily="monospace" color="text.secondary" fontSize="0.68rem">
+          <Box sx={{ bgcolor: 'action.hover', border: '1px solid', borderColor: 'divider', borderRadius: '4px', px: 1, py: 0.25, display: 'inline-block', maxWidth: '100%' }}>
+            <Typography variant="caption" fontFamily="monospace" color="text.secondary" fontSize="0.68rem" sx={{ overflowWrap: 'anywhere' }}>
               {`{{secret:${secret.name}}}`}
             </Typography>
           </Box>

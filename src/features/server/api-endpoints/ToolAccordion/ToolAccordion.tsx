@@ -123,9 +123,9 @@ export function ToolAccordion({ tool: initialTool, projectId, mcpServerIdentifie
           </Box>
 
           {/* Tool name — editable */}
-          <Box onClick={(e) => e.stopPropagation()} sx={{ flexShrink: 0 }}>
+          <Box onClick={(e) => e.stopPropagation()} sx={{ minWidth: 0, maxWidth: { xs: '45%', sm: '60%' }, flexShrink: 1 }}>
             <InlineEdit value={tool.name} onSave={(v) => saveToolMeta('name', v)}
-              readOnly={!can(Permission.ToolsEdit)} placeholder={t('placeholder.toolName')} fontSize="0.875rem" fontWeight={700} />
+              readOnly={!can(Permission.ToolsEdit)} placeholder={t('placeholder.toolName')} fontSize="0.875rem" fontWeight={700} maxWidth="100%" />
           </Box>
 
           {/* Disabled chip */}

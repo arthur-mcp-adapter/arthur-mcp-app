@@ -1,4 +1,5 @@
 import type { AuthConfig, DbConnectionConfig, DbQuery, GeneratedTool, McpPrompt, McpResource, ToolChain } from '../dynamic-mcp/types';
+import type { OAuthConfig } from '../oauth/oauth-config.type';
 
 export interface McpApiKeyEntry {
   id: string;
@@ -26,6 +27,7 @@ export interface SwaggerProjectRecord {
   chains: ToolChain[];
   oauthClientId?: string | null;
   oauthClientSecret?: string | null;
+  oauthConfig?: OAuthConfig;
   tags: string[];
   rateLimit: { enabled: boolean; requestsPerMinute: number };
   isPaused: boolean;

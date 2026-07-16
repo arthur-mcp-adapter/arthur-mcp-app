@@ -1,0 +1,262 @@
+{
+  "id": "sharetribe-marketplace",
+  "name": "Sharetribe Marketplace API",
+  "tagline": "Marketplace listings, user flows and transactions",
+  "description": "Build the end-user marketplace experience with Sharetribe's Marketplace API. Browse and inspect listings, manage the authenticated user's own listings, publish drafts, and start transactions with bearer access tokens.",
+  "category": "Business",
+  "color": "#0B63F6",
+  "emoji": "🛒",
+  "baseUrl": "https://flex-api.sharetribe.com",
+  "auth": {
+    "type": "bearer",
+    "hint": "Use an access token in the Authorization header. Obtain it through the Sharetribe Authentication API or the Sharetribe SDK; some endpoints accept anonymous tokens, while others require an authenticated user token."
+  },
+  "docsUrl": "https://www.sharetribe.com/api-reference/marketplace.html",
+  "tools": [
+    {
+      "name": "query_listings",
+      "description": "Search marketplace listings by keywords, author, state, or sort order.",
+      "method": "GET",
+      "path": "/v1/api/listings/query",
+      "params": [
+        {
+          "name": "keywords",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Search terms matched against listing title, description, and searchable extended data"
+        },
+        {
+          "name": "authorId",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Filter by the author's listing UUID"
+        },
+        {
+          "name": "states",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Comma-separated listing states such as published or closed"
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Sort fields such as createdAt, price, or -createdAt"
+        }
+      ]
+    },
+    {
+      "name": "show_listing",
+      "description": "Get a listing by its UUID with the fields needed for a listing detail view.",
+      "method": "GET",
+      "path": "/v1/api/listings/show",
+      "params": [
+        {
+          "name": "id",
+          "in": "query",
+          "required": true,
+          "type": "string",
+          "description": "Listing UUID"
+        }
+      ]
+    },
+    {
+      "name": "query_own_listings",
+      "description": "List the authenticated user's own listings, including drafts and published listings.",
+      "method": "GET",
+      "path": "/v1/api/own_listings/query",
+      "params": [
+        {
+          "name": "keywords",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Search terms matched against own listing title, description, and searchable extended data"
+        },
+        {
+          "name": "states",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Comma-separated listing states such as draft, published, or closed"
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Sort fields such as createdAt or -createdAt"
+        }
+      ]
+    },
+    {
+      "name": "create_draft_listing",
+      "description": "Create a new draft listing for the authenticated user.",
+      "method": "POST",
+      "path": "/v1/api/own_listings/create_draft",
+      "params": [
+        {
+          "name": "title",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Listing title"
+        },
+        {
+          "name": "description",
+          "in": "body",
+          "required": false,
+          "type": "string",
+          "description": "Listing description"
+        },
+        {
+          "name": "geolocation",
+          "in": "body",
+          "required": false,
+          "type": "object",
+          "description": "Listing location with latitude and longitude"
+        },
+        {
+          "name": "price",
+          "in": "body",
+          "required": false,
+          "type": "object",
+          "description": "Listing price object with amount and currency"
+        },
+        {
+          "name": "availabilityPlan",
+          "in": "body",
+          "required": false,
+          "type": "object",
+          "description": "Availability plan for day-based or time-based booking"
+        },
+        {
+          "name": "publicData",
+          "in": "body",
+          "required": false,
+          "type": "object",
+          "description": "Public extended data for the listing"
+        },
+        {
+          "name": "images",
+          "in": "body",
+          "required": false,
+          "type": "array",
+          "description": "Array of image UUIDs to attach to the listing"
+        }
+      ]
+    },
+    {
+      "name": "update_listing",
+      "description": "Update an existing own listing without changing its state.",
+      "method": "POST",
+      "path": "/v1/api/own_listings/update",
+      "params": [
+        {
+          "name": "id",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Listing UUID"
+        },
+        {
+          "name": "title",
+          "in": "body",
+          "required": false,
+          "type": "string",
+          "description": "Listing title"
+        },
+        {
+          "name": "description",
+          "in": "body",
+          "required": false,
+          "type": "string",
+          "description": "Listing description"
+        },
+        {
+          "name": "geolocation",
+          "in": "body",
+          "required": false,
+          "type": "object",
+          "description": "Listing location with latitude and longitude"
+        },
+        {
+          "name": "price",
+          "in": "body",
+          "required": false,
+          "type": "object",
+          "description": "Listing price object with amount and currency"
+        },
+        {
+          "name": "availabilityPlan",
+          "in": "body",
+          "required": false,
+          "type": "object",
+          "description": "Full availability plan for the listing"
+        },
+        {
+          "name": "publicData",
+          "in": "body",
+          "required": false,
+          "type": "object",
+          "description": "Public extended data for the listing"
+        },
+        {
+          "name": "images",
+          "in": "body",
+          "required": false,
+          "type": "array",
+          "description": "Array of image UUIDs to set on the listing"
+        }
+      ]
+    },
+    {
+      "name": "publish_draft_listing",
+      "description": "Publish a draft listing so it becomes discoverable in the marketplace.",
+      "method": "POST",
+      "path": "/v1/api/own_listings/publish_draft",
+      "params": [
+        {
+          "name": "id",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Draft listing UUID"
+        }
+      ]
+    },
+    {
+      "name": "initiate_transaction",
+      "description": "Start a marketplace transaction for a listing.",
+      "method": "POST",
+      "path": "/v1/api/transactions/initiate",
+      "params": [
+        {
+          "name": "processAlias",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Transaction process alias, for example default-booking/release-1"
+        },
+        {
+          "name": "transition",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Initial transition name for the transaction process"
+        },
+        {
+          "name": "params",
+          "in": "body",
+          "required": true,
+          "type": "object",
+          "description": "Process parameters such as listingId, bookingStart, bookingEnd, seats, and cardToken"
+        }
+      ]
+    }
+  ]
+}

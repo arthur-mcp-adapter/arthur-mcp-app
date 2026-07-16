@@ -93,7 +93,7 @@ export default function Prompts() {
         <TextField
           size="small" placeholder={t('placeholder.searchPrompts')} value={state.search}
           onChange={(e) => handlers.setSearch(e.target.value)}
-          sx={{ width: 280 }}
+          sx={{ width: { xs: '100%', sm: 280 } }}
           InputProps={{
             startAdornment: <InputAdornment position="start"><IconSearch size={16} /></InputAdornment>,
           }}

@@ -93,9 +93,9 @@ function EndpointRow({ endpoint }: EndpointRowProps) {
       alignItems="center"
       sx={{ py: 1, borderBottom: '1px solid', borderColor: 'divider', '&:last-child': { borderBottom: 0 } }}
     >
-      <Box>
+      <Box minWidth={0}>
         <Typography fontWeight={600} fontSize="0.82rem">{t(endpoint.labelKey)}</Typography>
-        <Typography fontFamily="monospace" fontSize="0.75rem" color="text.secondary">{endpoint.path}</Typography>
+        <Typography fontFamily="monospace" fontSize="0.75rem" color="text.secondary" sx={{ overflowWrap: 'anywhere' }}>{endpoint.path}</Typography>
       </Box>
       <StatusChip status={endpoint.status} />
       <Typography fontSize="0.75rem" color="text.secondary" textAlign={{ sm: 'right' }}>
@@ -292,15 +292,21 @@ export function TechnicalObservabilityPanel() {
                   <Box
                     key={control.name}
                     display="grid"
-                    gridTemplateColumns={{ xs: '1fr auto', sm: 'minmax(180px, 1fr) auto' }}
+                    gridTemplateColumns={{ xs: '1fr', sm: 'minmax(180px, 1fr) minmax(0, 1.4fr)' }}
                     alignItems="center"
-                    gap={1}
+                    gap={{ xs: 0.25, sm: 1 }}
                     py={0.85}
                   >
                     <Typography fontFamily="monospace" fontSize="0.76rem" fontWeight={700}>
                       {control.name}
                     </Typography>
-                    <Typography fontFamily="monospace" fontSize="0.75rem" color="text.secondary" textAlign="right">
+                    <Typography
+                      fontFamily="monospace"
+                      fontSize="0.75rem"
+                      color="text.secondary"
+                      textAlign={{ xs: 'left', sm: 'right' }}
+                      sx={{ overflowWrap: 'anywhere', minWidth: 0 }}
+                    >
                       {formatEnvironmentValue(environmentValues[control.name] ?? '')}
                     </Typography>
                   </Box>

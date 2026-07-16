@@ -102,7 +102,7 @@ export function ProjectControlsPanel({ projectId, initialPaused, initialMaintena
     <Paper variant="outlined" sx={{ p: 2.5, mb: 2 }}>
       {/* Pause */}
       <Box display="flex" alignItems="center" gap={1.5} mb={2}>
-        {paused ? <IconPlayerPause size={20} style={{ color: '#FFAE1F' }} /> : <IconPlayerPlay size={20} style={{ color: '#13DEB9' }} />}
+        {paused ? <IconPlayerPause size={20} className="project-controls-panel-status-icon-paused" /> : <IconPlayerPlay size={20} className="project-controls-panel-status-icon-running" />}
         <Box flexGrow={1}>
           <Typography variant="subtitle2" fontWeight={700}>
             {paused ? t('label.serverPaused') : t('label.servicesRunning')}

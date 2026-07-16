@@ -13,6 +13,7 @@ import type { ToolCommentsSectionProps } from './toolCommentsSectionProps.interf
 
 export function ToolCommentsSection({ projectId, toolName, initialComments }: ToolCommentsSectionProps) {
   const { can } = useAuth()
+  const { t } = useTranslation('serverDetail')
   const [comments, setComments] = useState<ToolComment[]>(initialComments)
   const [text, setText] = useState('')
   const [saving, setSaving] = useState(false)
@@ -41,15 +42,15 @@ export function ToolCommentsSection({ projectId, toolName, initialComments }: To
       <Box display="flex" alignItems="center" gap={0.5} sx={{ cursor: 'pointer' }} onClick={() => setOpen((v) => !v)}>
         <IconMessage size={15} />
         <Typography variant="caption" color="text.secondary" fontWeight={600}>
-          Notes ({comments.length})
+          {t('notes', { count: comments.length })}
         </Typography>
-        <IconChevronDown size={14} style={{ color: 'var(--mui-palette-text-disabled, #bdbdbd)', transform: open ? 'rotate(180deg)' : 'none', transition: '0.2s' }} />
+        <IconChevronDown size={14} className={open ? 'tool-comments-section-chevron tool-comments-section-chevron-open' : 'tool-comments-section-chevron'} />
       </Box>
 
       {open && (
         <Box mt={1.5} display="flex" flexDirection="column" gap={1}>
           {comments.length === 0 && (
-            <Typography variant="caption" color="text.disabled">No notes yet.</Typography>
+            <Typography variant="caption" color="text.disabled">{t('noNotes')}</Typography>
           )}
           {comments.map((c) => (
             <Box key={c.id} sx={{ display: 'flex', gap: 1, alignItems: 'flex-start', bgcolor: 'background.paper', border: '1px solid', borderColor: 'divider', borderRadius: 1, px: 1.5, py: 1 }}>
@@ -60,7 +61,7 @@ export function ToolCommentsSection({ projectId, toolName, initialComments }: To
                 </Typography>
               </Box>
               {can(Permission.ToolsEdit) && (
-                <Tooltip title="Delete note">
+                <Tooltip title={t('common:action.delete')}>
                   <IconButton size="small" color="error" onClick={() => handleDelete(c.id)}>
                     <IconTrash size={14} />
                   </IconButton>
@@ -70,12 +71,12 @@ export function ToolCommentsSection({ projectId, toolName, initialComments }: To
           ))}
           {can(Permission.ToolsEdit) && (
             <Box display="flex" gap={1} mt={0.5}>
-              <TextField size="small" fullWidth placeholder="Add a note…" value={text}
+              <TextField size="small" fullWidth placeholder={t('placeholder.addNote')} value={text}
                 onChange={(e) => setText(e.target.value)}
                 onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleAdd() } }} />
               <Button size="small" variant="contained" onClick={handleAdd} disabled={!text.trim() || saving}
                 startIcon={saving ? <CircularProgress size={12} color="inherit" /> : undefined}>
-                Add
+                {t('common:action.add')}
               </Button>
             </Box>
           )}

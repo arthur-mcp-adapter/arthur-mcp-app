@@ -77,13 +77,13 @@ export default function AiProviders() {
         </Alert>
       )}
 
-      <Box display="flex" alignItems="center" gap={1.5} mb={3}>
+      <Box display="flex" alignItems="center" gap={1.5} mb={3} flexWrap="wrap">
         <TextField
           size="small"
           placeholder={t('placeholder.searchProviders')}
           value={state.search}
           onChange={(e) => handlers.setSearch(e.target.value)}
-          sx={{ width: 280 }}
+          sx={{ width: { xs: '100%', sm: 280 } }}
           InputProps={{
             startAdornment: <InputAdornment position="start"><IconSearch size={16} /></InputAdornment>,
           }}

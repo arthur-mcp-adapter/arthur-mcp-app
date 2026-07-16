@@ -32,6 +32,9 @@ export class TypeOrmSwaggerProjectRepository implements ISwaggerProjectRepositor
       chains: e.chains ? JSON.parse(e.chains) : [],
       oauthClientId: e.oauthClientId,
       oauthClientSecret: e.oauthClientSecret,
+      oauthConfig: e.oauthConfig
+        ? JSON.parse(e.oauthConfig)
+        : (e.oauthClientId ? { mode: 'managed' } : { mode: 'none' }),
       tags: e.tags ? JSON.parse(e.tags) : [],
       rateLimit: e.rateLimit ? JSON.parse(e.rateLimit) : { enabled: false, requestsPerMinute: 60 },
       isPaused: e.isPaused ?? false,
@@ -73,6 +76,7 @@ export class TypeOrmSwaggerProjectRepository implements ISwaggerProjectRepositor
     if (data.chains !== undefined) e.chains = JSON.stringify(data.chains);
     if ('oauthClientId' in data) (e as any).oauthClientId = data.oauthClientId;
     if ('oauthClientSecret' in data) (e as any).oauthClientSecret = data.oauthClientSecret;
+    if (data.oauthConfig !== undefined) e.oauthConfig = JSON.stringify(data.oauthConfig);
     if (data.tags !== undefined) e.tags = JSON.stringify(data.tags);
     if (data.rateLimit !== undefined) e.rateLimit = JSON.stringify(data.rateLimit);
     if (data.isPaused !== undefined) e.isPaused = data.isPaused;

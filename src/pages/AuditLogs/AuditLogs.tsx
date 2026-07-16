@@ -71,7 +71,7 @@ export default function AuditLogs() {
 
   return (
     <Box>
-      <Box display="flex" alignItems="center" justifyContent="space-between" mb={2.5}>
+      <Box display="flex" alignItems="center" justifyContent="space-between" flexWrap="wrap" gap={1.5} mb={2.5}>
         <Box display="flex" alignItems="center" gap={1}>
           <Typography variant="h5" fontWeight={700} letterSpacing="-0.2px">{t('title')}</Typography>
           <HelpButton title={t('help.title')}>
@@ -91,6 +91,14 @@ export default function AuditLogs() {
             <Typography variant="body2">
               {t('help.retention')}
             </Typography>
+            <Typography variant="body2" gutterBottom sx={{ mt: 1 }}><strong>{t('help.successTitle')}</strong></Typography>
+            <Typography variant="body2" gutterBottom>{t('help.successBody')}</Typography>
+            <Typography variant="body2" gutterBottom><strong>{t('help.troubleshootingTitle')}</strong></Typography>
+            <Box component="ul" sx={{ mt: 0, mb: 0, pl: 2.5 }}>
+              <Box component="li"><Typography variant="body2">{t('help.troubleshootingMissing')}</Typography></Box>
+              <Box component="li"><Typography variant="body2">{t('help.troubleshootingAccess')}</Typography></Box>
+              <Box component="li"><Typography variant="body2">{t('help.troubleshootingIp')}</Typography></Box>
+            </Box>
           </HelpButton>
         </Box>
         <Box display="flex" alignItems="center" gap={1}>
@@ -105,20 +113,22 @@ export default function AuditLogs() {
 
       {loading ? (
         <Paper variant="outlined" sx={{ overflow: 'hidden', mb: 2 }}>
-          <Table size="small">
-            <TableBody>
-              {Array.from({ length: 10 }).map((_, i) => (
-                <TableRow key={i}>
-                  <TableCell><Skeleton width={120} /></TableCell>
-                  <TableCell><Skeleton width={80} /></TableCell>
-                  <TableCell><Skeleton width={70} /></TableCell>
-                  <TableCell><Skeleton width={60} /></TableCell>
-                  <TableCell><Skeleton width={100} /></TableCell>
-                  <TableCell><Skeleton width={90} /></TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          <Box sx={{ overflowX: 'auto' }}>
+            <Table size="small">
+              <TableBody>
+                {Array.from({ length: 10 }).map((_, i) => (
+                  <TableRow key={i}>
+                    <TableCell><Skeleton width={120} /></TableCell>
+                    <TableCell sx={{ display: { xs: 'none', md: 'table-cell' } }}><Skeleton width={80} /></TableCell>
+                    <TableCell><Skeleton width={70} /></TableCell>
+                    <TableCell sx={{ display: { xs: 'none', md: 'table-cell' } }}><Skeleton width={60} /></TableCell>
+                    <TableCell><Skeleton width={100} /></TableCell>
+                    <TableCell><Skeleton width={90} /></TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </Box>
         </Paper>
       ) : error === 'forbidden' || !can(Permission.AuditView) ? (
         <Box display="flex" flexDirection="column" alignItems="center" gap={2} py={12}>
@@ -133,6 +143,7 @@ export default function AuditLogs() {
       ) : (
         <>
           <Paper variant="outlined" sx={{ overflow: 'hidden', mb: 2 }}>
+            <Box sx={{ overflowX: 'auto' }}>
             <Table size="small">
               <TableHead>
                 <TableRow>
@@ -161,6 +172,7 @@ export default function AuditLogs() {
                           </Box>
                         ))}
                       </Box>
+                      <Typography variant="body2">{t('help.actionDetail')}</Typography>
                     </>],
                     [t('columns.entity'), <>
                       <Typography variant="body2" gutterBottom>{t('help.entityHelp')}</Typography>
@@ -170,8 +182,11 @@ export default function AuditLogs() {
                       <Typography variant="body2" gutterBottom>{t('help.itemHelp')}</Typography>
                       <Typography variant="body2">{t('help.itemDetail')}</Typography>
                     </>],
-                  ] as [string, React.ReactNode][]).map(([h, content]) => (
-                    <TableCell key={h}>
+                  ] as [string, React.ReactNode][]).map(([h, content], idx) => (
+                    <TableCell
+                      key={h}
+                      sx={(idx === 1 || idx === 3) ? { display: { xs: 'none', md: 'table-cell' } } : undefined}
+                    >
                       <Box display="flex" alignItems="center" gap={0.5}>
                         {h}
                         <HelpButton title={h}>{content}</HelpButton>
@@ -201,7 +216,7 @@ export default function AuditLogs() {
                         {new Date(log.createdAt).toLocaleString()}
                       </Typography>
                     </TableCell>
-                    <TableCell>
+                    <TableCell sx={{ display: { xs: 'none', md: 'table-cell' } }}>
                       <Typography fontSize="0.875rem" fontWeight={500}>{log.username}</Typography>
                     </TableCell>
                     <TableCell>
@@ -212,7 +227,7 @@ export default function AuditLogs() {
                         sx={{ fontSize: '0.72rem', height: 22 }}
                       />
                     </TableCell>
-                    <TableCell>
+                    <TableCell sx={{ display: { xs: 'none', md: 'table-cell' } }}>
                       <Typography fontSize="0.82rem">
                         {t(`entities.${log.entity}`, { defaultValue: log.entity })}
                       </Typography>
@@ -231,6 +246,7 @@ export default function AuditLogs() {
                 ))}
               </TableBody>
             </Table>
+            </Box>
           </Paper>
 
           {logs.length === 0 && (

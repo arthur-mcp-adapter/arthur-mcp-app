@@ -97,7 +97,7 @@ export function ReimportSpecDialog({ projectId, open, onClose, onSuccess }: Reim
             onChange={(e) => { const f = e.target.files?.[0]; if (f) acceptFile(f); e.target.value = '' }} />
           {file ? (
             <Box display="flex" flexDirection="column" alignItems="center" gap={0.5}>
-              <IconFile size={36} style={{ color: '#13DEB9' }} />
+              <IconFile size={36} className="reimport-spec-dialog-file-icon" />
               <Typography fontWeight={700} color="success.main">{file.name}</Typography>
               <Button size="small" startIcon={<IconX size={18} />}
                 onClick={(e) => { e.stopPropagation(); setFile(null) }}>
@@ -106,7 +106,7 @@ export function ReimportSpecDialog({ projectId, open, onClose, onSuccess }: Reim
             </Box>
           ) : (
             <Box display="flex" flexDirection="column" alignItems="center" gap={0.5}>
-              <IconCloudUpload size={36} style={{ opacity: 0.5 }} />
+              <IconCloudUpload size={36} className="reimport-spec-dialog-upload-icon" />
               <Typography variant="body2" fontWeight={500}>{t('placeholder.dragOrBrowse')}</Typography>
               <Typography variant="caption" color="text.disabled">{t('label.specFormat')}</Typography>
             </Box>

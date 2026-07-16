@@ -221,12 +221,23 @@ export default function ErrorTracking() {
           <Typography variant="body2" gutterBottom>
             {t('help.summary')}
           </Typography>
-          <Typography variant="body2" gutterBottom>
-            {t('help.findDsnPath')}
-          </Typography>
-          <Typography variant="body2">
-            {t('help.revealHint')}
-          </Typography>
+          <Typography variant="body2" gutterBottom><strong>{t('help.setupTitle')}</strong></Typography>
+          <Box component="ol" sx={{ mt: 0, mb: 1.5, pl: 2.5 }}>
+            <Box component="li"><Typography variant="body2">{t('help.findDsnPath')}</Typography></Box>
+            <Box component="li"><Typography variant="body2">{t('help.enterFields')}</Typography></Box>
+            <Box component="li"><Typography variant="body2">{t('help.activateAndSave')}</Typography></Box>
+          </Box>
+          <Typography variant="body2" gutterBottom><strong>{t('help.fieldEffectsTitle')}</strong></Typography>
+          <Box component="ul" sx={{ mt: 0, mb: 1.5, pl: 2.5 }}>
+            <Box component="li"><Typography variant="body2">{t('help.dsnEffect')}</Typography></Box>
+            <Box component="li"><Typography variant="body2">{t('help.environmentEffect')}</Typography></Box>
+            <Box component="li"><Typography variant="body2">{t('help.projectEffect')}</Typography></Box>
+            <Box component="li"><Typography variant="body2">{t('help.activeEffect')}</Typography></Box>
+          </Box>
+          <Typography variant="body2" gutterBottom><strong>{t('help.verifyTitle')}</strong></Typography>
+          <Typography variant="body2" gutterBottom>{t('help.verify')}</Typography>
+          <Typography variant="body2" gutterBottom><strong>{t('help.securityTitle')}</strong></Typography>
+          <Typography variant="body2">{t('help.revealHint')}</Typography>
         </HelpButton>
       </Box>
       <Typography variant="body2" color="text.secondary" mb={3}>{t('heading.subtitle')}</Typography>
@@ -275,7 +286,7 @@ export default function ErrorTracking() {
         {lastTestResult && (
           <Box
             sx={{
-              display: 'flex', alignItems: 'center', gap: 1,
+              display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 1,
               p: 1.5, mb: 2.5, borderRadius: 1,
               border: '1px solid', borderColor: 'divider',
               bgcolor: 'action.hover',
@@ -388,7 +399,7 @@ export default function ErrorTracking() {
 
       {/* Action row — outside Paper, same as Settings page */}
       {canEdit && (
-        <Box display="flex" justifyContent="flex-end" gap={1} mt={1} mb={3}>
+        <Box display="flex" flexWrap="wrap" justifyContent="flex-end" gap={1} mt={1} mb={3}>
           {isConnected && (
             <Button
               variant="outlined" size="small" color="inherit"
@@ -466,7 +477,13 @@ export default function ErrorTracking() {
           <Typography variant="subtitle1" fontWeight={700} color="error.main" gutterBottom>
             {t('label.dangerZone')}
           </Typography>
-          <Box display="flex" alignItems="center" justifyContent="space-between" gap={2}>
+          <Box
+            display="flex"
+            flexDirection={{ xs: 'column', sm: 'row' }}
+            alignItems={{ xs: 'stretch', sm: 'center' }}
+            justifyContent="space-between"
+            gap={2}
+          >
             <Box>
               <Typography variant="body2" fontWeight={600}>{t('action.disconnectSentry')}</Typography>
               <Typography variant="body2" color="text.secondary">{t('hint.deleteWarning')}</Typography>

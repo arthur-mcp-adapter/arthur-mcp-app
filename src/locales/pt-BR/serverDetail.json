@@ -117,7 +117,7 @@
     "newCopyNow": "novo — copie agora",
     "noBaseUrl": "Nenhuma URL base definida",
     "publicEndpoint": "Configure esta URL no Claude Desktop, Cursor ou qualquer cliente MCP compatível.",
-    "authEndpoint": "Configure esta URL no seu cliente MCP e inclua o cabeçalho",
+    "authEndpoint": "Configure esta URL no seu cliente MCP e autentique usando uma das opções:",
     "noKeys": "Sem chaves — qualquer cliente MCP pode conectar sem autenticação.",
     "scanQr": "Escaneie para abrir em um dispositivo móvel",
     "shareValidityPermanent": "Este link permanece válido até que o slug de compartilhamento seja alterado. Ele fornece informações de configuração somente leitura — sem acesso a dados ou credenciais.",
@@ -126,9 +126,24 @@
     "shareValidity": "Este link é válido por 30 dias. Contém apenas informações de configuração — sem acesso a dados ou credenciais.",
     "createdAt": "Criado em {{date}}",
     "useInHeader": "Use no cabeçalho:",
-    "noOAuthClient": "Nenhum cliente OAuth configurado — o ChatGPT não pode conectar via OAuth.",
+    "useInQuery": "ou na query string:",
+    "noOAuthClient": "OAuth desativado. O endpoint MCP ainda pode usar Access Keys ou permanecer público.",
     "clientCredentials": "Credenciais do cliente",
-    "pasteUrls": "Cole estas URLs no ChatGPT",
+    "pasteUrls": "URLs do OAuth",
+    "oauthDiscoveryUrl": "URL de descoberta OAuth",
+    "oauthProtectedResourceUrl": "URL dos metadados do recurso MCP protegido",
+    "oauthAuthorizationMetadataUrl": "URL dos metadados do servidor de autorização",
+    "oauthProviderMode": "Provedor OAuth",
+    "oauthModeExternal": "OAuth/OIDC externo (recomendado)",
+    "oauthModeManaged": "OAuth gerenciado pelo Arthur",
+    "oauthModeNone": "Desativado",
+    "oauthIssuerUrl": "URL do issuer",
+    "oauthJwksUrl": "URL do JWKS",
+    "oauthIntrospectionUrl": "URL de introspecção",
+    "oauthIntrospectionClientId": "Client ID de introspecção",
+    "oauthIntrospectionClientSecret": "Client Secret de introspecção",
+    "oauthAudience": "Audience / Resource",
+    "oauthScopes": "Scopes obrigatórios",
     "authUrl": "URL de autenticação",
     "tokenUrl": "URL de token",
     "clientId": "ID do cliente",
@@ -147,6 +162,9 @@
     "thisPromptNoVariables": "Este prompt não tem variáveis.",
     "noNotes": "Nenhuma nota ainda.",
     "notes": "Notas ({{count}})",
+    "placeholder": {
+      "addNote": "Adicione uma nota…"
+    },
     "disabled": "Desativado",
     "htmlChip": "HTML",
     "dynamic": "Dinâmico",
@@ -306,8 +324,45 @@
     "tenantParamInject": "Injete valores de query string em chamadas de ferramentas que os aceitem.",
     "chainDesc": "Composições sequenciais de ferramentas que aparecem como uma única ferramenta MCP. A saída de cada etapa está disponível para a próxima.",
     "accessKeyHint": "Chaves nomeadas que controlam quem pode conectar ao endpoint de IA deste servidor.",
+    "accessKeyTransports": "Os clientes podem enviar a chave no cabeçalho auth ou no parâmetro de query auth; requisições sem uma chave válida são rejeitadas.",
+    "oneKeyPerClient": "Crie uma chave por cliente (por exemplo, Claude Desktop ou Cursor) para revogar cada acesso de forma independente.",
+    "queryAccessKeyWarning": "Prefira o cabeçalho quando possível. Chaves na query string podem aparecer no histórico do navegador e em logs de infraestrutura.",
     "publicAccess": "Sem nenhuma chave, o endpoint é publicamente acessível a qualquer pessoa que conheça a URL.",
     "oauthHint": "Permite que o ChatGPT (e outros clientes OAuth 2.0) se conectem ao endpoint MCP deste servidor.",
+    "oauthClientPurpose": "Protege este endpoint MCP com OAuth 2.0 para que clientes de IA compatíveis se autentiquem antes de chamar ferramentas.",
+    "oauthHelpIntro": "Use esta seção para controlar como o ChatGPT, Claude e outros clientes MCP se autenticam antes de usar as ferramentas deste servidor. Ela protege o acesso de entrada ao MCP; não configura as credenciais usadas pelo Arthur para chamar a API de origem.",
+    "oauthHelpChooseTitle": "1. Escolha o modo correto",
+    "oauthHelpChooseExternal": "OAuth/OIDC externo: recomendado quando o cliente possui site, usuários, login, consentimento ou MFA próprios. A página de login pertence ao provedor de identidade dele.",
+    "oauthHelpChooseManaged": "OAuth gerenciado pelo Arthur: use em ambientes internos ou testes. O Arthur exibe a página de login e emite o access token.",
+    "oauthHelpChooseDisabled": "Desativado: use quando este endpoint MCP depender apenas de Access Keys ou permanecer público.",
+    "oauthHelpExternalTitle": "2. Configure o OAuth/OIDC externo",
+    "oauthHelpExternalStep1": "No servidor de autorização do cliente, registre o cliente MCP e permita Authorization Code com PKCE. Adicione as URLs de callback exigidas pelo cliente de IA utilizado.",
+    "oauthHelpExternalStep2": "Informe a URL exata do Issuer e as URLs de autorização e token do provedor. Essas páginas e endpoints devem pertencer ao cliente.",
+    "oauthHelpExternalStep3": "Para access tokens JWT, informe a URL do JWKS. Para tokens opacos, informe a URL de introspecção e seu Client ID e Client Secret confidenciais. Configure pelo menos um método de validação.",
+    "oauthHelpExternalStep4": "Configure o Audience/Resource do provedor para este recurso MCP e informe o mesmo valor aqui: {{resource}}. Tokens emitidos para outra API serão rejeitados.",
+    "oauthHelpExternalStep5": "Informe todos os scopes necessários para usar este servidor MCP, separados por espaços ou vírgulas. Um token sem qualquer scope listado será rejeitado.",
+    "oauthHelpExternalStep6": "Salve a configuração. No cliente de IA, configure o servidor usando a URL de conexão exibida acima; clientes compatíveis descobrem o provedor OAuth automaticamente.",
+    "oauthHelpDiscovery": "A descoberta OAuth começa em {{url}}. Abra esta URL para verificar o recurso, o servidor de autorização e os scopes publicados para os clientes MCP.",
+    "oauthHelpManagedTitle": "3. Configure o OAuth gerenciado pelo Arthur",
+    "oauthHelpManagedStep1": "Selecione OAuth gerenciado pelo Arthur, gere ou informe um Client ID e Client Secret e salve.",
+    "oauthHelpManagedStep2": "Copie o Client ID, o Client Secret e as URLs OAuth exibidas para as configurações do conector de IA quando ele não fizer a descoberta automaticamente.",
+    "oauthHelpManagedStep3": "Ao conectar, o usuário verá a página de login do Arthur e entrará com uma conta do Arthur MCP.",
+    "oauthHelpFlowTitle": "O que acontece quando a IA conecta",
+    "oauthHelpFlow": "O cliente MCP acessa a URL de conexão, recebe o desafio de autorização, abre a página de login configurada, obtém um token e o envia como Authorization: Bearer em todas as requisições MCP. O modelo apenas escolhe as ferramentas; o cliente MCP cuida da autenticação.",
+    "oauthHelpTestTitle": "Como verificar a configuração",
+    "oauthHelpTestStep1": "Abra a URL dos metadados do recurso protegido e confirme que ela retorna um JSON com o recurso, servidor de autorização e scopes esperados.",
+    "oauthHelpTestStep2": "Conecte por um cliente MCP compatível e conclua o login no site esperado. O modo externo nunca deve exibir um formulário de senha do Arthur.",
+    "oauthHelpTestStep3": "Chame uma ferramenta após o login. A requisição deve funcionar com um token válido e retornar 401 sem credenciais ou com audience/scope incorreto.",
+    "oauthClientSetup": "Gere um ID e um segredo do cliente e configure as URLs de descoberta, autorização e token exibidas neste painel.",
+    "oauthClientLogin": "No fluxo authorization code, o usuário deverá entrar com sua conta do Arthur MCP.",
+    "oauthExternalPurpose": "O OAuth externo redireciona o usuário para as páginas de login e consentimento do próprio cliente; o Arthur valida os tokens emitidos por esse provedor.",
+    "oauthModelSafety": "O modelo de IA nunca recebe senhas, códigos de autorização, segredos do cliente ou tokens; o cliente MCP cuida desses dados.",
+    "oauthExternalLoginPage": "O usuário entrará no site do provedor externo. O Arthur nunca coletará sua senha.",
+    "oauthManagedLoginPage": "O Arthur exibe sua própria página de login e emite o token. Use este modo para ambientes internos ou testes.",
+    "oauthJwks": "Recomendado para access tokens JWT. Configure JWKS ou introspecção.",
+    "oauthIntrospection": "Use para tokens opacos. Exige credenciais confidenciais de introspecção.",
+    "oauthAudience": "Deve identificar este recurso MCP. Tokens emitidos para outra API serão rejeitados.",
+    "oauthScopes": "Scopes separados por espaço ou vírgula que todo token de acesso MCP deve conter.",
     "shareDesc": "Envie este link para qualquer pessoa que precise conectar seu cliente de IA a este servidor. A página inclui instruções passo a passo para Claude Desktop, Cursor e um QR code para dispositivos móveis.",
     "toolsDesc": "Cada ferramenta é uma ação específica que sua IA pode executar.",
     "resourcesDesc": "Conteúdo exposto à IA via protocolo MCP (estático ou dinâmico da API)",
@@ -444,6 +499,7 @@
     "creating": "Criando…",
     "copyUrl": "Copiar URL",
     "copyLink": "Copiar link",
+    "openLink": "Abrir link",
     "saveSlug": "Salvar slug",
     "downloadQr": "Baixar QR code",
     "editBaseUrl": "Editar URL base",
@@ -591,13 +647,53 @@
     "expand": "Expandir linha",
     "retention": "Logs são mantidos por 7 dias em memória e não persistem entre reinicializações."
   },
+  "baseUrl": {
+    "title": "URL base da API",
+    "fieldLabel": "URL base da API externa",
+    "helperText": "URL raiz usada em cada chamada à API de origem.",
+    "empty": "Nenhuma URL base configurada",
+    "edit": "Editar URL base",
+    "errorRequired": "A URL não pode ficar vazia.",
+    "errorInvalid": "Informe uma URL válida com http:// ou https://.",
+    "errorSave": "O Arthur não conseguiu salvar a URL. Tente novamente."
+  },
   "help": {
+    "mcpEndpoint": {
+      "intro": "Este é o endereço que um cliente de IA compatível com MCP usa para descobrir e chamar as Ferramentas, os Recursos e os Prompts habilitados deste servidor.",
+      "stepsTitle": "Conecte um cliente de IA:",
+      "copy": "Copie o endpoint exatamente como exibido.",
+      "configure": "Adicione um servidor MCP remoto no cliente de IA e cole o endpoint como URL do servidor.",
+      "authenticate": "Se Chaves de Acesso ou OAuth estiverem ativos, configure a credencial correspondente no cliente de IA; caso contrário, o endpoint é público.",
+      "result": "Após uma conexão bem-sucedida, o cliente de IA lista as capacidades MCP habilitadas e pode chamá-las durante uma conversa.",
+      "troubleshoot": "Se a descoberta falhar, confira o slug da documentação pública, confirme que o cliente alcança este host do Arthur e valide se a Chave de Acesso ou a configuração OAuth está atualizada."
+    },
+    "accessKeys": {
+      "intro": "Chaves de Acesso controlam quais clientes de IA podem se conectar a este endpoint MCP. Use-as quando o cliente aceitar uma credencial estática e você não precisar de login por usuário.",
+      "stepsTitle": "Crie e use uma chave:",
+      "create": "Selecione Adicionar chave e dê um nome que identifique o cliente ou ambiente.",
+      "copy": "Copie a nova chave imediatamente e armazene-a nas configurações de segredo ou credencial do cliente de IA.",
+      "connect": "Envie-a no header auth quando possível ou como ?auth=<chave> quando o cliente não permitir headers personalizados.",
+      "result": "Uma chave válida autoriza o cliente a usar o endpoint MCP; uma chave inválida ou revogada é rejeitada.",
+      "manage": "Crie uma chave por cliente para revogar uma conexão sem interromper as demais. Sem nenhuma chave, as Chaves de Acesso não protegem o endpoint.",
+      "caution": "Trate as chaves como senhas. Chaves na query podem aparecer no histórico do navegador e em logs de infraestrutura; prefira o header e revogue qualquer chave exposta."
+    },
+    "baseUrl": {
+      "intro": "É o endereço raiz da API de origem que o Arthur chama neste servidor. O Arthur combina essa URL com o caminho de cada Ferramenta para montar a requisição final.",
+      "whenTitle": "Atualize quando:",
+      "environment": "Mover as mesmas Ferramentas entre ambientes, como homologação e produção.",
+      "domain": "A API de origem mudar de domínio ou subdomínio.",
+      "version": "Testar as mesmas Ferramentas em outra versão da API hospedada em uma URL raiz diferente.",
+      "steps": "Informe protocolo e host, além de um prefixo de caminho compartilhado, se houver. Mantenha caminhos específicos, parâmetros de rota e queries em cada Ferramenta. Salve e execute uma Ferramenta para validar a URL completa.",
+      "result": "A URL salva passa a ser usada nas próximas chamadas à origem de todas as Ferramentas deste servidor.",
+      "troubleshoot": "Se as chamadas retornarem 404, procure um trecho de caminho ausente ou duplicado. Em falhas de conexão, confira DNS, protocolo, porta e se o host do Arthur alcança a API de origem."
+    },
     "tools": {
       "intro": "Cada ferramenta mapeia um endpoint de API para uma ação específica que sua IA pode realizar — por exemplo 'pesquisar um contato', 'criar um ticket' ou 'obter detalhes de um pedido'. A IA lê o nome e a descrição de cada ferramenta antes de decidir qual chamar. Um servidor sem ferramentas significa que a IA não tem nada a fazer — crie ferramentas antes de conectar um cliente de IA.",
       "naming": "Os nomes das ferramentas são o principal sinal que a IA usa para entender o que cada ação faz. Use nomes curtos e específicos que descrevam tanto a ação quanto o seu objeto: obter_cliente_por_id, criar_fatura, listar_pedidos_abertos. Evite nomes genéricos como fazer_acao ou chamar_api — a IA não consegue distinguir ferramentas com confiança quando os nomes são vagos ou se sobrepõem.",
       "betterDesc": "Escreva descrições como se estivesse explicando a função para um desenvolvedor júnior. Em vez de 'Buscar usuário', escreva 'Busca uma conta de usuário pelo ID numérico — retorna nome, e-mail, papel, status e data do último acesso.' Mencione quais dados são retornados, o que acontece em caso de falha e limites importantes como 'máximo de 100 resultados por página'. A IA usa as descrições para decidir tanto se deve chamar uma ferramenta quanto como preencher os parâmetros corretamente.",
       "parameters": "Cada ferramenta possui parâmetros de entrada que a IA preenche automaticamente com base no contexto. Dê a cada parâmetro um nome e uma descrição claros. 'user_id (inteiro): o ID numérico do usuário a ser buscado' é muito melhor do que apenas 'id'. Se um parâmetro aceita apenas um conjunto fixo de valores — como um campo de status — liste todos os valores aceitos na descrição para que a IA nunca precise adivinhar.",
       "disable": "Use Desativar para ocultar uma ferramenta da IA sem excluí-la. A ferramenta permanece totalmente configurada, mas fica invisível para todos os clientes de IA. Útil quando um endpoint está temporariamente fora do ar, em manutenção ou é sensível demais para expor à automação. Reative instantaneamente quando estiver pronto — nenhuma reconfiguração necessária.",
+      "result": "O resultado esperado é um catálogo objetivo de Ferramentas no qual o cliente de IA escolhe a operação correta e monta uma entrada válida sem precisar adivinhar.",
       "troubleshoot": "Se a IA chamar a ferramenta errada: verifique se os nomes das ferramentas são únicos e sem ambiguidade no servidor. Se a IA preencher os parâmetros incorretamente: adicione exemplos concretos e a lista completa de valores aceitos na descrição do parâmetro. Se uma ferramenta retornar erros constantemente: abra a aba Log de Atividade para ver a resposta de erro bruta da API upstream e diagnosticar a partir daí."
     },
     "activity": {
@@ -608,12 +704,14 @@
       "responseTime": "Tempo de resposta — quantos milissegundos a API upstream levou para responder. Abaixo de 1.000 ms é saudável. De 1.000 a 3.000 ms fica laranja e indica uma API upstream lenta. Acima de 3.000 ms fica vermelho — considere aumentar o timeout padrão do servidor nas Configurações, ou investigue o que está deixando o serviço upstream lento.",
       "sources": "Coluna de Origem — MCP significa que a chamada partiu de um cliente de IA (Claude, ChatGPT, um agente personalizado, etc.) via protocolo MCP. Direto significa que a chamada foi feita via API REST, geralmente pelo seu próprio código, um script de CI ou um teste manual com curl.",
       "whenErrors": "Diagnosticando linhas vermelhas: observe o código de status HTTP na mensagem de erro. 401 ou 403 significa que a autenticação está errada ou uma chave expirou. 404 significa que o caminho do endpoint não existe na API upstream — verifique o caminho da ferramenta e a URL base do servidor. 5xx significa que o próprio serviço upstream está com problemas. Um timeout sem código de status significa que o Arthur desistiu de esperar — aumente o timeout nas Configurações.",
+      "result": "Use este histórico depois de conectar um cliente ou alterar uma configuração: um teste bem-sucedido deve criar uma linha verde para a Ferramenta esperada, com tempo de resposta adequado.",
       "retention": "Os logs são mantidos por 7 dias e não podem ser exportados pela interface. Para retenção mais longa ou acesso estruturado aos logs, configure sua infraestrutura para encaminhar os logs do servidor para uma plataforma de observabilidade externa como Datadog, Grafana Loki ou CloudWatch."
     },
     "aiView": {
       "desc": "Este é o payload exato que seu cliente de IA recebe ao se conectar a este servidor pelo protocolo MCP — a lista completa de ferramentas, seus esquemas de parâmetros e as descrições que a IA lê para entender o que cada ação faz. O que você vê aqui é precisamente o que a IA utiliza, nem mais nem menos.",
       "howAiDecides": "Quando você envia uma mensagem à IA, ela verifica o nome e a descrição de cada ferramenta exibida aqui para decidir qual chamar e quais valores passar como parâmetros. Se duas ferramentas tiverem nomes semelhantes, a IA pode escolher a errada. Se uma descrição for vaga, a IA pode adivinhar os valores dos parâmetros — às vezes incorretamente. Esta visualização permite auditar exatamente o que a IA vê antes que um problema apareça em produção.",
-      "improving": "Para melhorar a precisão da IA: torne os nomes das ferramentas únicos e específicos, adicione exemplos concretos nas descrições ('ex: customer_id: 123 para João Silva'), liste todos os valores aceitos para parâmetros do tipo enum e descreva o que cada ferramenta retorna e quais erros pode gerar. Após editar ferramentas, volte a esta visualização para verificar se as alterações estão exatamente como pretendido — a IA verá a versão atualizada imediatamente na próxima conexão."
+      "improving": "Para melhorar a precisão da IA: torne os nomes das ferramentas únicos e específicos, adicione exemplos concretos nas descrições ('ex: customer_id: 123 para João Silva'), liste todos os valores aceitos para parâmetros do tipo enum e descreva o que cada ferramenta retorna e quais erros pode gerar. Após editar ferramentas, volte a esta visualização para verificar se as alterações estão exatamente como pretendido — a IA verá a versão atualizada imediatamente na próxima conexão.",
+      "result": "Quando esta visualização estiver clara e completa, conecte o cliente de IA e peça uma tarefa objetiva. Se ele não encontrar ou preencher corretamente uma Ferramenta exibida aqui, melhore o nome, a descrição ou o schema de parâmetros."
     },
     "responseLimit": {
       "intro": "Por padrão, o Arthur repassa a resposta completa da API de origem para a IA sem nenhuma restrição de tamanho. Ative este painel para habilitar limites de truncamento apenas para este servidor — útil quando as APIs retornam payloads muito grandes que excedem a janela de contexto do cliente de IA.",
@@ -626,7 +724,10 @@
       "arraySliceText": "Arrays são cortados nos primeiros N itens. Uma nota é adicionada indicando quantos itens foram omitidos.",
       "errorLenTitle": "Corpo de erro (chars):",
       "errorLenText": "Tamanho máximo do corpo incluído em respostas de erro (HTTP 4xx/5xx). Mantenha curto para não inundar a IA com páginas de erro longas.",
-      "toggleText": "As alterações são salvas automaticamente. Desative o botão para remover todos os limites e restaurar as respostas brutas completas."
+      "toggleText": "As alterações são salvas automaticamente. Desative o botão para remover todos os limites e restaurar as respostas brutas completas.",
+      "steps": "Ative os limites, comece com valores que preservem os campos necessários para a IA e teste uma resposta grande representativa. Ajuste um limite por vez se dados importantes forem omitidos.",
+      "result": "A IA recebe uma resposta menor, com indicadores de truncamento, em vez de um payload grande demais.",
+      "troubleshoot": "Se a IA perder contexto necessário, aumente o limite correspondente ou reduza a resposta na origem. Desativar este painel restaura o payload completo da origem."
     },
     "rateLimit": {
       "intro": "Limita o número de requisições MCP que este servidor aceita por minuto. Quando o limite é excedido, o servidor responde com HTTP 429 (Too Many Requests) e um cabeçalho Retry-After — o cliente de IA deve aguardar antes de tentar novamente.",
@@ -641,7 +742,9 @@
       "fairText": "se vários clientes de IA compartilham este endpoint, um limite garante que nenhum cliente monopolize a cota.",
       "howTitle": "Como definir o limite correto:",
       "howText": "verifique o limite documentado da API upstream (ex.: 100 req/min) e configure o limite do Arthur ligeiramente abaixo para manter margem. Comece conservador e aumente se a IA atingir 429 com frequência.",
-      "toggleText": "Desative o switch para Inativo para desabilitar totalmente o limite. As alterações são salvas automaticamente."
+      "toggleText": "Desative o switch para Inativo para desabilitar totalmente o limite. As alterações são salvas automaticamente.",
+      "result": "Requisições dentro do limite do minuto seguem normalmente; as excedentes recebem HTTP 429 e Retry-After.",
+      "troubleshoot": "Se tráfego legítimo receber muitos 429, compare a Atividade com a cota da API de origem e aumente o limite somente se o serviço e o orçamento suportarem."
     },
     "retryPolicy": {
       "intro": "Quando uma chamada de ferramenta falha, o Arthur pode repeti-la automaticamente antes de retornar um erro à IA.",
@@ -649,19 +752,28 @@
       "fixed": "aguarda o mesmo atraso entre cada tentativa.",
       "linear": "aumenta o atraso pelo atraso inicial a cada tentativa (ex.: 500ms -> 1000ms -> 1500ms).",
       "exponential": "dobra o atraso a cada tentativa (ex.: 500ms -> 1000ms -> 2000ms). Melhor para erros de limite de taxa.",
-      "safeCodes": "Repita apenas em códigos seguros para tentar novamente (chamadas idempotentes). Evite repetir chamadas POST que alteram estado, a menos que a API upstream seja idempotente."
+      "safeCodes": "Repita apenas em códigos seguros para tentar novamente (chamadas idempotentes). Evite repetir chamadas POST que alteram estado, a menos que a API upstream seja idempotente.",
+      "steps": "Ative a política, escolha o máximo de tentativas e o atraso inicial, selecione uma estratégia de backoff e liste apenas os status HTTP que a documentação da API de origem considera transitórios.",
+      "result": "O Arthur repete automaticamente as falhas correspondentes e retorna a primeira resposta bem-sucedida ou o erro final quando esgotar as tentativas.",
+      "caution": "Retries aumentam a latência e podem repetir efeitos colaterais. Use a Atividade para confirmar o status recorrente; não repita chamadas que alteram estado sem garantia de idempotência na origem."
     },
     "timeout": {
       "intro": "Define o tempo máximo que o Arthur aguarda uma chamada de ferramenta concluir antes de retornar um erro de timeout à IA.",
       "overrides": "O timeout global se aplica a todas as ferramentas. Substituições por ferramenta permitem dar mais tempo a endpoints sabidamente lentos (ex.: geração de relatório) ou menos tempo aos rápidos.",
-      "upstream": "Se a API upstream tiver seu próprio timeout, configure o do Arthur abaixo dele para que a IA receba um erro claro em vez de uma conexão interrompida."
+      "upstream": "Se a API upstream tiver seu próprio timeout, configure o do Arthur abaixo dele para que a IA receba um erro claro em vez de uma conexão interrompida.",
+      "steps": "Defina um timeout global para chamadas normais e crie exceções apenas para Ferramentas que comprovadamente precisam de mais ou menos tempo. Os valores estão em milissegundos.",
+      "result": "Chamadas que ultrapassam o timeout efetivo são interrompidas e retornam um erro de timeout claro ao cliente de IA.",
+      "troubleshoot": "Se chamadas lentas e saudáveis expirarem, consulte a Atividade e aumente somente a exceção da Ferramenta afetada. Se demorarem demais, reduza o valor e investigue a origem."
     },
     "executionHooks": {
       "intro": "Hooks executam automaticamente antes ou depois de cada chamada de ferramenta neste servidor.",
       "inject": "adiciona um cabeçalho fixo a cada requisição da API upstream (ex.: X-Tenant-ID).",
       "query": "anexa um parâmetro de query fixo a cada URL de requisição.",
       "log": "registra fase, nome da ferramenta e timestamp no log de atividade — útil para auditoria sem código customizado.",
-      "phases": "Hooks Antes executam antes de enviar a requisição. Hooks Depois executam após receber a resposta. Hooks desativados são salvos, mas não executados."
+      "phases": "Hooks Antes executam antes de enviar a requisição. Hooks Depois executam após receber a resposta. Hooks desativados são salvos, mas não executados.",
+      "steps": "Adicione um hook, escolha fase e ação, preencha nome e valor exigidos pela ação, mantenha-o ativo e execute uma Ferramenta para verificar o efeito.",
+      "result": "Hooks habilitados atuam de forma consistente em cada fase correspondente sem alterar as definições individuais das Ferramentas.",
+      "caution": "Hooks afetam todas as Ferramentas deste servidor. Evite headers ou queries duplicados, nunca coloque segredos em valores registrados e desative o hook ao investigar requisições inesperadas."
     },
     "inputConstraints": {
       "intro": "Regras que validam ou bloqueiam parâmetros de chamadas de ferramenta antes da requisição chegar à API upstream.",
@@ -670,21 +782,30 @@
       "maxLength": "rejeita strings maiores que o limite.",
       "allowedValues": "rejeita valores que não estejam em uma lista permitida separada por vírgulas.",
       "regex": "rejeita valores que não correspondem à expressão regular.",
-      "allTools": "Use * como nome da ferramenta para aplicar uma regra a todas as ferramentas."
+      "allTools": "Use * como nome da ferramenta para aplicar uma regra a todas as ferramentas.",
+      "steps": "Escolha uma Ferramenta ou *, informe o nome exato do parâmetro, selecione a restrição, preencha o valor de comparação quando necessário e ative a regra.",
+      "result": "Entradas inválidas são rejeitadas antes de o Arthur enviar qualquer requisição à API de origem.",
+      "caution": "Nomes de parâmetros e regex devem corresponder exatamente. Teste um valor aceito e outro rejeitado; uma regra ampla demais pode bloquear chamadas válidas em todas as Ferramentas."
     },
     "outputFiltering": {
       "intro": "Regras que limpam, mascaram ou removem dados sensíveis das respostas das ferramentas antes que a IA as veja.",
       "mask": "substitui o valor de um campo por uma string fixa (ex.: *****). Use para ocultar segredos mantendo a estrutura.",
       "remove": "remove o campo inteiro da resposta. Use para metadados internos que a IA não precisa.",
       "redact": "substitui qualquer string que corresponda a uma regex por um placeholder. Use para limpar números de cartão, documentos ou tokens em qualquer parte da resposta.",
-      "paths": "Caminhos de campo usam notação com pontos (ex.: data.user.email). Use * como nome da ferramenta para aplicar uma regra a todas as ferramentas."
+      "paths": "Caminhos de campo usam notação com pontos (ex.: data.user.email). Use * como nome da ferramenta para aplicar uma regra a todas as ferramentas.",
+      "steps": "Escolha uma Ferramenta ou *, selecione o tipo de filtro, informe o caminho exato do campo ou a regex e ative a regra. Teste com uma resposta que contenha o dado sensível.",
+      "result": "O Arthur transforma a resposta da origem antes de retorná-la, então a IA recebe a versão mascarada, removida ou ocultada.",
+      "caution": "Filtragem não substitui limitar o acesso na origem. Se o dado ainda aparecer, inspecione a estrutura real da resposta e corrija o caminho ou regex; regex amplas podem ocultar conteúdo útil."
     },
     "toolRestrictions": {
       "intro": "Regras que restringem como ferramentas específicas podem ser invocadas pela IA.",
       "blocked": "impede completamente que a IA chame esta ferramenta. A ferramenta ainda aparece no schema, mas retorna erro se for invocada.",
       "maxCalls": "limita quantas vezes a IA pode invocar uma ferramenta em uma única sessão de conversa. Útil para operações caras ou destrutivas.",
       "confirmation": "pausa a execução e pede confirmação humana antes de chamar a ferramenta. Recomendado para qualquer ferramenta que escreve, exclui ou envia dados.",
-      "disabled": "Restrições desativadas são salvas, mas não aplicadas."
+      "disabled": "Restrições desativadas são salvas, mas não aplicadas.",
+      "steps": "Escolha uma Ferramenta, selecione a restrição, informe o limite quando necessário e ative-a. Use * somente quando todas as Ferramentas precisarem da mesma regra.",
+      "result": "O Arthur verifica a restrição antes da execução e rejeita ou pausa chamadas que não a atendam.",
+      "caution": "Teste a partir do cliente de IA pretendido. Se a regra parecer ignorada, confirme se está ativa e aponta para o nome exato da Ferramenta; se chamadas legítimas pararem, procure também uma regra com *."
     }
   },
   "days": {
@@ -739,8 +860,11 @@
     "helpBasic": "Basic Auth: Adiciona Authorization: Basic <base64(usuário:senha)>. Usado por algumas APIs legadas como Jira ou Confluence.",
     "helpOAuth": "OAuth2 Client Credentials: O Arthur busca um Bearer token automaticamente usando seu client ID e secret, e o renova antes de expirar. Use para integrações máquina-a-máquina.",
     "helpCustom": "Cabeçalhos personalizados: Adicione quaisquer cabeçalhos HTTP. Útil para APIs com esquemas de autenticação não convencionais.",
+    "helpSteps": "Escolha o tipo de autenticação documentado pela API de origem, preencha os campos exibidos, aguarde o indicador de salvamento e execute uma Ferramenta que exija autenticação.",
+    "helpResult": "O Arthur adiciona a credencial configurada somente ao chamar a API de origem; o cliente de IA recebe o resultado sem receber essa credencial.",
     "helpSecurity": "Nota de segurança: as credenciais são armazenadas criptografadas no banco. Use tokens com o escopo mínimo necessário.",
     "helpSeparation": "Essas credenciais são completamente separadas da chave de autenticação MCP. Uma controla quem pode chamar o Arthur; a outra controla como o Arthur chama sua API.",
+    "helpTroubleshoot": "Para erros 401 ou 403 da origem, confira tipo selecionado, nome do header ou parâmetro, validade do token, escopos e credenciais do cliente. Erros de conexão MCP pertencem a Chaves de Acesso ou Cliente OAuth.",
     "typeLabel": "Tipo de autenticação",
     "typeNone": "Nenhum (API pública)",
     "typeBearer": "Bearer Token",

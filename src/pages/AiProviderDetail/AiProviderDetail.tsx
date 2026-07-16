@@ -66,7 +66,7 @@ function OverviewTab({ provider, onUpdated }: OverviewTabProps) {
   return (
     <>
     <Paper variant="outlined" sx={{ p: 2 }}>
-      <Box display="flex" alignItems="center" justifyContent="space-between" gap={1} mb={2}>
+      <Box display="flex" flexWrap="wrap" alignItems="center" justifyContent="space-between" gap={1} mb={2}>
       <Typography fontWeight={600} fontSize="0.875rem" mb={2}>{t('label.general')}</Typography>
         {can(Permission.AiProvidersExecute) && (
           <Button
@@ -97,16 +97,16 @@ function OverviewTab({ provider, onUpdated }: OverviewTabProps) {
           />
         </Box>
         <Divider />
-        <Box display="flex" justifyContent="space-between">
+        <Box display="flex" flexWrap="wrap" justifyContent="space-between" gap={0.5}>
           <Typography variant="body2" color="text.secondary">{t('label.model')}</Typography>
-          <Typography variant="body2" fontFamily="monospace">{provider.model}</Typography>
+          <Typography variant="body2" fontFamily="monospace" sx={{ overflowWrap: 'anywhere', textAlign: 'right' }}>{provider.model}</Typography>
         </Box>
         <Divider />
         {provider.baseUrl && (
           <>
-            <Box display="flex" justifyContent="space-between">
+            <Box display="flex" flexWrap="wrap" justifyContent="space-between" gap={0.5}>
               <Typography variant="body2" color="text.secondary">{t('label.baseUrl')}</Typography>
-              <Typography variant="body2" fontFamily="monospace" fontSize="0.78rem">{provider.baseUrl}</Typography>
+              <Typography variant="body2" fontFamily="monospace" fontSize="0.78rem" sx={{ overflowWrap: 'anywhere', textAlign: 'right' }}>{provider.baseUrl}</Typography>
             </Box>
             <Divider />
           </>
@@ -334,6 +334,7 @@ function SettingsTab({ provider, onUpdated }: SettingsTabProps) {
           <Grid item xs={12}>
             <TextField
               fullWidth size="small"
+              type="url"
               label={t('label.baseUrl')}
               value={editBaseUrl}
               onChange={(e) => setEditBaseUrl(e.target.value)}
@@ -400,7 +401,13 @@ function SettingsTab({ provider, onUpdated }: SettingsTabProps) {
           <Typography fontWeight={600} fontSize="0.875rem" color="error.main" mb={1}>
             {t('label.dangerZone')}
           </Typography>
-          <Box display="flex" alignItems="center" justifyContent="space-between">
+          <Box
+            display="flex"
+            flexDirection={{ xs: 'column', sm: 'row' }}
+            alignItems={{ xs: 'stretch', sm: 'center' }}
+            justifyContent="space-between"
+            gap={1.5}
+          >
             <Box>
               <Typography variant="body2">{t('action.deleteProvider')}</Typography>
               <Typography variant="caption" color="text.secondary">{t('hint.deleteWarning')}</Typography>
@@ -474,7 +481,7 @@ export default function AiProviderDetail() {
     <Box>
       <Paper variant="outlined" sx={{ mb: 2.5, borderRadius: '10px', overflow: 'hidden' }}>
         <Box
-          display="flex" alignItems="center" gap={0.75}
+          display="flex" alignItems="center" flexWrap="wrap" gap={0.75}
           px={2} py={1}
           sx={{ borderBottom: '1px solid', borderColor: 'divider' }}
         >
@@ -492,7 +499,7 @@ export default function AiProviderDetail() {
             label={provider.model}
             size="small"
             variant="outlined"
-            sx={{ height: 22, fontSize: '0.7rem', fontFamily: 'monospace' }}
+            sx={{ height: 22, fontSize: '0.7rem', fontFamily: 'monospace', maxWidth: '100%', minWidth: 0 }}
           />
           {provider.isDefault && (
             <Chip

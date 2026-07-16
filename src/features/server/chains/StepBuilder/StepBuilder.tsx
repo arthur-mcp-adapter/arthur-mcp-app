@@ -69,7 +69,8 @@ export function StepBuilder({
       </Box>
 
       {params.length > 0 && tool && (
-        <Table size="small">
+        <Box sx={{ overflowX: 'auto' }}>
+        <Table size="small" sx={{ minWidth: 480 }}>
           <TableHead>
             <TableRow sx={{ bgcolor: 'action.hover' }}>
               <TableCell sx={{ py: 0.5, fontWeight: 600, fontSize: '0.72rem', width: '25%' }}>{t('label.parameter')}</TableCell>
@@ -144,6 +145,7 @@ export function StepBuilder({
             })}
           </TableBody>
         </Table>
+        </Box>
       )}
       {params.length === 0 && step.toolName && (
         <Typography variant="caption" color="text.secondary">{t('hint.toolNoParams')}</Typography>

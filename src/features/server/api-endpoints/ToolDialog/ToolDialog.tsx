@@ -366,9 +366,9 @@ export function ToolDialog({ open, onClose, onSaved, onDeleted, projectId, proje
               ) : (
                 <Box display="flex" flexDirection="column" gap={0.75}>
                   {form.staticHeaders.map((h) => (
-                    <Box key={h.id} display="flex" alignItems="center" gap={1}>
-                      <TextField size="small" placeholder="Header-Name" value={h.name} onChange={(e) => setHeader(h.id, 'name', e.target.value)} InputProps={{ sx: { fontFamily: 'monospace', fontSize: '0.82rem' } }} sx={{ width: 180, flexShrink: 0 }} />
-                      <TextField size="small" fullWidth placeholder="value" value={h.value} onChange={(e) => setHeader(h.id, 'value', e.target.value)} InputProps={{ sx: { fontFamily: 'monospace', fontSize: '0.82rem' } }} />
+                    <Box key={h.id} display="flex" alignItems="center" gap={1} flexWrap="wrap">
+                      <TextField size="small" placeholder="Header-Name" value={h.name} onChange={(e) => setHeader(h.id, 'name', e.target.value)} InputProps={{ sx: { fontFamily: 'monospace', fontSize: '0.82rem' } }} sx={{ width: { xs: '100%', sm: 180 }, flexShrink: 0 }} />
+                      <TextField size="small" placeholder="value" value={h.value} onChange={(e) => setHeader(h.id, 'value', e.target.value)} InputProps={{ sx: { fontFamily: 'monospace', fontSize: '0.82rem' } }} sx={{ minWidth: 160, flex: 1 }} />
                       <Tooltip title={t('common:action.remove')}><IconButton size="small" color="error" onClick={() => removeHeader(h.id)}><IconTrash size={15} /></IconButton></Tooltip>
                     </Box>
                   ))}
@@ -545,7 +545,7 @@ export function ToolDialog({ open, onClose, onSaved, onDeleted, projectId, proje
                       <iframe
                         srcDoc={livePreview ?? form.outputTemplate ?? `<p style="color:#888;font-family:sans-serif;padding:24px">${t('label.noContent')}</p>`}
                         sandbox="allow-same-origin"
-                        style={{ width: '100%', height: '100%', border: 'none', background: '#fff' }}
+                        className="tool-dialog-preview-frame"
                         title="Template preview" />
                     )}
                   </Box>
@@ -633,7 +633,7 @@ export function ToolDialog({ open, onClose, onSaved, onDeleted, projectId, proje
             <iframe
               srcDoc={livePreview ?? form.outputTemplate ?? `<p style="color:#888;font-family:sans-serif;padding:24px">${t('label.noContentShort')}</p>`}
               sandbox="allow-same-origin"
-              style={{ width: '100%', height: '100%', border: 'none', background: '#fff' }}
+              className="tool-dialog-preview-frame"
               title="Template preview expanded" />
           )}
         </Box>

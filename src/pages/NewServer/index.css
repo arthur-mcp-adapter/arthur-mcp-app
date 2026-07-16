@@ -1,0 +1,25 @@
+.new-server-icon-muted {
+  opacity: 0.4;
+}
+
+.new-server-spec-icon {
+  flex-shrink: 0;
+  opacity: 0.6;
+}
+
+.new-server-ai-icon {
+  opacity: 0.7;
+}
+
+.new-server-empty-icon {
+  opacity: 0.25;
+  margin-bottom: 8px;
+}
+
+.new-server-auth-icon {
+  opacity: 0.4;
+}
+
+.new-server-auth-icon-active {
+  opacity: 1;
+}

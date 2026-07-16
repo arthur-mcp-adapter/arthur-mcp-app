@@ -191,12 +191,13 @@ export function ResourcesTab({ projectId, mcpServerIdentifier, initialResources,
             onChange={(e) => setForm((f) => ({ ...f, uri: e.target.value }))}
             helperText={t('hint.resourceUriHelp')}
             InputProps={{ sx: { fontFamily: 'monospace' } }} />
-          <Box display="flex" gap={2}>
+          <Box display="flex" gap={2} flexWrap="wrap">
             <TextField size="small" fullWidth multiline minRows={2} maxRows={4} label={t('common:label.description')} value={form.description}
-              onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))} />
+              onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
+              sx={{ minWidth: 200, flex: 1 }} />
             <TextField size="small" label={t('label.mimeType')} value={form.mimeType}
               onChange={(e) => setForm((f) => ({ ...f, mimeType: e.target.value }))}
-              placeholder="text/html" sx={{ width: 160, flexShrink: 0 }} />
+              placeholder="text/html" sx={{ width: { xs: '100%', sm: 160 }, flexShrink: 0 }} />
           </Box>
         </Box>
 
@@ -240,7 +241,7 @@ export function ResourcesTab({ projectId, mcpServerIdentifier, initialResources,
               <iframe
                 srcDoc={form.content || `<p style="color:#888;font-family:sans-serif;padding:24px">${t('label.noContent')}</p>`}
                 sandbox="allow-same-origin"
-                style={{ width: '100%', height: '100%', border: 'none', background: '#fff' }}
+                className="resources-tab-preview-frame"
                 title="Resource preview"
               />
             </Box>
@@ -302,7 +303,7 @@ export function ResourcesTab({ projectId, mcpServerIdentifier, initialResources,
             <iframe
               srcDoc={form.content || `<p style="color:#888;font-family:sans-serif;padding:24px">${t('label.noContent')}</p>`}
               sandbox="allow-same-origin"
-              style={{ width: '100%', height: '100%', border: 'none', background: '#fff' }}
+              className="resources-tab-preview-frame"
               title="Resource preview expanded"
             />
           )}

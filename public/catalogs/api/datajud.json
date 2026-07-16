@@ -1,0 +1,1476 @@
+{
+  "id": "datajud",
+  "name": "DataJud",
+  "tagline": "Brazilian court case metadata and procedural events",
+  "description": "Search public case metadata and procedural events from Brazilian courts through the official CNJ DataJud API. Every documented court endpoint is exposed as a separate tool that accepts an Elasticsearch Query DSL request. General usage guide: Complete Elasticsearch Query DSL body. DataJud does not use GraphQL. Query any field listed in the official glossary by its exact field name or dotted path, for example numeroProcesso, tribunal, grau, nivelSigilo, classe.codigo, assuntos.codigo, orgaoJulgador.codigo, movimentos.codigo, or movimentos.dataHora. Build Elasticsearch JSON queries with clauses such as match, bool/must, range, exists, and sort as appropriate for the field type. Official DataJud field guide: id = source identifier (Tribunal_Classe_Grau_OrgaoJulgador_NumeroProcesso); tribunal = court acronym; numeroProcesso = unformatted unique CNJ case number; dataAjuizamento = filing date; grau = court instance/level; nivelSigilo = secrecy level; formato = physical/electronic format (codigo, nome); sistema = source case system (codigo, nome); classe = TPU procedural class (codigo, nome); assuntos = TPU case subjects (codigo, nome); orgaoJulgador = current adjudicating body (codigo, nome, codigoMunicipioIBGE); movimentos = procedural events (codigo, nome, dataHora); movimentos.complementosTabelados = coded movement complements (codigo, descricao, valor, nome); movimentos.orgaoJulgador = event court unit (codigoOrgao, nomeOrgao); dataHoraUltimaAtualizacao = source update-control timestamp; @timestamp = document update timestamp in the index. Use exact dotted paths in filters; use size, sort, and search_after for pagination. Official MCP call examples (set the request argument to the complete Query DSL body): (1) case number: {\"request\":{\"query\":{\"match\":{\"numeroProcesso\":\"00008323520184013202\"}}}}. (2) procedural class and adjudicating body: {\"request\":{\"query\":{\"bool\":{\"must\":[{\"match\":{\"classe.codigo\":1116}},{\"match\":{\"orgaoJulgador.codigo\":13597}}]}}}}. (3) first paginated page: {\"request\":{\"size\":100,\"query\":{\"bool\":{\"must\":[{\"match\":{\"classe.codigo\":1116}},{\"match\":{\"orgaoJulgador.codigo\":13597}}]}},\"sort\":[{\"@timestamp\":{\"order\":\"asc\"}}]}}. For the next page, copy the sort value from the final hit and call: {\"request\":{\"size\":100,\"query\":{\"bool\":{\"must\":[{\"match\":{\"classe.codigo\":1116}},{\"match\":{\"orgaoJulgador.codigo\":13597}}]}},\"sort\":[{\"@timestamp\":{\"order\":\"asc\"}}],\"search_after\":[1681366085550]}}. DataJud returns up to 10 records by default; size may range from 10 to 10000. search_after must be used together with size and the @timestamp sort.",
+  "category": "Government & Legal",
+  "color": "#005A8B",
+  "emoji": "⚖️",
+  "baseUrl": "https://api-publica.datajud.cnj.jus.br",
+  "auth": {
+    "type": "api-key",
+    "hint": "Copy the current public key from the CNJ DataJud access page and store the complete Authorization value, including the 'APIKey ' prefix. CNJ may rotate this key at any time.",
+    "keyName": "Authorization",
+    "keyIn": "header"
+  },
+  "signupUrl": "https://datajud-wiki.cnj.jus.br/api-publica/acesso/",
+  "docsUrl": "https://datajud-wiki.cnj.jus.br/api-publica/",
+  "tools": [
+    {
+      "name": "search_tst_cases",
+      "description": "Search public case metadata and procedural events from the Superior Labor Court (TST) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_tst/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_tse_cases",
+      "description": "Search public case metadata and procedural events from the Superior Electoral Court (TSE) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_tse/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_stj_cases",
+      "description": "Search public case metadata and procedural events from the Superior Court of Justice (STJ) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_stj/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_stm_cases",
+      "description": "Search public case metadata and procedural events from the Superior Military Court (STM) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_stm/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_trf1_cases",
+      "description": "Search public case metadata and procedural events from the Federal Regional Court of the 1st Region (TRF1) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_trf1/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_trf2_cases",
+      "description": "Search public case metadata and procedural events from the Federal Regional Court of the 2nd Region (TRF2) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_trf2/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_trf3_cases",
+      "description": "Search public case metadata and procedural events from the Federal Regional Court of the 3rd Region (TRF3) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_trf3/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_trf4_cases",
+      "description": "Search public case metadata and procedural events from the Federal Regional Court of the 4th Region (TRF4) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_trf4/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_trf5_cases",
+      "description": "Search public case metadata and procedural events from the Federal Regional Court of the 5th Region (TRF5) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_trf5/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_trf6_cases",
+      "description": "Search public case metadata and procedural events from the Federal Regional Court of the 6th Region (TRF6) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_trf6/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_tjac_cases",
+      "description": "Search public case metadata and procedural events from the Court of Justice of Acre (TJAC) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_tjac/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_tjal_cases",
+      "description": "Search public case metadata and procedural events from the Court of Justice of Alagoas (TJAL) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_tjal/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_tjam_cases",
+      "description": "Search public case metadata and procedural events from the Court of Justice of Amazonas (TJAM) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_tjam/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_tjap_cases",
+      "description": "Search public case metadata and procedural events from the Court of Justice of Amapá (TJAP) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_tjap/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_tjba_cases",
+      "description": "Search public case metadata and procedural events from the Court of Justice of Bahia (TJBA) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_tjba/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_tjce_cases",
+      "description": "Search public case metadata and procedural events from the Court of Justice of Ceará (TJCE) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_tjce/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_tjdft_cases",
+      "description": "Search public case metadata and procedural events from the Court of Justice of the Federal District and Territories (TJDFT) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_tjdft/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_tjes_cases",
+      "description": "Search public case metadata and procedural events from the Court of Justice of Espírito Santo (TJES) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_tjes/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_tjgo_cases",
+      "description": "Search public case metadata and procedural events from the Court of Justice of Goiás (TJGO) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_tjgo/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_tjma_cases",
+      "description": "Search public case metadata and procedural events from the Court of Justice of Maranhão (TJMA) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_tjma/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_tjmg_cases",
+      "description": "Search public case metadata and procedural events from the Court of Justice of Minas Gerais (TJMG) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_tjmg/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_tjms_cases",
+      "description": "Search public case metadata and procedural events from the Court of Justice of Mato Grosso do Sul (TJMS) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_tjms/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_tjmt_cases",
+      "description": "Search public case metadata and procedural events from the Court of Justice of Mato Grosso (TJMT) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_tjmt/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_tjpa_cases",
+      "description": "Search public case metadata and procedural events from the Court of Justice of Pará (TJPA) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_tjpa/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_tjpb_cases",
+      "description": "Search public case metadata and procedural events from the Court of Justice of Paraíba (TJPB) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_tjpb/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_tjpe_cases",
+      "description": "Search public case metadata and procedural events from the Court of Justice of Pernambuco (TJPE) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_tjpe/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_tjpi_cases",
+      "description": "Search public case metadata and procedural events from the Court of Justice of Piauí (TJPI) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_tjpi/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_tjpr_cases",
+      "description": "Search public case metadata and procedural events from the Court of Justice of Paraná (TJPR) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_tjpr/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_tjrj_cases",
+      "description": "Search public case metadata and procedural events from the Court of Justice of Rio de Janeiro (TJRJ) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_tjrj/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_tjrn_cases",
+      "description": "Search public case metadata and procedural events from the Court of Justice of Rio Grande do Norte (TJRN) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_tjrn/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_tjro_cases",
+      "description": "Search public case metadata and procedural events from the Court of Justice of Rondônia (TJRO) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_tjro/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_tjrr_cases",
+      "description": "Search public case metadata and procedural events from the Court of Justice of Roraima (TJRR) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_tjrr/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_tjrs_cases",
+      "description": "Search public case metadata and procedural events from the Court of Justice of Rio Grande do Sul (TJRS) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_tjrs/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_tjsc_cases",
+      "description": "Search public case metadata and procedural events from the Court of Justice of Santa Catarina (TJSC) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_tjsc/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_tjse_cases",
+      "description": "Search public case metadata and procedural events from the Court of Justice of Sergipe (TJSE) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_tjse/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_tjsp_cases",
+      "description": "Search public case metadata and procedural events from the Court of Justice of São Paulo (TJSP) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_tjsp/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_tjto_cases",
+      "description": "Search public case metadata and procedural events from the Court of Justice of Tocantins (TJTO) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_tjto/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_trt1_cases",
+      "description": "Search public case metadata and procedural events from the Regional Labor Court of the 1st Region (TRT1) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_trt1/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_trt2_cases",
+      "description": "Search public case metadata and procedural events from the Regional Labor Court of the 2nd Region (TRT2) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_trt2/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_trt3_cases",
+      "description": "Search public case metadata and procedural events from the Regional Labor Court of the 3rd Region (TRT3) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_trt3/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_trt4_cases",
+      "description": "Search public case metadata and procedural events from the Regional Labor Court of the 4th Region (TRT4) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_trt4/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_trt5_cases",
+      "description": "Search public case metadata and procedural events from the Regional Labor Court of the 5th Region (TRT5) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_trt5/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_trt6_cases",
+      "description": "Search public case metadata and procedural events from the Regional Labor Court of the 6th Region (TRT6) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_trt6/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_trt7_cases",
+      "description": "Search public case metadata and procedural events from the Regional Labor Court of the 7th Region (TRT7) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_trt7/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_trt8_cases",
+      "description": "Search public case metadata and procedural events from the Regional Labor Court of the 8th Region (TRT8) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_trt8/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_trt9_cases",
+      "description": "Search public case metadata and procedural events from the Regional Labor Court of the 9th Region (TRT9) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_trt9/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_trt10_cases",
+      "description": "Search public case metadata and procedural events from the Regional Labor Court of the 10th Region (TRT10) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_trt10/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_trt11_cases",
+      "description": "Search public case metadata and procedural events from the Regional Labor Court of the 11th Region (TRT11) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_trt11/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_trt12_cases",
+      "description": "Search public case metadata and procedural events from the Regional Labor Court of the 12th Region (TRT12) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_trt12/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_trt13_cases",
+      "description": "Search public case metadata and procedural events from the Regional Labor Court of the 13th Region (TRT13) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_trt13/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_trt14_cases",
+      "description": "Search public case metadata and procedural events from the Regional Labor Court of the 14th Region (TRT14) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_trt14/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_trt15_cases",
+      "description": "Search public case metadata and procedural events from the Regional Labor Court of the 15th Region (TRT15) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_trt15/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_trt16_cases",
+      "description": "Search public case metadata and procedural events from the Regional Labor Court of the 16th Region (TRT16) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_trt16/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_trt17_cases",
+      "description": "Search public case metadata and procedural events from the Regional Labor Court of the 17th Region (TRT17) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_trt17/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_trt18_cases",
+      "description": "Search public case metadata and procedural events from the Regional Labor Court of the 18th Region (TRT18) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_trt18/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_trt19_cases",
+      "description": "Search public case metadata and procedural events from the Regional Labor Court of the 19th Region (TRT19) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_trt19/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_trt20_cases",
+      "description": "Search public case metadata and procedural events from the Regional Labor Court of the 20th Region (TRT20) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_trt20/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_trt21_cases",
+      "description": "Search public case metadata and procedural events from the Regional Labor Court of the 21th Region (TRT21) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_trt21/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_trt22_cases",
+      "description": "Search public case metadata and procedural events from the Regional Labor Court of the 22th Region (TRT22) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_trt22/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_trt23_cases",
+      "description": "Search public case metadata and procedural events from the Regional Labor Court of the 23th Region (TRT23) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_trt23/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_trt24_cases",
+      "description": "Search public case metadata and procedural events from the Regional Labor Court of the 24th Region (TRT24) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_trt24/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_tre_ac_cases",
+      "description": "Search public case metadata and procedural events from the Regional Electoral Court of Acre (TRE-AC) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_tre-ac/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_tre_al_cases",
+      "description": "Search public case metadata and procedural events from the Regional Electoral Court of Alagoas (TRE-AL) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_tre-al/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_tre_am_cases",
+      "description": "Search public case metadata and procedural events from the Regional Electoral Court of Amazonas (TRE-AM) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_tre-am/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_tre_ap_cases",
+      "description": "Search public case metadata and procedural events from the Regional Electoral Court of Amapá (TRE-AP) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_tre-ap/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_tre_ba_cases",
+      "description": "Search public case metadata and procedural events from the Regional Electoral Court of Bahia (TRE-BA) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_tre-ba/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_tre_ce_cases",
+      "description": "Search public case metadata and procedural events from the Regional Electoral Court of Ceará (TRE-CE) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_tre-ce/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_tre_dft_cases",
+      "description": "Search public case metadata and procedural events from the Regional Electoral Court of the Federal District (TRE-DFT) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_tre-dft/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_tre_es_cases",
+      "description": "Search public case metadata and procedural events from the Regional Electoral Court of Espírito Santo (TRE-ES) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_tre-es/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_tre_go_cases",
+      "description": "Search public case metadata and procedural events from the Regional Electoral Court of Goiás (TRE-GO) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_tre-go/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_tre_ma_cases",
+      "description": "Search public case metadata and procedural events from the Regional Electoral Court of Maranhão (TRE-MA) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_tre-ma/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_tre_mg_cases",
+      "description": "Search public case metadata and procedural events from the Regional Electoral Court of Minas Gerais (TRE-MG) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_tre-mg/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_tre_ms_cases",
+      "description": "Search public case metadata and procedural events from the Regional Electoral Court of Mato Grosso do Sul (TRE-MS) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_tre-ms/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_tre_mt_cases",
+      "description": "Search public case metadata and procedural events from the Regional Electoral Court of Mato Grosso (TRE-MT) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_tre-mt/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_tre_pa_cases",
+      "description": "Search public case metadata and procedural events from the Regional Electoral Court of Pará (TRE-PA) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_tre-pa/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_tre_pb_cases",
+      "description": "Search public case metadata and procedural events from the Regional Electoral Court of Paraíba (TRE-PB) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_tre-pb/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_tre_pe_cases",
+      "description": "Search public case metadata and procedural events from the Regional Electoral Court of Pernambuco (TRE-PE) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_tre-pe/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_tre_pi_cases",
+      "description": "Search public case metadata and procedural events from the Regional Electoral Court of Piauí (TRE-PI) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_tre-pi/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_tre_pr_cases",
+      "description": "Search public case metadata and procedural events from the Regional Electoral Court of Paraná (TRE-PR) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_tre-pr/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_tre_rj_cases",
+      "description": "Search public case metadata and procedural events from the Regional Electoral Court of Rio de Janeiro (TRE-RJ) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_tre-rj/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_tre_rn_cases",
+      "description": "Search public case metadata and procedural events from the Regional Electoral Court of Rio Grande do Norte (TRE-RN) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_tre-rn/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_tre_ro_cases",
+      "description": "Search public case metadata and procedural events from the Regional Electoral Court of Rondônia (TRE-RO) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_tre-ro/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_tre_rr_cases",
+      "description": "Search public case metadata and procedural events from the Regional Electoral Court of Roraima (TRE-RR) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_tre-rr/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_tre_rs_cases",
+      "description": "Search public case metadata and procedural events from the Regional Electoral Court of Rio Grande do Sul (TRE-RS) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_tre-rs/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_tre_sc_cases",
+      "description": "Search public case metadata and procedural events from the Regional Electoral Court of Santa Catarina (TRE-SC) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_tre-sc/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_tre_se_cases",
+      "description": "Search public case metadata and procedural events from the Regional Electoral Court of Sergipe (TRE-SE) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_tre-se/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_tre_sp_cases",
+      "description": "Search public case metadata and procedural events from the Regional Electoral Court of São Paulo (TRE-SP) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_tre-sp/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_tre_to_cases",
+      "description": "Search public case metadata and procedural events from the Regional Electoral Court of Tocantins (TRE-TO) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_tre-to/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_tjmmg_cases",
+      "description": "Search public case metadata and procedural events from the Military Court of Justice of Minas Gerais (TJMMG) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_tjmmg/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_tjmrs_cases",
+      "description": "Search public case metadata and procedural events from the Military Court of Justice of Rio Grande do Sul (TJMRS) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_tjmrs/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    },
+    {
+      "name": "search_tjmsp_cases",
+      "description": "Search public case metadata and procedural events from the Military Court of Justice of São Paulo (TJMSP) using Elasticsearch Query DSL.",
+      "method": "POST",
+      "path": "/api_publica_tjmsp/_search",
+      "params": [
+        {
+          "name": "request",
+          "originalName": "body",
+          "in": "body",
+          "required": true,
+          "type": "object",
+        "description": "Complete Elasticsearch Query DSL body for this court endpoint. Follow the DataJud template description for supported fields, field meanings, and official MCP request examples."
+        }
+      ]
+    }
+  ]
+}

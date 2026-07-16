@@ -107,7 +107,7 @@ export function ToolOutputTemplateSection({
     <iframe
       srcDoc={livePreview ?? form.outputTemplate ?? `<p style="color:#888;font-family:sans-serif;padding:24px">${t('label.noContent')}</p>`}
       sandbox="allow-same-origin"
-      style={{ width: '100%', height: '100%', border: 'none', background: '#fff' }}
+      className="tool-output-template-section-frame"
       title={title}
     />
   )
@@ -198,7 +198,7 @@ export function ToolOutputTemplateSection({
                               <TableCell sx={{ py: 0.5 }}>
                                 <Typography variant="caption" color="text.secondary" fontFamily="monospace"
                                   sx={{ display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 220 }}>
-                                  {s.sample !== '' ? s.sample : <em style={{ opacity: 0.5 }}>(empty)</em>}
+                                  {s.sample !== '' ? s.sample : <em className="tool-output-template-section-empty">(empty)</em>}
                                 </Typography>
                               </TableCell>
                               <TableCell sx={{ py: 0.5 }}>
@@ -219,7 +219,7 @@ export function ToolOutputTemplateSection({
                 {arrays.length > 0 && (
                   <Box>
                     <Typography variant="caption" color="text.secondary" fontWeight={600} display="block" mb={0.75}>
-                      {t('heading.arrayVariables')} - use <code style={{ fontFamily: 'monospace' }}>{'{{#each}}'}</code> to iterate
+                      {t('heading.arrayVariables')} - use <code>{'{{#each}}'}</code> to iterate
                     </Typography>
                     <Box display="flex" flexDirection="column" gap={1}>
                       {arrays.map((a) => {

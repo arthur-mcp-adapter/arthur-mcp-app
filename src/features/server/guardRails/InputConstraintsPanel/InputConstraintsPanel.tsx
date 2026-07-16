@@ -95,7 +95,9 @@ export function InputConstraintsPanel({ projectId, tools }: InputConstraintsPane
                 <Box component="li"><Typography variant="body2"><strong>{t('label.allowedValues')}:</strong> {t('help.inputConstraints.allowedValues')}</Typography></Box>
                 <Box component="li"><Typography variant="body2"><strong>{t('label.regexMatch')}:</strong> {t('help.inputConstraints.regex')}</Typography></Box>
               </Box>
-              <Typography variant="body2">{t('help.inputConstraints.allTools')}</Typography>
+              <Typography variant="body2" gutterBottom>{t('help.inputConstraints.steps')}</Typography>
+              <Typography variant="body2" gutterBottom>{t('help.inputConstraints.result')}</Typography>
+              <Typography variant="body2">{t('help.inputConstraints.caution')}</Typography>
             </HelpButton>
           </Box>
           <Typography variant="caption" color="text.secondary">
@@ -112,7 +114,7 @@ export function InputConstraintsPanel({ projectId, tools }: InputConstraintsPane
       ) : (
         <Box mb={2}>
           {constraints.map((c) => (
-            <Box key={c.id} display="flex" gap={1} alignItems="flex-start" mb={1.5} sx={{ opacity: c.enabled ? 1 : 0.5 }}>
+            <Box key={c.id} display="flex" gap={1} alignItems="flex-start" mb={1.5} flexWrap="wrap" sx={{ opacity: c.enabled ? 1 : 0.5 }}>
               <FormControl size="small" sx={{ flex: 2, minWidth: 120 }}>
                 <InputLabel>{t('logs.tool')}</InputLabel>
                 <Select label={t('logs.tool')} value={c.toolName} onChange={(e) => update(c.id, { toolName: e.target.value })}>

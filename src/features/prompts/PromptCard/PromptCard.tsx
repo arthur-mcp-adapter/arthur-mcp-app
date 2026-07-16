@@ -54,6 +54,7 @@ export function PromptCard({ prompt, onEdit, onCopy, onDelete, canEdit, canDelet
                 WebkitBoxOrient: 'vertical',
                 overflow: 'hidden',
                 whiteSpace: 'pre-wrap',
+                overflowWrap: 'anywhere',
                 fontSize: '0.72rem',
                 lineHeight: 1.5,
               }}

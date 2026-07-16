@@ -53,7 +53,7 @@ export function BaseListCard({
           zIndex: 2,
           display: 'flex',
           gap: 0.25,
-          opacity: 0,
+          opacity: { xs: 1, md: 0 },
           transition: 'opacity 0.15s',
         }}
       >

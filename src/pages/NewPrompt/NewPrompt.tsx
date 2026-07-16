@@ -110,7 +110,7 @@ export default function NewPrompt() {
 
   return (
     <Box maxWidth={760} mx="auto">
-      <Box display="flex" alignItems="center" gap={1.5} mb={4}>
+      <Box display="flex" flexWrap="wrap" alignItems="center" gap={1.5} mb={4}>
         <Button size="small" startIcon={<IconArrowLeft size={16} />} onClick={() => navigate('/prompts')} sx={{ mr: 0.5 }}>
           {t('prompts:heading.title')}
         </Button>
@@ -211,7 +211,7 @@ export default function NewPrompt() {
             <Box>
               <Typography variant="caption" color="text.secondary" fontWeight={700}>{t('prompts:label.contentPreview')}</Typography>
               <Box sx={{ mt: 0.75, p: 2, bgcolor: 'action.hover', border: '1px solid', borderColor: 'divider', borderRadius: 1 }}>
-                <Typography component="pre" fontFamily="monospace" fontSize="0.78rem" whiteSpace="pre-wrap" m={0}>
+                <Typography component="pre" fontFamily="monospace" fontSize="0.78rem" whiteSpace="pre-wrap" m={0} sx={{ overflowWrap: 'anywhere' }}>
                   {form.content}
                 </Typography>
               </Box>

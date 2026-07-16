@@ -1,0 +1,9 @@
+.tool-comments-section-chevron {
+  color: var(--mui-palette-text-disabled, #bdbdbd);
+  transform: none;
+  transition: 0.2s;
+}
+
+.tool-comments-section-chevron-open {
+  transform: rotate(180deg);
+}

@@ -97,9 +97,9 @@ export function ExecutionHooksPanel({ projectId }: ExecutionHooksPanelProps) {
                 <Box component="li"><Typography variant="body2"><strong>{t('label.addQueryParameter')}:</strong> {t('help.executionHooks.query')}</Typography></Box>
                 <Box component="li"><Typography variant="body2"><strong>{t('label.logCall')}:</strong> {t('help.executionHooks.log')}</Typography></Box>
               </Box>
-              <Typography variant="body2">
-                {t('help.executionHooks.phases')}
-              </Typography>
+              <Typography variant="body2" gutterBottom>{t('help.executionHooks.steps')}</Typography>
+              <Typography variant="body2" gutterBottom>{t('help.executionHooks.result')}</Typography>
+              <Typography variant="body2">{t('help.executionHooks.caution')}</Typography>
             </HelpButton>
           </Box>
           <Typography variant="caption" color="text.secondary">
@@ -119,7 +119,7 @@ export function ExecutionHooksPanel({ projectId }: ExecutionHooksPanelProps) {
             <Box
               key={hook.id}
               display="flex" gap={1} alignItems="flex-start" mb={1.5}
-              sx={{ opacity: hook.enabled ? 1 : 0.5 }}
+              sx={{ opacity: hook.enabled ? 1 : 0.5, flexWrap: 'wrap' }}
             >
               <FormControl size="small" sx={{ width: 100 }}>
                 <InputLabel>{t('label.phase')}</InputLabel>

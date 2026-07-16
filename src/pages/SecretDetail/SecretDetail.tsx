@@ -141,9 +141,9 @@ function OverviewTab({ secret }: OverviewTabProps) {
             <Typography variant="body2">{new Date(secret.updatedAt).toLocaleString()}</Typography>
           </Box>
           <Divider />
-          <Box display="flex" justifyContent="space-between">
+          <Box display="flex" flexWrap="wrap" justifyContent="space-between" gap={0.5}>
             <Typography variant="body2" color="text.secondary">{t('label.referenceKey')}</Typography>
-            <Typography variant="body2" fontFamily="monospace" fontSize="0.82rem">
+            <Typography variant="body2" fontFamily="monospace" fontSize="0.82rem" sx={{ overflowWrap: 'anywhere', textAlign: 'right' }}>
               {`{{secret:${secret.name}}}`}
             </Typography>
           </Box>
@@ -214,7 +214,7 @@ function UsageTab({ secret }: UsageTabProps) {
             '&:hover': { borderColor: 'primary.main' },
           }}
         >
-          <IconLink size={15} color="currentColor" style={{ opacity: 0.5, flexShrink: 0 }} />
+          <IconLink size={15} color="currentColor" className="secret-detail-link-icon" />
           <Typography variant="body2" fontWeight={600}>{p.name}</Typography>
         </Paper>
       ))}
@@ -259,34 +259,36 @@ function ActivityTab({ secret }: ActivityTabProps) {
           </Typography>
         </Box>
       ) : (
-        <Table size="small">
-          <TableHead>
-            <TableRow>
-              <TableCell>{t('label.action')}</TableCell>
-              <TableCell>{t('label.user')}</TableCell>
-              <TableCell>{t('label.date')}</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {filteredLogs.map(log => (
-              <TableRow key={log.id}>
-                <TableCell>
-                  <Typography variant="body2" fontFamily="monospace" fontSize="0.78rem">
-                    {log.action}
-                  </Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography variant="body2">{log.username ?? '—'}</Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography variant="body2" color="text.secondary">
-                    {new Date(log.createdAt).toLocaleString()}
-                  </Typography>
-                </TableCell>
+        <Box sx={{ overflowX: 'auto' }}>
+          <Table size="small">
+            <TableHead>
+              <TableRow>
+                <TableCell>{t('label.action')}</TableCell>
+                <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }}>{t('label.user')}</TableCell>
+                <TableCell>{t('label.date')}</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHead>
+            <TableBody>
+              {filteredLogs.map(log => (
+                <TableRow key={log.id}>
+                  <TableCell>
+                    <Typography variant="body2" fontFamily="monospace" fontSize="0.78rem">
+                      {log.action}
+                    </Typography>
+                  </TableCell>
+                  <TableCell sx={{ display: { xs: 'none', sm: 'table-cell' } }}>
+                    <Typography variant="body2">{log.username ?? '—'}</Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography variant="body2" color="text.secondary">
+                      {new Date(log.createdAt).toLocaleString()}
+                    </Typography>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </Box>
       )}
     </Paper>
   )
@@ -380,7 +382,13 @@ function SettingsTab({ secret, onUpdated }: SettingsTabProps) {
         <Typography fontWeight={600} fontSize="0.875rem" color="error.main" mb={1}>
           {t('label.dangerZone')}
         </Typography>
-        <Box display="flex" alignItems="center" justifyContent="space-between">
+        <Box
+          display="flex"
+          flexDirection={{ xs: 'column', sm: 'row' }}
+          alignItems={{ xs: 'stretch', sm: 'center' }}
+          justifyContent="space-between"
+          gap={1.5}
+        >
           <Box>
             <Typography variant="body2">{t('action.deleteSecret')}</Typography>
             <Typography variant="caption" color="text.secondary">
@@ -465,6 +473,7 @@ export default function SecretDetail() {
         <Box
           display="flex"
           alignItems="center"
+          flexWrap="wrap"
           gap={0.75}
           px={2}
           py={1}
@@ -476,11 +485,11 @@ export default function SecretDetail() {
               size="small"
               variant="outlined"
               icon={<IconCopy size={12} />}
-              sx={{ fontFamily: 'monospace', height: 22, fontSize: '0.7rem', cursor: 'pointer' }}
+              sx={{ fontFamily: 'monospace', height: 22, fontSize: '0.7rem', cursor: 'pointer', maxWidth: '100%', minWidth: 0 }}
               onClick={handleCopyRef}
             />
           </Tooltip>
-          <Box flexGrow={1} />
+          <Box flexGrow={1} sx={{ display: { xs: 'none', sm: 'block' } }} />
           <Typography variant="caption" color="text.secondary">
             {t('label.updated', { date: new Date(secret.updatedAt).toLocaleDateString() })}
           </Typography>

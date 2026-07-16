@@ -104,7 +104,7 @@ export default function NewErrorTrackingProvider() {
 
   return (
     <Box maxWidth={640} mx="auto">
-      <Box display="flex" alignItems="center" gap={1.5} mb={4}>
+      <Box display="flex" flexWrap="wrap" alignItems="center" gap={1.5} mb={4}>
         <Button
           size="small"
           startIcon={<IconArrowLeft size={16} />}

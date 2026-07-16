@@ -30,6 +30,7 @@
     "subtitle": "Conecte sua IA às suas fontes de dados"
   },
   "sidebar": {
-    "backToServers": "Servidores"
+    "backToServers": "Servidores",
+    "toggleMenu": "Mostrar/ocultar menu"
   }
 }

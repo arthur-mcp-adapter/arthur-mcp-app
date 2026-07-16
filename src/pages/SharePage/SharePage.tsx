@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import {
   Accordion, AccordionDetails, AccordionSummary, Alert, Box, Chip, CircularProgress, CssBaseline,
   Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Paper, Stack, TextField, Tooltip, Typography,
+  useMediaQuery, useTheme,
 } from '@mui/material'
 import { ThemeProvider } from '@mui/material/styles'
 import { baselightTheme } from '../../theme'
@@ -395,6 +396,8 @@ function AuthorizeDialog({
   open,
 }: AuthorizeDialogProps) {
   const { t } = useTranslation('servers')
+  const theme = useTheme()
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'))
   const [draft, setDraft] = useState(authKey)
   const [draftMode, setDraftMode] = useState<AuthMode>(authMode)
   const [clientId, setClientId] = useState('')
@@ -445,7 +448,7 @@ function AuthorizeDialog({
   }
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth fullScreen={fullScreen}>
       <DialogTitle sx={{ fontWeight: 700 }}>{t('share.authorizeTitle')}</DialogTitle>
       <DialogContent dividers>
         <Stack spacing={2}>
@@ -556,7 +559,7 @@ export default function SharePage() {
   )
 
   const fullUrl = backendUrl(info.mcpUrl)
-  const canAuthorize = info.hasKey || !!info.hasOAuthClient
+  const canAuthorize = info.hasKey || info.oauthMode === 'managed'
   const isAuthorized = authKey.trim().length > 0
 
   return (
@@ -589,7 +592,11 @@ export default function SharePage() {
               <Chip size="small" label={t('share.resourcesAvailable', { count: info.resourceCount })} sx={{ bgcolor: '#49cc90', color: '#fff', fontWeight: 700 }} />
               <Chip size="small" label={t('share.promptsAvailable', { count: info.promptCount })} sx={{ bgcolor: '#fca130', color: '#fff', fontWeight: 700 }} />
               {info.hasKey ? <Chip size="small" icon={<LockIcon fontSize="small" />} label={t('label.authRequired')} color="warning" /> : <Chip size="small" label={t('label.noKeyRequired')} variant="outlined" />}
-              {info.hasOAuthClient ? <Chip size="small" icon={<LockIcon fontSize="small" />} label={t('share.oauthClientAvailable')} color="warning" /> : <Chip size="small" label={t('share.noOauthClientAvailable')} variant="outlined" />}
+              {info.oauthMode === 'external'
+                ? <Chip size="small" icon={<LockIcon fontSize="small" />} label={t('share.externalOauthAvailable')} color="warning" />
+                : info.hasOAuthClient
+                  ? <Chip size="small" icon={<LockIcon fontSize="small" />} label={t('share.oauthClientAvailable')} color="warning" />
+                  : <Chip size="small" label={t('share.noOauthClientAvailable')} variant="outlined" />}
             </Stack>
           </Stack>
         </Box>
@@ -839,7 +846,7 @@ export default function SharePage() {
         authKey={authKey}
         authMode={authMode}
         hasApiKey={info.hasKey}
-        hasOAuthClient={!!info.hasOAuthClient}
+        hasOAuthClient={info.oauthMode === 'managed'}
         mcpUrl={info.mcpUrl}
         open={authorizeOpen}
         onAuthorize={(value, mode) => { setAuthKey(value); setAuthMode(mode) }}

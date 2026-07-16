@@ -70,7 +70,7 @@ function LogRow({ log }: LogRowProps) {
         <TableCell>
           <Typography fontSize="0.875rem" fontWeight={500} fontFamily="monospace">{log.toolName}</Typography>
         </TableCell>
-        <TableCell>
+        <TableCell sx={{ display: { xs: 'none', md: 'table-cell' } }}>
           <Chip label={log.source === 'mcp' ? t('logs.mcp') : t('logs.direct')} size="small"
             color={log.source === 'mcp' ? 'primary' : 'default'} sx={{ fontSize: '0.7rem', height: 20 }} />
         </TableCell>
@@ -78,7 +78,7 @@ function LogRow({ log }: LogRowProps) {
           <Chip label={log.statusCode} size="small"
             color={log.statusCode < 400 ? 'success' : 'error'} sx={{ fontSize: '0.7rem', height: 20 }} />
         </TableCell>
-        <TableCell>
+        <TableCell sx={{ display: { xs: 'none', md: 'table-cell' } }}>
           <Typography fontSize="0.82rem" color={log.responseTimeMs > 3000 ? 'warning.main' : 'text.secondary'}>
             {log.responseTimeMs}ms
           </Typography>
@@ -148,14 +148,18 @@ export function ProjectLogs({ projectId }: ProjectLogsProps) {
         <Button size="small" onClick={() => load(0)}>{t('logs.refresh')}</Button>
       </Box>
 
-      <Paper variant="outlined" sx={{ overflow: 'hidden', mb: 2 }}>
-        <Table size="small">
+      <Paper variant="outlined" sx={{ mb: 2 }}>
+        <Box sx={{ overflowX: 'auto' }}>
+        <Table size="small" sx={{ minWidth: 560 }}>
           <TableHead>
             <TableRow>
               <TableCell padding="checkbox" sx={{ pl: 1, width: 32 }} />
-              {[t('logs.dateTime'), t('logs.tool'), t('logs.source'), t('logs.status'), t('logs.timeMs'), t('logs.errorCol')].map((h) => (
-                <TableCell key={h}>{h}</TableCell>
-              ))}
+              <TableCell>{t('logs.dateTime')}</TableCell>
+              <TableCell>{t('logs.tool')}</TableCell>
+              <TableCell sx={{ display: { xs: 'none', md: 'table-cell' } }}>{t('logs.source')}</TableCell>
+              <TableCell>{t('logs.status')}</TableCell>
+              <TableCell sx={{ display: { xs: 'none', md: 'table-cell' } }}>{t('logs.timeMs')}</TableCell>
+              <TableCell>{t('logs.errorCol')}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -173,6 +177,7 @@ export function ProjectLogs({ projectId }: ProjectLogsProps) {
             ))}
           </TableBody>
         </Table>
+        </Box>
       </Paper>
 
       <Box display="flex" justifyContent="space-between" alignItems="center">

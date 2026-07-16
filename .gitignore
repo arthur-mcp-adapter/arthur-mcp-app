@@ -9,6 +9,10 @@ api_repository/
 !/scripts/check-frontend-structure.mjs
 !/scripts/check-template-catalogs.mjs
 
+# API repository
+api_repository/
+scripts/
+
 # Build output
 dist/
 client/dist/

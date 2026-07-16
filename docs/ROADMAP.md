@@ -4,11 +4,15 @@ This file should be updated when task state changes. It does not replace issues 
 
 ## Now
 
+- [x] Expand all 31 contextual question-mark help dialogs into localized mini-guides with purpose, usage, success checks, and troubleshooting; make the shared dialog accessible, scrollable, and responsive.
 - [ ] Confirm the current product goal and record details that still exist only in conversation.
 - [ ] Review existing uncommitted changes before starting a new task.
 - [ ] Keep `docs/HANDOFF.md` updated at the end of each Codex or Claude Code session.
 - [ ] Enforce the documentation gate for every code or configuration change.
 - [ ] Add formal TypeORM migration generation/run commands for local development and CI.
+- [ ] Adapt the desktop-first frontend to mobile-first responsive behavior — use the `mobile-first-expert` specialist:
+  - [x] Retrofit pass across all pages and shared components: shell drawer verified, `BaseListCard` touch-visible actions, table scroll containers + hidden secondary columns at `xs`, wrapping panel field rows, vertical steppers below `sm`, fullscreen form dialogs below `sm`, full-width search fields, breaking long text. `npm run type-check` and `npm test` (91/91) pass.
+  - [ ] Manual QA at real small viewports (~360px) across main journeys; fix anything the static pass missed.
 
 ## In Progress
 

@@ -318,7 +318,7 @@ function SettingsTab({ provider, onUpdated }: SettingsTabProps) {
           </Grid>
         </Grid>
         {canEdit && (
-          <Box mt={2} display="flex" justifyContent="flex-end" gap={1}>
+          <Box mt={2} display="flex" flexWrap="wrap" justifyContent="flex-end" gap={1}>
             <Button
               size="small" variant="outlined" color="inherit"
               onClick={handleTestConnection} disabled={testing || saving}
@@ -340,7 +340,13 @@ function SettingsTab({ provider, onUpdated }: SettingsTabProps) {
       {canEdit && (
         <Paper variant="outlined" sx={{ p: 2, mb: 2 }}>
           <Typography fontWeight={600} fontSize="0.875rem" mb={0.5}>{t('action.simulateError')}</Typography>
-          <Box display="flex" alignItems="center" justifyContent="space-between" gap={2}>
+          <Box
+            display="flex"
+            flexDirection={{ xs: 'column', sm: 'row' }}
+            alignItems={{ xs: 'stretch', sm: 'center' }}
+            justifyContent="space-between"
+            gap={2}
+          >
             <Typography variant="body2" color="text.secondary">{t('hint.simulateError')}</Typography>
             <Button
               size="small"
@@ -361,7 +367,13 @@ function SettingsTab({ provider, onUpdated }: SettingsTabProps) {
           <Typography fontWeight={600} fontSize="0.875rem" color="error.main" mb={1}>
             {t('label.dangerZone')}
           </Typography>
-          <Box display="flex" alignItems="center" justifyContent="space-between">
+          <Box
+            display="flex"
+            flexDirection={{ xs: 'column', sm: 'row' }}
+            alignItems={{ xs: 'stretch', sm: 'center' }}
+            justifyContent="space-between"
+            gap={1.5}
+          >
             <Box>
               <Typography variant="body2">{t('action.deleteProvider')}</Typography>
               <Typography variant="caption" color="text.secondary">{t('hint.deleteWarning')}</Typography>
@@ -433,7 +445,7 @@ export default function ErrorTrackingProviderDetail() {
     <Box>
       <Paper variant="outlined" sx={{ mb: 2.5, borderRadius: '10px', overflow: 'hidden' }}>
         <Box
-          display="flex" alignItems="center" gap={0.75}
+          display="flex" alignItems="center" flexWrap="wrap" gap={0.75}
           px={2} py={1}
           sx={{ borderBottom: '1px solid', borderColor: 'divider' }}
         >

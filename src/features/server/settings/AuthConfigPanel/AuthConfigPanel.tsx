@@ -126,8 +126,10 @@ export function AuthConfigPanel({ projectId, initialAuth, onChange }: AuthConfig
                 </Box>
               ))}
             </Box>
+            <Typography variant="body2" gutterBottom>{t('auth.helpSteps')}</Typography>
+            <Typography variant="body2" gutterBottom>{t('auth.helpResult')}</Typography>
             <Typography variant="body2" gutterBottom>{t('auth.helpSecurity')}</Typography>
-            <Typography variant="body2">{t('auth.helpSeparation')}</Typography>
+            <Typography variant="body2">{t('auth.helpTroubleshoot')}</Typography>
           </HelpButton>
         </Box>
         <SaveIndicator status={saveStatus} error={saveError} />

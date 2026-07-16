@@ -26,6 +26,8 @@ import {
   TextField,
   Tooltip,
   Typography,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material'
 import {
   IconArrowLeft,
@@ -71,6 +73,8 @@ export default function NewServer() {
   const navigate = useNavigate()
   const { can, loading: authLoading } = useAuth()
   const { t } = useTranslation(['servers', 'common'])
+  const theme = useTheme()
+  const stepperVertical = useMediaQuery(theme.breakpoints.down('sm'))
 
   // ── Global
   const [sourceType, setSourceType] = useState<SourceType | null>(null)
@@ -509,8 +513,8 @@ export default function NewServer() {
         <Typography variant="h5" fontWeight={700}>{t('servers:heading.newServer')}</Typography>
       </Box>
 
-      {/* Stepper */}
-      <Stepper activeStep={activeStep} sx={{ mb: 4 }}>
+      {/* Stepper — vertical below sm to avoid horizontal overflow with long labels */}
+      <Stepper activeStep={activeStep} orientation={stepperVertical ? 'vertical' : 'horizontal'} sx={{ mb: 4 }}>
         {steps.map((label, i) => (
           <Step key={label} completed={activeStep > i}>
             <StepLabel>{label}</StepLabel>
@@ -669,7 +673,7 @@ export default function NewServer() {
                     </Box>
                   ) : (
                     <Box display="flex" flexDirection="column" alignItems="center" gap={0.5}>
-                      <IconCloudUpload size={40} style={{ opacity: 0.4 }} />
+                      <IconCloudUpload size={40} className="new-server-icon-muted" />
                       <Typography fontWeight={500} mt={0.5}>{t('servers:hint.dragOpenApi')}</Typography>
                       <Typography variant="body2" color="text.secondary">{t('servers:hint.clickToBrowse')}</Typography>
                       <Typography variant="caption" color="text.disabled" mt={1} display="block">
@@ -706,7 +710,7 @@ export default function NewServer() {
                     </Box>
                   ) : (
                     <Box display="flex" flexDirection="column" alignItems="center" gap={0.5}>
-                      <IconPackage size={40} style={{ opacity: 0.4 }} />
+                      <IconPackage size={40} className="new-server-icon-muted" />
                       <Typography fontWeight={500} mt={0.5}>{t('servers:hint.dragPostman')}</Typography>
                       <Typography variant="body2" color="text.secondary">{t('servers:hint.fileTypesPostman')}</Typography>
                     </Box>
@@ -769,7 +773,7 @@ export default function NewServer() {
             <>
               <Paper variant="outlined" sx={{ p: 2 }}>
                 <Box display="flex" alignItems="center" gap={1.5} flexWrap="wrap">
-                  <IconTool size={18} style={{ flexShrink: 0, opacity: 0.6 }} />
+                  <IconTool size={18} className="new-server-spec-icon" />
                   <Box flexGrow={1} minWidth={0}>
                     <Box display="flex" alignItems="center" gap={1} flexWrap="wrap">
                       <Typography variant="subtitle2" fontWeight={700}>{specMeta.name}</Typography>
@@ -783,7 +787,7 @@ export default function NewServer() {
               {can(Permission.AiProvidersExecute) && (
                 <Paper variant="outlined" sx={{ p: 2, opacity: AI_TOOL_IMPROVEMENT_AVAILABLE ? 1 : 0.68 }}>
                   <Box display="flex" alignItems="center" gap={1.5} flexWrap="wrap">
-                    <IconSparkles size={18} style={{ opacity: 0.7 }} />
+                    <IconSparkles size={18} className="new-server-ai-icon" />
                     <Box flexGrow={1} minWidth={220}>
                       <Box display="flex" alignItems="center" gap={1} flexWrap="wrap">
                         <Typography variant="subtitle2" fontWeight={700}>{t('servers:ai.improveTitle')}</Typography>
@@ -836,8 +840,8 @@ export default function NewServer() {
                       <Box sx={{ px: 0.75, py: 0.2, borderRadius: '4px', fontFamily: 'monospace', fontWeight: 700, fontSize: '0.65rem', color: METHOD_COLOR[t.method] ?? '#888', bgcolor: 'action.selected', minWidth: 44, textAlign: 'center', flexShrink: 0 }}>
                         {t.method}
                       </Box>
-                      <Typography fontSize="0.82rem" fontWeight={600} noWrap flexGrow={1}>{t.name}</Typography>
-                      <Typography variant="caption" color="text.secondary" fontFamily="monospace" noWrap flexShrink={0}>{t.path}</Typography>
+                      <Typography fontSize="0.82rem" fontWeight={600} noWrap sx={{ flex: '1 1 auto', minWidth: 0 }}>{t.name}</Typography>
+                      <Typography variant="caption" color="text.secondary" fontFamily="monospace" noWrap sx={{ flex: '0 1 auto', minWidth: 0, maxWidth: { xs: '35%', sm: '50%' } }}>{t.path}</Typography>
                     </Box>
                   ))}
                   {localTools.length > 8 && (
@@ -852,7 +856,7 @@ export default function NewServer() {
             </>
           ) : (
             <Paper variant="outlined" sx={{ p: 4, textAlign: 'center' }}>
-              <IconTool size={40} style={{ opacity: 0.25, marginBottom: 8 }} />
+              <IconTool size={40} className="new-server-empty-icon" />
               <Typography variant="subtitle2" color="text.secondary" gutterBottom>{t('servers:hint.noSpecImported')}</Typography>
               <Typography variant="body2" color="text.disabled">
                 {t('servers:hint.emptyServerHint')}
@@ -917,7 +921,7 @@ export default function NewServer() {
                     </Box>
                   ) : (
                     <Box display="flex" flexDirection="column" alignItems="center" gap={0.5}>
-                      <IconCloudUpload size={32} style={{ opacity: 0.4 }} />
+                      <IconCloudUpload size={32} className="new-server-icon-muted" />
                       <Typography fontSize="0.875rem" fontWeight={500}>{t('servers:newServer.graphql.uploadSdlButton')}</Typography>
                       <Typography variant="caption" color="text.secondary">{t('servers:newServer.graphql.sdlFormats')}</Typography>
                     </Box>
@@ -973,7 +977,7 @@ export default function NewServer() {
                 </Box>
               ) : (
                 <Box display="flex" flexDirection="column" alignItems="center" gap={0.5}>
-                  <IconCloudUpload size={32} style={{ opacity: 0.4 }} />
+                  <IconCloudUpload size={32} className="new-server-icon-muted" />
                   <Typography fontSize="0.875rem" fontWeight={500}>{t('servers:newServer.grpc.uploadProtoButton')}</Typography>
                   <Typography variant="caption" color="text.secondary">{t('servers:newServer.grpc.uploadProtoOptional')}</Typography>
                 </Box>
@@ -1172,7 +1176,7 @@ export default function NewServer() {
         <Box display="flex" flexDirection="column" gap={2.5}>
           <Paper variant="outlined" sx={{ p: 3 }}>
             <Box display="flex" alignItems="center" gap={1} mb={0.5}>
-              <IconKey size={16} style={{ opacity: authType !== 'none' ? 1 : 0.4 }} />
+              <IconKey size={16} className={authType !== 'none' ? 'new-server-auth-icon new-server-auth-icon-active' : 'new-server-auth-icon'} />
               <Typography variant="subtitle2" fontWeight={700}>
                 {sourceType === 'grpc' ? t('servers:auth.grpcAuthentication') : t('servers:auth.apiAuthentication')}
               </Typography>
@@ -1243,7 +1247,7 @@ export default function NewServer() {
                   {t('servers:auth.customHeadersHint')}
                 </Typography>
                 {customHeaders.map((h, i) => (
-                  <Box key={i} display="flex" gap={1} alignItems="center">
+                  <Box key={i} display="flex" gap={1} alignItems="center" flexWrap="wrap">
                     <TextField size="small" label={t('servers:newServer.auth.header')} placeholder="X-Custom-Header" sx={{ flex: 1 }}
                       value={h.name} onChange={(e) => setCustomHeaders(customHeaders.map((x, idx) => idx === i ? { ...x, name: e.target.value } : x))} />
                     <TextField size="small" label={t('servers:newServer.auth.value')} sx={{ flex: 2 }} type={showSecrets ? 'text' : 'password'}

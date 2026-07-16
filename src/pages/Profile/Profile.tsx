@@ -277,22 +277,22 @@ function MyProfileTab({ me, onUpdated }: MyProfileTabProps) {
         </Box>
       </Paper>
 
-      <Grid container spacing={3}>
-        <Grid item xs={12}>
-          <Divider textAlign="left" sx={{ mb: 2 }}>
-            <Typography variant="caption" color="text.secondary">{t('myProfile.accountInfo')}</Typography>
-          </Divider>
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
-              <TextField size="small" fullWidth label={t('myProfile.usernameLabel')} value={username}
-                onChange={(e) => setUsername(e.target.value)} />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField size="small" fullWidth label={t('myProfile.emailLabel')} type="email" value={email}
-                onChange={(e) => setEmail(e.target.value)} />
-            </Grid>
+      <Paper variant="outlined" sx={{ p: 3, mb: 3 }}>
+        <Box display="flex" alignItems="center" gap={1} mb={2}>
+          <Box sx={{ color: 'primary.main', display: 'flex' }}><IconUser size={18} /></Box>
+          <Typography variant="subtitle1" fontWeight={700}>{t('myProfile.accountInfo')}</Typography>
+        </Box>
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={6}>
+            <TextField size="small" fullWidth label={t('myProfile.usernameLabel')} value={username}
+              onChange={(e) => setUsername(e.target.value)} />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField size="small" fullWidth label={t('myProfile.emailLabel')} type="email" value={email}
+              onChange={(e) => setEmail(e.target.value)} />
           </Grid>
         </Grid>
+      </Paper>
 
         <Grid item xs={12}>
           <Divider textAlign="left" sx={{ mb: 2 }}>
@@ -312,14 +312,12 @@ function MyProfileTab({ me, onUpdated }: MyProfileTabProps) {
             </Grid>
           </Grid>
         </Grid>
+      </Paper>
 
-        <Grid item xs={12}>
-          <Button size="small" variant="contained" onClick={handleSave} disabled={saving}
-            startIcon={saving ? <CircularProgress size={14} color="inherit" /> : undefined}>
-            {saving ? t('myProfile.saving') : t('myProfile.saveChanges')}
-          </Button>
-        </Grid>
-      </Grid>
+      <Button size="small" variant="contained" onClick={handleSave} disabled={saving}
+        startIcon={saving ? <CircularProgress size={14} color="inherit" /> : undefined}>
+        {saving ? t('myProfile.saving') : t('myProfile.saveChanges')}
+      </Button>
 
       <AppSnackbar open={feedback.open} message={feedback.message} severity={feedback.severity} onClose={clearFeedback} />
     </Box>
@@ -385,14 +383,15 @@ function UsersTab({ currentUserId }: UsersTabProps) {
         )}
       </Box>
 
-      <Paper variant="outlined" sx={{ overflow: 'hidden' }}>
-        <Table size="small">
+      <Paper variant="outlined">
+        <Box sx={{ overflowX: 'auto' }}>
+        <Table size="small" sx={{ minWidth: 480 }}>
           <TableHead>
             <TableRow>
               <TableCell>{t('users.columns.user')}</TableCell>
-              <TableCell>{t('users.columns.email')}</TableCell>
+              <TableCell sx={{ display: { xs: 'none', md: 'table-cell' } }}>{t('users.columns.email')}</TableCell>
               <TableCell>{t('users.columns.role')}</TableCell>
-              <TableCell>{t('users.columns.created')}</TableCell>
+              <TableCell sx={{ display: { xs: 'none', md: 'table-cell' } }}>{t('users.columns.created')}</TableCell>
               <TableCell align="right" />
             </TableRow>
           </TableHead>
@@ -410,7 +409,7 @@ function UsersTab({ currentUserId }: UsersTabProps) {
                     )}
                   </Box>
                 </TableCell>
-                <TableCell><Typography fontSize="0.82rem" color="text.secondary">{u.email}</Typography></TableCell>
+                <TableCell sx={{ display: { xs: 'none', md: 'table-cell' } }}><Typography fontSize="0.82rem" color="text.secondary">{u.email}</Typography></TableCell>
                 <TableCell>
                   <Chip
                     label={u.role.charAt(0).toUpperCase() + u.role.slice(1).replace(/_/g, ' ')}
@@ -419,7 +418,7 @@ function UsersTab({ currentUserId }: UsersTabProps) {
                     sx={{ fontSize: '0.72rem', height: 22 }}
                   />
                 </TableCell>
-                <TableCell>
+                <TableCell sx={{ display: { xs: 'none', md: 'table-cell' } }}>
                   <Typography fontSize="0.78rem" color="text.secondary">
                     {new Date(u.createdAt).toLocaleDateString()}
                   </Typography>
@@ -435,6 +434,7 @@ function UsersTab({ currentUserId }: UsersTabProps) {
             ))}
           </TableBody>
         </Table>
+        </Box>
       </Paper>
 
       <UserDialog

@@ -62,10 +62,10 @@ function OverviewTab({ provider }: OverviewTabProps) {
           />
         </Box>
         <Divider />
-        <Box display="flex" justifyContent="space-between" alignItems="center">
+        <Box display="flex" flexWrap="wrap" justifyContent="space-between" alignItems="center" gap={0.5}>
           <Typography variant="body2" color="text.secondary">{t('label.url')}</Typography>
-          <Box display="flex" alignItems="center" gap={0.5}>
-            <Typography variant="body2" fontFamily="monospace" fontSize="0.78rem">{provider.url}</Typography>
+          <Box display="flex" alignItems="center" gap={0.5} minWidth={0}>
+            <Typography variant="body2" fontFamily="monospace" fontSize="0.78rem" sx={{ overflowWrap: 'anywhere' }}>{provider.url}</Typography>
             <Tooltip title={t('action.openDashboard')}>
               <IconButton
                 size="small"
@@ -208,6 +208,7 @@ function SettingsTab({ provider, onUpdated }: SettingsTabProps) {
           <Grid item xs={12}>
             <TextField
               fullWidth size="small" required
+              type="url"
               label={t('label.url')}
               value={editUrl}
               onChange={(e) => setEditUrl(e.target.value)}
@@ -270,7 +271,13 @@ function SettingsTab({ provider, onUpdated }: SettingsTabProps) {
           <Typography fontWeight={600} fontSize="0.875rem" color="error.main" mb={1}>
             {t('label.dangerZone')}
           </Typography>
-          <Box display="flex" alignItems="center" justifyContent="space-between">
+          <Box
+            display="flex"
+            flexDirection={{ xs: 'column', sm: 'row' }}
+            alignItems={{ xs: 'stretch', sm: 'center' }}
+            justifyContent="space-between"
+            gap={1.5}
+          >
             <Box>
               <Typography variant="body2">{t('action.deleteProvider')}</Typography>
               <Typography variant="caption" color="text.secondary">{t('hint.deleteWarning')}</Typography>
@@ -345,7 +352,7 @@ export default function ObservabilityProviderDetail() {
     <Box>
       <Paper variant="outlined" sx={{ mb: 2.5, borderRadius: '10px', overflow: 'hidden' }}>
         <Box
-          display="flex" alignItems="center" gap={0.75}
+          display="flex" alignItems="center" flexWrap="wrap" gap={0.75}
           px={2} py={1}
           sx={{ borderBottom: '1px solid', borderColor: 'divider' }}
         >
@@ -358,8 +365,8 @@ export default function ObservabilityProviderDetail() {
               bgcolor: `${color}18`, color, border: `1px solid ${color}40`,
             }}
           />
-          <Box display="flex" alignItems="center" gap={0.25}>
-            <Typography variant="caption" color="text.secondary" fontFamily="monospace" fontSize="0.7rem">
+          <Box display="flex" alignItems="center" gap={0.25} minWidth={0} maxWidth="100%">
+            <Typography variant="caption" color="text.secondary" fontFamily="monospace" fontSize="0.7rem" sx={{ overflowWrap: 'anywhere' }}>
               {provider.url}
             </Typography>
             <Tooltip title={t('action.openDashboard')}>

@@ -200,7 +200,7 @@ function UsePromptTemplateDrawer({ template, onClose }: UsePromptTemplateDrawerP
               variant="caption" fontFamily="monospace" color="text.secondary"
               sx={{
                 display: '-webkit-box', WebkitLineClamp: 12, WebkitBoxOrient: 'vertical',
-                overflow: 'hidden', whiteSpace: 'pre-wrap', fontSize: '0.72rem', lineHeight: 1.6,
+                overflow: 'hidden', whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', fontSize: '0.72rem', lineHeight: 1.6,
               }}
             >
               {template.content}
@@ -287,7 +287,7 @@ export default function PromptTemplates() {
         <TextField
           size="small" placeholder={t('placeholder.searchTemplates')} value={search}
           onChange={(e) => setSearch(e.target.value)}
-          sx={{ minWidth: 220 }}
+          sx={{ width: { xs: '100%', sm: 220 } }}
           InputProps={{
             startAdornment: <InputAdornment position="start"><IconSearch size={16} /></InputAdornment>,
           }}

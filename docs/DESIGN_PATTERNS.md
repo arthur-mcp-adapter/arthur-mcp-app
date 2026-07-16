@@ -113,6 +113,25 @@ Rules:
 - Do not add frontend-only permissions without backend support. If backend support must be deferred, record the gap in `docs/ROADMAP.md` and keep the UI inaccessible or clearly non-shipping until the backend permission exists.
 - Do not add backend-only protected behavior without updating the frontend permission model and user-facing restricted/disabled states.
 
+### MCP OAuth Resource Server
+
+Pattern: each OAuth-enabled MCP server is an OAuth protected resource and selects either Arthur or a customer-owned authorization server.
+
+Examples:
+
+- `OAuthController` publishes RFC 9728 protected-resource metadata per MCP server and RFC 8414 authorization-server metadata for Arthur-managed OAuth.
+- `McpApiKeyGuard` emits the protected-resource metadata challenge and routes Bearer validation according to the server's OAuth mode.
+- `ExternalOAuthTokenValidatorService` validates external JWTs through JWKS or opaque tokens through introspection.
+
+Rules:
+
+- Prefer external OAuth/OIDC when the customer owns the website, users, login, consent, MFA, and authorization service; Arthur must not collect those passwords.
+- Bind every accepted external token to the configured issuer, MCP audience/resource, expiration, and required scopes. Never accept a token merely because its signature is valid.
+- Do not pass an arbitrary upstream API token through as an MCP token. The authorization server must issue the token for the configured MCP audience/resource.
+- Publish per-server protected-resource metadata so multiple MCP servers can use different authorization servers.
+- Keep JWKS retrieval cached briefly and refresh when a token references an unknown key id. Keep introspection credentials server-side and out of public share payloads.
+- Arthur-managed OAuth remains a separate compatibility/internal mode and uses the saved JWT signing secret.
+
 ### Cross-Cutting Filters and Interceptors
 
 Pattern: global providers handle behavior that cuts across modules.
@@ -400,7 +419,7 @@ Rules:
 - Keep atoms domain-neutral. If a component knows about servers, prompts, secrets, operations, or MCP details, it usually belongs in a feature.
 - Store React components as `ComponentName/ComponentName.tsx`, expose them through `ComponentName/index.ts`, and keep the folder stylesheet at `ComponentName/index.css`.
 
-### Barrel Exports
+### Styling
 
 Pattern: `index.ts` files are the only export aggregators. React implementations use matching named `.tsx` files; `index.tsx` is forbidden.
 
@@ -655,8 +674,13 @@ Rules:
 - Use `AppSnackbar` for transient success/error messages.
 - Use `ConfirmDialog` for destructive or high-impact confirmations.
 - Use `HelpButton` for contextual help that explains domain behavior.
+- Treat `HelpButton` content as an in-product mini-guide, not a one-sentence tooltip. For non-trivial surfaces, answer: what the section controls, when to use it, how to complete the task, what success looks like, and what commonly goes wrong.
+- Structure longer help with short headings, numbered steps, examples, and warning/info callouts. Avoid an undifferentiated wall of text or copy that merely repeats visible field labels.
+- Explain how the surface affects the MCP client or upstream source when that relationship is not obvious. State security consequences explicitly for credentials, public access, tokens, headers, logs, and destructive settings.
+- Keep every help modal synchronized across supported locales and add regression coverage for important instructional flows when practical.
 - Keep reusable components generic and page-specific copy in the caller.
 - Keep reusable component copy translation-ready by accepting labels from callers or using a stable namespace.
+- The shared `HelpButton` dialog uses a wider paper layout for instructional content and becomes full-screen below the `sm` breakpoint; callers should not implement their own modal sizing.
 
 ### Material UI Composition
 

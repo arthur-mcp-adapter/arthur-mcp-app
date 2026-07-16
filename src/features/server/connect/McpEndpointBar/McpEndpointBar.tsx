@@ -5,7 +5,7 @@ import {
   TextField,
 } from '@mui/material'
 import {
-  IconCopy, IconDownload, IconQrcode, IconShare, IconWorld, IconX,
+  IconCopy, IconDownload, IconExternalLink, IconQrcode, IconShare, IconWorld, IconX,
 } from '@tabler/icons-react'
 import { QRCodeCanvas } from 'qrcode.react'
 import { useTranslation } from 'react-i18next'
@@ -88,25 +88,27 @@ export function McpEndpointBar({ projectId, hasKeys, shareSlug, onShareSlugChang
 
   return (
     <Paper variant="outlined" sx={{ p: 2.5, mb: 2 }}>
-      <Box display="flex" alignItems="center" gap={1} mb={1.5}>
-        <IconWorld size={18} style={{ color: '#5D87FF' }} />
-        <Typography variant="subtitle1" fontWeight={700} flexGrow={1}>{t('heading.connectionUrl')}</Typography>
+      <Box display="flex" alignItems="center" flexWrap="wrap" gap={1} mb={1.5}>
+        <Box display="flex" alignItems="center" gap={1} flexGrow={1}>
+          <IconWorld size={18} className="mcp-endpoint-bar-icon" />
+          <Typography variant="subtitle1" fontWeight={700}>{t('heading.connectionUrl')}</Typography>
+          <HelpButton title={t('label.mcpEndpoint')}>
+            <Typography variant="body2" gutterBottom>{t('help.mcpEndpoint.intro')}</Typography>
+            <Typography variant="subtitle2" fontWeight={700} gutterBottom>{t('help.mcpEndpoint.stepsTitle')}</Typography>
+            <Box component="ol" sx={{ mt: 0, mb: 1, pl: 2.5 }}>
+              <Box component="li"><Typography variant="body2">{t('help.mcpEndpoint.copy')}</Typography></Box>
+              <Box component="li"><Typography variant="body2">{t('help.mcpEndpoint.configure')}</Typography></Box>
+              <Box component="li"><Typography variant="body2">{t('help.mcpEndpoint.authenticate')}</Typography></Box>
+            </Box>
+            <Typography variant="body2" gutterBottom>{t('help.mcpEndpoint.result')}</Typography>
+            <Typography variant="body2">{t('help.mcpEndpoint.troubleshoot')}</Typography>
+          </HelpButton>
+        </Box>
         {can(Permission.ServersShare) && <Tooltip title={t('action.shareWithClient')}>
           <Button size="small" variant="outlined" startIcon={<IconShare size={18} />} onClick={handleShareOpen}>
             {t('connect.shareTitle')}
           </Button>
         </Tooltip>}
-        <HelpButton title={t('label.mcpEndpoint')}>
-          <Typography variant="body2" gutterBottom>
-            {t('hint.shareDesc')}
-          </Typography>
-          <Typography variant="body2" gutterBottom>
-            {t('hint.accessKeyHint')}
-          </Typography>
-          <Typography variant="body2">
-            {t('hint.publicAccess')}
-          </Typography>
-        </HelpButton>
       </Box>
 
       <Box display="flex" alignItems="center" gap={1}>
@@ -125,11 +127,19 @@ export function McpEndpointBar({ projectId, hasKeys, shareSlug, onShareSlugChang
         </Tooltip>
       </Box>
 
-      <Typography variant="caption" color="text.secondary" mt={0.75} display="block">
-        {hasKeys
-          ? <>{t('label.authEndpoint')} <Box component="code" sx={{ bgcolor: 'action.hover', px: 0.8, py: 0.2, borderRadius: 0.5, fontSize: '0.78rem' }}>auth: &lt;key&gt;</Box></>
-          : t('label.publicEndpoint')}
-      </Typography>
+      {hasKeys ? (
+        <Box display="flex" alignItems="center" flexWrap="wrap" gap={0.75} mt={0.75}>
+          <Typography variant="caption" color="text.secondary">{t('label.authEndpoint')}</Typography>
+          <Typography variant="caption" color="text.secondary">{t('label.useInHeader')}</Typography>
+          <Box component="code" sx={{ bgcolor: 'action.hover', px: 0.8, py: 0.2, borderRadius: 0.5, fontSize: '0.78rem' }}>auth: &lt;key&gt;</Box>
+          <Typography variant="caption" color="text.secondary">{t('label.useInQuery')}</Typography>
+          <Box component="code" sx={{ bgcolor: 'action.hover', px: 0.8, py: 0.2, borderRadius: 0.5, fontSize: '0.78rem' }}>?auth=&lt;key&gt;</Box>
+        </Box>
+      ) : (
+        <Typography variant="caption" color="text.secondary" mt={0.75} display="block">
+          {t('label.publicEndpoint')}
+        </Typography>
+      )}
 
       {can(Permission.ServersEditSettings) && (
         <Box mt={2} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 1, p: 1.5 }}>
@@ -167,7 +177,7 @@ export function McpEndpointBar({ projectId, hasKeys, shareSlug, onShareSlugChang
       <Drawer anchor="right" open={shareOpen} onClose={() => setShareOpen(false)}
         PaperProps={{ sx: { width: { xs: '100vw', sm: 480 }, display: 'flex', flexDirection: 'column' } }}>
         <Box sx={{ px: 3, py: 2, borderBottom: 1, borderColor: 'divider', display: 'flex', alignItems: 'center', gap: 1.5, flexShrink: 0 }}>
-          <IconShare size={18} style={{ color: '#5D87FF' }} />
+          <IconShare size={18} className="mcp-endpoint-bar-icon" />
           <Typography variant="h6" fontWeight={700} flexGrow={1}>{t('connect.shareDrawerTitle')}</Typography>
           <IconButton size="small" onClick={() => setShareOpen(false)}><IconX size={18} /></IconButton>
         </Box>
@@ -207,6 +217,12 @@ export function McpEndpointBar({ projectId, hasKeys, shareSlug, onShareSlugChang
         </Box>
         <Box sx={{ px: 3, py: 2, borderTop: 1, borderColor: 'divider', display: 'flex', gap: 1, flexShrink: 0 }}>
           <Button onClick={() => setShareOpen(false)}>{t('common:action.close')}</Button>
+          {fullShareLink && (
+            <Button variant="outlined" startIcon={<IconExternalLink size={18} />}
+              component="a" href={fullShareLink} target="_blank" rel="noopener noreferrer">
+              {t('action.openLink')}
+            </Button>
+          )}
           {fullShareLink && (
             <Button variant="contained" startIcon={<IconCopy size={18} />}
               onClick={() => { navigator.clipboard.writeText(fullShareLink); setShareLinkCopied(true); setTimeout(() => setShareLinkCopied(false), 2500) }}>

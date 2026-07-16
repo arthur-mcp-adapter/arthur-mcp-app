@@ -85,9 +85,9 @@ export function ResponseLimitPanel({ projectId, initialConfig, onChange }: Respo
                 <Box component="li"><Typography variant="body2"><strong>{t('help.responseLimit.arraySliceTitle')}</strong> {t('help.responseLimit.arraySliceText')}</Typography></Box>
                 <Box component="li"><Typography variant="body2"><strong>{t('help.responseLimit.errorLenTitle')}</strong> {t('help.responseLimit.errorLenText')}</Typography></Box>
               </Box>
-              <Typography variant="body2">
-                {t('help.responseLimit.toggleText')}
-              </Typography>
+              <Typography variant="body2" gutterBottom>{t('help.responseLimit.steps')}</Typography>
+              <Typography variant="body2" gutterBottom>{t('help.responseLimit.result')}</Typography>
+              <Typography variant="body2">{t('help.responseLimit.troubleshoot')}</Typography>
             </HelpButton>
           </Box>
           <SaveIndicator status={saveStatus} error={saveError} />

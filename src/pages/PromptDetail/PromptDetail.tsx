@@ -257,6 +257,7 @@ function PreviewTab({ content }: PreviewTabProps) {
             fontFamily: 'monospace',
             fontSize: '0.875rem',
             whiteSpace: 'pre-wrap',
+            overflowWrap: 'anywhere',
             lineHeight: 1.6,
           }}
         >
@@ -446,7 +447,13 @@ function SettingsTab({
         <Typography fontWeight={600} fontSize="0.875rem" color="error.main" mb={1}>
           {t('label.dangerZone')}
         </Typography>
-        <Box display="flex" alignItems="center" justifyContent="space-between">
+        <Box
+          display="flex"
+          flexDirection={{ xs: 'column', sm: 'row' }}
+          alignItems={{ xs: 'stretch', sm: 'center' }}
+          justifyContent="space-between"
+          gap={1.5}
+        >
           <Box>
             <Typography variant="body2">{t('action.deletePrompt')}</Typography>
             <Typography variant="caption" color="text.secondary">
@@ -554,6 +561,7 @@ export default function PromptDetail() {
         <Box
           display="flex"
           alignItems="center"
+          flexWrap="wrap"
           gap={0.75}
           px={2}
           py={1}

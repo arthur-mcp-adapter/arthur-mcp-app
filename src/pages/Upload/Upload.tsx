@@ -85,7 +85,7 @@ export default function Upload() {
   }
 
   return (
-    <Box p={3} maxWidth={640} mx="auto">
+    <Box p={{ xs: 2, sm: 3 }} maxWidth={640} mx="auto">
       <Box display="flex" alignItems="center" gap={1} mb={3}>
         <Typography variant="h5" fontWeight="bold">{t('upload.pageTitle')}</Typography>
         <HelpButton title={t('upload.pageTitle')}>
@@ -113,6 +113,18 @@ export default function Upload() {
           <Typography variant="body2">
             <strong>{t('upload.help.tipStrong')}</strong> {t('upload.help.tipBody')}
           </Typography>
+          <Typography variant="body2" gutterBottom sx={{ mt: 1 }}>
+            <strong>{t('upload.help.successTitle')}</strong>
+          </Typography>
+          <Typography variant="body2" gutterBottom>{t('upload.help.successBody')}</Typography>
+          <Typography variant="body2" gutterBottom>
+            <strong>{t('upload.help.troubleshootingTitle')}</strong>
+          </Typography>
+          <Box component="ul" sx={{ mt: 0, mb: 0, pl: 2.5 }}>
+            <Box component="li"><Typography variant="body2">{t('upload.help.troubleshootingFormat')}</Typography></Box>
+            <Box component="li"><Typography variant="body2">{t('upload.help.troubleshootingUrl')}</Typography></Box>
+            <Box component="li"><Typography variant="body2">{t('upload.help.troubleshootingDescriptions')}</Typography></Box>
+          </Box>
         </HelpButton>
       </Box>
 
@@ -124,7 +136,7 @@ export default function Upload() {
         onDrop={handleDrop}
         onClick={() => inputRef.current?.click()}
         sx={{
-          p: 6,
+          p: { xs: 3, sm: 6 },
           textAlign: 'center',
           cursor: 'pointer',
           border: '2px dashed',

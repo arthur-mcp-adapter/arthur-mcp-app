@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { Box, Button, Paper, Step, StepLabel, Stepper, Typography } from '@mui/material'
+import { Box, Button, Paper, Step, StepLabel, Stepper, Typography, useMediaQuery, useTheme } from '@mui/material'
 import {
   IconRocket,
   IconTool,
@@ -14,6 +14,8 @@ export default function SetupWizard() {
   const navigate = useNavigate()
   const { t } = useTranslation('auth')
   const [step, setStep] = useState(0)
+  const theme = useTheme()
+  const stepperVertical = useMediaQuery(theme.breakpoints.down('sm'))
 
   const STEPS = [
     t('wizard.step.welcome'),
@@ -71,9 +73,9 @@ export default function SetupWizard() {
   }
 
   return (
-    <Box minHeight="100vh" display="flex" alignItems="center" justifyContent="center" bgcolor="background.default" p={3}>
-      <Paper variant="outlined" sx={{ maxWidth: 640, width: '100%', p: 4, borderRadius: 2 }}>
-        <Stepper activeStep={step} sx={{ mb: 4 }}>
+    <Box minHeight="100vh" display="flex" alignItems="center" justifyContent="center" bgcolor="background.default" p={{ xs: 1.5, sm: 3 }}>
+      <Paper variant="outlined" sx={{ maxWidth: 640, width: '100%', p: { xs: 2.5, sm: 4 }, borderRadius: 2 }}>
+        <Stepper activeStep={step} orientation={stepperVertical ? 'vertical' : 'horizontal'} sx={{ mb: 4 }}>
           {STEPS.map((label, i) => (
             <Step key={label} completed={step > i}>
               <StepLabel>{label}</StepLabel>

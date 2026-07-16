@@ -213,7 +213,7 @@ export function ObservabilityEnvironmentPanel() {
         )}
       </Paper>
 
-      <Box display="flex" justifyContent="flex-end" alignItems="center" gap={1} mt={1} mb={3}>
+      <Box display="flex" flexWrap="wrap" justifyContent="flex-end" alignItems="center" gap={1} mt={1} mb={3}>
         {configSavedAt && (
           <Typography variant="caption" color="success.main">
             {t('observability:runtime.saved', { time: configSavedAt.toLocaleTimeString() })}

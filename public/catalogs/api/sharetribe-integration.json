@@ -1,0 +1,262 @@
+{
+  "id": "sharetribe-integration",
+  "name": "Sharetribe Integration API",
+  "tagline": "Trusted marketplace data, approvals and audit events",
+  "description": "Build secure backend or operator tools with Sharetribe's Integration API. Inspect users, listings, and events; approve users; and update permissions using a bearer access token from a trusted application.",
+  "category": "Business",
+  "color": "#123C7D",
+  "emoji": "🔐",
+  "baseUrl": "https://flex-integ-api.sharetribe.com",
+  "auth": {
+    "type": "bearer",
+    "hint": "Use an access token in the Authorization header from a trusted Sharetribe Integration SDK instance. Keep the client secret server-side and never expose it to browsers or mobile apps."
+  },
+  "docsUrl": "https://www.sharetribe.com/api-reference/integration.html",
+  "tools": [
+    {
+      "name": "query_users",
+      "description": "List marketplace users with optional creation-time filtering and sort order.",
+      "method": "GET",
+      "path": "/v1/integration_api/users/query",
+      "params": [
+        {
+          "name": "createdAtStart",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Return users created on or after this ISO 8601 timestamp"
+        },
+        {
+          "name": "createdAtEnd",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Return users created before this ISO 8601 timestamp"
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Sort order such as createdAt or -createdAt"
+        }
+      ]
+    },
+    {
+      "name": "show_user",
+      "description": "Look up a specific user by UUID or email address.",
+      "method": "GET",
+      "path": "/v1/integration_api/users/show",
+      "params": [
+        {
+          "name": "id",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "User UUID"
+        },
+        {
+          "name": "email",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "User email address"
+        }
+      ]
+    },
+    {
+      "name": "approve_user",
+      "description": "Approve a user that is currently waiting for operator review.",
+      "method": "POST",
+      "path": "/v1/integration_api/users/approve",
+      "params": [
+        {
+          "name": "id",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "User UUID"
+        }
+      ]
+    },
+    {
+      "name": "update_user_permissions",
+      "description": "Allow or deny marketplace permissions for a user.",
+      "method": "POST",
+      "path": "/v1/integration_api/users/update_permissions",
+      "params": [
+        {
+          "name": "id",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "User UUID"
+        },
+        {
+          "name": "postListings",
+          "in": "body",
+          "required": false,
+          "type": "string",
+          "description": "permission/allow or permission/deny"
+        },
+        {
+          "name": "initiateTransactions",
+          "in": "body",
+          "required": false,
+          "type": "string",
+          "description": "permission/allow or permission/deny"
+        },
+        {
+          "name": "read",
+          "in": "body",
+          "required": false,
+          "type": "string",
+          "description": "permission/allow or permission/deny"
+        }
+      ]
+    },
+    {
+      "name": "query_listings",
+      "description": "Search all marketplace listings, including closed ones, with optional filters.",
+      "method": "GET",
+      "path": "/v1/integration_api/listings/query",
+      "params": [
+        {
+          "name": "authorId",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Filter listings by author UUID"
+        },
+        {
+          "name": "states",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Comma-separated listing states such as draft, published, pendingApproval, or closed"
+        },
+        {
+          "name": "createdAtStart",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Return listings created on or after this ISO 8601 timestamp"
+        },
+        {
+          "name": "createdAtEnd",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Return listings created before this ISO 8601 timestamp"
+        },
+        {
+          "name": "sort",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Sort order such as createdAt or -createdAt"
+        }
+      ]
+    },
+    {
+      "name": "create_listing",
+      "description": "Create a listing for any marketplace user from a trusted backend app.",
+      "method": "POST",
+      "path": "/v1/integration_api/listings/create",
+      "params": [
+        {
+          "name": "authorId",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Listing author UUID"
+        },
+        {
+          "name": "title",
+          "in": "body",
+          "required": true,
+          "type": "string",
+          "description": "Listing title"
+        },
+        {
+          "name": "state",
+          "in": "body",
+          "required": false,
+          "type": "string",
+          "description": "Initial state, typically published or pendingApproval"
+        },
+        {
+          "name": "description",
+          "in": "body",
+          "required": false,
+          "type": "string",
+          "description": "Listing description"
+        },
+        {
+          "name": "publicData",
+          "in": "body",
+          "required": false,
+          "type": "object",
+          "description": "Public extended data for the listing"
+        },
+        {
+          "name": "metadata",
+          "in": "body",
+          "required": false,
+          "type": "object",
+          "description": "Public metadata for the listing"
+        },
+        {
+          "name": "images",
+          "in": "body",
+          "required": false,
+          "type": "array",
+          "description": "Array of image UUIDs to attach to the listing"
+        }
+      ]
+    },
+    {
+      "name": "query_events",
+      "description": "Stream marketplace audit events and resource changes for trusted backend workflows.",
+      "method": "GET",
+      "path": "/v1/integration_api/events/query",
+      "params": [
+        {
+          "name": "startAfterSequenceId",
+          "in": "query",
+          "required": false,
+          "type": "integer",
+          "description": "Return events strictly after this sequence ID"
+        },
+        {
+          "name": "createdAtStart",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Return events created on or after this ISO 8601 timestamp"
+        },
+        {
+          "name": "resourceId",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Filter events for a specific resource UUID"
+        },
+        {
+          "name": "relatedResourceId",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Filter events related to a specific resource UUID"
+        },
+        {
+          "name": "eventTypes",
+          "in": "query",
+          "required": false,
+          "type": "string",
+          "description": "Comma-separated event types such as listing/created or message/created"
+        }
+      ]
+    }
+  ]
+}

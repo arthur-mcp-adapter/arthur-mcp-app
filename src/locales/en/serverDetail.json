@@ -117,7 +117,7 @@
     "newCopyNow": "new — copy now",
     "noBaseUrl": "No base URL set",
     "publicEndpoint": "Configure this URL in Claude Desktop, Cursor, or any compatible MCP client.",
-    "authEndpoint": "Configure this URL in your MCP client and include the header",
+    "authEndpoint": "Configure this URL in your MCP client and authenticate with either:",
     "noKeys": "No keys — any MCP client can connect without authentication.",
     "scanQr": "Scan to open on a mobile device",
     "shareValidityPermanent": "This link stays valid until the share slug changes. It gives read-only setup information — no access to data or credentials.",
@@ -126,9 +126,24 @@
     "shareValidity": "This link is valid for 30 days. It gives read-only setup information — no access to data or credentials.",
     "createdAt": "Created {{date}}",
     "useInHeader": "Use in the header:",
-    "noOAuthClient": "No OAuth client configured — ChatGPT cannot connect via OAuth.",
+    "useInQuery": "or in the query string:",
+    "noOAuthClient": "OAuth is disabled. The MCP endpoint can still use Access Keys or remain public.",
     "clientCredentials": "Client credentials",
-    "pasteUrls": "Paste these URLs into ChatGPT",
+    "pasteUrls": "OAuth URLs",
+    "oauthDiscoveryUrl": "OAuth discovery URL",
+    "oauthProtectedResourceUrl": "MCP protected-resource metadata URL",
+    "oauthAuthorizationMetadataUrl": "Authorization-server metadata URL",
+    "oauthProviderMode": "OAuth provider",
+    "oauthModeExternal": "External OAuth/OIDC (recommended)",
+    "oauthModeManaged": "Arthur-managed OAuth",
+    "oauthModeNone": "Disabled",
+    "oauthIssuerUrl": "Issuer URL",
+    "oauthJwksUrl": "JWKS URL",
+    "oauthIntrospectionUrl": "Introspection URL",
+    "oauthIntrospectionClientId": "Introspection Client ID",
+    "oauthIntrospectionClientSecret": "Introspection Client Secret",
+    "oauthAudience": "Audience / Resource",
+    "oauthScopes": "Required scopes",
     "authUrl": "Auth URL",
     "tokenUrl": "Token URL",
     "clientId": "Client ID",
@@ -147,6 +162,9 @@
     "thisPromptNoVariables": "This prompt has no variables.",
     "noNotes": "No notes yet.",
     "notes": "Notes ({{count}})",
+    "placeholder": {
+      "addNote": "Add a note…"
+    },
     "disabled": "Disabled",
     "htmlChip": "HTML",
     "dynamic": "Dynamic",
@@ -306,8 +324,45 @@
     "tenantParamInject": "Inject query string values into tool calls that accept them.",
     "chainDesc": "Sequential tool compositions that appear as a single MCP tool. Each step's output is available to the next step.",
     "accessKeyHint": "Named keys that control who can connect to this server's AI endpoint.",
+    "accessKeyTransports": "Clients may send a key in the auth header or the auth query parameter; requests without a valid key are rejected.",
+    "oneKeyPerClient": "Create one key per client (for example, Claude Desktop or Cursor) so access can be revoked independently.",
+    "queryAccessKeyWarning": "Prefer the header when possible. Query-string keys may appear in browser history and infrastructure logs.",
     "publicAccess": "Without any key, the endpoint is publicly accessible to anyone who knows the URL.",
     "oauthHint": "Allows ChatGPT (and other OAuth 2.0 clients) to connect to this server's MCP endpoint.",
+    "oauthClientPurpose": "Protects this MCP endpoint with OAuth 2.0 so compatible AI clients can authenticate before calling tools.",
+    "oauthHelpIntro": "Use this section to control how ChatGPT, Claude, and other MCP clients authenticate before using this server's tools. It protects incoming MCP access; it does not configure the credentials used by Arthur to call the upstream API.",
+    "oauthHelpChooseTitle": "1. Choose the right mode",
+    "oauthHelpChooseExternal": "External OAuth/OIDC: recommended when your customer has their own website, users, login, consent, or MFA. The login page belongs to their identity provider.",
+    "oauthHelpChooseManaged": "Arthur-managed OAuth: use for internal environments or testing. Arthur displays the login page and issues the access token.",
+    "oauthHelpChooseDisabled": "Disabled: use when this MCP endpoint should rely only on Access Keys or remain public.",
+    "oauthHelpExternalTitle": "2. Configure external OAuth/OIDC",
+    "oauthHelpExternalStep1": "In the customer's authorization server, register the MCP client and allow Authorization Code with PKCE. Add the callback URLs required by the AI client being used.",
+    "oauthHelpExternalStep2": "Enter the exact Issuer URL and the provider's Authorization and Token URLs. These pages and endpoints must belong to the customer.",
+    "oauthHelpExternalStep3": "For JWT access tokens, enter the JWKS URL. For opaque tokens, enter the Introspection URL and its confidential Client ID and Client Secret. Configure at least one validation method.",
+    "oauthHelpExternalStep4": "Set the provider's Audience/Resource to this MCP resource and enter the same value here: {{resource}}. Tokens issued for another API will be rejected.",
+    "oauthHelpExternalStep5": "Enter every scope required to use this MCP server, separated by spaces or commas. A token missing any listed scope will be rejected.",
+    "oauthHelpExternalStep6": "Save the configuration. In the AI client, configure the server using the Connection URL shown above; compatible clients discover the OAuth provider automatically.",
+    "oauthHelpDiscovery": "OAuth discovery starts at {{url}}. Open this URL to inspect the resource, authorization server, and supported scopes published to MCP clients.",
+    "oauthHelpManagedTitle": "3. Configure Arthur-managed OAuth",
+    "oauthHelpManagedStep1": "Select Arthur-managed OAuth, generate or enter a Client ID and Client Secret, and save.",
+    "oauthHelpManagedStep2": "Copy the Client ID, Client Secret, and displayed OAuth URLs into the AI client's connector settings when it does not perform discovery automatically.",
+    "oauthHelpManagedStep3": "When connecting, the user sees Arthur's login page and signs in with an Arthur MCP account.",
+    "oauthHelpFlowTitle": "What happens when the AI connects",
+    "oauthHelpFlow": "The MCP client contacts the Connection URL, receives an authorization challenge, opens the configured login page, obtains a token, and sends it as Authorization: Bearer on every MCP request. The model only chooses tools; the MCP client handles authentication.",
+    "oauthHelpTestTitle": "How to verify the setup",
+    "oauthHelpTestStep1": "Open the protected-resource metadata URL and confirm that it returns JSON with the expected resource, authorization server, and scopes.",
+    "oauthHelpTestStep2": "Connect through a compatible MCP client and complete login on the expected website. External mode must never display an Arthur password form.",
+    "oauthHelpTestStep3": "Call one tool after login. The request should succeed with a valid token and return 401 without credentials or with the wrong audience/scope.",
+    "oauthClientSetup": "Generate a Client ID and Client Secret, then configure the OAuth discovery, authorization, and token URLs shown in this panel.",
+    "oauthClientLogin": "With the authorization-code flow, users are prompted to sign in with their Arthur MCP account.",
+    "oauthExternalPurpose": "External OAuth redirects users to the customer's own login and consent pages; Arthur validates the tokens issued by that provider.",
+    "oauthModelSafety": "The AI model never receives passwords, authorization codes, client secrets, or access tokens; the MCP client handles them.",
+    "oauthExternalLoginPage": "Users will sign in on the external provider's website. Arthur will never collect their password.",
+    "oauthManagedLoginPage": "Arthur displays its own login page and issues the token. Use this mode for internal environments or testing.",
+    "oauthJwks": "Recommended for JWT access tokens. Configure JWKS or introspection.",
+    "oauthIntrospection": "Use for opaque tokens. Requires confidential introspection credentials.",
+    "oauthAudience": "Must identify this MCP resource. Tokens issued for another API are rejected.",
+    "oauthScopes": "Space- or comma-separated scopes that every MCP access token must contain.",
     "shareDesc": "Send this link to anyone who needs to connect their AI client to this server. The page includes step-by-step instructions for Claude Desktop, Cursor, and a QR code for mobile.",
     "toolsDesc": "Each tool is one specific action your AI can take.",
     "resourcesDesc": "Content exposed to the AI via the MCP protocol (static or dynamic from API)",
@@ -444,6 +499,7 @@
     "creating": "Creating…",
     "copyUrl": "Copy URL",
     "copyLink": "Copy link",
+    "openLink": "Open link",
     "saveSlug": "Save slug",
     "downloadQr": "Download QR code",
     "editBaseUrl": "Edit Base URL",
@@ -591,13 +647,53 @@
     "expand": "Expand row",
     "retention": "Logs are kept for 7 days in memory and are not persisted across restarts."
   },
+  "baseUrl": {
+    "title": "API Base URL",
+    "fieldLabel": "External API base URL",
+    "helperText": "Root URL used for every upstream API call.",
+    "empty": "No base URL set",
+    "edit": "Edit base URL",
+    "errorRequired": "The URL cannot be empty.",
+    "errorInvalid": "Enter a valid URL including http:// or https://.",
+    "errorSave": "Arthur could not save the URL. Try again."
+  },
   "help": {
+    "mcpEndpoint": {
+      "intro": "This is the address an MCP-compatible AI client uses to discover and call this server's enabled Tools, Resources, and Prompts.",
+      "stepsTitle": "Connect an AI client:",
+      "copy": "Copy the endpoint exactly as shown.",
+      "configure": "Add a remote MCP server in your AI client and paste the endpoint as its server URL.",
+      "authenticate": "If Access Keys or OAuth are enabled, configure the matching credential in the AI client; otherwise the endpoint is public.",
+      "result": "After a successful connection, the AI client lists this server's enabled MCP capabilities and can call them during a conversation.",
+      "troubleshoot": "If discovery fails, check the public documentation slug, confirm the client can reach this Arthur host, and verify that its Access Key or OAuth configuration is current."
+    },
+    "accessKeys": {
+      "intro": "Access Keys control which AI clients can connect to this MCP endpoint. Use them when the client supports a static credential and you do not need a user login flow.",
+      "stepsTitle": "Create and use a key:",
+      "create": "Select Add key and give it a label that identifies the client or environment.",
+      "copy": "Copy the new key immediately and store it in the AI client's secret or credential settings.",
+      "connect": "Send it in the auth header when possible, or as ?auth=<key> when the client cannot set custom headers.",
+      "result": "A valid key authorizes that client to use the MCP endpoint; an invalid or revoked key is rejected.",
+      "manage": "Create a separate key for each client so you can revoke one connection without interrupting the others. With no keys, Access Keys do not protect the endpoint.",
+      "caution": "Treat keys as passwords. Query-string keys may appear in browser history and infrastructure logs; prefer the header and revoke any exposed key."
+    },
+    "baseUrl": {
+      "intro": "The root address of the upstream API Arthur calls for this server. Arthur combines it with each Tool path to build the final request URL.",
+      "whenTitle": "Update it when:",
+      "environment": "Moving the same Tools between environments, such as staging and production.",
+      "domain": "The upstream API moves to another domain or subdomain.",
+      "version": "Testing the same Tools against another API version hosted at a different root URL.",
+      "steps": "Enter the protocol and host, plus any shared path prefix. Keep Tool-specific paths, path parameters, and query strings in each Tool. Save the field, then run a Tool to verify the complete URL.",
+      "result": "The saved URL is applied to subsequent upstream calls from every Tool in this server.",
+      "troubleshoot": "If calls return 404, check for a missing or duplicated path segment. For connection failures, verify DNS, protocol, port, and whether the Arthur host can reach the upstream API."
+    },
     "tools": {
       "intro": "Each tool maps one API endpoint to a specific action your AI can take — for example 'search for a contact', 'create a ticket', or 'get order details'. The AI reads every tool name and description before deciding which one to call. A server with zero tools means the AI has nothing to do — create tools before connecting an AI client.",
       "naming": "Tool names are the primary signal the AI uses to understand what each action does. Use short, specific names that describe both the action and its subject: get_customer_by_id, create_invoice, list_open_orders. Avoid generic names like do_action or api_call — the AI cannot reliably tell tools apart when names are vague or overlap with each other.",
       "betterDesc": "Write descriptions the way you would explain the function to a junior developer. Instead of 'Get user', write 'Fetch a user account by their numeric ID — returns name, email, role, status, and last login date.' Mention what data comes back, what happens on failure, and any important limits such as 'max 100 results per page'. The AI uses descriptions to decide both whether to call a tool and how to fill in its parameters correctly.",
       "parameters": "Each tool has input parameters that the AI fills in automatically from context. Give every parameter a clear name and description. 'user_id (integer): the numeric ID of the user to fetch' is far better than just 'id'. If a parameter only accepts a fixed set of values — like a status field — list all accepted values in the description so the AI never has to guess.",
       "disable": "Use Disable to hide a tool from the AI without deleting it. The tool stays fully configured but becomes invisible to all AI clients. Useful when an endpoint is temporarily down, in maintenance, or too sensitive to expose to automation. Re-enable it instantly when you are ready — no reconfiguration needed.",
+      "result": "The expected result is a focused Tool catalog where an AI client can choose the correct operation and construct valid input without guessing.",
       "troubleshoot": "If the AI calls the wrong tool: check that tool names are unique and unambiguous across the server. If the AI fills in parameters incorrectly: add concrete examples and the full list of accepted values to the parameter description. If a tool consistently returns errors: open the Activity Log tab to see the raw error response from the upstream API and diagnose from there."
     },
     "activity": {
@@ -608,12 +704,14 @@
       "responseTime": "Response time — how long the upstream API took to respond, in milliseconds. Under 1,000 ms is healthy. 1,000–3,000 ms turns orange and signals a slow upstream API. Over 3,000 ms turns red — consider raising the server default timeout in Settings, or investigate what is slowing the upstream service.",
       "sources": "Source column — MCP means the call originated from an AI client (Claude, ChatGPT, a custom agent, etc.) through the MCP protocol. Direct means the call was made via the REST API, typically from your own code, a CI script, or a manual test with curl.",
       "whenErrors": "Diagnosing red rows: note the HTTP status code in the error message. 401 or 403 means authentication is wrong or a key has expired. 404 means the endpoint path does not exist on the upstream API — check the tool path and the server base URL. 5xx means the upstream service itself is having problems. A timeout with no status code means Arthur gave up waiting — increase the timeout in Settings.",
+      "result": "Use this history after connecting a client or changing configuration: a successful test should create a green row for the expected Tool with a reasonable response time.",
       "retention": "Logs are kept for 7 days and are not exportable from the UI. For longer retention or structured log access, configure your infrastructure to forward server logs to an external observability platform such as Datadog, Grafana Loki, or CloudWatch."
     },
     "aiView": {
       "desc": "This is the exact payload your AI client receives when it connects to this server over the MCP protocol — the full list of tools, their parameter schemas, and the descriptions the AI reads to understand what each action does. What you see here is precisely what the AI works from, nothing more and nothing less.",
       "howAiDecides": "When you send a message to the AI, it scans every tool name and description shown here to decide which tool to call and what values to pass as parameters. If two tools have similar names the AI may pick the wrong one. If a description is vague the AI may guess at parameter values — sometimes incorrectly. This view lets you audit exactly what the AI sees before a problem surfaces in production.",
-      "improving": "To improve AI accuracy: make tool names unique and specific, add concrete examples in descriptions ('e.g. customer_id: 123 for John Smith'), list all accepted values for enum-style parameters, and describe what each tool returns and what errors it can raise. After editing tools, return to this view to verify the changes look exactly as intended — the AI sees the updated version immediately on its next connection."
+      "improving": "To improve AI accuracy: make tool names unique and specific, add concrete examples in descriptions ('e.g. customer_id: 123 for John Smith'), list all accepted values for enum-style parameters, and describe what each tool returns and what errors it can raise. After editing tools, return to this view to verify the changes look exactly as intended — the AI sees the updated version immediately on its next connection.",
+      "result": "When this view is clear and complete, connect the AI client and ask it to perform one narrow task. If it cannot find or correctly fill a Tool shown here, improve that Tool's name, description, or parameter schema."
     },
     "responseLimit": {
       "intro": "By default, Arthur passes the full upstream API response to the AI without any size restrictions. Enable this panel to activate truncation limits for this server only — useful when APIs return very large payloads that exceed your AI client's context window.",
@@ -626,7 +724,10 @@
       "arraySliceText": "Arrays are sliced to the first N items. A note is appended showing how many items were omitted.",
       "errorLenTitle": "Error body (chars):",
       "errorLenText": "Maximum length of the body included in error responses (HTTP 4xx/5xx). Keep it short to avoid flooding the AI with long error pages.",
-      "toggleText": "Changes save automatically. Disable the toggle to turn off all limits and restore full raw responses."
+      "toggleText": "Changes save automatically. Disable the toggle to turn off all limits and restore full raw responses.",
+      "steps": "Enable limits, start with values that preserve the fields the AI needs, and test a representative large response. Adjust one limit at a time if important data is omitted.",
+      "result": "The AI receives a smaller response with truncation indicators instead of an oversized payload.",
+      "troubleshoot": "If the AI loses required context, increase the relevant limit or narrow the upstream response. Disabling this panel restores the full upstream payload."
     },
     "rateLimit": {
       "intro": "Caps the number of MCP requests this server accepts per minute. When the limit is exceeded, the server responds with HTTP 429 (Too Many Requests) and a Retry-After header — the AI client should wait before retrying.",
@@ -641,7 +742,9 @@
       "fairText": "if multiple AI clients share this endpoint, a limit ensures no single client monopolises the quota.",
       "howTitle": "How to set the right limit:",
       "howText": "check your upstream API's documented rate limit (e.g. 100 req/min) and set Arthur's limit slightly below it to leave headroom. Start conservative and increase if the AI frequently hits 429.",
-      "toggleText": "Toggle the switch to Inactive to disable rate limiting entirely. Changes save automatically."
+      "toggleText": "Toggle the switch to Inactive to disable rate limiting entirely. Changes save automatically.",
+      "result": "Requests within the configured minute proceed normally; excess requests receive HTTP 429 and Retry-After.",
+      "troubleshoot": "If legitimate traffic receives frequent 429 responses, compare Activity with the upstream quota and raise the limit only when the upstream service and budget can support it."
     },
     "retryPolicy": {
       "intro": "When a tool call fails, Arthur can automatically retry it before returning an error to the AI.",
@@ -649,19 +752,28 @@
       "fixed": "waits the same delay between every retry.",
       "linear": "increases the delay by the initial delay on each attempt (e.g. 500ms -> 1000ms -> 1500ms).",
       "exponential": "doubles the delay on each attempt (e.g. 500ms -> 1000ms -> 2000ms). Best for rate-limit errors.",
-      "safeCodes": "Only retry on codes that are safe to retry (idempotent calls). Avoid retrying POST calls that modify state unless the upstream API is idempotent."
+      "safeCodes": "Only retry on codes that are safe to retry (idempotent calls). Avoid retrying POST calls that modify state unless the upstream API is idempotent.",
+      "steps": "Enable the policy, choose the maximum retries and initial delay, select a backoff strategy, then list only the HTTP status codes your upstream API says are transient.",
+      "result": "Arthur retries matching failures automatically and returns either the first successful response or the final error after the retry budget is exhausted.",
+      "caution": "Retries increase latency and can repeat side effects. Use Activity to confirm which status is recurring; do not retry state-changing calls unless the upstream API guarantees idempotency."
     },
     "timeout": {
       "intro": "Sets the maximum time Arthur waits for a tool call to complete before returning a timeout error to the AI.",
       "overrides": "The global timeout applies to all tools. Per-tool overrides let you give more time to known slow endpoints (e.g. a report generation endpoint) or less time to fast ones.",
-      "upstream": "If the upstream API has its own timeout, set Arthur's lower so the AI receives a clean error rather than a dropped connection."
+      "upstream": "If the upstream API has its own timeout, set Arthur's lower so the AI receives a clean error rather than a dropped connection.",
+      "steps": "Set a global timeout for normal calls, then add overrides only for Tools with a proven need for more or less time. Values are in milliseconds.",
+      "result": "Calls that exceed their effective timeout stop and return a clear timeout error to the AI client.",
+      "troubleshoot": "If healthy slow calls time out, inspect Activity and raise only the affected Tool's override. If calls hang too long, lower the value and investigate the upstream service."
     },
     "executionHooks": {
       "intro": "Hooks run automatically before or after every tool call on this server.",
       "inject": "adds a fixed header to every upstream API request (e.g. X-Tenant-ID).",
       "query": "appends a fixed query parameter to every request URL.",
       "log": "records phase, tool name, and timestamp to the activity log — useful for auditing without custom code.",
-      "phases": "Before hooks run before the request is sent. After hooks run after the response is received. Disabled hooks are saved but not executed."
+      "phases": "Before hooks run before the request is sent. After hooks run after the response is received. Disabled hooks are saved but not executed.",
+      "steps": "Add a hook, choose its phase and action, fill the name and value required by that action, then leave it enabled and run a Tool to verify the effect.",
+      "result": "Enabled hooks apply consistently to each matching phase without changing individual Tool definitions.",
+      "caution": "Hooks affect every Tool in this server. Avoid duplicate headers or query parameters, never place secrets in logged values, and disable a hook while diagnosing unexpected upstream requests."
     },
     "inputConstraints": {
       "intro": "Rules that validate or block tool call parameters before the request reaches the upstream API.",
@@ -670,21 +782,30 @@
       "maxLength": "rejects string values longer than the limit.",
       "allowedValues": "rejects values not in a comma-separated whitelist.",
       "regex": "rejects values that do not match the regular expression.",
-      "allTools": "Use * as tool name to apply a rule to all tools."
+      "allTools": "Use * as tool name to apply a rule to all tools.",
+      "steps": "Choose a Tool or *, enter the exact parameter name, select the constraint, supply its comparison value when required, and enable the rule.",
+      "result": "Invalid input is rejected before Arthur sends any request to the upstream API.",
+      "caution": "Parameter names and regex patterns must match exactly. Test both an accepted and rejected value; an overly broad rule can block valid calls across all Tools."
     },
     "outputFiltering": {
       "intro": "Rules that scrub, mask, or remove sensitive data from tool responses before the AI sees them.",
       "mask": "replaces a field's value with a fixed string (e.g. *****). Use to hide secrets while keeping the structure intact.",
       "remove": "deletes the field entirely from the response. Use for internal metadata the AI does not need.",
       "redact": "replaces any string matching a regex with a placeholder. Use to scrub credit card numbers, SSNs, or tokens anywhere in the response.",
-      "paths": "Field paths use dot-notation (e.g. data.user.email). Use * as tool name to apply a rule to all tools."
+      "paths": "Field paths use dot-notation (e.g. data.user.email). Use * as tool name to apply a rule to all tools.",
+      "steps": "Choose a Tool or *, select how to filter, enter the exact field path or regex, and enable the rule. Test with a response that contains the sensitive value.",
+      "result": "Arthur transforms the upstream response before returning it, so the AI receives the masked, removed, or redacted version.",
+      "caution": "Filtering is not a substitute for limiting upstream access. If data still appears, inspect the real response shape and correct the field path or regex; broad regexes can hide useful content."
     },
     "toolRestrictions": {
       "intro": "Rules that restrict how specific tools can be invoked by the AI.",
       "blocked": "prevents the AI from calling this tool entirely. The tool is still visible in the schema but returns an error if invoked.",
       "maxCalls": "limits how many times the AI can invoke a tool within a single conversation session. Useful for expensive or destructive operations.",
       "confirmation": "pauses execution and asks the human user to confirm before the tool is called. Recommended for any tool that writes, deletes, or sends data.",
-      "disabled": "Disabled restrictions are saved but not enforced."
+      "disabled": "Disabled restrictions are saved but not enforced.",
+      "steps": "Choose a Tool, select the restriction, provide its limit when required, and enable it. Use * only when every Tool should receive the same restriction.",
+      "result": "Arthur checks the restriction before execution and rejects or pauses calls that do not satisfy it.",
+      "caution": "Test from the intended AI client. If a restriction seems ignored, confirm it is enabled and targets the exact Tool name; if legitimate calls stop, check whether a * rule also applies."
     }
   },
   "days": {
@@ -739,8 +860,11 @@
     "helpBasic": "Basic Auth: Adds Authorization: Basic <base64(username:password)>. Used by some legacy APIs and services like Jira or Confluence.",
     "helpOAuth": "OAuth2 Client Credentials: Arthur fetches a Bearer token automatically using your client ID and secret, and renews it before it expires. Use for machine-to-machine integrations where no user is involved.",
     "helpCustom": "Custom Headers: Add any arbitrary HTTP headers. Useful for APIs with non-standard authentication schemes or when you need to pass multiple headers.",
+    "helpSteps": "Choose the authentication type documented by the upstream API, complete the fields it exposes, wait for the saved indicator, then run a Tool that requires authentication.",
+    "helpResult": "Arthur adds the configured credential only when it calls the upstream API; the AI client receives the Tool result without receiving this credential.",
     "helpSecurity": "Important security note: credentials are stored encrypted in the database. Use tokens and keys with the minimum required scope — if a credential is exposed, a limited-scope key reduces the blast radius.",
     "helpSeparation": "These credentials are completely separate from the MCP Authentication key (which protects the MCP endpoint). One controls who can call Arthur; the other controls how Arthur calls your API.",
+    "helpTroubleshoot": "For upstream 401 or 403 errors, verify the selected type, header or parameter name, token expiry, scopes, and client credentials. MCP connection errors belong to Access Keys or OAuth Client instead.",
     "typeLabel": "Authentication type",
     "typeNone": "None (public API)",
     "typeBearer": "Bearer Token",

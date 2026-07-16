@@ -319,6 +319,7 @@
     "apiKeyScheme": "MCP API key",
     "oauthClientCredentialsScheme": "OAuth client credentials",
     "oauthClientAvailable": "OAuth client",
+    "externalOauthAvailable": "External OAuth/OIDC",
     "noOauthClientAvailable": "No OAuth client",
     "apiKeyLabel": "Value",
     "apiKeyHelper": "The key stays in your browser and is sent as the auth header for simulator requests.",
@@ -410,7 +411,13 @@
       "generatedItem3Suffix": "fields.",
       "generatedItem4": "Input parameters (path, query, body) mapped to the MCP tool's parameter schema.",
       "tipStrong": "Tip:",
-      "tipBody": "The richer your spec's descriptions, the better the AI will understand when and how to use each tool. After import you can edit any tool individually from the server's Tools tab."
+      "tipBody": "The richer your spec's descriptions, the better the AI will understand when and how to use each tool. After import you can edit any tool individually from the server's Tools tab.",
+      "successTitle": "How to verify the import:",
+      "successBody": "A success message shows the server name and number of generated tools. Open the server, review its Tools, confirm the base URL and source authentication, then make a test call before connecting an AI client.",
+      "troubleshootingTitle": "If the import does not look right:",
+      "troubleshootingFormat": "If the file is rejected, validate that it is OpenAPI 3.x or Swagger 2.0 and valid YAML or JSON with a .yaml, .yml, or .json extension.",
+      "troubleshootingUrl": "If generated calls target the wrong host, import again with the correct Base URL override or correct the connection after import.",
+      "troubleshootingDescriptions": "If tools have unclear names or parameters, improve operationId, summary, description, and parameter definitions in the spec, or edit the generated tools before use."
     }
   },
   "newServer": {
@@ -515,19 +522,25 @@
     }
   },
   "help": {
-    "intro": "A server is the central concept in Arthur MCP. Each server represents one external API — such as your CRM, payment provider, internal microservice, or database — adapted to the MCP protocol so that AI clients (Claude, ChatGPT, custom agents) can query and interact with it naturally in any conversation, without the user needing to switch between tools.",
+    "intro": "A server turns a connected data source into an MCP endpoint that an AI client can use. The source can be a REST or GraphQL API, a database, or static content. Open a server card to configure what the AI may call or read.",
     "howItWorks": "How it works, end-to-end:",
-    "step1": "Create a server and give it a name and base URL — the root address of the API you want to connect (e.g. https://api.my-crm.com). The base URL is prepended to every tool's endpoint path, so you only need to set it once.",
-    "step2": "Add tools — either manually (one endpoint at a time) or by importing an OpenAPI / Swagger spec to auto-generate all tools at once. Each tool maps one API endpoint to a callable function the AI can invoke, complete with parameter names and descriptions.",
-    "step3": "Configure authentication so Arthur knows how to identify itself to the API — for example, a Bearer token, Basic auth, or an API key header. Without authentication, calls to protected APIs will return 401 errors.",
-    "step4": "Copy the MCP endpoint URL from the server's Connect tab and paste it into your AI client's server configuration. Each AI client has a different interface for this — check the client's documentation if you are unsure where to paste the URL.",
-    "step5": "Once connected, the AI discovers all enabled tools automatically and can call them in any conversation. The user just asks naturally — 'look up customer 123' — and the AI picks the right tool, fills in the parameters, and returns the result.",
+    "step1": "Choose New server, start from a template, or import an OpenAPI/Swagger file. Select the source type and enter the connection details requested by the creation flow.",
+    "step2": "Open the new server and define Operations for the source, then expose the capabilities the AI needs as Tools, Resources, or Prompts. REST imports may generate tools from the specification for you.",
+    "step3": "Configure the source credential where required. This is how Arthur connects to the source and is separate from the Access Key or OAuth configuration that protects the MCP endpoint.",
+    "step4": "In Connect, copy the MCP endpoint URL and configure access for the AI client. Use an Access Key or OAuth when the endpoint must not be public.",
+    "step5": "Connect the AI client and ask it to use one enabled Tool. Arthur records the call in the server's Activity section so you can confirm the result.",
     "cardIndicators": "Card indicators — what each element on a server card means:",
-    "colouredDot": "Coloured dot (top-right): health traffic light based on the last hour of activity. Green = all requests succeeded. Yellow = some errors (1–19% failure rate). Red = high error rate (20%+), needs attention. Grey = no activity in the last hour, or the server is paused.",
-    "activePaused": "Active / Paused chip: Active means the server is accepting requests from AI clients right now. Paused means it is temporarily offline — all calls will be rejected until you re-enable it. Pausing is useful during maintenance or when an upstream API is down.",
-    "toolCount": "Tool count: how many enabled MCP tools are registered on this server. Zero tools means no AI client can do anything useful with this server — add at least one tool before connecting an AI. Disabled tools do not count toward this number.",
+    "colouredDot": "Source icon: identifies the kind of source connected to the server, such as REST, GraphQL, database, or static content. It describes the connection type, not its health.",
+    "activePaused": "Status chip: Active means the server is available; Error indicates a saved server state that needs review; Paused means MCP calls are temporarily blocked until you resume it. Open the server and check Activity for runtime call health.",
+    "toolCount": "Capability counts: show how many Tools, Resources, and Prompts are configured. A zero Tool count means the AI has no callable action on this server, although it may still read Resources or use Prompts.",
     "tags": "Tags: custom labels you define for organisation and filtering. Use them to group servers by team, environment (production, staging), or the API type they connect to. Click a tag on the filter bar above to show only servers with that tag.",
-    "newServerHint": "Click New server to open the creation wizard. You can fill in the server details manually, or drop an OpenAPI/Swagger spec file to auto-generate all tools, parameters, and descriptions in one step. After creation, go to the server's Connect tab to get the MCP endpoint URL."
+    "successTitle": "How to verify the setup:",
+    "success": "The server appears in this list, at least one intended capability is enabled, the AI client connects through the URL shown in Connect, and a test call appears in Activity without an error.",
+    "troubleshootingTitle": "If it does not work:",
+    "troubleshootingNoTools": "If the client connects but cannot do anything, confirm that the server has an enabled Tool and that its name, description, and parameters are clear.",
+    "troubleshootingErrors": "For 401 or 403 errors, distinguish source authentication from MCP access: check the source credential, then the Access Key or OAuth configuration in Connect.",
+    "troubleshootingMissing": "If a server or action is missing, clear the search/tag filter and confirm that your role has the required view or edit permission.",
+    "newServerHint": "Deleting a server also removes its configured capabilities and breaks active client connections. Duplicate a server when you need a safe starting point for a variation."
   },
   "period": {
     "24h": "Today",

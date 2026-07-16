@@ -186,7 +186,7 @@ export default function NewAiProvider() {
   if (existingProvider) {
     return (
       <Box maxWidth={720} mx="auto">
-        <Box display="flex" alignItems="center" gap={1.5} mb={4}>
+        <Box display="flex" flexWrap="wrap" alignItems="center" gap={1.5} mb={4}>
           <Button
             size="small"
             startIcon={<IconArrowLeft size={16} />}
@@ -209,7 +209,7 @@ export default function NewAiProvider() {
 
   return (
     <Box maxWidth={720} mx="auto">
-      <Box display="flex" alignItems="center" gap={1.5} mb={4}>
+      <Box display="flex" flexWrap="wrap" alignItems="center" gap={1.5} mb={4}>
         <Button
           size="small"
           startIcon={<IconArrowLeft size={16} />}
@@ -327,6 +327,7 @@ export default function NewAiProvider() {
             <Grid item xs={12}>
               <TextField
                 size="small" fullWidth
+                type="url"
                 label={t('aiProviders:label.baseUrl')}
                 value={form.baseUrl}
                 onChange={(e) => setField('baseUrl', e.target.value)}
@@ -395,7 +396,7 @@ export default function NewAiProvider() {
             {form.baseUrl && (
               <Box>
                 <Typography variant="caption" color="text.secondary" fontWeight={700}>{t('aiProviders:label.baseUrl')}</Typography>
-                <Typography variant="body2" fontFamily="monospace" fontSize="0.875rem">{form.baseUrl}</Typography>
+                <Typography variant="body2" fontFamily="monospace" fontSize="0.875rem" sx={{ overflowWrap: 'anywhere' }}>{form.baseUrl}</Typography>
               </Box>
             )}
             {form.isDefault && (

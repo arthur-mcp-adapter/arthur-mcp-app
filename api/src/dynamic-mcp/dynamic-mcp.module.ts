@@ -7,9 +7,10 @@ import { ProjectStateGuard } from './project-state.guard';
 import { ExecutionLogsModule } from '../execution-logs/execution-logs.module';
 import { ErrorTrackingModule } from '../error-tracking/error-tracking.module';
 import { SettingsModule } from '../settings/settings.module';
+import { OAuthModule } from '../oauth/oauth.module';
 
 @Module({
-  imports: [ExecutionLogsModule, ErrorTrackingModule, SettingsModule],
+  imports: [ExecutionLogsModule, ErrorTrackingModule, SettingsModule, OAuthModule],
   controllers: [DynamicMcpController],
   providers: [DynamicMcpService, McpApiKeyGuard, RateLimitGuard, ProjectStateGuard],
   exports: [DynamicMcpService],

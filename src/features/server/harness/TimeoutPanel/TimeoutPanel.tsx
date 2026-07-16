@@ -94,9 +94,9 @@ export function TimeoutPanel({ projectId, tools }: TimeoutPanelProps) {
               <Typography variant="body2" gutterBottom>
                 {t('help.timeout.overrides')}
               </Typography>
-              <Typography variant="body2">
-                {t('help.timeout.upstream')}
-              </Typography>
+              <Typography variant="body2" gutterBottom>{t('help.timeout.steps')}</Typography>
+              <Typography variant="body2" gutterBottom>{t('help.timeout.result')}</Typography>
+              <Typography variant="body2">{t('help.timeout.troubleshoot')}</Typography>
             </HelpButton>
           </Box>
           <Typography variant="caption" color="text.secondary">
@@ -126,7 +126,7 @@ export function TimeoutPanel({ projectId, tools }: TimeoutPanelProps) {
             {t('label.perToolOverrides')}
           </Typography>
           {config.overrides.map((override, idx) => (
-            <Box key={idx} display="flex" gap={1} alignItems="center" mb={1}>
+            <Box key={idx} display="flex" gap={1} alignItems="center" mb={1} flexWrap="wrap">
               <FormControl size="small" sx={{ flex: 2 }}>
                 <InputLabel>{t('logs.tool')}</InputLabel>
                 <Select

@@ -330,10 +330,17 @@ export default function ServerDetail() {
           )}
           <OAuthClientPanel
             projectId={id!}
+            shareSlug={project.shareSlug}
             initialClientId={project.oauthClientId}
             initialClientSecret={project.oauthClientSecret}
+            initialConfig={project.oauthConfig}
             serverBase={backendUrl('')}
-            onChange={(cid, csec) => setProject((prev) => prev ? { ...prev, oauthClientId: cid ?? undefined, oauthClientSecret: csec ?? undefined } : prev)}
+            onChange={(cid, csec, oauthConfig) => setProject((prev) => prev ? {
+              ...prev,
+              oauthClientId: cid ?? undefined,
+              oauthClientSecret: csec ?? undefined,
+              oauthConfig,
+            } : prev)}
           />
         </>
       )}
@@ -394,6 +401,7 @@ export default function ServerDetail() {
                 <Typography variant="body2" gutterBottom>{t('help.tools.betterDesc')}</Typography>
                 <Typography variant="body2" gutterBottom>{t('help.tools.parameters')}</Typography>
                 <Typography variant="body2" gutterBottom>{t('help.tools.disable')}</Typography>
+                <Typography variant="body2" gutterBottom>{t('help.tools.result')}</Typography>
                 <Typography variant="body2">{t('help.tools.troubleshoot')}</Typography>
               </HelpButton>
             </Box>
@@ -548,6 +556,7 @@ export default function ServerDetail() {
                 <Box component="li"><Typography variant="body2">{t('help.activity.sources')}</Typography></Box>
               </Box>
               <Typography variant="body2" gutterBottom>{t('help.activity.whenErrors')}</Typography>
+              <Typography variant="body2" gutterBottom>{t('help.activity.result')}</Typography>
               <Typography variant="body2">{t('help.activity.retention')}</Typography>
             </HelpButton>
           </Box>
@@ -563,7 +572,8 @@ export default function ServerDetail() {
             <HelpButton title={t('heading.whatAiSees')}>
               <Typography variant="body2" gutterBottom>{t('help.aiView.desc')}</Typography>
               <Typography variant="body2" gutterBottom>{t('help.aiView.howAiDecides')}</Typography>
-              <Typography variant="body2">{t('help.aiView.improving')}</Typography>
+              <Typography variant="body2" gutterBottom>{t('help.aiView.improving')}</Typography>
+              <Typography variant="body2">{t('help.aiView.result')}</Typography>
             </HelpButton>
           </Box>
           <McpDocsContent project={project} projectId={id!} />
