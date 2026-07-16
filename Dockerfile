@@ -1,5 +1,5 @@
 # ── Stage 1: build frontend ───────────────────────────────────────────────────
-FROM node:20-alpine AS frontend-builder
+FROM node:22-alpine AS frontend-builder
 WORKDIR /app
 # Vite inlines these at build time; without them the bundle falls back to the
 # localhost placeholder in src/supabaseClient.ts and auth breaks silently.
@@ -13,7 +13,7 @@ COPY . .
 RUN npm run build
 
 # ── Stage 2: build backend ────────────────────────────────────────────────────
-FROM node:20-alpine AS backend-builder
+FROM node:22-alpine AS backend-builder
 WORKDIR /app
 RUN apk add --no-cache python3 make g++
 COPY api/package*.json ./
@@ -22,7 +22,7 @@ COPY api/ .
 RUN npm run build && npm prune --omit=dev
 
 # ── Stage 3: runner ───────────────────────────────────────────────────────────
-FROM node:20-alpine
+FROM node:22-alpine
 ARG GIT_SHA=unknown
 ARG VERSION=dev
 LABEL org.opencontainers.image.source="https://github.com/arthur-mcp-adapter/arthur-mcp-app" \

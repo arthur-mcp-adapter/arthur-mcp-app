@@ -205,7 +205,7 @@ Objetivo: gerar uma imagem imutável, segura e reproduzível.
 
 Tarefas no Dockerfile:
 
-1. Usar Node.js 20 em versão controlada.
+1. Usar Node.js 22 em versão controlada, conforme exigido pelo SDK atual do Supabase.
 2. Usar `npm ci` com os lockfiles existentes.
 3. Manter dependências de compilação somente nos stages de build.
 4. Copiar somente artefatos e dependências necessárias para o runner.

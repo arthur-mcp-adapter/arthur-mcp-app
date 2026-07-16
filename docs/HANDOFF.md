@@ -756,6 +756,14 @@ Supabase Auth is now the sole identity provider (Phases 1-4 of the identity migr
 - `npx vitest run` (frontend, full suite) passed 91/91 tests across 14 files after the Supabase Auth SDK cutover (rewrote `api.test.ts`, `Login.test.tsx`, `context.test.tsx` to mock `src/supabaseClient.ts`/`onAuthStateChange` instead of the old endpoints).
 - `npm run type-check` (frontend structural gate) reported 16 pre-existing violations unrelated to this session (`src/features/server/operations`, and `SocialAuthButtons`/`OAuthCallback`/`Signup` already being flat `index.tsx` without a named-file+barrel split before this session touched their contents) — confirmed pre-existing by reading each file before editing; not fixed, to avoid mixing an unrelated structural refactor into this change. The one violation this session actually introduced (`src/supabaseClient.ts` exporting two symbols) was fixed by splitting `supabaseConfigured` into its own `src/supabaseConfigured.constant.ts`.
 
+## 2026-07-15 — Supabase rejected-session diagnostics and reload-loop guard
+
+- Fixed the frontend 401 interceptor so it waits for `supabase.auth.signOut()` before navigating to `/login` and deduplicates concurrent unauthorized responses. This prevents a rejected persisted session from being restored during an immediate reload and repeatedly calling `GET /api/users/me`.
+- Added privacy-safe backend diagnostics for rejected Supabase access tokens. Logs include only signing algorithm, key id, issuer, expiration, and the SDK error code/message; access tokens and identity claims are never logged.
+- Identified the root cause from those diagnostics: JWT verification succeeded, but `@supabase/supabase-js` could not construct its Realtime client under Node 20 because that runtime has no native WebSocket. Updated every Docker stage from Node 20 Alpine to Node 22 Alpine, matching the SDK's declared runtime requirement.
+- Updated the Authentication flow documentation. No endpoint, permission, data, or user-facing copy contract changed.
+- Validation: `npm test -- --run src/api.test.ts` passed (1 file, 5 tests); `npx tsc -p api/tsconfig.json --noEmit` passed; the Node 22 Docker image built successfully; the rebuilt container reports Node `v22.23.1`; `/health` returned HTTP 200; direct construction of both `createContextClient()` and `createAdminClient()` succeeded in the production container.
+
 ## Recommended Next Step
 
 **Do not run the Phase 5 table-drop migration yet.** Before it's safe:

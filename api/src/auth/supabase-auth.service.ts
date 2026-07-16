@@ -33,13 +33,42 @@ export interface RequestUser {
 export class SupabaseAuthService {
   private readonly logger = new Logger(SupabaseAuthService.name);
 
+  private decodeJwtPart(part: string): Record<string, unknown> | null {
+    try {
+      return JSON.parse(Buffer.from(part, 'base64url').toString('utf8')) as Record<string, unknown>;
+    } catch {
+      return null;
+    }
+  }
+
+  private logRejectedTokenMetadata(token: string, error: { code?: string; message?: string } | null): void {
+    const [encodedHeader, encodedPayload] = token.split('.');
+    const header = encodedHeader ? this.decodeJwtPart(encodedHeader) : null;
+    const payload = encodedPayload ? this.decodeJwtPart(encodedPayload) : null;
+
+    // Never log the token or identity claims. These fields are enough to diagnose signing-key,
+    // issuer, and expiration mismatches without exposing a reusable credential or user data.
+    this.logger.warn({
+      message: 'Supabase access token rejected',
+      authErrorCode: error?.code,
+      authErrorMessage: error?.message,
+      algorithm: header?.alg,
+      keyId: header?.kid,
+      issuer: payload?.iss,
+      expiresAt: payload?.exp,
+    });
+  }
+
   async tryAuthenticate(token: string | undefined): Promise<RequestUser | null> {
     if (!token) return null;
 
     const { createSupabaseContext } = await import('@supabase/server');
     const fakeRequest = new Request('http://localhost/', { headers: { authorization: `Bearer ${token}` } });
     const { data: auth, error } = await createSupabaseContext(fakeRequest, { auth: 'user' });
-    if (error || !auth?.userClaims?.email) return null;
+    if (error || !auth?.userClaims?.email) {
+      this.logRejectedTokenMetadata(token, error);
+      return null;
+    }
 
     const claims = auth.userClaims;
     return {

@@ -288,7 +288,7 @@ Guard Rails is the safety layer that constrains what the AI is allowed to send a
 
 ### Prerequisites
 
-- Node.js 20 or newer is recommended.
+- Node.js 22 or newer is required by the current Supabase SDK.
 - npm.
 - Docker is optional, but useful for local infrastructure.
 

@@ -3,6 +3,7 @@ import { API_BASE_URL } from './config/urls'
 import { supabase } from './supabaseClient'
 
 const api = axios.create({ baseURL: API_BASE_URL })
+let handlingUnauthorized = false
 
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token')
@@ -12,13 +13,19 @@ api.interceptors.request.use((config) => {
 
 api.interceptors.response.use(
   (res) => res,
-  (err) => {
-    if (err.response?.status === 401) {
+  async (err) => {
+    if (err.response?.status === 401 && !handlingUnauthorized) {
+      handlingUnauthorized = true
       // Also sign out of Supabase, not just clear the mirrored token — otherwise its own
       // session store still holds a (backend-rejected) session and resurrects `token` on reload.
-      supabase.auth.signOut()
       localStorage.removeItem('token')
-      window.location.href = '/login'
+      await supabase.auth.signOut()
+
+      if (window.location.pathname !== '/login') {
+        window.location.href = '/login'
+      } else {
+        handlingUnauthorized = false
+      }
     }
     return Promise.reject(err)
   },

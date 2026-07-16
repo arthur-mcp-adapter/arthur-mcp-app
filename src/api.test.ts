@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 
-const signOut = vi.hoisted(() => vi.fn());
+const signOut = vi.hoisted(() => vi.fn().mockResolvedValue(undefined));
 vi.mock('./supabaseClient', () => ({ supabase: { auth: { signOut } } }));
 
 describe('api client', () => {
