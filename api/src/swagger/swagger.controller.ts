@@ -17,6 +17,8 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from '../auth/jwt.guard';
+import { RequirePermission } from '../common/decorators/require-permission.decorator';
+import { PermissionsGuard } from '../common/guards/permissions.guard';
 import type { AuthConfig, DbConnectionConfig, DbQuery, EndpointRef, ExecutionRef } from '../dynamic-mcp/types';
 import { SwaggerService } from './swagger.service';
 import {
@@ -238,6 +240,8 @@ export class SwaggerController {
   }
 
   @Patch('servers/:id/oauth-client')
+  @UseGuards(PermissionsGuard)
+  @RequirePermission('servers_edit_settings')
   updateOAuthClient(
     @Param('id') id: string,
     @Body() dto: OAuthClientDto,

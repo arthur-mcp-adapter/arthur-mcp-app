@@ -56,6 +56,9 @@ export class SwaggerProjectEntity {
   @Column({ name: 'oauth_client_secret', nullable: true })
   oauthClientSecret?: string;
 
+  @Column('text', { name: 'oauth_config', default: '{"mode":"none"}' })
+  oauthConfig: string;
+
   @Column('text', { name: 'tags', default: '[]' })
   tags: string;
 

@@ -5,6 +5,7 @@ import { ERROR_TRACKING_PROVIDER_REPO } from '../database/database.tokens'
 import type { IErrorTrackingProviderRepository, ErrorTrackingProviderRecord } from './error-tracking-provider.repository'
 import type { CreateErrorTrackingProviderDto } from './dto/create-error-tracking-provider.dto'
 import type { UpdateErrorTrackingProviderDto } from './dto/update-error-tracking-provider.dto'
+import { redactSensitiveQueryParams } from '../common/redact-sensitive-query-params.util'
 
 export interface ToolErrorContext {
   serverId: string
@@ -106,7 +107,7 @@ export class ErrorTrackingService {
           scope.setExtra('request', {
             method: ctx.request.method,
             path: ctx.request.path,
-            originalUrl: ctx.request.originalUrl,
+            originalUrl: redactSensitiveQueryParams(ctx.request.originalUrl),
             ip: ctx.request.ip,
           })
         }

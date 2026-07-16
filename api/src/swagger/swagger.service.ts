@@ -68,6 +68,7 @@ export interface ShareProjectInfo {
   shareSlug?: string | null;
   hasKey: boolean;
   hasOAuthClient: boolean;
+  oauthMode: 'none' | 'managed' | 'external';
   description?: string;
   version?: string;
   status: string;
@@ -280,11 +281,76 @@ export class SwaggerService {
 
   async updateOAuthClient(
     id: string,
-    dto: { oauthClientId: string | null; oauthClientSecret: string | null },
+    dto: {
+      mode?: 'none' | 'managed' | 'external';
+      oauthClientId: string | null;
+      oauthClientSecret: string | null;
+      issuer?: string;
+      authorizationUrl?: string;
+      tokenUrl?: string;
+      jwksUrl?: string;
+      introspectionUrl?: string;
+      introspectionClientId?: string;
+      introspectionClientSecret?: string;
+      audience?: string;
+      scopes?: string[];
+    },
   ): Promise<SwaggerProjectRecord> {
+    const mode = dto.mode ?? (dto.oauthClientId && dto.oauthClientSecret ? 'managed' : 'none');
+    if (!['none', 'managed', 'external'].includes(mode)) {
+      throw new BadRequestException('Invalid OAuth mode.');
+    }
+
+    const cleanUrl = (value?: string): string | undefined => value?.trim() || undefined;
+    const assertOAuthUrl = (label: string, value?: string): string => {
+      const normalized = cleanUrl(value);
+      if (!normalized) throw new BadRequestException(`${label} is required.`);
+      let parsed: URL;
+      try {
+        parsed = new URL(normalized);
+      } catch {
+        throw new BadRequestException(`${label} must be a valid URL.`);
+      }
+      const localHttp = parsed.protocol === 'http:' && ['localhost', '127.0.0.1', '::1'].includes(parsed.hostname);
+      if (parsed.protocol !== 'https:' && !localHttp) {
+        throw new BadRequestException(`${label} must use HTTPS (HTTP is allowed only for localhost).`);
+      }
+      return normalized;
+    };
+
+    if (mode === 'managed' && (!dto.oauthClientId?.trim() || !dto.oauthClientSecret?.trim())) {
+      throw new BadRequestException('Client ID and Client Secret are required for Arthur-managed OAuth.');
+    }
+
+    const oauthConfig = mode === 'external'
+      ? {
+          mode: 'external' as const,
+          issuer: assertOAuthUrl('Issuer URL', dto.issuer),
+          authorizationUrl: assertOAuthUrl('Authorization URL', dto.authorizationUrl),
+          tokenUrl: assertOAuthUrl('Token URL', dto.tokenUrl),
+          jwksUrl: cleanUrl(dto.jwksUrl) ? assertOAuthUrl('JWKS URL', dto.jwksUrl) : undefined,
+          introspectionUrl: cleanUrl(dto.introspectionUrl) ? assertOAuthUrl('Introspection URL', dto.introspectionUrl) : undefined,
+          introspectionClientId: dto.introspectionClientId?.trim() || undefined,
+          introspectionClientSecret: dto.introspectionClientSecret?.trim() || undefined,
+          audience: dto.audience?.trim() || '',
+          scopes: (dto.scopes ?? []).map((scope) => scope.trim()).filter(Boolean),
+        }
+      : { mode } as const;
+
+    if (oauthConfig.mode === 'external') {
+      if (!oauthConfig.audience) throw new BadRequestException('Audience/Resource is required for external OAuth.');
+      if (!oauthConfig.jwksUrl && !oauthConfig.introspectionUrl) {
+        throw new BadRequestException('Configure either a JWKS URL or an Introspection URL.');
+      }
+      if (oauthConfig.introspectionUrl && (!oauthConfig.introspectionClientId || !oauthConfig.introspectionClientSecret)) {
+        throw new BadRequestException('Introspection Client ID and Client Secret are required when introspection is configured.');
+      }
+    }
+
     const server = await this.projectRepo.update(id, {
-      oauthClientId: dto.oauthClientId,
-      oauthClientSecret: dto.oauthClientSecret,
+      oauthClientId: mode === 'managed' ? dto.oauthClientId?.trim() || null : null,
+      oauthClientSecret: mode === 'managed' ? dto.oauthClientSecret?.trim() || null : null,
+      oauthConfig,
     });
     if (!server) throw new NotFoundException('Project not found.');
     return server;
@@ -756,6 +822,12 @@ export class SwaggerService {
       };
     });
 
+    const oauthMode = server.oauthConfig?.mode && server.oauthConfig.mode !== 'none'
+      ? server.oauthConfig.mode
+      : server.oauthClientId
+        ? 'managed'
+        : 'none';
+
     return {
       name: server.name,
       description: server.description,
@@ -764,7 +836,8 @@ export class SwaggerService {
       shareSlug: server.shareSlug ?? null,
       mcpUrl: `/api/mcp/server/${server.shareSlug || server._id}`,
       hasKey: (server.mcpApiKeys?.length ?? 0) > 0 || !!server.mcpApiKey,
-      hasOAuthClient: !!server.oauthClientId,
+      hasOAuthClient: oauthMode !== 'none',
+      oauthMode,
       toolCount: tools.length,
       resourceCount: resources.length,
       promptCount: prompts.length,

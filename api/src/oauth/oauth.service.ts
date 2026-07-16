@@ -5,6 +5,7 @@ import { UsersService } from '../users/users.service';
 import { PROJECT_REPO } from '../database/database.tokens';
 import { ISwaggerProjectRepository, SwaggerProjectRecord } from '../swagger/swagger-project.repository';
 import { JwtSecretService } from '../settings/jwt-secret.service';
+import type { OAuthConfig } from './oauth-config.type';
 
 interface AuthCode {
   userId: string;
@@ -27,9 +28,21 @@ export class OAuthService {
     private readonly jwtSecretService: JwtSecretService,
   ) {}
 
+  resolveConfig(server: SwaggerProjectRecord): OAuthConfig {
+    if (server.oauthConfig && server.oauthConfig.mode !== 'none') return server.oauthConfig;
+    return server.oauthClientId ? { mode: 'managed' } : { mode: 'none' };
+  }
+
+  async findServer(serverId: string): Promise<SwaggerProjectRecord | null> {
+    return this.projectRepo.findByIdOrShareSlug(serverId);
+  }
+
   async validateClient(serverId: string, clientId: string, clientSecret?: string): Promise<SwaggerProjectRecord> {
     const server = await this.projectRepo.findByIdOrShareSlug(serverId);
     if (!server) throw new UnauthorizedException('Server not found');
+    if (this.resolveConfig(server).mode !== 'managed') {
+      throw new UnauthorizedException('Arthur-managed OAuth is not enabled for this server');
+    }
     if (!server.oauthClientId) throw new UnauthorizedException('OAuth not configured for this server');
     if (server.oauthClientId !== clientId) throw new UnauthorizedException('invalid_client');
     if (clientSecret !== undefined && server.oauthClientSecret !== clientSecret) {

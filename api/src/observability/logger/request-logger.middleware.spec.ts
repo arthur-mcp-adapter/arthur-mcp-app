@@ -46,4 +46,25 @@ describe('RequestLoggerMiddleware', () => {
 
     expect(logger.write).toHaveBeenCalledWith('error', expect.objectContaining({ statusCode: 503 }));
   });
+
+  it('redacts access keys passed in the auth query parameter', () => {
+    const logger = { write: jest.fn() } as unknown as AppLoggerService;
+    const middleware = new RequestLoggerMiddleware(logger);
+    const req: any = {
+      method: 'POST',
+      originalUrl: '/api/mcp/server/demo?auth=secret-key&mode=test',
+      url: '/api/mcp/server/demo?auth=secret-key&mode=test',
+      get: jest.fn(),
+      ip: '127.0.0.1',
+    };
+    const res: any = new EventEmitter();
+    res.statusCode = 200;
+
+    middleware.use(req, res, jest.fn());
+    res.emit('finish');
+
+    expect(logger.write).toHaveBeenCalledWith('info', expect.objectContaining({
+      path: '/api/mcp/server/demo?auth=[REDACTED]&mode=test',
+    }));
+  });
 });

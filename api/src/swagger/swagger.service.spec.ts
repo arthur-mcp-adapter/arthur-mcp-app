@@ -124,6 +124,57 @@ describe('SwaggerService', () => {
     });
   });
 
+  describe('updateOAuthClient', () => {
+    it('persists an external OAuth provider and clears Arthur-managed credentials', async () => {
+      const updated = makeProject({ oauthConfig: {
+        mode: 'external',
+        issuer: 'https://login.example.com',
+        authorizationUrl: 'https://login.example.com/authorize',
+        tokenUrl: 'https://login.example.com/token',
+        jwksUrl: 'https://login.example.com/jwks',
+        audience: 'https://mcp.example.com/orders',
+        scopes: ['orders.read'],
+      } });
+      mockProjectRepo.update.mockResolvedValue(updated);
+
+      const result = await service.updateOAuthClient('proj-1', {
+        mode: 'external',
+        oauthClientId: null,
+        oauthClientSecret: null,
+        issuer: 'https://login.example.com/',
+        authorizationUrl: 'https://login.example.com/authorize',
+        tokenUrl: 'https://login.example.com/token',
+        jwksUrl: 'https://login.example.com/jwks',
+        audience: 'https://mcp.example.com/orders',
+        scopes: [' orders.read '],
+      });
+
+      expect(mockProjectRepo.update).toHaveBeenCalledWith('proj-1', {
+        oauthClientId: null,
+        oauthClientSecret: null,
+        oauthConfig: expect.objectContaining({
+          mode: 'external',
+          issuer: 'https://login.example.com/',
+          scopes: ['orders.read'],
+        }),
+      });
+      expect(result).toBe(updated);
+    });
+
+    it('requires an audience and either JWKS or introspection for external OAuth', async () => {
+      await expect(service.updateOAuthClient('proj-1', {
+        mode: 'external',
+        oauthClientId: null,
+        oauthClientSecret: null,
+        issuer: 'https://login.example.com',
+        authorizationUrl: 'https://login.example.com/authorize',
+        tokenUrl: 'https://login.example.com/token',
+        audience: '',
+        scopes: [],
+      })).rejects.toThrow(BadRequestException);
+    });
+  });
+
   describe('getProjectForShare', () => {
     it('generates and saves a unique human-readable slug for share links', async () => {
       mockProjectRepo.findById.mockResolvedValue(makeProject({ name: 'Payments API - São Paulo!' }));
@@ -258,6 +309,7 @@ describe('SwaggerService', () => {
       expect(result.resources).toHaveLength(1);
       expect(result.prompts).toHaveLength(1);
       expect(result.hasOAuthClient).toBe(true);
+      expect(result.oauthMode).toBe('managed');
       expect(result.shareSlug).toBe('shared-api');
       expect(result.mcpUrl).toBe('/api/mcp/server/shared-api');
       expect(result.prompts[0]).toEqual(expect.objectContaining({

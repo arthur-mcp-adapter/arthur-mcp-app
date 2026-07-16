@@ -1,9 +1,17 @@
-import { Body, Controller, Get, HttpCode, Param, Post, Query, Req, Res } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, NotFoundException, Param, Post, Query, Req, Res } from '@nestjs/common';
 import type { Request, Response } from 'express';
 import { OAuthService } from './oauth.service';
 
 function escapeHtml(s: string): string {
   return (s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function requestBaseUrl(req: Request): string {
+  const forwardedProto = req.headers['x-forwarded-proto'];
+  const forwardedHost = req.headers['x-forwarded-host'];
+  const protocol = (Array.isArray(forwardedProto) ? forwardedProto[0] : forwardedProto)?.split(',')[0]?.trim() || req.protocol;
+  const host = (Array.isArray(forwardedHost) ? forwardedHost[0] : forwardedHost)?.split(',')[0]?.trim() || req.get('host');
+  return `${protocol}://${host}`;
 }
 
 function loginPage(serverId: string, clientId: string, redirectUri: string, state: string, error?: string): string {
@@ -54,7 +62,7 @@ export class OAuthController {
   /** OAuth 2.0 discovery — lets clients auto-fill auth/token URLs */
   @Get('.well-known/oauth-authorization-server')
   discovery(@Req() req: Request) {
-    const base = `${req.protocol}://${req.get('host')}`;
+    const base = requestBaseUrl(req);
     return {
       issuer: base,
       authorization_endpoint: `${base}/oauth/server/{serverId}/authorize`,
@@ -62,6 +70,56 @@ export class OAuthController {
       response_types_supported: ['code'],
       grant_types_supported: ['authorization_code', 'client_credentials'],
       token_endpoint_auth_methods_supported: ['client_secret_post', 'none'],
+    };
+  }
+
+  @Get([
+    '.well-known/oauth-protected-resource/api/mcp/server/:serverId',
+    '.well-known/oauth-protected-resource/mcp/server/:serverId',
+  ])
+  async protectedResourceMetadata(
+    @Param('serverId') serverId: string,
+    @Req() req: Request,
+  ) {
+    const server = await this.oauthService.findServer(serverId);
+    if (!server) throw new NotFoundException('MCP server not found.');
+    const config = this.oauthService.resolveConfig(server);
+    if (config.mode === 'none') throw new NotFoundException('OAuth is not configured for this MCP server.');
+
+    const base = requestBaseUrl(req);
+    const resourceId = serverId;
+    const documentationId = server.shareSlug || server._id;
+    const resource = `${base}/api/mcp/server/${resourceId}`;
+    const issuer = config.mode === 'external'
+      ? config.issuer
+      : `${base}/oauth/server/${resourceId}`;
+    return {
+      resource,
+      authorization_servers: [issuer],
+      bearer_methods_supported: ['header'],
+      scopes_supported: config.mode === 'external' ? config.scopes : [],
+      resource_documentation: `${base}/mcp-swagger/${documentationId}`,
+    };
+  }
+
+  @Get('.well-known/oauth-authorization-server/oauth/server/:serverId')
+  async managedAuthorizationServerMetadata(
+    @Param('serverId') serverId: string,
+    @Req() req: Request,
+  ) {
+    const server = await this.oauthService.findServer(serverId);
+    if (!server || this.oauthService.resolveConfig(server).mode !== 'managed') {
+      throw new NotFoundException('Arthur-managed OAuth is not configured for this MCP server.');
+    }
+    const base = requestBaseUrl(req);
+    const issuer = `${base}/oauth/server/${serverId}`;
+    return {
+      issuer,
+      authorization_endpoint: `${issuer}/authorize`,
+      token_endpoint: `${issuer}/token`,
+      response_types_supported: ['code'],
+      grant_types_supported: ['authorization_code', 'client_credentials'],
+      token_endpoint_auth_methods_supported: ['client_secret_post'],
     };
   }
 
