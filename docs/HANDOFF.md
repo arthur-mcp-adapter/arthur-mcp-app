@@ -756,6 +756,16 @@ Supabase Auth is now the sole identity provider (Phases 1-4 of the identity migr
 - `npx vitest run` (frontend, full suite) passed 91/91 tests across 14 files after the Supabase Auth SDK cutover (rewrote `api.test.ts`, `Login.test.tsx`, `context.test.tsx` to mock `src/supabaseClient.ts`/`onAuthStateChange` instead of the old endpoints).
 - `npm run type-check` (frontend structural gate) reported 16 pre-existing violations unrelated to this session (`src/features/server/operations`, and `SocialAuthButtons`/`OAuthCallback`/`Signup` already being flat `index.tsx` without a named-file+barrel split before this session touched their contents) — confirmed pre-existing by reading each file before editing; not fixed, to avoid mixing an unrelated structural refactor into this change. The one violation this session actually introduced (`src/supabaseClient.ts` exporting two symbols) was fixed by splitting `supabaseConfigured` into its own `src/supabaseConfigured.constant.ts`.
 
+## 2026-07-15 — Supabase hCaptcha protection
+
+- Added `@hcaptcha/react-hcaptcha` and a reusable responsive `HcaptchaChallenge` feature component.
+- Email/password login, signup, and password recovery require a completed challenge whenever `VITE_HCAPTCHA_SITE_KEY` is present at build time, pass the token through the corresponding Supabase Auth `options`, and clear/reset it after every request because CAPTCHA tokens are single-use.
+- Added the public site-key build argument to the Dockerfile, Docker Compose, the GHCR publish workflow, the local run helper, and `.env.example`. The hCaptcha secret remains outside the app and must be configured only in Supabase Dashboard.
+- Kept CAPTCHA disabled when no site key is configured so the application can be deployed before Supabase CAPTCHA enforcement is enabled; documented the required deployment order to prevent authentication lockout.
+- Added focused component and flow tests covering token verification/invalidation/reset and Supabase payloads for login, signup, and password recovery.
+- Permission decision: no new application permission is needed because CAPTCHA is an abuse-prevention prerequisite on existing public authentication flows, not an authenticated feature or action.
+- Validation: `npm run type-check` passed; four focused Vitest files passed with 10/10 tests; `npm run build` passed; package audit reported 0 vulnerabilities.
+
 ## 2026-07-15 — Supabase rejected-session diagnostics and reload-loop guard
 
 - Fixed the frontend 401 interceptor so it waits for `supabase.auth.signOut()` before navigating to `/login` and deduplicates concurrent unauthorized responses. This prevents a rejected persisted session from being restored during an immediate reload and repeatedly calling `GET /api/users/me`.
