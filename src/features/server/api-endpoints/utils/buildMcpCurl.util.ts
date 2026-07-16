@@ -1,7 +1,7 @@
 import type { GeneratedTool } from '../../types'
 
-export function buildMcpCurl(tool: GeneratedTool, projectId: string, hasKeys: boolean): string {
-  const url = `${window.location.origin}/api/mcp/server/${projectId}`
+export function buildMcpCurl(tool: GeneratedTool, mcpServerIdentifier: string, hasKeys: boolean): string {
+  const url = `${window.location.origin}/api/mcp/server/${mcpServerIdentifier}`
   const properties = tool.inputSchema.properties ?? {}
   const args = Object.fromEntries(Object.entries(properties).map(([key, value]) => [key, `<${value.type ?? 'string'}>`]))
   const body = JSON.stringify(

@@ -94,6 +94,7 @@ import { useAuth, Permission } from '../../context/auth'
 import { useDetailPageNav } from '../../hooks'
 import { getProjectIcon, getSourceType } from '../../utils/sourceType'
 import { parseMcpResponse } from '../../utils/mcpResponse'
+import { resolveMcpServerIdentifier } from '../../utils/mcpUrl'
 import api from '../../api'
 import { backendUrl } from '../../config/urls'
 import { ConfirmDialog, HelpButton } from '../../components'
@@ -236,6 +237,7 @@ export default function ServerDetail() {
   }, {})
 
   const source = getProjectIcon(project)
+  const mcpServerIdentifier = resolveMcpServerIdentifier(project.shareSlug, id!)
 
   const availableMethods = Object.keys(methodCounts)
   const visibleTools = (project.tools ?? []).filter((t) => {
@@ -341,6 +343,7 @@ export default function ServerDetail() {
         <ApiEndpointsTab
           tools={project.tools}
           projectId={id!}
+          mcpServerIdentifier={mcpServerIdentifier}
           projectBaseUrl={project.baseUrl ?? ''}
           anyApiKey={project.mcpApiKeys?.[0]?.key}
           onToolAdded={(tool) => setProject((prev) => prev ? { ...prev, tools: [...prev.tools, tool] } : prev)}
@@ -439,6 +442,7 @@ export default function ServerDetail() {
                     key={tool.name}
                     tool={tool}
                     projectId={id!}
+                    mcpServerIdentifier={mcpServerIdentifier}
                     anyApiKey={project.mcpApiKeys?.[0]?.key}
                     onToolChanged={handleToolChanged}
                     onEditEndpoint={handleOpenEdit}
@@ -456,6 +460,7 @@ export default function ServerDetail() {
       {tab === 3 && (can(Permission.ResourcesView) ? (
         <ResourcesTab
           projectId={id!}
+          mcpServerIdentifier={mcpServerIdentifier}
           initialResources={project.resources ?? []}
           tools={project.tools ?? []}
           onChange={(resources) => setProject((prev) => prev ? { ...prev, resources } : prev)}
@@ -472,6 +477,7 @@ export default function ServerDetail() {
       {tab === 4 && (
         <PromptsTab
           projectId={id!}
+          mcpServerIdentifier={mcpServerIdentifier}
           initialPrompts={project.prompts ?? []}
           onChange={(prompts) => setProject((prev) => prev ? { ...prev, prompts } : prev)}
           anyApiKey={project.mcpApiKeys?.[0]?.key}
@@ -507,6 +513,7 @@ export default function ServerDetail() {
           />
           <TenantConfigPanel
             projectId={id!}
+            mcpServerIdentifier={mcpServerIdentifier}
             initialConfig={(project as any).tenantConfig}
             toolParamSuggestions={(() => {
               const seen = new Set<string>()

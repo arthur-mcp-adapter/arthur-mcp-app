@@ -25,7 +25,7 @@ import { TENANT_PARAM_TYPES } from './constants/tenantParamTypes.constant'
 
 
 
-export function TenantConfigPanel({ projectId, initialConfig, toolParamSuggestions }: TenantConfigPanelProps) {
+export function TenantConfigPanel({ projectId, mcpServerIdentifier, initialConfig, toolParamSuggestions }: TenantConfigPanelProps) {
   const { t } = useTranslation('serverDetail')
   const [enabled, setEnabled] = useState(initialConfig?.enabled ?? false)
   const [params, setParams] = useState<TenantParam[]>(initialConfig?.params ?? [])
@@ -64,7 +64,7 @@ export function TenantConfigPanel({ projectId, initialConfig, toolParamSuggestio
     scheduleSave(enabled, next)
   }
 
-  const mcpUrl = `${window.location.origin}/api/mcp/server/${projectId}`
+  const mcpUrl = `${window.location.origin}/api/mcp/server/${mcpServerIdentifier}`
   const previewUrl = params.filter((param) => param.name.trim()).length > 0
     ? `${mcpUrl}?${params.filter((param) => param.name.trim()).map((param) => `${param.name}={value}`).join('&')}`
     : null

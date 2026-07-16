@@ -57,9 +57,10 @@ describe('api endpoint utility helpers', () => {
   it('builds MCP curl commands with optional API key header', () => {
     vi.stubGlobal('location', { origin: 'https://app.example.com' })
 
-    expect(buildMcpCurl(tool, 'project-1', true)).toContain("-H 'auth: <your-api-key>'")
-    expect(buildMcpCurl(tool, 'project-1', true)).toContain('"name": "getUser"')
-    expect(buildMcpCurl(tool, 'project-1', false)).not.toContain('your-api-key')
+    expect(buildMcpCurl(tool, 'payments-api', true)).toContain('/api/mcp/server/payments-api')
+    expect(buildMcpCurl(tool, 'payments-api', true)).toContain("-H 'auth: <your-api-key>'")
+    expect(buildMcpCurl(tool, 'payments-api', true)).toContain('"name": "getUser"')
+    expect(buildMcpCurl(tool, 'payments-api', false)).not.toContain('your-api-key')
   })
 
   it('infers JSON schemas from sample values', () => {

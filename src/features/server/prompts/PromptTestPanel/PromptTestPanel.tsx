@@ -10,7 +10,7 @@ import { parseMcpResponse } from '../../../../utils/mcpResponse'
 import type { PromptTestPanelProps } from './promptTestPanelProps.interface'
 
 
-export function PromptTestPanel({ prompt, projectId, anyApiKey }: PromptTestPanelProps) {
+export function PromptTestPanel({ prompt, mcpServerIdentifier, anyApiKey }: PromptTestPanelProps) {
   const { t } = useTranslation(['serverDetail', 'common'])
   const argNames = [...new Set([...prompt.content.matchAll(/\{\{(\w+)\}\}/g)].map((m) => m[1]))]
   const [open, setOpen] = useState(false)
@@ -25,7 +25,7 @@ export function PromptTestPanel({ prompt, projectId, anyApiKey }: PromptTestPane
     setIsError(false)
     try {
       const res = await api.post(
-        `/mcp/server/${projectId}`,
+        `/mcp/server/${mcpServerIdentifier}`,
         { jsonrpc: '2.0', method: 'prompts/get', id: Date.now(), params: { name: prompt.name, arguments: formValues } },
         { headers: { 'Content-Type': 'application/json', Accept: 'application/json, text/event-stream', ...(anyApiKey ? { auth: anyApiKey } : {}) } },
       )

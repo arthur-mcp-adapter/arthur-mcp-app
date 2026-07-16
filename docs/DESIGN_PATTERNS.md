@@ -441,6 +441,7 @@ Rules:
 - Store each server contract under `src/features/server/types/name.kind.ts`; expose stable shared contracts through `src/features/server/types/index.ts`.
 - Put cross-feature UI widgets in `src/components/` only when they are not specific to server detail.
 - Preserve current behavior while extracting modules; avoid combining extraction with product changes.
+- Keep the administrative project UUID separate from the MCP transport identifier: `/swagger/servers/:id` calls use the UUID, while Server Detail simulators and generated MCP URLs use the server `shareSlug` (falling back to the UUID only for legacy records without a slug).
 
 ### Page-Based Creation Flows
 

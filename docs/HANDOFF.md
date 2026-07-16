@@ -779,11 +779,12 @@ Supabase Auth is now the sole identity provider (Phases 1-4 of the identity migr
 ## 2026-07-16 — Server Detail MCP test authentication isolation
 
 - Fixed tool, resource, and prompt tests redirecting authenticated users to Login when `/api/mcp/server/:id` returned `401`.
-- Root cause: the shared Axios interceptor treated MCP client authentication failures (missing/invalid MCP API key or OAuth credential) as rejected Supabase application sessions and called `supabase.auth.signOut()`.
+- Follow-up root-cause correction: the Server Detail simulators were still building `/api/mcp/server/:id` after the product switched its public MCP transport identity to `:shareSlug`. The earlier interceptor change correctly prevented an MCP `401` from destroying the Supabase session, but did not repair the failing invocation itself.
+- Server Detail now resolves one `mcpServerIdentifier` from `project.shareSlug` (UUID fallback for legacy records) and passes it through API Endpoint, Tool, Resource, Prompt, curl, and AI View execution paths. Administrative `/swagger/servers/:id` calls intentionally continue using the project UUID.
 - The interceptor now excludes `/mcp/*` requests from application-session logout handling. Their errors continue to reject normally so the existing test panels can display the MCP authentication response.
 - Permission decision: no permission contract changed; the fix preserves the existing `tools_test` and resource/prompt access behavior and only separates MCP transport authentication from application session authentication.
 - Documentation updated: `docs/DESIGN_PATTERNS.md`, `docs/FLOWS.md`, `docs/ROADMAP.md`, and this handoff.
-- Validation: `npm test -- --run src/api.test.ts` passed (1 file, 5 tests); `npm run type-check` passed, including frontend structure, all 227 API/90 prompt catalog records, and TypeScript compilation.
+- Validation: the focused MCP identifier/API client suites passed (3 files, 13 tests); `npm run type-check` passed, including frontend structure, all 227 API/90 prompt catalog records, and TypeScript compilation; `npm run build` passed with 7,566 modules transformed.
 
 ## 2026-07-16 — CI frontend environment validator packaging
 

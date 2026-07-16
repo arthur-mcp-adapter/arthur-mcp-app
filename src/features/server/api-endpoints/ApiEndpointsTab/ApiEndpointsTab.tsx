@@ -14,7 +14,7 @@ import { ToolDialog } from '../ToolDialog'
 import type { ApiEndpointsTabProps } from './apiEndpointsTabProps.interface'
 
 
-export function ApiEndpointsTab({ tools, projectId, projectBaseUrl, anyApiKey, onToolAdded, onToolChanged, onToolDeleted }: ApiEndpointsTabProps) {
+export function ApiEndpointsTab({ tools, projectId, mcpServerIdentifier, projectBaseUrl, anyApiKey, onToolAdded, onToolChanged, onToolDeleted }: ApiEndpointsTabProps) {
   const { t } = useTranslation('serverDetail')
   const { can } = useAuth()
   const [search, setSearch] = useState('')
@@ -105,7 +105,7 @@ export function ApiEndpointsTab({ tools, projectId, projectBaseUrl, anyApiKey, o
       ) : (
         <Box display="flex" flexDirection="column" gap={'6px'}>
           {visible.map((e, i) => (
-            <EndpointAccordion key={i} endpoint={e} projectId={projectId} anyApiKey={anyApiKey} canTest={can(Permission.ToolsTest)}
+            <EndpointAccordion key={i} endpoint={e} projectId={projectId} mcpServerIdentifier={mcpServerIdentifier} anyApiKey={anyApiKey} canTest={can(Permission.ToolsTest)}
               onEdit={can(Permission.ToolsEdit) ? () => setEditEndpoint(e.tool) : undefined}
               onToolChanged={onToolChanged} />
           ))}

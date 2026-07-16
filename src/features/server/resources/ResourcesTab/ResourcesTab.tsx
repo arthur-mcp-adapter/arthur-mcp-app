@@ -23,7 +23,7 @@ import { createEmptyResourceForm } from '../utils/createEmptyResourceForm.factor
 import { slugifyResourceName } from '../utils/slugifyResourceName.util'
 
 
-export function ResourcesTab({ projectId, initialResources, tools, onChange, anyApiKey }: ResourcesTabProps) {
+export function ResourcesTab({ projectId, mcpServerIdentifier, initialResources, tools, onChange, anyApiKey }: ResourcesTabProps) {
   const { t } = useTranslation(['serverDetail', 'common'])
   const [resources, setResources] = useState<McpResource[]>(initialResources)
   const [dynDialogOpen, setDynDialogOpen] = useState(false)
@@ -168,7 +168,7 @@ export function ResourcesTab({ projectId, initialResources, tools, onChange, any
                     )}
                   </Box>
                 </Box>
-                <ResourceTestPanel resource={r} projectId={projectId} anyApiKey={anyApiKey} />
+                <ResourceTestPanel resource={r} mcpServerIdentifier={mcpServerIdentifier} anyApiKey={anyApiKey} />
               </Paper>
             )
           })}

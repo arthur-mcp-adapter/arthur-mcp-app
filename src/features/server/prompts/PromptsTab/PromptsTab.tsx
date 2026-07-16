@@ -17,7 +17,7 @@ import { PromptTestPanel } from '../PromptTestPanel'
 import type { PromptsTabProps } from './promptsTabProps.interface'
 
 
-export function PromptsTab({ projectId, initialPrompts, onChange, anyApiKey }: PromptsTabProps) {
+export function PromptsTab({ projectId, mcpServerIdentifier, initialPrompts, onChange, anyApiKey }: PromptsTabProps) {
   const { t } = useTranslation('serverDetail')
   const navigate = useNavigate()
   const { can } = useAuth()
@@ -168,7 +168,7 @@ export function PromptsTab({ projectId, initialPrompts, onChange, anyApiKey }: P
                   </Tooltip>}
                   </Box>
                 </Box>
-              <PromptTestPanel prompt={p} projectId={projectId} anyApiKey={anyApiKey} />
+              <PromptTestPanel prompt={p} mcpServerIdentifier={mcpServerIdentifier} anyApiKey={anyApiKey} />
               </Paper>
             )
           })}

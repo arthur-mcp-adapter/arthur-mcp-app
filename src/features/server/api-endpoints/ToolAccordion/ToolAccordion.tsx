@@ -21,7 +21,7 @@ import { parseMcpResponse } from '../../../../utils/mcpResponse'
 import type { ToolAccordionProps } from './toolAccordionProps.interface'
 
 
-export function ToolAccordion({ tool: initialTool, projectId, anyApiKey, onToolChanged, onEditEndpoint }: ToolAccordionProps) {
+export function ToolAccordion({ tool: initialTool, projectId, mcpServerIdentifier, anyApiKey, onToolChanged, onEditEndpoint }: ToolAccordionProps) {
   const { t } = useTranslation('serverDetail')
   const [tool, setTool] = useState(initialTool)
   const [curlCopied, setCurlCopied] = useState(false)
@@ -46,7 +46,7 @@ export function ToolAccordion({ tool: initialTool, projectId, anyApiKey, onToolC
   const allParams = parameterMap ?? []
   const paramEntries = Object.entries(properties)
   const curl = tool.endpointRef ? buildCurl(tool as GeneratedTool & { endpointRef: NonNullable<GeneratedTool['endpointRef']> }) : ''
-  const mcpCurl = buildMcpCurl(tool, projectId, !!anyApiKey)
+  const mcpCurl = buildMcpCurl(tool, mcpServerIdentifier, !!anyApiKey)
 
   const saveToolMeta = async (field: 'name' | 'description', newValue: string) => {
     const oldName = tool.name
@@ -84,7 +84,7 @@ export function ToolAccordion({ tool: initialTool, projectId, anyApiKey, onToolC
       const payload = { jsonrpc: '2.0', method: 'tools/call', id: Date.now(), params: { name: tool.name, arguments: args } }
       const headers: Record<string, string> = { 'Content-Type': 'application/json', Accept: 'application/json, text/event-stream' }
       if (anyApiKey) headers['auth'] = anyApiKey
-      const res = await api.post(`/mcp/server/${projectId}`, payload, { headers })
+      const res = await api.post(`/mcp/server/${mcpServerIdentifier}`, payload, { headers })
       const rpc = parseMcpResponse(res.data)
       if (rpc?.error) { setResponse(JSON.stringify(rpc.error, null, 2)); setResponseIsError(true); return }
       const content = rpc?.result?.content ?? rpc?.content

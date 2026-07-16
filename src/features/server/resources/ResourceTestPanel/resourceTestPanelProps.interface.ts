@@ -2,6 +2,6 @@ import type { McpResource } from '../../types'
 
 export interface ResourceTestPanelProps {
   resource: McpResource
-  projectId: string
+  mcpServerIdentifier: string
   anyApiKey?: string
 }

@@ -19,7 +19,7 @@ import { parseMcpResponse } from '../../../../utils/mcpResponse'
 import type { EndpointAccordionProps } from './endpointAccordionProps.interface'
 
 
-export function EndpointAccordion({ endpoint, projectId, anyApiKey, canTest, onEdit, onToolChanged }: EndpointAccordionProps) {
+export function EndpointAccordion({ endpoint, projectId, mcpServerIdentifier, anyApiKey, canTest, onEdit, onToolChanged }: EndpointAccordionProps) {
   const { t } = useTranslation('serverDetail')
   const method = endpoint.method.toUpperCase()
   const parameterMap = endpoint.parameterMap ?? []
@@ -56,7 +56,7 @@ export function EndpointAccordion({ endpoint, projectId, anyApiKey, canTest, onE
       const payload = { jsonrpc: '2.0', method: 'tools/call', id: Date.now(), params: { name: endpoint.tool.name, arguments: args } }
       const headers: Record<string, string> = { 'Content-Type': 'application/json', Accept: 'application/json, text/event-stream' }
       if (anyApiKey) headers['auth'] = anyApiKey
-      const res = await api.post(`/mcp/server/${projectId}`, payload, { headers })
+      const res = await api.post(`/mcp/server/${mcpServerIdentifier}`, payload, { headers })
       const rpc = parseMcpResponse(res.data)
       if (rpc?.error) { setResponse(JSON.stringify(rpc.error, null, 2)); setResponseIsError(true); return }
       const content = rpc?.result?.content ?? rpc?.content

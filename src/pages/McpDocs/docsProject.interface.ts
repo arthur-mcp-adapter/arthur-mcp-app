@@ -7,6 +7,7 @@ export interface DocsProject {
   baseUrl: string
   description?: string
   version?: string
+  shareSlug?: string | null
   status: string
   tools: GeneratedTool[]
   mcpApiKey?: string

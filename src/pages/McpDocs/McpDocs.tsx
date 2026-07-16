@@ -36,6 +36,7 @@ import {
 } from '@tabler/icons-react'
 import api from '../../api'
 import { parseMcpResponse } from '../../utils/mcpResponse'
+import { resolveMcpServerIdentifier } from '../../utils/mcpUrl'
 import type { JsonSchema } from './jsonSchema.interface'
 import type { ParameterMapping } from './parameterMapping.interface'
 import type { EndpointRef } from './endpointRef.interface'
@@ -589,7 +590,8 @@ export function McpDocsContent({ project: server, projectId }: McpDocsContentPro
       .catch(() => {})
   }, [server.prompts])
 
-  const mcpUrl = `${window.location.origin}/api/mcp/server/${projectId}`
+  const mcpServerIdentifier = resolveMcpServerIdentifier(server.shareSlug, projectId)
+  const mcpUrl = `${window.location.origin}/api/mcp/server/${mcpServerIdentifier}`
 
   const enabledTools = (server.tools ?? []).filter((t) => t.enabled !== false)
   const filteredTools = enabledTools.filter((t) =>
@@ -660,7 +662,7 @@ export function McpDocsContent({ project: server, projectId }: McpDocsContentPro
             <Typography color="text.secondary" variant="body2">{t('docs.noToolsMatch')}</Typography>
           </Box>
         )
-        : filteredTools.map((tool) => <ToolCard key={tool.name} tool={tool} projectId={projectId} mcpApiKey={server.mcpApiKey} />)}
+        : filteredTools.map((tool) => <ToolCard key={tool.name} tool={tool} projectId={mcpServerIdentifier} mcpApiKey={server.mcpApiKey} />)}
 
       {/* Resources */}
       {(() => {
@@ -673,7 +675,7 @@ export function McpDocsContent({ project: server, projectId }: McpDocsContentPro
               <Chip label={t('docs.resourcesCount', { count: enabledResources.length })} size="small" color="primary" variant="outlined" />
             </Box>
             {enabledResources.map((r) => (
-              <ResourceCard key={r.id} resource={r} projectId={projectId} mcpApiKey={server.mcpApiKey} />
+              <ResourceCard key={r.id} resource={r} projectId={mcpServerIdentifier} mcpApiKey={server.mcpApiKey} />
             ))}
           </Box>
         ) : null
@@ -688,7 +690,7 @@ export function McpDocsContent({ project: server, projectId }: McpDocsContentPro
             <Chip label={t('docs.promptsCount', { count: resolvedPrompts.length })} size="small" color="primary" variant="outlined" />
           </Box>
           {resolvedPrompts.map((p) => (
-            <PromptCard key={p.id} prompt={p} projectId={projectId} mcpApiKey={server.mcpApiKey} />
+            <PromptCard key={p.id} prompt={p} projectId={mcpServerIdentifier} mcpApiKey={server.mcpApiKey} />
           ))}
         </Box>
       )}
