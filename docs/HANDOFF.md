@@ -764,7 +764,7 @@ Supabase Auth is now the sole identity provider (Phases 1-4 of the identity migr
 - Kept CAPTCHA disabled when no site key is configured so the application can be deployed before Supabase CAPTCHA enforcement is enabled; documented the required deployment order to prevent authentication lockout.
 - Added focused component and flow tests covering token verification/invalidation/reset and Supabase payloads for login, signup, and password recovery.
 - Permission decision: no new application permission is needed because CAPTCHA is an abuse-prevention prerequisite on existing public authentication flows, not an authenticated feature or action.
-- Validation: `npm run type-check` passed; four focused Vitest files passed with 10/10 tests; `npm run build` passed; package audit reported 0 vulnerabilities.
+- Validation: `npm run type-check` passed; four focused Vitest files passed with 10/10 tests; `npm run build` passed; `docker compose config` passed; a Node 22 Docker image built with the official hCaptcha test site key and the key was confirmed in the generated frontend bundle; package audit reported 0 vulnerabilities.
 
 ## 2026-07-15 — Supabase rejected-session diagnostics and reload-loop guard
 
