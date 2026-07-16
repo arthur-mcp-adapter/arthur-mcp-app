@@ -317,7 +317,14 @@ export default function Layout({ children }: LayoutProps) {
   const theme = useTheme()
   const mdUp = useMediaQuery(theme.breakpoints.up('md'))
   const [mobileOpen, setMobileOpen] = useState(false)
-  const [desktopOpen, setDesktopOpen] = useState(true)
+  const [desktopOpen, setDesktopOpen] = useState(() => localStorage.getItem('sidebarCollapsed') !== '1')
+
+  const toggleDesktopSidebar = () => {
+    const next = !desktopOpen
+    setDesktopOpen(next)
+    if (next) localStorage.removeItem('sidebarCollapsed')
+    else localStorage.setItem('sidebarCollapsed', '1')
+  }
   const [status, setStatus] = useState<Status>('checking')
   const [profileMenuPosition, setProfileMenuPosition] = useState<{ top: number; left: number } | null>(null)
   const profileMenuOpen = profileMenuPosition !== null
@@ -374,7 +381,7 @@ export default function Layout({ children }: LayoutProps) {
               },
             }}
           >
-            <SidebarContent collapsed={!desktopOpen} onToggle={() => setDesktopOpen((open) => !open)} />
+            <SidebarContent collapsed={!desktopOpen} onToggle={toggleDesktopSidebar} />
           </Drawer>
         </Box>
       )}
