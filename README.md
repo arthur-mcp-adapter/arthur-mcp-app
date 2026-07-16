@@ -331,7 +331,8 @@ For production, always replace default credentials and use a long random JWT sec
 
 Copy `.env.example` to `.env` and provide the Supabase URL and publishable key. To protect
 email/password sign-in, sign-up, and password recovery with hCaptcha, also set
-`VITE_HCAPTCHA_SITE_KEY`. The site key is public and is embedded in the Vite bundle; keep the
+`VITE_HCAPTCHA_SITE_KEY`. Use the UUID-shaped site key from the hCaptcha site's Settings page,
+not the site name or label. The site key is public and is embedded in the Vite bundle; keep the
 hCaptcha secret key only in Supabase Dashboard under Authentication > Bot and Abuse Protection.
 
 Deploy the frontend with the site key before enabling CAPTCHA protection in Supabase. Once the

@@ -86,6 +86,7 @@ This file should be updated when task state changes. It does not replace issues 
 
 ## Done
 
+- [x] Prevented tool, resource, and prompt tests in Server Detail from signing the user out when the MCP transport returns `401`; MCP client authentication failures now remain scoped to the test result instead of invalidating the Supabase application session.
 - [x] Added optional hCaptcha protection to Supabase email/password login, signup, and password recovery, including single-use token reset, responsive rendering, Vite/Docker/CI configuration, tests, and deployment-order documentation.
 - [x] Fixed `SQLITE_ERROR: no such column` API startup crashes caused by an already-applied migration (`1700000000000-InitialTypeormSchema.ts`) having been edited in place to rename columns to snake_case: added migration `1700000000001-RenameCamelCaseColumnsToSnakeCase.ts` (idempotent, per-table rename) plus a passing test. See `docs/HANDOFF.md` for details and the "never edit an already-applied migration" lesson.
 - [x] Generated template-oriented API integration research from `APIs.json`: `APIs/MANUAL.md` indexes all 1,608 entries and `APIs/entries/` contains one numbered workspace per API, with source links, authentication interpretation, endpoint evidence, tool/parameter worksheets, response/operations checks, and a JSON candidate shaped like `public/catalogs/api/zendesk.json`. Empty `Auth` values are treated as no authentication; documentation URLs are never silently promoted to runtime endpoints; 37 identifier matches are marked for review against existing templates.

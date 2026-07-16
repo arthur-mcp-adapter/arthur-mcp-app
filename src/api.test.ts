@@ -45,7 +45,14 @@ describe('api client', () => {
     const handler = (api.interceptors.response as any).handlers[0].rejected;
 
     localStorage.setItem('token', 'tok123');
-    await expect(handler({ response: { status: 401 } })).rejects.toEqual({ response: { status: 401 } });
+    const mcpUnauthorized = { config: { url: '/mcp/server/project-1' }, response: { status: 401 } };
+    await expect(handler(mcpUnauthorized)).rejects.toEqual(mcpUnauthorized);
+    expect(localStorage.getItem('token')).toBe('tok123');
+    expect(signOut).not.toHaveBeenCalled();
+    expect(window.location.href).toBe('http://localhost/');
+
+    const appUnauthorized = { config: { url: '/users/me' }, response: { status: 401 } };
+    await expect(handler(appUnauthorized)).rejects.toEqual(appUnauthorized);
     expect(localStorage.getItem('token')).toBeNull();
     expect(window.location.href).toBe('/login');
     expect(signOut).toHaveBeenCalled();

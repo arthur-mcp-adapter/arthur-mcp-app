@@ -531,7 +531,8 @@ Rules:
 
 - Use the shared `api` client instead of creating page-local Axios instances.
 - Let the request interceptor attach the bearer token.
-- Let the response interceptor handle `401` logout/redirect behavior.
+- Let the response interceptor handle application-session `401` logout/redirect behavior.
+- Do not treat `401` responses from `/mcp/*` transport calls as application-session failures; MCP API key/OAuth authentication is independent from the signed-in Supabase session and its errors must remain visible in the invoking UI.
 - Keep endpoint paths relative to `/api`.
 - Fetch sensitive values through dedicated reveal endpoints instead of list/detail metadata endpoints.
 - When creating servers from REST templates, send `tags: ['source:rest']` with the create request.

@@ -765,6 +765,8 @@ Supabase Auth is now the sole identity provider (Phases 1-4 of the identity migr
 - Added focused component and flow tests covering token verification/invalidation/reset and Supabase payloads for login, signup, and password recovery.
 - Permission decision: no new application permission is needed because CAPTCHA is an abuse-prevention prerequisite on existing public authentication flows, not an authenticated feature or action.
 - Validation: `npm run type-check` passed; four focused Vitest files passed with 10/10 tests; `npm run build` passed; `docker compose config` passed; a Node 22 Docker image built with the official hCaptcha test site key and the key was confirmed in the generated frontend bundle; package audit reported 0 vulnerabilities.
+- Production follow-up (2026-07-16): the deployed bundle was found to contain `sitekey: "arthur-mcp"`, which is a site label rather than a valid hCaptcha site key. Added UUID validation at runtime and in `prebuild`; future builds now fail with a targeted error instead of publishing an invalid widget. Replace the GitHub Actions `HCAPTCHA_SITE_KEY` secret with the real site key copied from hCaptcha Settings, redeploy, verify the widget, and only then enable/retain Supabase CAPTCHA enforcement with the matching hCaptcha secret key.
+- hCaptcha was subsequently disabled by request: the GHCR publish workflow no longer passes `VITE_HCAPTCHA_SITE_KEY`, so newly published production bundles omit the widget even if the repository secret still exists. Keep Supabase CAPTCHA enforcement disabled as well. The reusable implementation and optional Docker/Compose inputs remain available for a future controlled reactivation.
 
 ## 2026-07-15 — Supabase rejected-session diagnostics and reload-loop guard
 
@@ -773,6 +775,15 @@ Supabase Auth is now the sole identity provider (Phases 1-4 of the identity migr
 - Identified the root cause from those diagnostics: JWT verification succeeded, but `@supabase/supabase-js` could not construct its Realtime client under Node 20 because that runtime has no native WebSocket. Updated every Docker stage from Node 20 Alpine to Node 22 Alpine, matching the SDK's declared runtime requirement.
 - Updated the Authentication flow documentation. No endpoint, permission, data, or user-facing copy contract changed.
 - Validation: `npm test -- --run src/api.test.ts` passed (1 file, 5 tests); `npx tsc -p api/tsconfig.json --noEmit` passed; the Node 22 Docker image built successfully; the rebuilt container reports Node `v22.23.1`; `/health` returned HTTP 200; direct construction of both `createContextClient()` and `createAdminClient()` succeeded in the production container.
+
+## 2026-07-16 — Server Detail MCP test authentication isolation
+
+- Fixed tool, resource, and prompt tests redirecting authenticated users to Login when `/api/mcp/server/:id` returned `401`.
+- Root cause: the shared Axios interceptor treated MCP client authentication failures (missing/invalid MCP API key or OAuth credential) as rejected Supabase application sessions and called `supabase.auth.signOut()`.
+- The interceptor now excludes `/mcp/*` requests from application-session logout handling. Their errors continue to reject normally so the existing test panels can display the MCP authentication response.
+- Permission decision: no permission contract changed; the fix preserves the existing `tools_test` and resource/prompt access behavior and only separates MCP transport authentication from application session authentication.
+- Documentation updated: `docs/DESIGN_PATTERNS.md`, `docs/FLOWS.md`, `docs/ROADMAP.md`, and this handoff.
+- Validation: `npm test -- --run src/api.test.ts` passed (1 file, 5 tests); `npm run type-check` passed, including frontend structure, all 227 API/90 prompt catalog records, and TypeScript compilation.
 
 ## Recommended Next Step
 

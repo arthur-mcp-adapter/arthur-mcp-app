@@ -11,13 +11,18 @@ Supabase Auth is the sole identity provider. Login is by **email**, not username
 - **Google/GitHub OAuth** (`SocialAuthButtons`): `supabase.auth.signInWithOAuth({ provider })`, redirecting through `/oauth-callback`. These providers must be enabled in the Supabase project dashboard (client id/secret configured there, not in this app's env) — the buttons render whenever Supabase is configured and do not check which providers are actually enabled.
 - **Forgot/reset password** (`ForgotPassword`/`ResetPassword`): `supabase.auth.resetPasswordForEmail()` includes the hCaptcha token when configured; from the emailed link (which lands the browser in an authenticated recovery session), `supabase.auth.updateUser({ password })` completes the reset.
 - **Profile self-edit** (`Profile` → `MyProfileTab`): `supabase.auth.updateUser({ email, password, data: { username } })` directly — no `currentPassword` re-entry (the live session is the credential), and an email change requires confirming the new address before it takes effect.
-- **Session sync**: `AuthProvider` subscribes to `supabase.auth.onAuthStateChange()` as the single source of truth, mirroring the current access token into `localStorage['token']` (which `src/api.ts` still reads on every backend request) and re-fetching `GET /users/me`. `logout()` and the 401 interceptor in `src/api.ts` both call `supabase.auth.signOut()`, not just clear the mirrored token — otherwise Supabase's own session store resurrects it on reload. The interceptor waits for sign-out to finish before navigating and deduplicates concurrent 401 handling so a rejected session cannot create a reload loop.
+- **Session sync**: `AuthProvider` subscribes to `supabase.auth.onAuthStateChange()` as the single source of truth, mirroring the current access token into `localStorage['token']` (which `src/api.ts` still reads on every backend request) and re-fetching `GET /users/me`. `logout()` and the application-session 401 interceptor in `src/api.ts` both call `supabase.auth.signOut()`, not just clear the mirrored token — otherwise Supabase's own session store resurrects it on reload. The interceptor waits for sign-out to finish before navigating and deduplicates concurrent 401 handling so a rejected session cannot create a reload loop. A `401` from `/mcp/*` is excluded because it represents independent MCP API key/OAuth authentication; tool, resource, and prompt test failures remain visible in the test panel without signing the Arthur user out.
 - **`GET /users/me`**: composed entirely from the verified JWT's claims (`userId`, `username`, `email`, `role`) plus a role→permissions lookup — no database read.
 - **`POST /auth/signup`/`AuthService` no longer exist** — `AuthController` is now just `GET /auth/providers` (`{ selfHosted }`).
 
 Supabase dashboard prerequisites (manual, not app code): both `<origin>/oauth-callback` and `<origin>/reset-password` must be added to Authentication → URL Configuration → Redirect URLs for every environment (local dev, staging, production), or Supabase silently rejects the redirect and the email link breaks.
 
 hCaptcha is enabled in the UI only when `VITE_HCAPTCHA_SITE_KEY` is present at Vite build time.
+The value must be the UUID-shaped hCaptcha site key, not the site name; the production build
+fails when a non-empty invalid value is supplied so a broken widget cannot be published.
+The production image pipeline currently omits `VITE_HCAPTCHA_SITE_KEY`, intentionally leaving
+hCaptcha disabled. Supabase CAPTCHA protection must also remain disabled until the site key is
+restored to the image build and the configured widget has been deployed and verified.
 The challenge is required before submitting email/password login, signup, or password recovery,
 and is reset after every Supabase request because CAPTCHA tokens are single-use. The hCaptcha
 secret key belongs only in Supabase Dashboard; never place it in Vite variables or the image.
