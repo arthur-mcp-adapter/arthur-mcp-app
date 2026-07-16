@@ -116,12 +116,19 @@ export default function Signup() {
               borderColor: 'divider',
             }}
           >
-            <Box display="flex" alignItems="center" justifyContent="center" mb={2}>
+            <Box
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              height={112}
+              overflow="hidden"
+              mb={1}
+            >
               <Box
                 component="img"
                 src={mode === ColorMode.Dark ? '/images/logos/arthur_mcp_dark.png' : '/images/logos/arthur_mcp_light.png'}
                 alt="Arthur MCP"
-                sx={{ height: '100%', maxWidth: '100%' }}
+                sx={{ width: '100%', height: 'auto', maxWidth: 356, flexShrink: 0 }}
                 onError={(e) => {
                   const img = e.currentTarget as HTMLImageElement
                   img.style.display = 'none'
