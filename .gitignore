@@ -4,7 +4,10 @@ client/node_modules/
 
 # API repository
 api_repository/
-/scripts/
+/scripts/*
+!/scripts/check-frontend-env.mjs
+!/scripts/check-frontend-structure.mjs
+!/scripts/check-template-catalogs.mjs
 
 # Build output
 dist/
