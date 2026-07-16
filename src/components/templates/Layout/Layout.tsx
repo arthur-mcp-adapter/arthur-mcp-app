@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import {
   AppBar,
@@ -57,6 +57,8 @@ import { SIDEBAR_WIDTH } from './constants/sidebarWidth.constant'
 import { NAV_SECTIONS } from './constants/navSections.constant'
 import './index.css'
 
+const COLLAPSED_SIDEBAR_WIDTH = 64
+
 
 
 
@@ -77,7 +79,7 @@ const ToolbarStyled = styled(Toolbar)(({ theme }) => ({
   paddingRight: '12px',
 }))
 
-function SidebarContent() {
+function SidebarContent({ onToggle, collapsed = false }: { onToggle: () => void; collapsed?: boolean }) {
   const location = useLocation()
   const navigate = useNavigate()
   const theme = useTheme()
@@ -98,11 +100,12 @@ function SidebarContent() {
   const logoArea = (
     <Box sx={{
       display: 'flex', alignItems: 'center',
-      px: 2.5, height: '56px',
+      justifyContent: collapsed ? 'center' : 'flex-start',
+      px: collapsed ? 0 : 2.5, height: '56px',
       borderBottom: `1px solid ${theme.palette.divider}`,
-      flexShrink: 0,
+      flexShrink: 0, overflow: 'hidden',
     }}>
-      {logoError ? (
+      {!collapsed && (logoError ? (
         <Typography variant="h6" fontWeight={700} color="primary.main"
           sx={{ letterSpacing: '-0.4px', fontSize: '0.9375rem' }}>
           Arthur MCP
@@ -114,7 +117,13 @@ function SidebarContent() {
           sx={{ height: '200%', maxWidth: '200%' }}
           onError={() => setLogoError(true)}
         />
-      )}
+      ))}
+      <Tooltip title={t('sidebar.toggleMenu')} placement="right">
+        <IconButton size="small" aria-label={t('sidebar.toggleMenu')} onClick={onToggle}
+          sx={{ ml: collapsed ? 0 : 'auto', flexShrink: 0 }}>
+          <IconMenu2 size={18} />
+        </IconButton>
+      </Tooltip>
     </Box>
   )
 
@@ -141,27 +150,35 @@ function SidebarContent() {
         {logoArea}
 
         {/* Back to Servers */}
-        <Box
-          display="flex" alignItems="center" gap={0.75} px={2} py={1.25}
-          onClick={() => navigate(serverDetail.backPath ?? '/')}
-          sx={{
-            cursor: 'pointer', borderBottom: `1px solid ${theme.palette.divider}`,
-            color: 'text.secondary', flexShrink: 0,
-            '&:hover': { color: 'text.primary' }, transition: 'color 0.15s',
-          }}
-        >
-          <IconArrowLeft size={14} />
-          <Typography fontSize="0.75rem">{serverDetail.backLabel ?? t('sidebar.backToServers')}</Typography>
-        </Box>
+        <Tooltip title={collapsed ? (serverDetail.backLabel ?? t('sidebar.backToServers')) : ''} placement="right">
+          <Box
+            display="flex" alignItems="center" gap={0.75} py={1.25}
+            px={collapsed ? 0 : 2}
+            justifyContent={collapsed ? 'center' : 'flex-start'}
+            onClick={() => navigate(serverDetail.backPath ?? '/')}
+            sx={{
+              cursor: 'pointer', borderBottom: `1px solid ${theme.palette.divider}`,
+              color: 'text.secondary', flexShrink: 0,
+              '&:hover': { color: 'text.primary' }, transition: 'color 0.15s',
+            }}
+          >
+            <IconArrowLeft size={14} />
+            {!collapsed && <Typography fontSize="0.75rem">{serverDetail.backLabel ?? t('sidebar.backToServers')}</Typography>}
+          </Box>
+        </Tooltip>
 
         {/* Server identity */}
-        <Box px={2} py={1.25} sx={{ borderBottom: `1px solid ${theme.palette.divider}`, flexShrink: 0 }}>
-          <Box display="flex" alignItems="center" gap={0.75}>
-            <Box component="span" fontSize="0.85rem">{serverDetail.sourceEmoji}</Box>
-            <Typography fontSize="0.8rem" fontWeight={700} noWrap color="text.primary"
-              title={serverDetail.name}>
-              {serverDetail.name}
-            </Typography>
+        <Box px={collapsed ? 0 : 2} py={1.25} sx={{ borderBottom: `1px solid ${theme.palette.divider}`, flexShrink: 0 }}>
+          <Box display="flex" alignItems="center" gap={0.75} justifyContent={collapsed ? 'center' : 'flex-start'}>
+            <Tooltip title={collapsed ? serverDetail.name : ''} placement="right">
+              <Box component="span" fontSize="0.85rem">{serverDetail.sourceEmoji}</Box>
+            </Tooltip>
+            {!collapsed && (
+              <Typography fontSize="0.8rem" fontWeight={700} noWrap color="text.primary"
+                title={serverDetail.name}>
+                {serverDetail.name}
+              </Typography>
+            )}
           </Box>
         </Box>
 
@@ -170,51 +187,56 @@ function SidebarContent() {
           {serverDetail.navItems.map((item) => {
             const active = serverDetail.tab === item.idx
             return (
-              <Box
-                key={item.label}
-                display="flex" alignItems="center" gap={1.25} px={1.75} py={1}
-                onClick={() => !item.disabled && serverDetail.onTabChange(item.idx)}
-                sx={{
-                  cursor: item.disabled ? 'default' : 'pointer',
-                  opacity: item.disabled ? 0.38 : 1,
-                  color: active ? 'primary.main' : 'text.secondary',
-                  borderLeft: '2px solid',
-                  borderColor: active ? 'primary.main' : 'transparent',
-                  bgcolor: active ? 'rgba(26,115,232,0.08)' : 'transparent',
-                  transition: 'background 0.12s, color 0.12s',
-                  '&:hover': !item.disabled ? {
-                    bgcolor: active ? 'rgba(26,115,232,0.12)' : 'action.hover',
-                    color: active ? 'primary.main' : 'text.primary',
-                  } : {},
-                  userSelect: 'none',
-                  mx: 0.75, borderRadius: '0 6px 6px 0',
-                }}
-              >
-                <Box sx={{ flexShrink: 0, display: 'flex', color: 'inherit', '& svg': { strokeWidth: active ? 2 : 1.5 } }}>
-                  {item.icon}
-                </Box>
-                <Typography fontSize="0.8375rem" fontWeight={active ? 600 : 400} noWrap
-                  sx={{ flexGrow: 1, color: 'inherit' }}>
-                  {item.label}
-                </Typography>
-                {item.badge !== undefined && item.badge > 0 && (
-                  <Box sx={{
-                    minWidth: 18, height: 18, borderRadius: '9px', px: 0.6,
-                    bgcolor: active ? 'primary.main' : 'action.selected',
-                    color: active ? '#fff' : 'text.secondary',
-                    fontSize: '0.65rem', fontWeight: 700,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    flexShrink: 0,
-                  }}>
-                    {item.badge}
+              <Tooltip key={item.label} title={collapsed ? item.label : ''} placement="right">
+                <Box
+                  display="flex" alignItems="center" gap={1.25} py={1}
+                  px={collapsed ? 0 : 1.75}
+                  justifyContent={collapsed ? 'center' : 'flex-start'}
+                  onClick={() => !item.disabled && serverDetail.onTabChange(item.idx)}
+                  sx={{
+                    cursor: item.disabled ? 'default' : 'pointer',
+                    opacity: item.disabled ? 0.38 : 1,
+                    color: active ? 'primary.main' : 'text.secondary',
+                    borderLeft: '2px solid',
+                    borderColor: active ? 'primary.main' : 'transparent',
+                    bgcolor: active ? 'rgba(26,115,232,0.08)' : 'transparent',
+                    transition: 'background 0.12s, color 0.12s',
+                    '&:hover': !item.disabled ? {
+                      bgcolor: active ? 'rgba(26,115,232,0.12)' : 'action.hover',
+                      color: active ? 'primary.main' : 'text.primary',
+                    } : {},
+                    userSelect: 'none',
+                    mx: 0.75, borderRadius: '0 6px 6px 0',
+                  }}
+                >
+                  <Box sx={{ flexShrink: 0, display: 'flex', color: 'inherit', '& svg': { strokeWidth: active ? 2 : 1.5 } }}>
+                    {item.icon}
                   </Box>
-                )}
-              </Box>
+                  {!collapsed && (
+                    <Typography fontSize="0.8375rem" fontWeight={active ? 600 : 400} noWrap
+                      sx={{ flexGrow: 1, color: 'inherit' }}>
+                      {item.label}
+                    </Typography>
+                  )}
+                  {!collapsed && item.badge !== undefined && item.badge > 0 && (
+                    <Box sx={{
+                      minWidth: 18, height: 18, borderRadius: '9px', px: 0.6,
+                      bgcolor: active ? 'primary.main' : 'action.selected',
+                      color: active ? '#fff' : 'text.secondary',
+                      fontSize: '0.65rem', fontWeight: 700,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      flexShrink: 0,
+                    }}>
+                      {item.badge}
+                    </Box>
+                  )}
+                </Box>
+              </Tooltip>
             )
           })}
         </Box>
 
-        {promoBox}
+        {!collapsed && promoBox}
       </Box>
     )
   }
@@ -234,7 +256,7 @@ function SidebarContent() {
           return (
             <List
               key={section.subheaderKey}
-              subheader={
+              subheader={collapsed ? undefined : (
                 <ListSubheader sx={{
                   fontSize: '0.6875rem', fontWeight: 700, color: 'text.disabled',
                   letterSpacing: '0.08em', lineHeight: 1, bgcolor: 'transparent',
@@ -242,48 +264,54 @@ function SidebarContent() {
                 }}>
                   {t(section.subheaderKey)}
                 </ListSubheader>
-              }
+              )}
               dense disablePadding
             >
               {visibleItems.map((item) => {
                 const Icon = item.icon
                 const selected = location.pathname === item.path
                 return (
-                  <ListItem key={item.path} disablePadding sx={{ px: 1.5, py: '1px' }}>
-                    <ListItemButton
-                      selected={selected}
-                      disabled={item.wip}
-                      onClick={() => !item.wip && navigate(item.path)}
-                      sx={{
-                        borderRadius: '8px', minHeight: 38, px: 1.5,
-                        '&.Mui-selected': {
-                          bgcolor: 'rgba(26,115,232,0.08)', color: 'primary.main',
-                          '& .MuiListItemIcon-root': { color: 'primary.main' },
-                          '&:hover': { bgcolor: 'rgba(26,115,232,0.12)' },
-                        },
-                        '&:hover': { bgcolor: 'rgba(0,0,0,0.04)' },
-                      }}
-                    >
-                      <ListItemIcon sx={{ minWidth: 32, color: selected ? 'primary.main' : 'text.secondary' }}>
-                        <Icon stroke={selected ? 2 : 1.5} size="1.1rem" />
-                      </ListItemIcon>
-                      <ListItemText
-                        primary={item.wip ? `${t(item.titleKey)} (Soon)` : t(item.titleKey)}
-                        primaryTypographyProps={{
-                          fontSize: '0.8375rem',
-                          fontWeight: selected ? 600 : 400,
-                          color: selected ? 'primary.main' : 'text.primary',
+                  <Tooltip key={item.path} title={collapsed ? t(item.titleKey) : ''} placement="right">
+                    <ListItem disablePadding sx={{ px: collapsed ? 0.75 : 1.5, py: '1px' }}>
+                      <ListItemButton
+                        selected={selected}
+                        disabled={item.wip}
+                        onClick={() => !item.wip && navigate(item.path)}
+                        sx={{
+                          borderRadius: '8px', minHeight: 38,
+                          px: 1.5,
+                          justifyContent: collapsed ? 'center' : 'flex-start',
+                          '&.Mui-selected': {
+                            bgcolor: 'rgba(26,115,232,0.08)', color: 'primary.main',
+                            '& .MuiListItemIcon-root': { color: 'primary.main' },
+                            '&:hover': { bgcolor: 'rgba(26,115,232,0.12)' },
+                          },
+                          '&:hover': { bgcolor: 'rgba(0,0,0,0.04)' },
                         }}
-                      />
-                    </ListItemButton>
-                  </ListItem>
+                      >
+                        <ListItemIcon sx={{ minWidth: collapsed ? 0 : 32, color: selected ? 'primary.main' : 'text.secondary' }}>
+                          <Icon stroke={selected ? 2 : 1.5} size="1.1rem" />
+                        </ListItemIcon>
+                        {!collapsed && (
+                          <ListItemText
+                            primary={item.wip ? `${t(item.titleKey)} (Soon)` : t(item.titleKey)}
+                            primaryTypographyProps={{
+                              fontSize: '0.8375rem',
+                              fontWeight: selected ? 600 : 400,
+                              color: selected ? 'primary.main' : 'text.primary',
+                            }}
+                          />
+                        )}
+                      </ListItemButton>
+                    </ListItem>
+                  </Tooltip>
                 )
               })}
             </List>
           )
         })}
       </Box>
-      {promoBox}
+      {!collapsed && promoBox}
     </Box>
   )
 }
@@ -292,9 +320,10 @@ export default function Layout({ children }: LayoutProps) {
   const theme = useTheme()
   const mdUp = useMediaQuery(theme.breakpoints.up('md'))
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [desktopOpen, setDesktopOpen] = useState(true)
   const [status, setStatus] = useState<Status>('checking')
-  const profileButtonRef = useRef<HTMLButtonElement>(null)
-  const [profileMenuOpen, setProfileMenuOpen] = useState(false)
+  const [profileMenuPosition, setProfileMenuPosition] = useState<{ top: number; left: number } | null>(null)
+  const profileMenuOpen = profileMenuPosition !== null
   const [username, setUsername] = useState('')
   const navigate = useNavigate()
   const { mode, toggle } = useColorMode()
@@ -330,14 +359,16 @@ export default function Layout({ children }: LayoutProps) {
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
       {/* Sidebar desktop */}
       {mdUp && (
-        <Box sx={{ width: SIDEBAR_WIDTH, flexShrink: 0 }}>
+        <Box sx={{ width: desktopOpen ? SIDEBAR_WIDTH : COLLAPSED_SIDEBAR_WIDTH, flexShrink: 0, transition: 'width 0.2s' }}>
           <Drawer
             variant="permanent"
             anchor="left"
             open
             PaperProps={{
               sx: {
-                width: SIDEBAR_WIDTH,
+                width: desktopOpen ? SIDEBAR_WIDTH : COLLAPSED_SIDEBAR_WIDTH,
+                transition: 'width 0.2s',
+                overflowX: 'hidden',
                 boxSizing: 'border-box',
                 border: 'none',
                 borderRight: `1px solid ${theme.palette.divider}`,
@@ -346,7 +377,7 @@ export default function Layout({ children }: LayoutProps) {
               },
             }}
           >
-            <SidebarContent />
+            <SidebarContent collapsed={!desktopOpen} onToggle={() => setDesktopOpen((open) => !open)} />
           </Drawer>
         </Box>
       )}
@@ -367,7 +398,7 @@ export default function Layout({ children }: LayoutProps) {
             },
           }}
         >
-          <SidebarContent />
+          <SidebarContent onToggle={() => setMobileOpen(false)} />
         </Drawer>
       )}
 
@@ -387,7 +418,7 @@ export default function Layout({ children }: LayoutProps) {
             {!mdUp && (
               <IconButton
                 color="inherit"
-                aria-label="open menu"
+                aria-label={t('sidebar.toggleMenu')}
                 onClick={() => setMobileOpen(true)}
                 sx={{ mr: 1 }}
               >
@@ -456,13 +487,15 @@ export default function Layout({ children }: LayoutProps) {
             {/* Profile */}
             <Tooltip title={t('account.menu')}>
               <IconButton
-                ref={profileButtonRef}
                 size="small"
                 color="inherit"
                 aria-controls={profileMenuOpen ? 'profile-menu' : undefined}
                 aria-haspopup="true"
                 aria-expanded={profileMenuOpen ? 'true' : undefined}
-                onClick={() => setProfileMenuOpen(true)}
+                onClick={(event) => {
+                  const bounds = event.currentTarget.getBoundingClientRect()
+                  setProfileMenuPosition({ top: bounds.bottom, left: bounds.right })
+                }}
                 sx={{ p: 0.5, ml: 0.5 }}
               >
                 <Avatar
@@ -481,19 +514,19 @@ export default function Layout({ children }: LayoutProps) {
 
             <Menu
               id="profile-menu"
-              anchorEl={profileButtonRef.current}
+              anchorReference="anchorPosition"
+              anchorPosition={profileMenuPosition ?? undefined}
               open={profileMenuOpen}
-              onClose={() => setProfileMenuOpen(false)}
-              anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+              onClose={() => setProfileMenuPosition(null)}
               transformOrigin={{ horizontal: 'right', vertical: 'top' }}
               PaperProps={{ sx: { width: 200, mt: 0.5 } }}
             >
-              <MenuItem onClick={() => { setProfileMenuOpen(false); navigate('/profile') }}>
+              <MenuItem onClick={() => { setProfileMenuPosition(null); navigate('/profile') }}>
                 <ListItemIcon><IconUser size={18} /></ListItemIcon>
                 <ListItemText>{t('account.myProfile')}</ListItemText>
               </MenuItem>
               <MenuItem
-                onClick={() => { setProfileMenuOpen(false); handleLogout() }}
+                onClick={() => { setProfileMenuPosition(null); handleLogout() }}
                 sx={{ color: 'error.main' }}
               >
                 <ListItemIcon sx={{ color: 'error.main' }}><IconLogout size={18} /></ListItemIcon>
