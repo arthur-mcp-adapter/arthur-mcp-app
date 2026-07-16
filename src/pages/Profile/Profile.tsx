@@ -38,7 +38,6 @@ import {
 } from '@tabler/icons-react'
 import { useTranslation } from 'react-i18next'
 import api from '../../api'
-import { supabase } from '../../supabaseClient'
 import { useAuth, Permission } from '../../context/auth'
 import { useDetailPageNav } from '../../hooks'
 import { useAsyncFeedback } from '../../hooks'
@@ -57,6 +56,7 @@ import { ALL_OFF } from './constants/allOff.constant'
 import { BUILTIN_ROLES } from './constants/builtinRoles.constant'
 import { emptyPermissions } from './utils/emptyPermissions.util'
 import { permissionCount } from './utils/permissionCount.util'
+import { updateSupabaseUser } from './updateSupabaseUser.util'
 
 
 
@@ -236,14 +236,13 @@ function MyProfileTab({ me, onUpdated }: MyProfileTabProps) {
     try {
       // Self-service profile edits go straight to Supabase (the live session is the only
       // credential needed) — there is no backend /users/me write path anymore.
-      const { data, error } = await supabase.auth.updateUser(attrs)
-      if (error) throw error
+      const updatedUser = await updateSupabaseUser(attrs)
 
       onUpdated({
-        _id: data.user.id,
-        username: (data.user.user_metadata?.username as string | undefined) ?? me.username,
-        email: data.user.email ?? me.email,
-        role: (data.user.app_metadata?.role as string | undefined) ?? me.role,
+        _id: updatedUser.id,
+        username: (updatedUser.user_metadata?.username as string | undefined) ?? me.username,
+        email: updatedUser.email ?? me.email,
+        role: (updatedUser.app_metadata?.role as string | undefined) ?? me.role,
         createdAt: me.createdAt,
       })
       setNewPassword(''); setConfirmPassword('')

@@ -150,6 +150,7 @@ This file should be updated when task state changes. It does not replace issues 
 - [x] Switched `ServerDetail` to the shared contextual sidebar navigation pattern so the back action and section tabs are driven by `ServerNavContext` instead of duplicated inline UI.
 - [x] Switched `Profile` to the shared contextual sidebar navigation pattern so profile sections are selected from the sidebar instead of inline tabs.
 - [x] Fixed client-side navigation from the avatar menu to `/profile` by eagerly loading the shell-level Profile route and replacing the empty global lazy-route fallback with a visible loading state.
+- [x] Refreshed the Supabase session after profile username changes so backend JWT claims and `GET /users/me` immediately reflect the saved metadata.
 - [x] **Phase 1 Complete:** Implemented `BaseListCard` generic card component and migrated `PromptCard`, `SecretCard`, `ProjectCard` to use it (~390 lines eliminated).
 - [x] **Phase 2 Complete:** Extracted `useListPageLogic` hook and refactored `Prompts`, `Secrets`, `Servers` list pages (~240 lines eliminated).
 - [x] **Phase 3 Complete:** Extracted `useCopyToClipboard` hook and migrated `Prompts`, `Secrets` pages (~80 lines eliminated).
