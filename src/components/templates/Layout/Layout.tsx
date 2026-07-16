@@ -53,9 +53,11 @@ import type { NavItem } from './navItem.type'
 import type { NavSection } from './navSection.type'
 import type { Status } from './status.type'
 import type { LayoutProps } from './layoutProps.interface'
+import type { SidebarContentProps } from './sidebarContentProps.interface'
 import { SIDEBAR_WIDTH } from './constants/sidebarWidth.constant'
+import { COLLAPSED_SIDEBAR_WIDTH } from './constants/collapsedSidebarWidth.constant'
 import { NAV_SECTIONS } from './constants/navSections.constant'
-
+import './index.css'
 
 const AppBarStyled = styled(AppBar)(({ theme }) => ({
   boxShadow: 'none',
@@ -74,7 +76,7 @@ const ToolbarStyled = styled(Toolbar)(({ theme }) => ({
   paddingRight: '12px',
 }))
 
-function SidebarContent() {
+function SidebarContent({ onToggle, collapsed = false }: SidebarContentProps) {
   const location = useLocation()
   const navigate = useNavigate()
   const theme = useTheme()
@@ -275,30 +277,22 @@ function SidebarContent() {
                 const selected = location.pathname === item.path
                 const disabled = item.wip || section.selfHostedOnly
                 return (
-                  <ListItem key={item.path} disablePadding sx={{ px: 1.5, py: '1px' }}>
-                    <ListItemButton
-                      selected={selected}
-                      disabled={disabled}
-                      onClick={() => !disabled && navigate(item.path)}
-                      sx={{
-                        borderRadius: '8px', minHeight: 38, px: 1.5,
-                        '&.Mui-selected': {
-                          bgcolor: 'rgba(26,115,232,0.08)', color: 'primary.main',
-                          '& .MuiListItemIcon-root': { color: 'primary.main' },
-                          '&:hover': { bgcolor: 'rgba(26,115,232,0.12)' },
-                        },
-                        '&:hover': { bgcolor: 'rgba(0,0,0,0.04)' },
-                      }}
-                    >
-                      <ListItemIcon sx={{ minWidth: 32, color: selected ? 'primary.main' : 'text.secondary' }}>
-                        <Icon stroke={selected ? 2 : 1.5} size="1.1rem" />
-                      </ListItemIcon>
-                      <ListItemText
-                        primary={item.wip ? `${t(item.titleKey)} (Soon)` : t(item.titleKey)}
-                        primaryTypographyProps={{
-                          fontSize: '0.8375rem',
-                          fontWeight: selected ? 600 : 400,
-                          color: selected ? 'primary.main' : 'text.primary',
+                  <Tooltip key={item.path} title={collapsed ? t(item.titleKey) : ''} placement="right">
+                    <ListItem disablePadding sx={{ px: collapsed ? 0.75 : 1.5, py: '1px' }}>
+                      <ListItemButton
+                        selected={selected}
+                        disabled={disabled}
+                        onClick={() => !disabled && navigate(item.path)}
+                        sx={{
+                          borderRadius: '8px', minHeight: 38,
+                          px: 1.5,
+                          justifyContent: collapsed ? 'center' : 'flex-start',
+                          '&.Mui-selected': {
+                            bgcolor: 'rgba(26,115,232,0.08)', color: 'primary.main',
+                            '& .MuiListItemIcon-root': { color: 'primary.main' },
+                            '&:hover': { bgcolor: 'rgba(26,115,232,0.12)' },
+                          },
+                          '&:hover': { bgcolor: 'rgba(0,0,0,0.04)' },
                         }}
                       >
                         <ListItemIcon sx={{ minWidth: collapsed ? 0 : 32, color: selected ? 'primary.main' : 'text.secondary' }}>

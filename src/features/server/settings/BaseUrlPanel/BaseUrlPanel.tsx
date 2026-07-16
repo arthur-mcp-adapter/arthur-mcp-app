@@ -9,9 +9,11 @@ import { useAuth, Permission } from '../../../../context/auth'
 import api from '../../../../api'
 import { HelpButton } from '../../../../components'
 import type { BaseUrlPanelProps } from './baseUrlPanelProps.interface'
+import './index.css'
 
 
 export function BaseUrlPanel({ projectId, initialValue, onChange }: BaseUrlPanelProps) {
+  const { t } = useTranslation(['serverDetail', 'common'])
   const { can } = useAuth()
   const [editing, setEditing] = useState(false)
   const [value, setValue] = useState(initialValue)

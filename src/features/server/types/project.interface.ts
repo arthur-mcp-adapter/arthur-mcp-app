@@ -6,6 +6,7 @@ import type { McpApiKeyEntry } from './mcpApiKeyEntry.interface'
 import type { AuthConfig } from './authConfig.type'
 import type { DbConnectionConfig } from './dbConnectionConfig.interface'
 import type { DbQuery } from './dbQuery.interface'
+import type { OAuthConfig } from './oauthConfig.type'
 
 export interface Project {
   _id: string
@@ -28,6 +29,7 @@ export interface Project {
   mcpApiKeys?: McpApiKeyEntry[]
   oauthClientId?: string
   oauthClientSecret?: string
+  oauthConfig?: OAuthConfig
   responseConfig?: {
     enabled: boolean
     maxResponseLen?: number

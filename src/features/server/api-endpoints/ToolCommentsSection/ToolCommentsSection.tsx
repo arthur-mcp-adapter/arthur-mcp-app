@@ -5,10 +5,12 @@ import {
 import {
   IconChevronDown, IconMessage, IconTrash,
 } from '@tabler/icons-react'
+import { useTranslation } from 'react-i18next'
 import { useAuth, Permission } from '../../../../context/auth'
 import api from '../../../../api'
 import type { ToolComment } from '../../types'
 import type { ToolCommentsSectionProps } from './toolCommentsSectionProps.interface'
+import './index.css'
 
 
 export function ToolCommentsSection({ projectId, toolName, initialComments }: ToolCommentsSectionProps) {

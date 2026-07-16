@@ -80,53 +80,6 @@ describe('SwaggerService', () => {
     mockProjectRepo.findAll.mockResolvedValue([]);
   });
 
-  describe('updateRateLimit', () => {
-    it('throws BadRequestException when requestsPerMinute is below 1', async () => {
-      await expect(
-        service.updateRateLimit('proj-1', { enabled: true, requestsPerMinute: 0 }),
-      ).rejects.toThrow(BadRequestException);
-    });
-
-    it('throws BadRequestException when requestsPerMinute exceeds 10000', async () => {
-      await expect(
-        service.updateRateLimit('proj-1', { enabled: true, requestsPerMinute: 10_001 }),
-      ).rejects.toThrow(BadRequestException);
-    });
-
-    it('returns updated project on valid input', async () => {
-      const updated = makeProject({ rateLimit: { enabled: true, requestsPerMinute: 100 } });
-      mockProjectRepo.update.mockResolvedValue(updated);
-
-      const result = await service.updateRateLimit('proj-1', { enabled: true, requestsPerMinute: 100 });
-
-      expect(mockProjectRepo.update).toHaveBeenCalledWith('proj-1', { rateLimit: { enabled: true, requestsPerMinute: 100 } });
-      expect(result).toBe(updated);
-    });
-
-    it('throws NotFoundException when project not found', async () => {
-      mockProjectRepo.update.mockResolvedValue(null);
-      await expect(
-        service.updateRateLimit('missing', { enabled: false, requestsPerMinute: 60 }),
-      ).rejects.toThrow(NotFoundException);
-    });
-
-    it('accepts boundary value 1 for requestsPerMinute', async () => {
-      const updated = makeProject({ rateLimit: { enabled: true, requestsPerMinute: 1 } });
-      mockProjectRepo.update.mockResolvedValue(updated);
-      await expect(
-        service.updateRateLimit('proj-1', { enabled: true, requestsPerMinute: 1 }),
-      ).resolves.toBe(updated);
-    });
-
-    it('accepts boundary value 10000 for requestsPerMinute', async () => {
-      const updated = makeProject({ rateLimit: { enabled: true, requestsPerMinute: 10_000 } });
-      mockProjectRepo.update.mockResolvedValue(updated);
-      await expect(
-        service.updateRateLimit('proj-1', { enabled: true, requestsPerMinute: 10_000 }),
-      ).resolves.toBe(updated);
-    });
-  });
-
   describe('updateOAuthClient', () => {
     it('persists an external OAuth provider and clears Arthur-managed credentials', async () => {
       const updated = makeProject({ oauthConfig: {

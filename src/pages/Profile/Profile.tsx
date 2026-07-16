@@ -294,22 +294,22 @@ function MyProfileTab({ me, onUpdated }: MyProfileTabProps) {
         </Grid>
       </Paper>
 
-        <Grid item xs={12}>
-          <Divider textAlign="left" sx={{ mb: 2 }}>
-            <Typography variant="caption" color="text.secondary">{t('myProfile.changePassword')}</Typography>
-          </Divider>
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
-              <TextField size="small" fullWidth label={t('myProfile.newPasswordLabel')} type="password"
-                value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField size="small" fullWidth label={t('myProfile.confirmPasswordLabel')} type="password"
-                value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}
-                error={!!newPassword && !!confirmPassword && newPassword !== confirmPassword}
-                helperText={newPassword && confirmPassword && newPassword !== confirmPassword
-                  ? t('myProfile.passwordMismatchHelper') : ''} />
-            </Grid>
+      <Paper variant="outlined" sx={{ p: 3, mb: 3 }}>
+        <Box display="flex" alignItems="center" gap={1} mb={2}>
+          <Box sx={{ color: 'primary.main', display: 'flex' }}><IconLock size={18} /></Box>
+          <Typography variant="subtitle1" fontWeight={700}>{t('myProfile.changePassword')}</Typography>
+        </Box>
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={6}>
+            <TextField size="small" fullWidth label={t('myProfile.newPasswordLabel')} type="password"
+              value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField size="small" fullWidth label={t('myProfile.confirmPasswordLabel')} type="password"
+              value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}
+              error={!!newPassword && !!confirmPassword && newPassword !== confirmPassword}
+              helperText={newPassword && confirmPassword && newPassword !== confirmPassword
+                ? t('myProfile.passwordMismatchHelper') : ''} />
           </Grid>
         </Grid>
       </Paper>

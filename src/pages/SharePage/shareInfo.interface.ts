@@ -11,6 +11,7 @@ export interface ShareInfo {
   shareSlug?: string | null
   hasKey: boolean
   hasOAuthClient?: boolean
+  oauthMode?: 'none' | 'managed' | 'external'
   toolCount: number
   resourceCount: number
   promptCount: number

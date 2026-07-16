@@ -23,8 +23,6 @@ import { PermissionsGuard } from '../common/guards/permissions.guard';
 import type { AuthConfig, DbConnectionConfig, DbQuery, EndpointRef, ExecutionRef } from '../dynamic-mcp/types';
 import { SwaggerService } from './swagger.service';
 import { ServerOwnershipGuard } from './guards/server-ownership.guard';
-import { PermissionsGuard } from '../common/guards/permissions.guard';
-import { RequirePermission } from '../common/decorators/require-permission.decorator';
 import {
   AlertConfigDto,
   AvailabilityWindowDto,
