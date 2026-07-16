@@ -5,6 +5,7 @@ import type { DataSourceOptions } from 'typeorm';
 import { parseDatabaseUri } from './database-uri';
 import { InitialTypeormSchema1700000000000 } from './migrations/1700000000000-InitialTypeormSchema';
 import { RenameCamelCaseColumnsToSnakeCase1700000000001 } from './migrations/1700000000001-RenameCamelCaseColumnsToSnakeCase';
+import { AddOAuthConfigToSwaggerProjects1700000000002 } from './migrations/1700000000002-AddOAuthConfigToSwaggerProjects';
 import { AddOauthColumnsToUsers1700000001000 } from './migrations/1700000001000-AddOauthColumnsToUsers';
 import { AddOwnerIdColumns1700000002000 } from './migrations/1700000002000-AddOwnerIdColumns';
 import { DropSettingsTable1700000003000 } from './migrations/1700000003000-DropSettingsTable';
@@ -44,6 +45,7 @@ const TYPEORM_ENTITIES = [
 const TYPEORM_MIGRATIONS = [
   InitialTypeormSchema1700000000000,
   RenameCamelCaseColumnsToSnakeCase1700000000001,
+  AddOAuthConfigToSwaggerProjects1700000000002,
   AddOauthColumnsToUsers1700000001000,
   AddOwnerIdColumns1700000002000,
   DropSettingsTable1700000003000,
