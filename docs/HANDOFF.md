@@ -785,6 +785,14 @@ Supabase Auth is now the sole identity provider (Phases 1-4 of the identity migr
 - Documentation updated: `docs/DESIGN_PATTERNS.md`, `docs/FLOWS.md`, `docs/ROADMAP.md`, and this handoff.
 - Validation: `npm test -- --run src/api.test.ts` passed (1 file, 5 tests); `npm run type-check` passed, including frontend structure, all 227 API/90 prompt catalog records, and TypeScript compilation.
 
+## 2026-07-16 — CI frontend environment validator packaging
+
+- Fixed `npm run build` failing in GitHub Actions with `MODULE_NOT_FOUND` for `scripts/check-frontend-env.mjs`.
+- Root cause: `package.json` referenced the new prebuild validator, but the repository-wide `/scripts/` ignore rule kept that file out of the commit. Previously tracked scripts were unaffected, which hid the mismatch locally.
+- Changed the ignore rule to keep arbitrary local scripts ignored while explicitly allowing the three repository build/check scripts, including the frontend environment validator.
+- No application behavior, permission, data, endpoint, or user-facing flow changed.
+- Validation: `npm run build` passed; the prebuild reported hCaptcha disabled and validated all 227 API/90 prompt catalog records before Vite completed the production bundle.
+
 ## Recommended Next Step
 
 **Do not run the Phase 5 table-drop migration yet.** Before it's safe:

@@ -86,6 +86,7 @@ This file should be updated when task state changes. It does not replace issues 
 
 ## Done
 
+- [x] Restored the CI frontend build by making `scripts/check-frontend-env.mjs` versionable; `package.json` no longer references a validator that exists only in the local ignored `scripts/` directory.
 - [x] Prevented tool, resource, and prompt tests in Server Detail from signing the user out when the MCP transport returns `401`; MCP client authentication failures now remain scoped to the test result instead of invalidating the Supabase application session.
 - [x] Added optional hCaptcha protection to Supabase email/password login, signup, and password recovery, including single-use token reset, responsive rendering, Vite/Docker/CI configuration, tests, and deployment-order documentation.
 - [x] Fixed `SQLITE_ERROR: no such column` API startup crashes caused by an already-applied migration (`1700000000000-InitialTypeormSchema.ts`) having been edited in place to rename columns to snake_case: added migration `1700000000001-RenameCamelCaseColumnsToSnakeCase.ts` (idempotent, per-table rename) plus a passing test. See `docs/HANDOFF.md` for details and the "never edit an already-applied migration" lesson.
