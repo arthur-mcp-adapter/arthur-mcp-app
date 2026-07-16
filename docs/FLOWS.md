@@ -498,6 +498,7 @@ Frontend behavior:
 
 - `AuthContext` exposes `UserPermissions` and `usePermission(key)` hook.
 - Pages and action buttons check permissions before rendering or enabling actions.
+- The avatar menu navigates directly to the eagerly loaded `/profile` route so client-side navigation does not blank the application shell while waiting for a lazy route chunk. Other lazy routes show an explicit loading indicator instead of an empty fallback.
 - The Profile page renders `PERMISSION_GROUPS` as a matrix editor for custom roles.
 - Builtin roles (`admin`, `developer`, `editor`, `viewer`) are rendered as read-only presets in the role selector.
 
