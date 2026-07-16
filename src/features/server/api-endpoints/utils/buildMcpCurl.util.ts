@@ -1,7 +1,8 @@
 import type { GeneratedTool } from '../../types'
+import { backendUrl } from '../../../../config/urls'
 
 export function buildMcpCurl(tool: GeneratedTool, mcpServerIdentifier: string, hasKeys: boolean): string {
-  const url = `${window.location.origin}/api/mcp/server/${mcpServerIdentifier}`
+  const url = backendUrl(`/api/mcp/server/${mcpServerIdentifier}`)
   const properties = tool.inputSchema.properties ?? {}
   const args = Object.fromEntries(Object.entries(properties).map(([key, value]) => [key, `<${value.type ?? 'string'}>`]))
   const body = JSON.stringify(

@@ -9,7 +9,7 @@ import { ExecutionHooksPanel } from '../ExecutionHooksPanel'
 import type { HarnessTabProps } from './harnessTabProps.interface'
 
 
-export function HarnessTab({ projectId, tools, initialRateLimit, onRateLimitChange }: HarnessTabProps) {
+export function HarnessTab({ projectId, tools }: HarnessTabProps) {
   const { t } = useTranslation('serverDetail')
 
   return (
@@ -26,11 +26,7 @@ export function HarnessTab({ projectId, tools, initialRateLimit, onRateLimitChan
         </Box>
       </Box>
 
-      <RateLimitPanel
-        projectId={projectId}
-        initialRateLimit={initialRateLimit}
-        onChange={onRateLimitChange}
-      />
+      <RateLimitPanel />
       <RetryPolicyPanel projectId={projectId} />
       <TimeoutPanel projectId={projectId} tools={tools} />
       <ExecutionHooksPanel projectId={projectId} />

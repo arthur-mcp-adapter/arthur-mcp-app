@@ -461,6 +461,7 @@ Rules:
 - Put cross-feature UI widgets in `src/components/` only when they are not specific to server detail.
 - Preserve current behavior while extracting modules; avoid combining extraction with product changes.
 - Keep the administrative project UUID separate from the MCP transport identifier: `/swagger/servers/:id` calls use the UUID, while Server Detail simulators and generated MCP URLs use the server `shareSlug` (falling back to the UUID only for legacy records without a slug).
+- Build displayed/generated MCP transport URLs with `backendUrl()` so AI View, curl examples, and configuration previews honor `VITE_API_URL` instead of assuming the browser origin hosts the API.
 
 ### Page-Based Creation Flows
 
@@ -550,7 +551,7 @@ Example:
 Rules:
 
 - Use the shared `api` client instead of creating page-local Axios instances.
-- Let the request interceptor attach the bearer token.
+- Let the request interceptor attach the Supabase bearer token to application API calls, but never to `/mcp/*`; MCP API key/OAuth credentials belong to an independent authentication domain and must be supplied explicitly by the MCP caller.
 - Let the response interceptor handle application-session `401` logout/redirect behavior.
 - Do not treat `401` responses from `/mcp/*` transport calls as application-session failures; MCP API key/OAuth authentication is independent from the signed-in Supabase session and its errors must remain visible in the invoking UI.
 - Keep endpoint paths relative to `/api`.

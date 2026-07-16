@@ -18,6 +18,7 @@ import {
 import { IconDatabase, IconPlus, IconTrash } from '@tabler/icons-react'
 import { useTranslation } from 'react-i18next'
 import api from '../../../../api'
+import { backendUrl } from '../../../../config/urls'
 import { SaveIndicator } from '../../../../components'
 import type { SaveStatus, TenantParam, TenantParamType } from '../../types'
 import type { TenantConfigPanelProps } from './tenantConfigPanelProps.interface'
@@ -64,7 +65,7 @@ export function TenantConfigPanel({ projectId, mcpServerIdentifier, initialConfi
     scheduleSave(enabled, next)
   }
 
-  const mcpUrl = `${window.location.origin}/api/mcp/server/${mcpServerIdentifier}`
+  const mcpUrl = backendUrl(`/api/mcp/server/${mcpServerIdentifier}`)
   const previewUrl = params.filter((param) => param.name.trim()).length > 0
     ? `${mcpUrl}?${params.filter((param) => param.name.trim()).map((param) => `${param.name}={value}`).join('&')}`
     : null

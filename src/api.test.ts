@@ -26,15 +26,25 @@ describe('api client', () => {
     expect(typeof api.put).toBe('function');
   });
 
-  it('attaches request interceptor that reads token from localStorage', async () => {
+  it('attaches the Supabase token only to application API requests', async () => {
     const { default: api } = await import('./api');
     const handler = (api.interceptors.request as any).handlers[0].fulfilled;
 
     localStorage.setItem('token', 'tok123');
-    expect(handler({ headers: {} })).toMatchObject({ headers: { Authorization: 'Bearer tok123' } });
+    expect(handler({ url: '/users/me', headers: {} })).toMatchObject({ headers: { Authorization: 'Bearer tok123' } });
+
+    expect(handler({ url: '/mcp/server/payments-api', headers: {} })).toEqual({
+      url: '/mcp/server/payments-api',
+      headers: {},
+    });
+
+    expect(handler({
+      url: '/mcp/server/payments-api',
+      headers: { Authorization: 'Bearer mcp-oauth-token' },
+    })).toMatchObject({ headers: { Authorization: 'Bearer mcp-oauth-token' } });
 
     localStorage.clear();
-    expect(handler({ headers: {} })).toEqual({ headers: {} });
+    expect(handler({ url: '/users/me', headers: {} })).toEqual({ url: '/users/me', headers: {} });
   });
 
   it('attaches response interceptor for 401 handling', async () => {

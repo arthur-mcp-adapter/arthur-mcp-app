@@ -28,7 +28,6 @@ export interface Project {
   mcpApiKeys?: McpApiKeyEntry[]
   oauthClientId?: string
   oauthClientSecret?: string
-  rateLimit?: { enabled: boolean; requestsPerMinute: number }
   responseConfig?: {
     enabled: boolean
     maxResponseLen?: number

@@ -33,7 +33,6 @@ import {
   DbQueryDto,
   MaintenanceModeDto,
   OAuthClientDto,
-  RateLimitDto,
   ResponseConfigDto,
   ResourceDto,
   ShareSlugDto,
@@ -261,14 +260,6 @@ export class SwaggerController {
     @Body() dto: ShareSlugDto,
   ) {
     return this.swaggerService.updateShareSlug(id, dto.shareSlug);
-  }
-
-  @Patch('servers/:id/rate-limit')
-  updateRateLimit(
-    @Param('id') id: string,
-    @Body() dto: RateLimitDto,
-  ) {
-    return this.swaggerService.updateRateLimit(id, dto);
   }
 
   @Patch('servers/:id/response-config')

@@ -11,7 +11,10 @@ function isMcpClientRequest(url: unknown): boolean {
 
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token')
-  if (token) config.headers.Authorization = `Bearer ${token}`
+  // The Supabase application token is not an MCP OAuth token. Sending it to the
+  // MCP transport makes McpApiKeyGuard verify an ES256 Supabase JWT with the
+  // MCP OAuth secret and fail with "invalid algorithm".
+  if (token && !isMcpClientRequest(config.url)) config.headers.Authorization = `Bearer ${token}`
   return config
 })
 

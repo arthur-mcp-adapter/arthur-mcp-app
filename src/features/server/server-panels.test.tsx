@@ -57,7 +57,6 @@ vi.mock('react-i18next', () => ({
       'hint.alertHint': 'Alerts are sent when the threshold is crossed',
       'hint.errorAlertsDesc': 'Notify when error rates rise',
       'hint.rateLimitActive': `${vars?.rpm} requests per minute`,
-      'hint.rateLimitInactive': 'Rate limiting is disabled',
       'label.alertEmail': 'Alert e-mail',
       'label.alertThreshold': 'Alert threshold',
       'label.allTools': 'All tools',
@@ -117,17 +116,19 @@ describe('server feature panels', () => {
     })
   })
 
-  it('saves rate limit toggles and validates invalid request counts', async () => {
-    const onChange = vi.fn()
-    render(<RateLimitPanel projectId="p1" initialRateLimit={{ enabled: false, requestsPerMinute: 60 }} onChange={onChange} />)
+  it('shows the rate limit as always active at 60 req/min and not editable', () => {
+    render(<RateLimitPanel />)
 
-    fireEvent.click(screen.getByRole('checkbox'))
+    const toggle = screen.getByRole('checkbox')
+    expect(toggle).toBeChecked()
+    expect(toggle).toBeDisabled()
 
-    await waitFor(() => expect(apiPatch).toHaveBeenCalledWith('/swagger/servers/p1/rate-limit', { enabled: true, requestsPerMinute: 60 }))
-    expect(onChange).toHaveBeenCalledWith({ enabled: true, requestsPerMinute: 60 })
+    const rpmField = screen.getByLabelText('Requests per minute')
+    expect(rpmField).toHaveValue(60)
+    expect(rpmField).toBeDisabled()
 
-    fireEvent.change(screen.getByLabelText('Requests per minute'), { target: { value: '0' } })
-    await waitFor(() => expect(screen.getByText('Rate limit out of range')).toBeInTheDocument(), { timeout: 1200 })
+    expect(screen.getByText('60 requests per minute')).toBeInTheDocument()
+    expect(apiPatch).not.toHaveBeenCalled()
   })
 
   it('edits, validates, saves, and cancels the base URL', async () => {

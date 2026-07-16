@@ -224,18 +224,6 @@ export class SwaggerService {
     return server;
   }
 
-  async updateRateLimit(
-    id: string,
-    dto: { enabled: boolean; requestsPerMinute: number },
-  ): Promise<SwaggerProjectRecord> {
-    if (dto.requestsPerMinute < 1 || dto.requestsPerMinute > 10_000) {
-      throw new BadRequestException('requestsPerMinute must be between 1 and 10000.');
-    }
-    const server = await this.projectRepo.update(id, { rateLimit: dto });
-    if (!server) throw new NotFoundException('Project not found.');
-    return server;
-  }
-
   async updateResponseConfig(
     id: string,
     dto: { enabled: boolean; maxResponseLen?: number; maxDepth?: number; arraySlice?: number; errorTruncateLen?: number },

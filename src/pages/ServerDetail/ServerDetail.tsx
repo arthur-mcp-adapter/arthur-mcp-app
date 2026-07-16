@@ -585,8 +585,6 @@ export default function ServerDetail() {
         <HarnessTab
           projectId={id!}
           tools={project.tools ?? []}
-          initialRateLimit={project.rateLimit}
-          onRateLimitChange={(rl) => setProject((prev) => prev ? { ...prev, rateLimit: rl } : prev)}
         />
       )}
 

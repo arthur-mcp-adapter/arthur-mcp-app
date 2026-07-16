@@ -35,6 +35,7 @@ import {
   IconSearch,
 } from '@tabler/icons-react'
 import api from '../../api'
+import { backendUrl } from '../../config/urls'
 import { parseMcpResponse } from '../../utils/mcpResponse'
 import { resolveMcpServerIdentifier } from '../../utils/mcpUrl'
 import type { JsonSchema } from './jsonSchema.interface'
@@ -591,7 +592,7 @@ export function McpDocsContent({ project: server, projectId }: McpDocsContentPro
   }, [server.prompts])
 
   const mcpServerIdentifier = resolveMcpServerIdentifier(server.shareSlug, projectId)
-  const mcpUrl = `${window.location.origin}/api/mcp/server/${mcpServerIdentifier}`
+  const mcpUrl = backendUrl(`/api/mcp/server/${mcpServerIdentifier}`)
 
   const enabledTools = (server.tools ?? []).filter((t) => t.enabled !== false)
   const filteredTools = enabledTools.filter((t) =>

@@ -53,11 +53,6 @@ export class ShareSlugDto {
   shareSlug: string;
 }
 
-export class RateLimitDto {
-  enabled: boolean;
-  requestsPerMinute: number;
-}
-
 export class ResponseConfigDto {
   enabled: boolean;
   maxResponseLen?: number;

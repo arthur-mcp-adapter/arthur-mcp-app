@@ -9,6 +9,10 @@ import {
 import { PROJECT_REPO } from '../database/database.tokens';
 import { ISwaggerProjectRepository } from '../swagger/swagger-project.repository';
 
+// Rate limiting is always on at a fixed 60 req/min per server; the stored
+// per-server rateLimit config is intentionally ignored.
+export const FIXED_REQUESTS_PER_MINUTE = 60;
+
 @Injectable()
 export class RateLimitGuard implements CanActivate {
   private readonly windows = new Map<string, number[]>();
@@ -22,10 +26,12 @@ export class RateLimitGuard implements CanActivate {
     const res = context.switchToHttp().getResponse();
     const serverId: string = req.params['serverId'];
 
+    // Lookup normalizes id vs share slug to one window key; missing servers
+    // pass through so the route can 404.
     const server = await this.projectRepo.findByIdOrShareSlug(serverId);
-    if (!server?.rateLimit?.enabled) return true;
+    if (!server) return true;
 
-    const { requestsPerMinute } = server.rateLimit;
+    const requestsPerMinute = FIXED_REQUESTS_PER_MINUTE;
     const windowMs = 60_000;
     const now = Date.now();
 
