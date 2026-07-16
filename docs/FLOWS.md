@@ -66,6 +66,29 @@ Risk to preserve:
 - Do not hardcode new user-facing strings on pages that already use i18n.
 - Keep translation keys in English even when locale values are translated.
 
+## Contextual Help
+
+Goal: let users understand a screen or configuration without leaving their current workflow.
+
+Entry points:
+
+- Question-mark buttons beside page titles, dashboard cards, table columns, and server configuration sections.
+
+Frontend behavior:
+
+- Each help dialog explains what the area controls, when to use it, the practical setup or reading sequence, how to verify success, and relevant limitations or troubleshooting.
+- Help for security and integration settings distinguishes incoming MCP access from credentials used by Arthur to call an upstream API.
+- The shared dialog uses a readable wide layout on desktop, scrolls long content, and becomes full-screen below the small-screen breakpoint.
+- The trigger has an accessible translated label, and all help content is maintained in matching English and Brazilian Portuguese locale resources.
+
+Permission decision:
+
+- Opening contextual help is informational and does not add a route, mutation, credential disclosure, or permission. The surrounding page or control keeps its existing permission rules.
+
+Risk to preserve:
+
+- Do not reduce help to a restatement of the field label. Keep guidance aligned with the behavior users can actually observe, and do not promise persistence, export, OAuth coverage, or security guarantees that the implementation does not provide.
+
 ## Observability Runtime
 
 Goal: let authorized operators verify the technical observability layer that the backend exposes: health probes, Prometheus metrics, structured logs, correlation IDs, and optional OpenTelemetry tracing.
@@ -96,6 +119,54 @@ Risk to preserve:
 - Do not require authentication for operational probe endpoints.
 - Keep the page focused on technical observability.
 
+## MCP Access Keys
+
+Goal: protect an MCP server with named access keys while supporting clients that cannot set custom HTTP headers.
+
+Entry points:
+
+- Server Detail Connect tab, under Connection URL and Access Keys.
+- Runtime `POST /api/mcp/server/:serverId` and `POST /api/mcp/server/:shareSlug` endpoints.
+
+Behavior:
+
+- When a server has named or legacy MCP access keys, clients can authenticate with either the `auth: <key>` header or the `?auth=<key>` query parameter.
+- Header authentication remains the recommended form. The runtime uses the header when both forms are present.
+- Missing or invalid keys continue to return an unauthorized response. Servers without any key remain publicly accessible.
+- Server Detail displays both forms next to the connection URL and in the Access Keys panel.
+- Application structured logs, tracing attributes, and Error Tracking extras redact the `auth` query value. Infrastructure outside the application may still record query strings, so the UI warns that query authentication should be used only when headers are unavailable.
+
+Permission decision:
+
+- Viewing, creating, and revoking keys continue to use `api_keys_view`, `api_keys_create`, and `api_keys_delete` respectively.
+- Accepting an existing key from a query parameter is runtime authentication behavior, not a new management action or permission.
+
+## MCP OAuth Client
+
+Goal: allow OAuth 2.0 clients such as ChatGPT to authenticate against an MCP server either through the customer's own authorization server or through Arthur-managed credentials.
+
+Entry point:
+
+- Server Detail Connect tab, under OAuth Client.
+
+Behavior:
+
+- OAuth can be disabled, Arthur-managed, or external. Existing servers with saved Arthur client credentials are migrated to `managed`; all other existing servers remain `none`.
+- External OAuth/OIDC is the recommended mode for customers with their own website and identity service. The configuration records issuer, authorization endpoint, token endpoint, audience/resource, required scopes, and either a JWKS URL or an RFC 7662 introspection endpoint with confidential credentials.
+- The OAuth Client help menu is an in-product setup guide: it explains mode selection, external provider registration, Authorization Code with PKCE and callback requirements, every validation field, the expected AI-client flow, discovery inspection, and a three-step verification checklist. It also distinguishes incoming MCP authorization from upstream API credentials.
+- The MCP server publishes per-server protected-resource metadata at `/.well-known/oauth-protected-resource/api/mcp/server/:serverId`, matching the canonical `/api/mcp/server/:serverId` resource URL. A path without `/api` remains accepted for compatibility. Its `authorization_servers` value points to the customer's issuer in external mode or the server-specific Arthur issuer in managed mode.
+- Arthur-managed authorization-server metadata is published at `/.well-known/oauth-authorization-server/oauth/server/:serverId`; the legacy global metadata endpoint remains available for compatibility.
+- Unauthorized OAuth-protected MCP requests return a `WWW-Authenticate` challenge containing the protected-resource metadata URL.
+- External JWT access tokens are validated against the configured JWKS, allowed asymmetric algorithm, issuer, audience, expiry, and required scopes. Opaque access tokens are validated by introspection and must be active, unexpired, audience-bound, and contain the required scopes.
+- Arthur-managed mode keeps the current authorization-code and `client_credentials` flows and the Arthur login page. External mode never collects the customer's password; the MCP client opens the customer's own login and consent pages.
+- OAuth access tokens are accepted only for a server with OAuth enabled. When OAuth is enabled and no Access Key is configured, anonymous MCP requests are rejected.
+- Server-specific URLs prefer the public `shareSlug` and fall back to the internal project UUID. Both forms resolve through `findByIdOrShareSlug`.
+
+Permission decision:
+
+- OAuth creation, editing, mode changes, confidential introspection credentials, and removal use `servers_edit_settings` in both the frontend and the backend mutation route.
+- Displaying the generated OAuth endpoint URLs introduces no new action or permission.
+
 ## Public MCP Share Page
 
 Goal: let someone with a share link understand and connect to an MCP server without needing an app login.
@@ -125,7 +196,8 @@ Frontend behavior:
 - The share page keeps the existing MCP URL, QR code, and setup instructions for Claude Desktop, Cursor, and generic MCP clients.
 - The page presents a Swagger UI-like public documentation layout: a dark product bar, server info header, copy-ready MCP endpoint band with QR code, and colored expandable operation rows for Tools, Resources, Prompts, and setup instructions.
 - When the shared server requires MCP authentication, the page follows the Swagger UI pattern: a global Authorize action opens a dialog for the MCP API key, shows an authorized state after saving, and sends the value as the `auth` header only when running simulator requests.
-- When an OAuth Client is configured, the public share payload exposes only a `hasOAuthClient` boolean. The Authorize dialog accepts client credentials, exchanges them through `/oauth/server/:serverId/token` with `grant_type=client_credentials`, stores only the resulting access token in page state, and sends it as `Authorization: Bearer <token>` for simulator requests.
+- When OAuth is configured, the public share payload exposes only `hasOAuthClient` and the non-sensitive mode (`managed` or `external`). It never exposes issuer configuration, introspection credentials, client secrets, or tokens.
+- The Share simulator can exchange Arthur-managed client credentials through `/oauth/server/:serverId/token`. External OAuth is identified in the public documentation, but its interactive login remains the responsibility of a compatible MCP client because each external provider controls client registration, callback URIs, PKCE, and consent.
 - Tools, Resources, and Prompts include a simulator mode that sends JSON-RPC requests to the MCP endpoint, matching how an AI client would call `tools/call`, `resources/read`, and `prompts/get`.
 - Tools show public parameters and output schema JSON when declared; resources show output schema JSON when declared.
 - Prompts show resolved prompt content and template arguments.

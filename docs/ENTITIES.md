@@ -136,6 +136,7 @@ Fields:
 | `chains` | `ToolChain[]` | yes | Multi-step tool workflows. |
 | `oauthClientId` | string | no | OAuth client id for OAuth flows. |
 | `oauthClientSecret` | string | no | OAuth client secret. Treat as sensitive. |
+| `oauthConfig` | `OAuthConfig` | no | MCP OAuth mode and provider configuration stored as JSON text in `oauth_config`. Modes are `none`, `managed`, and `external`. External configuration includes issuer, authorization/token endpoints, audience/resource, required scopes, and JWKS or introspection settings. Introspection credentials are sensitive. |
 | `tags` | string[] | yes | Project labels, stored as JSON text. Source type is stored as a `source:<type>` tag, for example `source:rest`. |
 | `rateLimit` | object | yes | Defaults to disabled with `requestsPerMinute: 60`. |
 | `isPaused` | boolean | yes | When true, MCP endpoints should return unavailable behavior. |

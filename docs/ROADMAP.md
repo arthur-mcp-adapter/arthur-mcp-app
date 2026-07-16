@@ -4,6 +4,7 @@ This file should be updated when task state changes. It does not replace issues 
 
 ## Now
 
+- [x] Expand all 31 contextual question-mark help dialogs into localized mini-guides with purpose, usage, success checks, and troubleshooting; make the shared dialog accessible, scrollable, and responsive.
 - [ ] Confirm the current product goal and record details that still exist only in conversation.
 - [ ] Review existing uncommitted changes before starting a new task.
 - [ ] Keep `docs/HANDOFF.md` updated at the end of each Codex or Claude Code session.
@@ -83,6 +84,11 @@ This file should be updated when task state changes. It does not replace issues 
 
 ## Done
 
+- [x] Fixed the Access Key creation drawer to resolve its Name label from `common:label.name` and localize the required-name validation message.
+- [x] Replaced the OAuth Client menu's short description with a localized in-product guide covering mode selection, external OAuth setup, field meanings, MCP client behavior, discovery, security boundaries, and verification steps.
+- [x] Added per-server external OAuth/OIDC for MCP servers, including customer-owned login/consent endpoints, RFC 9728 protected-resource discovery, server-specific Arthur metadata, JWKS or introspection token validation, audience/scope enforcement, migration, Server Detail configuration, permissions, tests, and public Share mode awareness.
+- [x] Documented the OAuth discovery, authorization, and token URLs in Server Detail, using the public server share slug for server-specific OAuth endpoints when available.
+- [x] Allowed MCP Access Keys to authenticate through either the existing `auth` header or an `auth` query parameter, with Server Detail guidance, backend guard coverage, and application-level URL redaction for logs, traces, and Error Tracking.
 - [x] Added a production DataJud API template based on the official CNJ documentation, with Authorization API key setup, one explicit Query DSL search tool for each of the 91 documented court endpoints, and a general description covering the field glossary, three official MCP-adapted query examples, and the Elasticsearch Query DSL versus GraphQL distinction.
 - [x] Fixed `SQLITE_ERROR: no such column` API startup crashes caused by an already-applied migration (`1700000000000-InitialTypeormSchema.ts`) having been edited in place to rename columns to snake_case: added migration `1700000000001-RenameCamelCaseColumnsToSnakeCase.ts` (idempotent, per-table rename) plus a passing test. See `docs/HANDOFF.md` for details and the "never edit an already-applied migration" lesson.
 - [x] Generated template-oriented API integration research from `APIs.json`: `APIs/MANUAL.md` indexes all 1,608 entries and `APIs/entries/` contains one numbered workspace per API, with source links, authentication interpretation, endpoint evidence, tool/parameter worksheets, response/operations checks, and a JSON candidate shaped like `public/catalogs/api/zendesk.json`. Empty `Auth` values are treated as no authentication; documentation URLs are never silently promoted to runtime endpoints; 37 identifier matches are marked for review against existing templates.
