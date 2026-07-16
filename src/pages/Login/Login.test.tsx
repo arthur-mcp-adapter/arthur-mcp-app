@@ -7,6 +7,12 @@ vi.mock('../../supabaseClient', () => ({
   supabase: { auth: { signInWithPassword } },
 }));
 vi.mock('../../supabaseConfigured.constant', () => ({ supabaseConfigured: false }));
+vi.mock('../../features/auth', () => ({
+  hcaptchaConfigured: true,
+  HcaptchaChallenge: ({ onTokenChange }: { onTokenChange: (token: string) => void }) => (
+    <button type="button" onClick={() => onTokenChange('captcha-token')}>Complete CAPTCHA</button>
+  ),
+}));
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
@@ -31,6 +37,7 @@ vi.mock('react-router-dom', async (importOriginal) => {
 import Login from '.';
 
 const renderLogin = () => render(<Login />, { wrapper: MemoryRouter });
+const completeCaptcha = () => fireEvent.click(screen.getByRole('button', { name: /complete captcha/i }));
 
 describe('Login page', () => {
   beforeEach(() => {
@@ -47,6 +54,7 @@ describe('Login page', () => {
   it('renders sign in button', () => {
     renderLogin();
     expect(screen.getByRole('button', { name: /sign in/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /sign in/i })).toBeDisabled();
   });
 
   it('renders forgot password link', () => {
@@ -60,6 +68,7 @@ describe('Login page', () => {
 
     fireEvent.change(screen.getByLabelText(/email/i), { target: { value: 'bad@test.com' } });
     fireEvent.change(screen.getByLabelText(/password/i), { target: { value: 'wrong' } });
+    completeCaptcha();
     fireEvent.click(screen.getByRole('button', { name: /sign in/i }));
 
     await waitFor(() => {
@@ -73,6 +82,7 @@ describe('Login page', () => {
 
     fireEvent.change(screen.getByLabelText(/email/i), { target: { value: 'admin@test.com' } });
     fireEvent.change(screen.getByLabelText(/password/i), { target: { value: 'admin123' } });
+    completeCaptcha();
     fireEvent.click(screen.getByRole('button', { name: /sign in/i }));
 
     await waitFor(() => {
@@ -87,6 +97,7 @@ describe('Login page', () => {
 
     fireEvent.change(screen.getByLabelText(/email/i), { target: { value: 'admin@test.com' } });
     fireEvent.change(screen.getByLabelText(/password/i), { target: { value: 'admin123' } });
+    completeCaptcha();
     fireEvent.click(screen.getByRole('button', { name: /sign in/i }));
 
     // After submit, button shows CircularProgress so name changes — query by type
@@ -104,10 +115,15 @@ describe('Login page', () => {
 
     fireEvent.change(screen.getByLabelText(/email/i), { target: { value: 'myuser@test.com' } });
     fireEvent.change(screen.getByLabelText(/password/i), { target: { value: 'mypass' } });
+    completeCaptcha();
     fireEvent.click(screen.getByRole('button', { name: /sign in/i }));
 
     await waitFor(() => {
-      expect(signInWithPassword).toHaveBeenCalledWith({ email: 'myuser@test.com', password: 'mypass' });
+      expect(signInWithPassword).toHaveBeenCalledWith({
+        email: 'myuser@test.com',
+        password: 'mypass',
+        options: { captchaToken: 'captcha-token' },
+      });
     });
   });
 });

@@ -19,6 +19,7 @@ import {
 } from '@mui/material'
 import { supabase } from '../../supabaseClient'
 import SocialAuthButtons from '../../components/organisms/SocialAuthButtons'
+import { HcaptchaChallenge, hcaptchaConfigured } from '../../features/auth'
 
 export default function Login() {
   const navigate = useNavigate()
@@ -28,19 +29,27 @@ export default function Login() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null)
+  const [captchaResetKey, setCaptchaResetKey] = useState(0)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
     setLoading(true)
     try {
-      const { error: signInError } = await supabase.auth.signInWithPassword({ email, password })
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+        ...(captchaToken ? { options: { captchaToken } } : {}),
+      })
       if (signInError) throw signInError
       navigate('/')
     } catch {
       setError(t('error.invalidCredentials'))
     } finally {
       setLoading(false)
+      setCaptchaToken(null)
+      setCaptchaResetKey((current) => current + 1)
     }
   }
 
@@ -195,13 +204,18 @@ export default function Login() {
                   </Link>
                 </Stack>
 
+                <HcaptchaChallenge
+                  onTokenChange={setCaptchaToken}
+                  resetKey={captchaResetKey}
+                />
+
                 <Button
                   type="submit"
                   color="primary"
                   variant="contained"
                   size="large"
                   fullWidth
-                  disabled={loading}
+                  disabled={loading || (hcaptchaConfigured && !captchaToken)}
                   disableElevation
                   sx={{ py: 1.2 }}
                 >

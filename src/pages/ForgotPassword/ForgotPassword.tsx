@@ -15,6 +15,7 @@ import {
 } from '@mui/material'
 import { supabase } from '../../supabaseClient'
 import { useColorMode, ColorMode } from '../../theme'
+import { HcaptchaChallenge, hcaptchaConfigured } from '../../features/auth'
 
 export default function ForgotPassword() {
   const { t } = useTranslation('auth')
@@ -23,6 +24,8 @@ export default function ForgotPassword() {
   const [loading, setLoading] = useState(false)
   const [sent, setSent] = useState(false)
   const [error, setError] = useState('')
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null)
+  const [captchaResetKey, setCaptchaResetKey] = useState(0)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -31,6 +34,7 @@ export default function ForgotPassword() {
     try {
       const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: `${window.location.origin}/reset-password`,
+        ...(captchaToken ? { captchaToken } : {}),
       })
       if (resetError) throw resetError
       setSent(true)
@@ -38,6 +42,8 @@ export default function ForgotPassword() {
       setError(t('error.sendFailed'))
     } finally {
       setLoading(false)
+      setCaptchaToken(null)
+      setCaptchaResetKey((current) => current + 1)
     }
   }
 
@@ -98,7 +104,11 @@ export default function ForgotPassword() {
                       <TextField id="email" type="email" variant="outlined" fullWidth required autoFocus
                         value={email} onChange={(e) => setEmail(e.target.value)} />
                     </Box>
-                    <Button type="submit" color="primary" variant="contained" size="large" fullWidth disabled={loading} disableElevation sx={{ py: 1.2 }}>
+                    <HcaptchaChallenge
+                      onTokenChange={setCaptchaToken}
+                      resetKey={captchaResetKey}
+                    />
+                    <Button type="submit" color="primary" variant="contained" size="large" fullWidth disabled={loading || (hcaptchaConfigured && !captchaToken)} disableElevation sx={{ py: 1.2 }}>
                       {loading ? <CircularProgress size={22} color="inherit" /> : t('action.sendInstructions')}
                     </Button>
                   </Stack>

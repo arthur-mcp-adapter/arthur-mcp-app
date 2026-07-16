@@ -39,6 +39,7 @@ jobs:
           build-args: |
             VITE_SUPABASE_URL=${{ secrets.SUPABASE_URL }}
             VITE_SUPABASE_PUBLISHABLE_KEY=${{ secrets.SUPABASE_PUBLISHABLE_KEY }}
+            VITE_HCAPTCHA_SITE_KEY=${{ secrets.HCAPTCHA_SITE_KEY }}
             GIT_SHA=${{ env.SHA }}
             VERSION=main
           cache-from: type=gha

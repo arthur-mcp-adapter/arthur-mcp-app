@@ -16,6 +16,7 @@ import {
 } from '@mui/material'
 import { supabase } from '../../supabaseClient'
 import SocialAuthButtons from '../../components/organisms/SocialAuthButtons'
+import { HcaptchaChallenge, hcaptchaConfigured } from '../../features/auth'
 
 export default function Signup() {
   const navigate = useNavigate()
@@ -27,6 +28,8 @@ export default function Signup() {
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [confirmationSent, setConfirmationSent] = useState(false)
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null)
+  const [captchaResetKey, setCaptchaResetKey] = useState(0)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -39,7 +42,11 @@ export default function Signup() {
       const { data, error: signUpError } = await supabase.auth.signUp({
         email,
         password,
-        options: { data: { username }, emailRedirectTo: `${window.location.origin}/oauth-callback` },
+        options: {
+          data: { username },
+          emailRedirectTo: `${window.location.origin}/oauth-callback`,
+          ...(captchaToken ? { captchaToken } : {}),
+        },
       })
       if (signUpError) throw signUpError
 
@@ -52,6 +59,8 @@ export default function Signup() {
       setError(t('error.signupFailed'))
     } finally {
       setLoading(false)
+      setCaptchaToken(null)
+      setCaptchaResetKey((current) => current + 1)
     }
   }
 
@@ -221,13 +230,18 @@ export default function Signup() {
                   />
                 </Box>
 
+                <HcaptchaChallenge
+                  onTokenChange={setCaptchaToken}
+                  resetKey={captchaResetKey}
+                />
+
                 <Button
                   type="submit"
                   color="primary"
                   variant="contained"
                   size="large"
                   fullWidth
-                  disabled={loading}
+                  disabled={loading || (hcaptchaConfigured && !captchaToken)}
                   disableElevation
                   sx={{ py: 1.2 }}
                 >
