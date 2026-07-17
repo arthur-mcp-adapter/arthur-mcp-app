@@ -23,15 +23,15 @@
       "Bash(npm run *)",
       "Bash(npm install)",
       "Bash(npm install --prefix api)",
-      "Bash(git status*)",
-      "Bash(git diff*)",
-      "Bash(git log*)"
+      "Bash(git*)",
+      "mcp__servidor-remoto"
     ],
     "deny": [
       "Read(./api/.env)",
       "Read(./api/database.sqlite)",
       "Bash(rm -rf *)",
       "Bash(git push --force*)",
+      "Bash(git push*)",
       "Bash(git reset --hard*)",
       "Bash(git clean *)"
     ]
