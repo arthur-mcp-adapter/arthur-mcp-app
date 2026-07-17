@@ -3,7 +3,8 @@ kind: Deployment
 metadata:
   name: arthur-mcp
 spec:
-  replicas: 1
+  # replicas intentionally unset — the HPA (hpa.yaml) owns the count; setting it
+  # here would reset the deployment to that number on every apply.
   strategy:
     type: RollingUpdate
     rollingUpdate:

@@ -5,4 +5,5 @@ resources:
   - service-account.yaml
   - configmap.yaml
   - deployment.yaml
+  - hpa.yaml
   - service.yaml
