@@ -6,6 +6,9 @@ export default defineConfig({
   server: {
     port: 5173,
     watch: {
+      // Avoid ENOSPC when inotify watcher limit is saturated on Linux.
+      usePolling: true,
+      interval: 300,
       ignored: ['**/api_repository/**'],
     },
     proxy: {
