@@ -218,7 +218,7 @@ export default function ErrorTracking() {
         <Box sx={{ color: SENTRY_COLOR, display: 'flex' }}><IconBug size={20} /></Box>
         <Typography variant="h5" fontWeight={700} letterSpacing="-0.2px">{t('heading.title')}</Typography>
         <HelpButton title={t('help.title')} docsRefs={[
-          { en: 'How-to-Connect-an-Error-Tracking-Provider', ptBR: 'How-to-Connect-an-Error-Tracking-Provider' },
+          { en: 'How-to-Connect-an-Error-Tracking-Provider', ptBR: 'Como-Conectar-um-Provedor-de-Rastreamento-de-Erros' },
         ]}>
           <Typography variant="body2" gutterBottom>
             {t('help.summary')}

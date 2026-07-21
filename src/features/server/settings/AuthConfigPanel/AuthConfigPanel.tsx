@@ -117,7 +117,7 @@ export function AuthConfigPanel({ projectId, initialAuth, onChange }: AuthConfig
             <Chip label={AUTH_TYPE_LABELS[authType]} size="small" color="primary" sx={{ fontSize: '0.7rem', height: 20 }} />
           )}
           <HelpButton title={t('auth.helpTitle')} docsRefs={[
-            { en: 'How-to-Configure-API-Credentials', ptBR: 'How-to-Configure-API-Credentials' },
+            { en: 'How-to-Configure-API-Credentials', ptBR: 'Como-Configurar-Credenciais-da-API' },
             { en: 'What-Is-API-Credentials-For', ptBR: 'Para-que-Serve-API-Credentials' },
             { en: 'What-Is-API-Credentials', ptBR: 'O-que-e-API-Credentials' },
           ]}>

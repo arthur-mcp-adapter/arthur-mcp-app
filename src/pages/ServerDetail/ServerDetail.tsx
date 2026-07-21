@@ -373,7 +373,7 @@ export default function ServerDetail() {
               <HelpButton title={t('tab.tools')} docsRefs={[
                 { en: 'Dynamic-Tools', ptBR: 'Dynamic-Tools' },
                 { en: 'How-to-Create-a-Tool', ptBR: 'Como-Criar-uma-Tool' },
-                { en: 'How-to-Test-a-Tool', ptBR: 'How-to-Test-a-Tool' },
+                { en: 'How-to-Test-a-Tool', ptBR: 'Como-Testar-uma-Ferramenta' },
               ]}>
                 <Typography variant="body2" gutterBottom>{t('help.tools.intro')}</Typography>
                 <Typography variant="body2" gutterBottom><strong>{t('help.tools.naming')}</strong></Typography>

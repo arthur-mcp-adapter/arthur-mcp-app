@@ -89,7 +89,7 @@ export default function Upload() {
       <Box display="flex" alignItems="center" gap={1} mb={3}>
         <Typography variant="h5" fontWeight="bold">{t('upload.pageTitle')}</Typography>
         <HelpButton title={t('upload.pageTitle')} docsRefs={[
-          { en: 'How-to-Import-an-OpenAPI-Spec', ptBR: 'How-to-Import-an-OpenAPI-Spec' },
+          { en: 'How-to-Import-an-OpenAPI-Spec', ptBR: 'Como-Importar-uma-Especificacao-OpenAPI' },
         ]}>
           <Typography variant="body2" gutterBottom>
             {t('upload.help.intro')}

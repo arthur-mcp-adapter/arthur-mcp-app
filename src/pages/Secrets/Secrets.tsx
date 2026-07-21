@@ -62,7 +62,7 @@ export default function Secrets() {
           <HelpButton title={t('heading.title')} docsRefs={[
             { en: 'Secrets-and-Authentication', ptBR: 'Secrets-and-Authentication' },
             { en: 'What-Are-Secrets-For', ptBR: 'Para-que-Servem-as-Secrets' },
-            { en: 'How-to-Store-and-Reference-a-Secret', ptBR: 'How-to-Store-and-Reference-a-Secret' },
+            { en: 'How-to-Store-and-Reference-a-Secret', ptBR: 'Como-Armazenar-e-Referenciar-um-Segredo' },
           ]}>
             <Typography variant="body2" gutterBottom>{t('help.intro')}</Typography>
             <Typography variant="body2" gutterBottom><strong>{t('help.howToUseTitle')}</strong></Typography>

@@ -71,7 +71,7 @@ export default function Prompts() {
           <HelpButton title={t('heading.title')} docsRefs={[
             { en: 'Prompts', ptBR: 'Prompts' },
             { en: 'What-Are-Prompts', ptBR: 'O-que-sao-Prompts' },
-            { en: 'How-to-Create-and-Link-a-Prompt', ptBR: 'How-to-Create-and-Link-a-Prompt' },
+            { en: 'How-to-Create-and-Link-a-Prompt', ptBR: 'Como-Criar-e-Vincular-um-Prompt' },
           ]}>
             <Typography variant="body2" gutterBottom>{t('help.intro')}</Typography>
             <Typography variant="body2" gutterBottom><strong>{t('help.howToUseTitle')}</strong></Typography>

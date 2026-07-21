@@ -30,7 +30,7 @@ export function GlobalRequestHeadersPanel({
         <Box sx={{ color: 'primary.main', display: 'flex' }}><IconHttpConnect size={18} /></Box>
         <Typography variant="subtitle1" fontWeight={700}>{t('headers.title')}</Typography>
         <HelpButton title={t('headers.helpTitle')} docsRefs={[
-          { en: 'How-to-Set-Global-Request-Headers', ptBR: 'How-to-Set-Global-Request-Headers' },
+          { en: 'How-to-Set-Global-Request-Headers', ptBR: 'Como-Definir-Cabecalhos-Globais-de-Requisicao' },
         ]}>
           <Typography variant="body2" gutterBottom>{t('headers.helpBody')}</Typography>
           <Typography variant="body2" gutterBottom><strong>{t('headers.helpSetupTitle')}</strong></Typography>

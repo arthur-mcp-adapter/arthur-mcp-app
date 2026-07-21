@@ -29,8 +29,8 @@ export const NAV_SECTIONS: NavSection[] = [
         icon: IconBook2,
         path: '',
         externalUrl: {
-          en: 'https://github.com/alexmmatos/arthur-mcp/wiki/en-Home',
-          ptBR: 'https://github.com/alexmmatos/arthur-mcp/wiki/pt-BR-Home',
+          en: 'https://arthurmcp.io/documentation/',
+          ptBR: 'https://arthurmcp.io/documentation/',
         },
       },
     ],

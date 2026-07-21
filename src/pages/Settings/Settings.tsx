@@ -301,7 +301,7 @@ export default function Settings() {
               <Box sx={{ color: 'primary.main', display: 'flex' }}><IconShieldLock size={18} /></Box>
               <Typography variant="subtitle1" fontWeight={700}>{t('security.title')}</Typography>
               <HelpButton title={t('security.helpTitle')} docsRefs={[
-                { en: 'How-to-Rotate-the-JWT-Signing-Secret', ptBR: 'How-to-Rotate-the-JWT-Signing-Secret' },
+                { en: 'How-to-Rotate-the-JWT-Signing-Secret', ptBR: 'Como-Rotacionar-o-Segredo-de-Assinatura-JWT' },
               ]}>
                 <Typography variant="body2" gutterBottom>{t('security.helpIntro')}</Typography>
                 <Typography variant="body2" gutterBottom><strong>{t('security.helpSetupTitle')}</strong></Typography>
