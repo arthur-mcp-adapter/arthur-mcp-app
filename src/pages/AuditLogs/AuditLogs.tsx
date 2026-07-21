@@ -74,7 +74,9 @@ export default function AuditLogs() {
       <Box display="flex" alignItems="center" justifyContent="space-between" flexWrap="wrap" gap={1.5} mb={2.5}>
         <Box display="flex" alignItems="center" gap={1}>
           <Typography variant="h5" fontWeight={700} letterSpacing="-0.2px">{t('title')}</Typography>
-          <HelpButton title={t('help.title')}>
+          <HelpButton title={t('help.title')} docsRefs={[
+            { en: 'Audit-Logs', ptBR: 'Audit-Logs' },
+          ]}>
             <Typography variant="body2" gutterBottom>
               {t('help.intro')}
             </Typography>

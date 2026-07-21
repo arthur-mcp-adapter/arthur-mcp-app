@@ -72,7 +72,10 @@ export function ResponseLimitPanel({ projectId, initialConfig, onChange }: Respo
         <Box display="flex" alignItems="center" justifyContent="space-between" mb={0.5}>
           <Box display="flex" alignItems="center" gap={0.5}>
             <Typography variant="subtitle2" fontWeight={700}>{t('heading.responseLimit')}</Typography>
-            <HelpButton title={t('heading.responseLimit')}>
+            <HelpButton title={t('heading.responseLimit')} docsRefs={[
+              { en: 'How-to-Configure-Response-Limits', ptBR: 'How-to-Configure-Response-Limits' },
+              { en: 'What-Are-Response-Limits-For', ptBR: 'Para-que-Servem-os-Response-Limits' },
+            ]}>
               <Typography variant="body2" gutterBottom>
                 {t('help.responseLimit.intro')}
               </Typography>

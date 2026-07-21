@@ -80,7 +80,11 @@ export function OutputFilteringPanel({ projectId, tools }: OutputFilteringPanelP
         <Box flexGrow={1}>
           <Box display="flex" alignItems="center" gap={0.5}>
             <Typography variant="subtitle2" fontWeight={700}>{t('guardRails.section.outputFiltering')}</Typography>
-            <HelpButton title={t('guardRails.section.outputFiltering')}>
+            <HelpButton title={t('guardRails.section.outputFiltering')} docsRefs={[
+              { en: 'How-to-Configure-Output-Filtering', ptBR: 'Como-Configurar-Output-Filtering' },
+              { en: 'What-Is-Output-Filtering-For', ptBR: 'Para-que-Serve-Output-Filtering' },
+              { en: 'What-Is-Output-Filtering', ptBR: 'O-que-e-Output-Filtering' },
+            ]}>
               <Typography variant="body2" gutterBottom>
                 {t('help.outputFiltering.intro')}
               </Typography>

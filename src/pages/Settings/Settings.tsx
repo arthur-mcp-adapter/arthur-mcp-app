@@ -209,7 +209,9 @@ export default function Settings() {
     <Box>
       <Box display="flex" alignItems="center" gap={1} mb={0.5}>
         <Typography variant="h5" fontWeight={700} letterSpacing="-0.2px">{t('title')}</Typography>
-        <HelpButton title={t('help.title')}>
+        <HelpButton title={t('help.title')} docsRefs={[
+          { en: 'Settings', ptBR: 'Settings' },
+        ]}>
           <Typography variant="body2" gutterBottom>
             {t('help.intro')}
           </Typography>
@@ -241,7 +243,9 @@ export default function Settings() {
             <Box display="flex" alignItems="center" gap={1} mb={2}>
               <Box sx={{ color: 'primary.main', display: 'flex' }}><IconWorld size={18} /></Box>
               <Typography variant="subtitle1" fontWeight={700}>{t('server.title')}</Typography>
-              <HelpButton title={t('server.helpTitle')}>
+              <HelpButton title={t('server.helpTitle')} docsRefs={[
+                { en: 'Settings', ptBR: 'Settings' },
+              ]}>
                 <Typography variant="body2" gutterBottom>{t('server.helpIntro')}</Typography>
                 <Typography variant="body2" gutterBottom><strong>{t('server.helpFieldEffects')}</strong></Typography>
                 <Box component="ul" sx={{ mt: 0, mb: 1.5, pl: 2.5 }}>
@@ -296,7 +300,9 @@ export default function Settings() {
             <Box display="flex" alignItems="center" gap={1} mb={2}>
               <Box sx={{ color: 'primary.main', display: 'flex' }}><IconShieldLock size={18} /></Box>
               <Typography variant="subtitle1" fontWeight={700}>{t('security.title')}</Typography>
-              <HelpButton title={t('security.helpTitle')}>
+              <HelpButton title={t('security.helpTitle')} docsRefs={[
+                { en: 'How-to-Rotate-the-JWT-Signing-Secret', ptBR: 'How-to-Rotate-the-JWT-Signing-Secret' },
+              ]}>
                 <Typography variant="body2" gutterBottom>{t('security.helpIntro')}</Typography>
                 <Typography variant="body2" gutterBottom><strong>{t('security.helpSetupTitle')}</strong></Typography>
                 <Box component="ol" sx={{ mt: 0, mb: 1.5, pl: 2.5 }}>
@@ -349,7 +355,9 @@ export default function Settings() {
             <Box display="flex" alignItems="center" gap={1} mb={2}>
               <Box sx={{ color: 'primary.main', display: 'flex' }}><IconMail size={18} /></Box>
               <Typography variant="subtitle1" fontWeight={700}>{t('smtp.title')}</Typography>
-              <HelpButton title={t('smtp.helpTitle')}>
+              <HelpButton title={t('smtp.helpTitle')} docsRefs={[
+                { en: 'Settings', ptBR: 'Settings' },
+              ]}>
                 <Typography variant="body2" gutterBottom>{t('smtp.helpIntro')}</Typography>
                 <Typography variant="body2" gutterBottom><strong>{t('smtp.helpFieldGuide')}</strong></Typography>
                 <Box component="ul" sx={{ mt: 0, mb: 1, pl: 2.5 }}>

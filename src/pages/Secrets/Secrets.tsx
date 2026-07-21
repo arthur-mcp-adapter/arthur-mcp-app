@@ -3,22 +3,19 @@ import {
   Box,
   Button,
   Grid,
-  IconButton,
   InputAdornment,
   Skeleton,
   TextField,
-  Tooltip,
   Typography,
 } from '@mui/material'
 import {
   IconPlus,
-  IconLock,
   IconSearch,
 } from '@tabler/icons-react'
 import { useTranslation } from 'react-i18next'
 import api from '../../api'
 import { Permission, useAuth } from '../../context/auth'
-import { AppSnackbar, ConfirmDialog } from '../../components'
+import { AppSnackbar, ConfirmDialog, HelpButton } from '../../components'
 import { SecretCard, type Secret } from '../../features/secrets'
 import { useListPageLogic } from '../../hooks'
 import { useCopyToClipboard } from '../../hooks'
@@ -62,11 +59,23 @@ export default function Secrets() {
       <Box display="flex" alignItems="flex-start" justifyContent="space-between" mb={3} flexWrap="wrap" gap={2}>
         <Box display="flex" alignItems="center" gap={1}>
           <Typography variant="h5" fontWeight={700}>{t('heading.title')}</Typography>
-          <Tooltip title={<span>{t('heading.subtitle')}</span>}>
-            <IconButton size="small" sx={{ color: 'text.disabled' }}>
-              <IconLock size={16} />
-            </IconButton>
-          </Tooltip>
+          <HelpButton title={t('heading.title')} docsRefs={[
+            { en: 'Secrets-and-Authentication', ptBR: 'Secrets-and-Authentication' },
+            { en: 'What-Are-Secrets-For', ptBR: 'Para-que-Servem-as-Secrets' },
+            { en: 'How-to-Store-and-Reference-a-Secret', ptBR: 'How-to-Store-and-Reference-a-Secret' },
+          ]}>
+            <Typography variant="body2" gutterBottom>{t('help.intro')}</Typography>
+            <Typography variant="body2" gutterBottom><strong>{t('help.howToUseTitle')}</strong></Typography>
+            <Box component="ol" sx={{ mt: 0, mb: 1, pl: 2.5 }}>
+              <Box component="li"><Typography variant="body2">{t('help.step1')}</Typography></Box>
+              <Box component="li"><Typography variant="body2">{t('help.step2')}</Typography></Box>
+              <Box component="li"><Typography variant="body2">{t('help.step3')}</Typography></Box>
+            </Box>
+            <Typography variant="body2" gutterBottom><strong>{t('help.goodToKnowTitle')}</strong></Typography>
+            <Typography variant="body2" gutterBottom>{t('help.twoLayers')}</Typography>
+            <Typography variant="body2" gutterBottom><strong>{t('help.troubleshootingTitle')}</strong></Typography>
+            <Typography variant="body2">{t('help.troubleshootingReveal')}</Typography>
+          </HelpButton>
         </Box>
         {can(Permission.SecretsCreate) && (
           <Button size="small" variant="contained" startIcon={<IconPlus size={18} />} onClick={openCreate}>

@@ -5,6 +5,7 @@ This file should be updated when task state changes. It does not replace issues 
 ## Now
 
 - [x] Expand all 31 contextual question-mark help dialogs into localized mini-guides with purpose, usage, success checks, and troubleshooting; make the shared dialog accessible, scrollable, and responsive.
+- [x] Link contextual help dialogs out to the matching arthurmcp.io documentation page(s) (`HelpButton`'s `docsRefs` prop, a list of `{ en, ptBR }` pairs) across ~20 help surfaces, under a "Documentation" label, one link per ref labeled with its own slug; locale-aware, linking the English or pt-BR page based on `i18n.language`. Multiple refs where more than one page is genuinely relevant (a how-to guide plus its concept page(s)); left unset where no page matches.
 - [ ] Confirm the current product goal and record details that still exist only in conversation.
 - [ ] Review existing uncommitted changes before starting a new task.
 - [ ] Keep `docs/HANDOFF.md` updated at the end of each Codex or Claude Code session.

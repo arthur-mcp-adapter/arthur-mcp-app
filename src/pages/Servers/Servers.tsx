@@ -104,7 +104,9 @@ export default function Servers() {
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={3} flexWrap="wrap" gap={2}>
         <Box display="flex" alignItems="center" gap={1}>
           <Typography variant="h5" fontWeight={700} letterSpacing="-0.2px">{t('servers:heading.title')}</Typography>
-          <HelpButton title={t('servers:heading.title')}>
+          <HelpButton title={t('servers:heading.title')} docsRefs={[
+            { en: 'MCP-Server-Management', ptBR: 'MCP-Server-Management' },
+          ]}>
             <Typography variant="body2" gutterBottom>{t('servers:help.intro')}</Typography>
             <Typography variant="body2" gutterBottom><strong>{t('servers:help.howItWorks')}</strong></Typography>
             <Box component="ol" sx={{ mt: 0, mb: 1, pl: 2.5 }}>

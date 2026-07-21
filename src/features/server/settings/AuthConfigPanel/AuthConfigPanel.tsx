@@ -116,7 +116,11 @@ export function AuthConfigPanel({ projectId, initialAuth, onChange }: AuthConfig
           {authType !== 'none' && (
             <Chip label={AUTH_TYPE_LABELS[authType]} size="small" color="primary" sx={{ fontSize: '0.7rem', height: 20 }} />
           )}
-          <HelpButton title={t('auth.helpTitle')}>
+          <HelpButton title={t('auth.helpTitle')} docsRefs={[
+            { en: 'How-to-Configure-API-Credentials', ptBR: 'How-to-Configure-API-Credentials' },
+            { en: 'What-Is-API-Credentials-For', ptBR: 'Para-que-Serve-API-Credentials' },
+            { en: 'What-Is-API-Credentials', ptBR: 'O-que-e-API-Credentials' },
+          ]}>
             <Typography variant="body2" gutterBottom>{t('auth.helpIntro')}</Typography>
             <Typography variant="body2" gutterBottom><strong>{t('auth.helpChoose')}</strong></Typography>
             <Box component="ul" sx={{ mt: 0, mb: 1, pl: 2.5 }}>

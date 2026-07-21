@@ -54,7 +54,8 @@
     "type": "Tipo",
     "value": "Valor",
     "optional": "opcional",
-    "inactive": "Inativo"
+    "inactive": "Inativo",
+    "documentation": "Documentação"
   },
   "error": {
     "generic": "Algo deu errado. Tente novamente.",

@@ -545,6 +545,27 @@ Risk to preserve:
 - OAuth2 tokens are cached and renewed transparently; do not expose them in logs.
 - Error responses from the upstream API are mapped to MCP `isError: true` content, not thrown as exceptions.
 
+## In-App Help → Documentation Links (cross-cutting)
+
+Goal: every `HelpButton` help modal can optionally link out to one or more matching arthurmcp.io documentation pages, so users aren't limited to the summary shown in the modal.
+
+Entry points:
+
+- `HelpButton` (`src/components/atoms/HelpButton`), used across ~20 pages/panels (servers, prompts, secrets, harness, guard rails, settings, audit logs, error tracking, upload, etc.).
+
+Behavior:
+
+- `HelpButton` takes an optional `docsRefs: DocsRef[]` prop (`docsRef.interface.ts`), where each `DocsRef` is `{ en: string; ptBR: string }` — the canonical suffix (no locale prefix) of one matching page, per locale, e.g. `{ en: 'How-to-Configure-Retry-Policy', ptBR: 'Como-Configurar-Retry-Policy' }`. Both locale slugs must be given explicitly per entry: pt-BR guide/concept slugs are not consistently derivable from the English one (some wiki pages keep the English title verbatim — "How-to-…" — others use fully Portuguese phrasing — "Como-Configurar-…", "O-que-e-…", "Para-que-Serve-…").
+- When non-empty, the dialog renders a "Documentation" label followed by one link per `DocsRef`, below the help content, in the given order. Each link's visible text is the matching locale's slug, lowercased (e.g. `dynamic-tools`) — not a generic "view docs" label — so multiple links are individually identifiable. Each opens `https://arthurmcp.io/documentation/{locale}-{slug-lowercased}/` in a new tab (`target="_blank" rel="noopener noreferrer"`), where `{locale}` is `pt-br` when `i18n.language` starts with `pt`, else `en`.
+- Multiple entries are expected wherever more than one page is genuinely relevant — typically a `How-to-Configure-X` guide plus its paired `What-Is-X-For` / `What-Is-X` concept pages (both exist for most harness/guard-rails/settings topics), or a feature's related guides (e.g. Dynamic Tools' help also links `How-to-Create-a-Tool` and `How-to-Test-a-Tool`). Don't pad the list with a topic's every tangential page — only ones the current help content actually covers.
+- `i18n` from `useTranslation` is read optionally (`i18n?.language`) — several existing component tests mock `react-i18next` with only `{ t }`, and `HelpButton` must not crash when `i18n` is absent; it falls back to the English slugs in that case.
+- `docsRefs` is omitted (no Documentation section rendered) where no arthurmcp.io page actually covers the topic — e.g. the Dashboard analytics widgets and the ServerDetail "What AI Sees" tab have no matching page; per-column table header help (Audit Logs) is too granular to warrant its own link.
+
+Risk to preserve:
+
+- Don't guess a `DocsRef` (in either locale) that doesn't correspond to a real page — a broken/misleading outbound link is worse than no link.
+- Keep the base URL and locale/slug-casing logic in `docsBaseUrl.constant.ts` / `HelpButton.tsx`, not inlined in call sites.
+
 ## Mobile / Responsive Behavior (cross-cutting)
 
 The frontend was originally desktop-first and has received a mobile-first retrofit pass. These conventions apply app-wide and must be preserved when changing UI:

@@ -75,7 +75,11 @@ export function ToolRestrictionsPanel({ projectId, tools }: ToolRestrictionsPane
         <Box flexGrow={1}>
           <Box display="flex" alignItems="center" gap={0.5}>
             <Typography variant="subtitle2" fontWeight={700}>{t('guardRails.section.toolRestrictions')}</Typography>
-            <HelpButton title={t('guardRails.section.toolRestrictions')}>
+            <HelpButton title={t('guardRails.section.toolRestrictions')} docsRefs={[
+              { en: 'How-to-Configure-Tool-Restrictions', ptBR: 'Como-Configurar-Tool-Restrictions' },
+              { en: 'What-Is-Tool-Restrictions-For', ptBR: 'Para-que-Serve-Tool-Restrictions' },
+              { en: 'What-Is-Tool-Restrictions', ptBR: 'O-que-e-Tool-Restrictions' },
+            ]}>
               <Typography variant="body2" gutterBottom>
                 {t('help.toolRestrictions.intro')}
               </Typography>

@@ -61,7 +61,11 @@ export function RateLimitPanel({ projectId, initialRateLimit, onChange }: RateLi
         <Box display="flex" alignItems="center" justifyContent="space-between" mb={0.5}>
           <Box display="flex" alignItems="center" gap={0.5}>
             <Typography variant="subtitle2" fontWeight={700}>{t('heading.requestLimit')}</Typography>
-            <HelpButton title={t('heading.requestLimit')}>
+            <HelpButton title={t('heading.requestLimit')} docsRefs={[
+              { en: 'How-to-Configure-Request-Limit', ptBR: 'Como-Configurar-Request-Limit' },
+              { en: 'What-Is-Request-Limit-For', ptBR: 'Para-que-Serve-o-Request-Limit' },
+              { en: 'What-Is-Request-Limit', ptBR: 'O-que-e-Request-Limit' },
+            ]}>
               <Typography variant="body2" gutterBottom>
                 {t('help.rateLimit.intro')}
               </Typography>

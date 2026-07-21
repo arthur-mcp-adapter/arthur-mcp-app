@@ -84,7 +84,11 @@ export function InputConstraintsPanel({ projectId, tools }: InputConstraintsPane
         <Box flexGrow={1}>
           <Box display="flex" alignItems="center" gap={0.5}>
             <Typography variant="subtitle2" fontWeight={700}>{t('guardRails.section.inputConstraints')}</Typography>
-            <HelpButton title={t('guardRails.section.inputConstraints')}>
+            <HelpButton title={t('guardRails.section.inputConstraints')} docsRefs={[
+              { en: 'How-to-Configure-Input-Constraints', ptBR: 'Como-Configurar-Input-Constraints' },
+              { en: 'What-Is-Input-Constraints-For', ptBR: 'Para-que-Serve-Input-Constraints' },
+              { en: 'What-Is-Input-Constraints', ptBR: 'O-que-e-Input-Constraints' },
+            ]}>
               <Typography variant="body2" gutterBottom>
                 {t('help.inputConstraints.intro')}
               </Typography>

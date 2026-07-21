@@ -88,7 +88,11 @@ export function ExecutionHooksPanel({ projectId }: ExecutionHooksPanelProps) {
         <Box flexGrow={1}>
           <Box display="flex" alignItems="center" gap={0.5}>
             <Typography variant="subtitle2" fontWeight={700}>{t('harness.section.hooks')}</Typography>
-            <HelpButton title={t('harness.section.hooks')}>
+            <HelpButton title={t('harness.section.hooks')} docsRefs={[
+              { en: 'How-to-Configure-Execution-Hooks', ptBR: 'Como-Configurar-Execution-Hooks' },
+              { en: 'What-Is-Execution-Hooks-For', ptBR: 'Para-que-Serve-Execution-Hooks' },
+              { en: 'What-Is-Execution-Hooks', ptBR: 'O-que-e-Execution-Hooks' },
+            ]}>
               <Typography variant="body2" gutterBottom>
                 {t('help.executionHooks.intro')}
               </Typography>
