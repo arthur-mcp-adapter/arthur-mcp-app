@@ -92,7 +92,11 @@ export function ApiKeysPanel({ projectId, initialKeys, onChange }: ApiKeysPanelP
           : <IconLockOpen size={18} className="api-keys-panel-status-icon-unlocked" />}
         <Box display="flex" alignItems="center" gap={0.5} flexGrow={1}>
           <Typography variant="subtitle1" fontWeight={700}>{t('heading.accessKeys')}</Typography>
-          <HelpButton title={t('heading.accessKeys')}>
+          <HelpButton title={t('heading.accessKeys')} docsRefs={[
+            { en: 'How-to-Generate-an-Access-Key', ptBR: 'Como-Gerar-uma-Access-Key' },
+            { en: 'What-Are-Access-Keys-For', ptBR: 'Para-que-Servem-as-Access-Keys' },
+            { en: 'How-Access-Keys-Work', ptBR: 'Como-Funcionam-as-Access-Keys' },
+          ]}>
             <Typography variant="body2" gutterBottom>{t('help.accessKeys.intro')}</Typography>
             <Typography variant="subtitle2" fontWeight={700} gutterBottom>{t('help.accessKeys.stepsTitle')}</Typography>
             <Box component="ol" sx={{ mt: 0, mb: 1, pl: 2.5 }}>

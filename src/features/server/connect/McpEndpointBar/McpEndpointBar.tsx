@@ -92,7 +92,9 @@ export function McpEndpointBar({ projectId, hasKeys, shareSlug, onShareSlugChang
         <Box display="flex" alignItems="center" gap={1} flexGrow={1}>
           <IconWorld size={18} className="mcp-endpoint-bar-icon" />
           <Typography variant="subtitle1" fontWeight={700}>{t('heading.connectionUrl')}</Typography>
-          <HelpButton title={t('label.mcpEndpoint')}>
+          <HelpButton title={t('label.mcpEndpoint')} docsRefs={[
+            { en: 'Getting-Started', ptBR: 'Primeiros-Passos' },
+          ]}>
             <Typography variant="body2" gutterBottom>{t('help.mcpEndpoint.intro')}</Typography>
             <Typography variant="subtitle2" fontWeight={700} gutterBottom>{t('help.mcpEndpoint.stepsTitle')}</Typography>
             <Box component="ol" sx={{ mt: 0, mb: 1, pl: 2.5 }}>

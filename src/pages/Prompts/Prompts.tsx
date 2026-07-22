@@ -4,11 +4,9 @@ import {
   Button,
   Chip,
   Grid,
-  IconButton,
   InputAdornment,
   Skeleton,
   TextField,
-  Tooltip,
   Typography,
 } from '@mui/material'
 import {
@@ -21,7 +19,7 @@ import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import api from '../../api'
 import { useAuth, Permission } from '../../context/auth'
-import { AppSnackbar, ConfirmDialog } from '../../components'
+import { AppSnackbar, ConfirmDialog, HelpButton } from '../../components'
 import { PromptCard, TagInput, type Prompt } from '../../features/prompts'
 import { useListPageLogic } from '../../hooks'
 import { useCopyToClipboard } from '../../hooks'
@@ -70,11 +68,25 @@ export default function Prompts() {
       <Box display="flex" alignItems="flex-start" justifyContent="space-between" mb={3} flexWrap="wrap" gap={2}>
         <Box display="flex" alignItems="center" gap={1}>
           <Typography variant="h5" fontWeight={700}>{t('heading.title')}</Typography>
-          <Tooltip title={t('heading.subtitle')}>
-            <IconButton size="small" sx={{ color: 'text.disabled' }}>
-              <IconSparkles size={16} />
-            </IconButton>
-          </Tooltip>
+          <HelpButton title={t('heading.title')} docsRefs={[
+            { en: 'Prompts', ptBR: 'Prompts' },
+            { en: 'What-Are-Prompts', ptBR: 'O-que-sao-Prompts' },
+            { en: 'How-to-Create-and-Link-a-Prompt', ptBR: 'Como-Criar-e-Vincular-um-Prompt' },
+          ]}>
+            <Typography variant="body2" gutterBottom>{t('help.intro')}</Typography>
+            <Typography variant="body2" gutterBottom><strong>{t('help.howToUseTitle')}</strong></Typography>
+            <Box component="ol" sx={{ mt: 0, mb: 1, pl: 2.5 }}>
+              <Box component="li"><Typography variant="body2">{t('help.step1')}</Typography></Box>
+              <Box component="li"><Typography variant="body2">{t('help.step2', { open: '{{', close: '}}' })}</Typography></Box>
+              <Box component="li"><Typography variant="body2">{t('help.step3')}</Typography></Box>
+              <Box component="li"><Typography variant="body2">{t('help.step4')}</Typography></Box>
+            </Box>
+            <Typography variant="body2" gutterBottom><strong>{t('help.successTitle')}</strong></Typography>
+            <Typography variant="body2" gutterBottom>{t('help.success')}</Typography>
+            <Typography variant="body2" gutterBottom><strong>{t('help.goodToKnowTitle')}</strong></Typography>
+            <Typography variant="body2" gutterBottom>{t('help.oneManyServers')}</Typography>
+            <Typography variant="body2">{t('help.disableHint')}</Typography>
+          </HelpButton>
         </Box>
         {can(Permission.PromptsCreate) && (
           <Box display="flex" gap={1}>

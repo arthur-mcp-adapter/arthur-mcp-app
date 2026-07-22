@@ -58,6 +58,7 @@ function TemplateCard({ template, loading, onUse }: TemplateCardProps) {
         display: 'flex',
         flexDirection: 'column',
         p: 2,
+        overflow: 'hidden',
         transition: 'border-color 0.18s',
         '&:hover': { borderColor: template.color },
       }}
@@ -82,7 +83,22 @@ function TemplateCard({ template, loading, onUse }: TemplateCardProps) {
         </Box>
       </Box>
 
-      <Typography variant="body2" color="text.secondary" fontSize="0.81rem" mb={2} sx={{ lineHeight: 1.5, flexGrow: 1 }}>
+      <Typography
+        variant="body2"
+        color="text.secondary"
+        fontSize="0.81rem"
+        mb={2}
+        sx={{
+          lineHeight: 1.5,
+          flexGrow: 1,
+          display: '-webkit-box',
+          WebkitBoxOrient: 'vertical',
+          WebkitLineClamp: 4,
+          overflow: 'hidden',
+          whiteSpace: 'normal',
+          overflowWrap: 'anywhere',
+        }}
+      >
         {template.description}
       </Typography>
 

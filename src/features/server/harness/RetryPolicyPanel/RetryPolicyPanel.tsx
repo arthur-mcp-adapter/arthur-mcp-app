@@ -77,7 +77,11 @@ export function RetryPolicyPanel({ projectId }: RetryPolicyPanelProps) {
         <Box flexGrow={1}>
           <Box display="flex" alignItems="center" gap={0.5}>
             <Typography variant="subtitle2" fontWeight={700}>{t('harness.section.retryPolicy')}</Typography>
-            <HelpButton title={t('harness.section.retryPolicy')}>
+            <HelpButton title={t('harness.section.retryPolicy')} docsRefs={[
+              { en: 'How-to-Configure-Retry-Policy', ptBR: 'Como-Configurar-Retry-Policy' },
+              { en: 'What-Is-Retry-Policy-For', ptBR: 'Para-que-Serve-Retry-Policy' },
+              { en: 'What-Is-Retry-Policy', ptBR: 'O-que-e-Retry-Policy' },
+            ]}>
               <Typography variant="body2" gutterBottom>
                 {t('help.retryPolicy.intro')}
               </Typography>

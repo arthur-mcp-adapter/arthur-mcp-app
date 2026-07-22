@@ -8,13 +8,15 @@
     "auditLogs": "Logs de Auditoria",
     "aiProviders": "Provedores de IA (Em breve)",
     "observability": "Observabilidade",
-    "errorTracking": "Rastreamento de Erros"
+    "errorTracking": "Rastreamento de Erros",
+    "documentation": "Documentação (wiki)"
   },
   "section": {
     "overview": "VISÃO GERAL",
     "main": "PRINCIPAL",
     "administration": "ADMINISTRAÇÃO",
-    "administrationBadge": "(Apenas para Self Hosted)"
+    "administrationBadge": "(Apenas para Self Hosted)",
+    "resources": "RECURSOS"
   },
   "account": {
     "menu": "Menu da conta",

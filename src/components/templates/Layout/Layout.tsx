@@ -84,7 +84,7 @@ function SidebarContent({ onToggle, collapsed = false }: SidebarContentProps) {
   const { can, isAdmin } = useAuth()
   const { mode } = useColorMode()
   const { serverDetail } = useServerNav()
-  const { t } = useTranslation('layout')
+  const { t, i18n } = useTranslation('layout')
 
   const scrollbarStyles = {
     '&::-webkit-scrollbar': { width: '7px' },
@@ -276,13 +276,19 @@ function SidebarContent({ onToggle, collapsed = false }: SidebarContentProps) {
                 const Icon = item.icon
                 const selected = location.pathname === item.path
                 const disabled = item.wip || section.selfHostedOnly
+                const externalHref = item.externalUrl
+                  ? (i18n.language?.toLowerCase().startsWith('pt') ? item.externalUrl.ptBR : item.externalUrl.en)
+                  : undefined
+                const linkProps = externalHref
+                  ? { component: 'a' as const, href: externalHref, target: '_blank', rel: 'noopener noreferrer' }
+                  : { onClick: () => !disabled && navigate(item.path) }
                 return (
-                  <Tooltip key={item.path} title={collapsed ? t(item.titleKey) : ''} placement="right">
+                  <Tooltip key={item.titleKey} title={collapsed ? t(item.titleKey) : ''} placement="right">
                     <ListItem disablePadding sx={{ px: collapsed ? 0.75 : 1.5, py: '1px' }}>
                       <ListItemButton
                         selected={selected}
                         disabled={disabled}
-                        onClick={() => !disabled && navigate(item.path)}
+                        {...linkProps}
                         sx={{
                           borderRadius: '8px', minHeight: 38,
                           px: 1.5,

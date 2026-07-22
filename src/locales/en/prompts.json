@@ -1,9 +1,21 @@
 {
   "heading": {
     "title": "Prompts",
-    "subtitle": "Save and organize your prompt templates for reuse across projects.",
     "templates": "Prompt Templates",
     "templatesSubtitle": "Start from a ready-made prompt. Pick a template, customize the name, and it's added to your library instantly."
+  },
+  "help": {
+    "intro": "Prompts are reusable instruction templates shared across servers — write one once, then link it wherever an AI client should be able to pull it.",
+    "howToUseTitle": "How to use it:",
+    "step1": "Create a prompt here, or start from a curated Prompt Template.",
+    "step2": "Write the content using {{open}}argumentName{{close}} placeholders for anything the caller should fill in — Arthur detects these automatically and exposes them as arguments.",
+    "step3": "Open a server's Prompts tab and link the prompt from the shared library.",
+    "step4": "Enable the linked prompt so AI clients and the public documentation page can see it.",
+    "successTitle": "How to verify it worked:",
+    "success": "The prompt appears (enabled) on the server's Prompts tab, and a connected AI client can fetch it with its detected arguments.",
+    "goodToKnowTitle": "Good to know:",
+    "oneManyServers": "One prompt, many servers: editing the shared prompt updates it everywhere it's linked — you're not maintaining duplicate copies.",
+    "disableHint": "Disabling a linked prompt on one server doesn't remove it from the shared library or from any other server it's linked to."
   },
   "create": {
     "title": "New prompt",

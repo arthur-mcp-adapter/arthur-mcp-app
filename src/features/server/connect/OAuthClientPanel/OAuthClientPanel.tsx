@@ -148,7 +148,11 @@ export function OAuthClientPanel({
         <IconKey size={18} className={hasSavedConfiguration ? 'oauth-client-panel-status-icon oauth-client-panel-status-icon-active' : 'oauth-client-panel-status-icon'} />
         <Box display="flex" alignItems="center" gap={0.5} flexGrow={1}>
           <Typography variant="subtitle1" fontWeight={700}>{t('heading.oauthClient')}</Typography>
-          <HelpButton title={t('heading.oauthClient')}>
+          <HelpButton title={t('heading.oauthClient')} docsRefs={[
+            { en: 'How-to-Create-an-OAuth-Client', ptBR: 'Como-Criar-um-OAuth-Client' },
+            { en: 'How-Does-OAuth-Client-Work', ptBR: 'Como-Funciona-o-Cliente-OAuth' },
+            { en: 'Differences-Between-OAuth-Client-Types', ptBR: 'Diferencas-entre-os-Tipos-de-OAuth-Client' },
+          ]}>
             <Typography variant="body2" mb={2}>{t('hint.oauthHelpIntro')}</Typography>
 
             <Typography variant="subtitle2" fontWeight={700} gutterBottom>{t('hint.oauthHelpChooseTitle')}</Typography>

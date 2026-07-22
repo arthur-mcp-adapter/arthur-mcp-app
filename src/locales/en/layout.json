@@ -8,13 +8,15 @@
     "auditLogs": "Audit Logs",
     "aiProviders": "AI Providers (Soon)",
     "observability": "Observability",
-    "errorTracking": "Error Tracking"
+    "errorTracking": "Error Tracking",
+    "documentation": "Documentation (wiki)"
   },
   "section": {
     "overview": "OVERVIEW",
     "main": "MAIN",
     "administration": "ADMINISTRATION",
-    "administrationBadge": "(Only for Self Hosted)"
+    "administrationBadge": "(Only for Self Hosted)",
+    "resources": "RESOURCES"
   },
   "account": {
     "menu": "Account menu",

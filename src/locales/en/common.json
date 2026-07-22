@@ -54,7 +54,8 @@
     "type": "Type",
     "value": "Value",
     "optional": "optional",
-    "inactive": "Inactive"
+    "inactive": "Inactive",
+    "documentation": "Documentation"
   },
   "error": {
     "generic": "Something went wrong. Please try again.",

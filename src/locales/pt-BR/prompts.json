@@ -1,9 +1,21 @@
 {
   "heading": {
     "title": "Prompts",
-    "subtitle": "Salve e organize seus templates de prompt para reutilização em projetos.",
     "templates": "Templates de Prompt",
     "templatesSubtitle": "Comece com um prompt pronto. Escolha um template, personalize o nome e ele é adicionado à sua biblioteca instantaneamente."
+  },
+  "help": {
+    "intro": "Prompts são templates de instrução reutilizáveis, compartilhados entre servidores — escreva uma vez e vincule onde um cliente de IA precisar usá-la.",
+    "howToUseTitle": "Como usar:",
+    "step1": "Crie um prompt aqui, ou comece a partir de um Template de Prompt já pronto.",
+    "step2": "Escreva o conteúdo usando placeholders {{open}}nomeDoArgumento{{close}} para tudo que quem chamar deve preencher — o Arthur detecta isso automaticamente e expõe como argumentos.",
+    "step3": "Abra a aba Prompts de um servidor e vincule o prompt vindo da biblioteca compartilhada.",
+    "step4": "Ative o prompt vinculado para que clientes de IA e a página pública de documentação possam vê-lo.",
+    "successTitle": "Como confirmar que funcionou:",
+    "success": "O prompt aparece (ativado) na aba Prompts do servidor, e um cliente de IA conectado consegue buscá-lo com seus argumentos detectados.",
+    "goodToKnowTitle": "Bom saber:",
+    "oneManyServers": "Um prompt, vários servidores: editar o prompt compartilhado atualiza em todo lugar onde ele está vinculado — você não mantém cópias duplicadas.",
+    "disableHint": "Desativar um prompt vinculado em um servidor não o remove da biblioteca compartilhada nem de nenhum outro servidor onde ele esteja vinculado."
   },
   "create": {
     "title": "Novo prompt",

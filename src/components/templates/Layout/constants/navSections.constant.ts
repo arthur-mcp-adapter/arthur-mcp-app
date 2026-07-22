@@ -8,6 +8,7 @@ import { IconActivity } from '@tabler/icons-react'
 import { IconBug } from '@tabler/icons-react'
 import { IconSettings } from '@tabler/icons-react'
 import { IconClipboardList } from '@tabler/icons-react'
+import { IconBook2 } from '@tabler/icons-react'
 
 export const NAV_SECTIONS: NavSection[] = [
   {
@@ -23,6 +24,15 @@ export const NAV_SECTIONS: NavSection[] = [
       { titleKey: 'nav.prompts', icon: IconMessage2, path: '/prompts', permission: 'prompts_view' },
       { titleKey: 'nav.secrets', icon: IconLock, path: '/secrets', permission: 'secrets_view_names' },
       { titleKey: 'nav.aiProviders', icon: IconRobot, path: '/ai-providers', permission: 'ai_providers_view' },
+      {
+        titleKey: 'nav.documentation',
+        icon: IconBook2,
+        path: '',
+        externalUrl: {
+          en: 'https://arthurmcp.io/documentation/',
+          ptBR: 'https://arthurmcp.io/documentation/',
+        },
+      },
     ],
   },
   {

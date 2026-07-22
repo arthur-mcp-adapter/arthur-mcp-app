@@ -51,6 +51,7 @@ function PromptTemplateCard({ template, loading, onUse }: PromptTemplateCardProp
         height: '100%',
         display: 'flex',
         flexDirection: 'column',
+        overflow: 'hidden',
         transition: 'border-color 0.18s',
         '&:hover': { borderColor: color },
       }}
@@ -72,7 +73,21 @@ function PromptTemplateCard({ template, loading, onUse }: PromptTemplateCardProp
           </Box>
         </Box>
 
-        <Typography variant="body2" color="text.secondary" fontSize="0.81rem" mb={2} sx={{ lineHeight: 1.5 }}>
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          fontSize="0.81rem"
+          mb={2}
+          sx={{
+            lineHeight: 1.5,
+            display: '-webkit-box',
+            WebkitBoxOrient: 'vertical',
+            WebkitLineClamp: 4,
+            overflow: 'hidden',
+            whiteSpace: 'normal',
+            overflowWrap: 'anywhere',
+          }}
+        >
           {template.description}
         </Typography>
 

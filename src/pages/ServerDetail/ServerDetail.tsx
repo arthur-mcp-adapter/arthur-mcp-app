@@ -395,7 +395,11 @@ export default function ServerDetail() {
           <Box display="flex" alignItems="center" justifyContent="space-between" mb={1.5} flexWrap="wrap" gap={1}>
             <Box display="flex" alignItems="center" gap={1}>
               <Typography variant="h6" fontWeight={700}>{t('heading.whatAiCanDo')}</Typography>
-              <HelpButton title={t('tab.tools')}>
+              <HelpButton title={t('tab.tools')} docsRefs={[
+                { en: 'Dynamic-Tools', ptBR: 'Dynamic-Tools' },
+                { en: 'How-to-Create-a-Tool', ptBR: 'Como-Criar-uma-Tool' },
+                { en: 'How-to-Test-a-Tool', ptBR: 'Como-Testar-uma-Ferramenta' },
+              ]}>
                 <Typography variant="body2" gutterBottom>{t('help.tools.intro')}</Typography>
                 <Typography variant="body2" gutterBottom><strong>{t('help.tools.naming')}</strong></Typography>
                 <Typography variant="body2" gutterBottom>{t('help.tools.betterDesc')}</Typography>
@@ -546,7 +550,9 @@ export default function ServerDetail() {
         <>
           <Box display="flex" alignItems="center" gap={1} mb={2}>
             <Typography variant="h6" fontWeight={700}>{t('heading.activityLog')}</Typography>
-            <HelpButton title={t('heading.activityLog')}>
+            <HelpButton title={t('heading.activityLog')} docsRefs={[
+              { en: 'What-Is-the-Activity-Log-Tab-For', ptBR: 'Para-que-Serve-o-Log-de-Atividade' },
+            ]}>
               <Typography variant="body2" gutterBottom>{t('help.activity.intro')}</Typography>
               <Typography variant="body2" gutterBottom>{t('help.activity.columns')}</Typography>
               <Box component="ul" sx={{ mt: 0.5, mb: 1, pl: 2.5 }}>
