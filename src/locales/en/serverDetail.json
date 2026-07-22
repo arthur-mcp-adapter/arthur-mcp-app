@@ -60,6 +60,7 @@
     "toolChains": "Tool chains"
   },
   "label": {
+    "mcpEndpoint": "MCP ENDPOINT",
     "endpointCount_one": "{{count}} endpoint",
     "endpointCount_other": "{{count}} endpoints",
     "stepCount_one": "{{count}} step",
