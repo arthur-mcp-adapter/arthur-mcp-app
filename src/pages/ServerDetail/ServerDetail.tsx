@@ -93,6 +93,7 @@ import { useColorMode } from '../../theme'
 import { useAuth, Permission } from '../../context/auth'
 import { useDetailPageNav } from '../../hooks'
 import { getProjectIcon, getSourceType } from '../../utils/sourceType'
+import { useApiTemplateCatalog } from '../../features/templates'
 import { parseMcpResponse } from '../../utils/mcpResponse'
 import { resolveMcpServerIdentifier } from '../../utils/mcpUrl'
 import api from '../../api'
@@ -162,9 +163,13 @@ export default function ServerDetail() {
       .finally(() => setLoading(false))
   }, [id])
 
+  const { items: templateSummaries } = useApiTemplateCatalog(
+    (project?.tags ?? []).some((tag) => tag.startsWith('template:')),
+  )
+
   useDetailPageNav(() => {
     if (!project) return null
-    const source = getProjectIcon(project)
+    const source = getProjectIcon(project, templateSummaries)
     return {
       name: project.name,
       sourceEmoji: source.emoji,
@@ -189,7 +194,7 @@ export default function ServerDetail() {
       tab,
       onTabChange: (next: number) => setTab(next),
     }
-  }, [project, tab, t])
+  }, [project, tab, t, templateSummaries])
 
   const saveProjectInfo = async (field: 'name' | 'description', value: string) => {
     await api.patch(`/swagger/servers/${id}/info`, { [field]: value })
@@ -236,7 +241,7 @@ export default function ServerDetail() {
     return acc
   }, {})
 
-  const source = getProjectIcon(project)
+  const source = getProjectIcon(project, templateSummaries)
   const mcpServerIdentifier = resolveMcpServerIdentifier(project.shareSlug, id!)
 
   const availableMethods = Object.keys(methodCounts)
