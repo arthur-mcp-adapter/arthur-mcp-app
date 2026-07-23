@@ -665,7 +665,6 @@ export default function SharePage() {
                   buildPayload={() => ({
                     jsonrpc: '2.0',
                     method: 'initialize',
-                    id: Date.now(),
                     params: {
                       protocolVersion: '2024-11-05',
                       clientInfo: { name: 'Arthur Share', version: '1.0' },
@@ -681,7 +680,7 @@ export default function SharePage() {
                   authMode={authMode}
                   authRequired={info.hasKey}
                   mcpUrl={info.mcpUrl}
-                  buildPayload={() => ({ jsonrpc: '2.0', method: 'tools/list', id: Date.now(), params: {} })}
+                  buildPayload={() => ({ jsonrpc: '2.0', method: 'tools/list', params: {} })}
                 />
               </DocAccordion>
 
@@ -691,7 +690,17 @@ export default function SharePage() {
                   authMode={authMode}
                   authRequired={info.hasKey}
                   mcpUrl={info.mcpUrl}
-                  buildPayload={() => ({ jsonrpc: '2.0', method: 'resources/list', id: Date.now(), params: {} })}
+                  buildPayload={() => ({ jsonrpc: '2.0', method: 'resources/list', params: {} })}
+                />
+              </DocAccordion>
+
+              <DocAccordion title={t('share.mcpResourcesTemplatesList')} subtitle={t('share.mcpResourcesTemplatesListDesc')} tone="general">
+                <SimulatorPanel
+                  authKey={authKey}
+                  authMode={authMode}
+                  authRequired={info.hasKey}
+                  mcpUrl={info.mcpUrl}
+                  buildPayload={() => ({ jsonrpc: '2.0', method: 'resources/templates/list', params: {} })}
                 />
               </DocAccordion>
 
@@ -701,7 +710,7 @@ export default function SharePage() {
                   authMode={authMode}
                   authRequired={info.hasKey}
                   mcpUrl={info.mcpUrl}
-                  buildPayload={() => ({ jsonrpc: '2.0', method: 'prompts/list', id: Date.now(), params: {} })}
+                  buildPayload={() => ({ jsonrpc: '2.0', method: 'prompts/list', params: {} })}
                 />
               </DocAccordion>
             </Stack>
@@ -748,7 +757,6 @@ export default function SharePage() {
                           return {
                             jsonrpc: '2.0',
                             method: 'tools/call',
-                            id: Date.now(),
                             params: { name: tool.name, arguments: args },
                           }
                         }}
@@ -786,7 +794,6 @@ export default function SharePage() {
                         buildPayload={() => ({
                           jsonrpc: '2.0',
                           method: 'resources/read',
-                          id: Date.now(),
                           params: { uri: resource.uri },
                         })}
                       />
@@ -824,7 +831,6 @@ export default function SharePage() {
                         buildPayload={(values) => ({
                           jsonrpc: '2.0',
                           method: 'prompts/get',
-                          id: Date.now(),
                           params: { name: prompt.name || prompt.promptId, arguments: values },
                         })}
                       />

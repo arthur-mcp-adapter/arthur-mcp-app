@@ -75,6 +75,14 @@
         }
       },
       {
+        "method": "resources/templates/list",
+        "direction": "client → server",
+        "description": "Returns URI templates for parameterized resources. Arthur resources always have a fixed URI (no {param} placeholders), so this currently always returns an empty list — the handler exists so clients that call it during discovery get a real result instead of Method Not Found.",
+        "responseShape": {
+          "resourceTemplates": []
+        }
+      },
+      {
         "method": "resources/read",
         "direction": "client → server",
         "description": "Reads a specific resource by URI. Executes db-query or HTTP endpoint if resource is dynamic.",

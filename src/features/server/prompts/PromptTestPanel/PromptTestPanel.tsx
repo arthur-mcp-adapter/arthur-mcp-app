@@ -26,7 +26,7 @@ export function PromptTestPanel({ prompt, mcpServerIdentifier, anyApiKey }: Prom
     try {
       const res = await api.post(
         `/mcp/server/${mcpServerIdentifier}`,
-        { jsonrpc: '2.0', method: 'prompts/get', id: Date.now(), params: { name: prompt.name, arguments: formValues } },
+        { jsonrpc: '2.0', method: 'prompts/get', params: { name: prompt.name, arguments: formValues } },
         { headers: { 'Content-Type': 'application/json', Accept: 'application/json, text/event-stream', ...(anyApiKey ? { auth: anyApiKey } : {}) } },
       )
       const rpc = parseMcpResponse(res.data)

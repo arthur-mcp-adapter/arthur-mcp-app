@@ -117,7 +117,7 @@ function ToolCard({ tool, projectId, mcpApiKey }: ToolCardProps) {
   const paramMapByName = new Map((parameterMap ?? []).map((p) => [p.toolParamName, p]))
 
   const mcpExample = JSON.stringify({
-    jsonrpc: '2.0', method: 'tools/call', id: 1,
+    jsonrpc: '2.0', method: 'tools/call',
     params: { name: tool.name, arguments: Object.fromEntries(paramEntries.map(([k, v]) => [k, `<${v.type ?? 'string'}>`])) },
   }, null, 2)
 
@@ -140,7 +140,7 @@ function ToolCard({ tool, projectId, mcpApiKey }: ToolCardProps) {
           try { args[key] = JSON.parse(val) } catch { args[key] = val }
         } else args[key] = val
       }
-      const payload = { jsonrpc: '2.0', method: 'tools/call', id: Date.now(), params: { name: tool.name, arguments: args } }
+      const payload = { jsonrpc: '2.0', method: 'tools/call', params: { name: tool.name, arguments: args } }
       const headers: Record<string, string> = { 'Content-Type': 'application/json', Accept: 'application/json, text/event-stream' }
       if (mcpApiKey) headers['auth'] = mcpApiKey
       const res = await api.post(`/mcp/server/${projectId}`, payload, { headers })
@@ -290,7 +290,7 @@ function ResourceCard({ resource, projectId, mcpApiKey }: ResourceCardProps) {
   const [exampleCopied, setExampleCopied] = useState(false)
 
   const mcpExample = JSON.stringify({
-    jsonrpc: '2.0', method: 'resources/read', id: 1,
+    jsonrpc: '2.0', method: 'resources/read',
     params: { uri: resource.uri },
   }, null, 2)
 
@@ -303,7 +303,7 @@ function ResourceCard({ resource, projectId, mcpApiKey }: ResourceCardProps) {
   const handleExecute = async () => {
     setExecuting(true); setResponse(null); setResponseIsError(false)
     try {
-      const payload = { jsonrpc: '2.0', method: 'resources/read', id: Date.now(), params: { uri: resource.uri } }
+      const payload = { jsonrpc: '2.0', method: 'resources/read', params: { uri: resource.uri } }
       const headers: Record<string, string> = { 'Content-Type': 'application/json', Accept: 'application/json, text/event-stream' }
       if (mcpApiKey) headers['auth'] = mcpApiKey
       const res = await api.post(`/mcp/server/${projectId}`, payload, { headers })
@@ -415,7 +415,7 @@ function PromptCard({ prompt, projectId, mcpApiKey }: PromptCardProps) {
   const [exampleCopied, setExampleCopied] = useState(false)
 
   const mcpExample = JSON.stringify({
-    jsonrpc: '2.0', method: 'prompts/get', id: 1,
+    jsonrpc: '2.0', method: 'prompts/get',
     params: { name: prompt.name, arguments: Object.fromEntries(args.map((a) => [a, '<string>'])) },
   }, null, 2)
 
@@ -429,7 +429,7 @@ function PromptCard({ prompt, projectId, mcpApiKey }: PromptCardProps) {
     setExecuting(true); setResponse(null); setResponseIsError(false)
     try {
       const payload = {
-        jsonrpc: '2.0', method: 'prompts/get', id: Date.now(),
+        jsonrpc: '2.0', method: 'prompts/get',
         params: { name: prompt.name, arguments: formValues },
       }
       const headers: Record<string, string> = { 'Content-Type': 'application/json', Accept: 'application/json, text/event-stream' }

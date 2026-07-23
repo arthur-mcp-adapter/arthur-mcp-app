@@ -53,7 +53,7 @@ export function EndpointAccordion({ endpoint, projectId, mcpServerIdentifier, an
           try { args[key] = JSON.parse(val) } catch { args[key] = val }
         } else args[key] = val
       }
-      const payload = { jsonrpc: '2.0', method: 'tools/call', id: Date.now(), params: { name: endpoint.tool.name, arguments: args } }
+      const payload = { jsonrpc: '2.0', method: 'tools/call', params: { name: endpoint.tool.name, arguments: args } }
       const headers: Record<string, string> = { 'Content-Type': 'application/json', Accept: 'application/json, text/event-stream' }
       if (anyApiKey) headers['auth'] = anyApiKey
       const res = await api.post(`/mcp/server/${mcpServerIdentifier}`, payload, { headers })

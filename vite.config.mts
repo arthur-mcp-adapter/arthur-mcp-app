@@ -12,6 +12,7 @@ export default defineConfig({
       interval: 300,
       ignored: ['**/api_repository/**'],
     },
+    allowedHosts: ['83c8-131-196-65-242.ngrok-free.app'],
     proxy: {
       '/api': 'http://localhost:3000',
       '/mcp/': 'http://localhost:3000',

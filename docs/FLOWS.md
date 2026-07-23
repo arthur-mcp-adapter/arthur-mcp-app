@@ -229,7 +229,7 @@ Frontend behavior:
 - When the shared server requires MCP authentication, the page follows the Swagger UI pattern: a global Authorize action opens a dialog for the MCP API key, shows an authorized state after saving, and sends the value as the `auth` header only when running simulator requests.
 - When OAuth is configured, the public share payload exposes only `hasOAuthClient` and the non-sensitive mode (`managed` or `external`). It never exposes issuer configuration, introspection credentials, client secrets, or tokens.
 - The Share simulator can exchange Arthur-managed client credentials through `/oauth/server/:serverId/token`. External OAuth is identified in the public documentation, but its interactive login remains the responsibility of a compatible MCP client because each external provider controls client registration, callback URIs, PKCE, and consent.
-- Tools, Resources, and Prompts include a simulator mode that sends JSON-RPC requests to the MCP endpoint, matching how an AI client would call `tools/call`, `resources/read`, and `prompts/get`.
+- Tools, Resources, and Prompts include a simulator mode that sends JSON-RPC requests to the MCP endpoint, matching how an AI client would call `tools/call`, `resources/read`, and `prompts/get`. These example/simulator payloads intentionally omit the JSON-RPC `id` field: it is optional for callers because the runtime backfills one (see MCP Tool Execution below), and several real AI/agent clients don't send it either.
 - Tools show public parameters and output schema JSON when declared; resources show output schema JSON when declared.
 - Prompts show resolved prompt content and template arguments.
 - Resources show URI, MIME type, and output schema where available.
@@ -578,6 +578,7 @@ Risk to preserve:
 - `effectiveArgs` (post-injection) must be used for both the HTTP request and the `requestPayload` log, not the raw `args`.
 - OAuth2 tokens are cached and renewed transparently; do not expose them in logs.
 - Error responses from the upstream API are mapped to MCP `isError: true` content, not thrown as exceptions.
+- `DynamicMcpController.handlePost` runs every incoming body through `normalizeJsonRpcBody` before handing it to the SDK transport. For any request-shaped message (has `method`, not `notifications/*`) missing one, it backfills `jsonrpc: "2.0"` and a synthetic `id`; for `initialize` specifically it also backfills `params.protocolVersion`/`capabilities`/`clientInfo` when missing or incomplete, preserving whatever the client did send. Some AI/agent clients send bare messages like `{ "method": "initialize" }` with none of that envelope. Without this: a message missing `jsonrpc` fails parsing outright (`400`); a message missing `id` still matches the SDK's notification shape and is silently reclassified as one, returning an empty `202` — no body, no error — for `initialize`, `tools/list`, `resources/list`, `prompts/list`, or `tools/call`; and an `initialize` call missing its required params fails the SDK's own schema check with a real but unhelpful JSON-RPC error instead of a handshake result.
 
 ## In-App Help → Documentation Links (cross-cutting)
 

@@ -6,6 +6,7 @@ import {
   GetPromptRequestSchema,
   ListPromptsRequestSchema,
   ListResourcesRequestSchema,
+  ListResourceTemplatesRequestSchema,
   ListToolsRequestSchema,
   ReadResourceRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js';
@@ -449,6 +450,11 @@ export class DynamicMcpService {
         ...(r.mimeType ? { mimeType: r.mimeType } : {}),
       })),
     }));
+
+    // Arthur resources always have a fixed URI (no {param} placeholders), so there are
+    // no templates to offer — but the handler itself must exist or clients that call this
+    // method during discovery get "Method not found" instead of a real empty result.
+    server.setRequestHandler(ListResourceTemplatesRequestSchema, async () => ({ resourceTemplates: [] }));
 
     server.setRequestHandler(ReadResourceRequestSchema, async (req) => {
       const uri = req.params.uri;

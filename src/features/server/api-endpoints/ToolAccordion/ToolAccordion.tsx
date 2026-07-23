@@ -81,7 +81,7 @@ export function ToolAccordion({ tool: initialTool, projectId, mcpServerIdentifie
           try { args[key] = JSON.parse(val) } catch { args[key] = val }
         } else args[key] = val
       }
-      const payload = { jsonrpc: '2.0', method: 'tools/call', id: Date.now(), params: { name: tool.name, arguments: args } }
+      const payload = { jsonrpc: '2.0', method: 'tools/call', params: { name: tool.name, arguments: args } }
       const headers: Record<string, string> = { 'Content-Type': 'application/json', Accept: 'application/json, text/event-stream' }
       if (anyApiKey) headers['auth'] = anyApiKey
       const res = await api.post(`/mcp/server/${mcpServerIdentifier}`, payload, { headers })
